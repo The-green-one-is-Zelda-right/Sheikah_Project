@@ -3,6 +3,36 @@
 #include "./include/IZeldaRendererAdapter.h"
 #include "RendererObjectMgr.h"
 
+IZeldaRendererAdapter::IZeldaRendererAdapter() :
+	_screenWidth(0),
+	_screenHeight(0),
+	_vsync(false),
+	_hwnd(nullptr),
+	_fullScreen(false),
+	_screenDepth(0.0f),
+	_cameraNear(0.0f),
+	_deltaTime(0.0f),
+	_renderer(nullptr),
+	_rendererObjectMgr(nullptr)
+{
+
+}
+
+IZeldaRendererAdapter::~IZeldaRendererAdapter()
+{
+	if (_renderer)
+	{
+		flt::DestroyRendererDX11(_renderer);
+		_renderer = nullptr;
+	}
+
+	if (_rendererObjectMgr)
+	{
+		delete _rendererObjectMgr;
+		_rendererObjectMgr = nullptr;
+	}
+}
+
 bool IZeldaRendererAdapter::Initialize(unsigned int screenWidth, unsigned int screenHeight, bool vsync, HWND hwnd, bool fullScreen, float screenDepth, float cameraNear)
 {
 	_screenWidth = screenWidth;

@@ -19,9 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\FBXLoader.h" />
+    <ClInclude Include="FBXLoader.h" />
     <ClInclude Include="include\IBuilder.h" />
     <ClInclude Include="include\Camera.h" />
+    <ClInclude Include="include\ModelLoader.h" />
     <ClInclude Include="include\IRenderer.h" />
     <ClInclude Include="include\RawNode.h" />
     <ClInclude Include="include\Resource.h" />
@@ -44,6 +45,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="FBXLoader.cpp" />
     <ClCompile Include="IBuilder.cpp" />
+    <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="RawNode.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceMgr.cpp" />
@@ -156,6 +158,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\External\lib\x64\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -180,6 +185,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\External\lib\x64\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -15,6 +15,9 @@ namespace flt
 class IZeldaRendererAdapter : public IZeldaRenderer
 {
 public:
+	IZeldaRendererAdapter();
+	virtual ~IZeldaRendererAdapter();
+
 	virtual bool Initialize(unsigned int screenWidth, unsigned int screenHeight, bool vsync, HWND hwnd, bool fullScreen, float screenDepth, float cameraNear) override;
 	virtual void Finalize() override;
 

@@ -20,7 +20,10 @@
 
 #include "../FloaterRendererCommon/include/Camera.h"
 
+#include "../FloaterRendererCommon/include/ModelLoader.h"
+
 #include <unordered_map>
+#include <filesystem>
 #pragma endregion
 
 #include "../ZeldaGraphicsAdapter/include/IZeldaRendererAdapter.h"
@@ -44,13 +47,13 @@ int main()
 	{
 		using namespace flt;
 		using namespace flt::test;
-		Transform transform;
-		Camera camera(&transform);
-		transform.SetPosition(0.0f, 0.0f, 0.7f);
-		transform.SetScale(0.3f, 0.3f, 0.3f);
-		transform.SetRotation(20.f, 40.f, 80.f);
-		
-		auto viewMatrix = camera.GetViewMatrix();
+
+		ModelLoader loader;
+		std::wstring filePath = L"..\\x64\\fbx\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Ganondorf (TotK).fbx";
+
+		std::filesystem::path currPath = std::filesystem::current_path();
+		if(std::filesystem::exists(filePath))
+			loader.Load(filePath);
 	}
 #pragma endregion
 
