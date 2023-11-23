@@ -1,6 +1,7 @@
 ﻿#include "../FloaterRendererCommon/include/IRenderer.h"
 #include "../FloaterRendererDX11/include/CreateRenderer.h"
 #include "./include/IZeldaRendererAdapter.h"
+#include "RendererObjectMgr.h"
 
 bool IZeldaRendererAdapter::Initialize(unsigned int screenWidth, unsigned int screenHeight, bool vsync, HWND hwnd, bool fullScreen, float screenDepth, float cameraNear)
 {
@@ -11,6 +12,7 @@ bool IZeldaRendererAdapter::Initialize(unsigned int screenWidth, unsigned int sc
 	_fullScreen = fullScreen;
 	_screenDepth = screenDepth;
 	_cameraNear = cameraNear;
+	_deltaTime = 0.0f;
 
 	_renderer = flt::CreateRendererDX11(hwnd);
 
@@ -18,6 +20,8 @@ bool IZeldaRendererAdapter::Initialize(unsigned int screenWidth, unsigned int sc
 	{
 		return false;
 	}
+
+	_rendererObjectMgr = new RendererObjectMgr();
 
 	return true;
 }
@@ -29,11 +33,12 @@ void IZeldaRendererAdapter::Finalize()
 
 void IZeldaRendererAdapter::BeginDraw(float deltaTime)
 {
-	_renderer->Render(deltaTime);
+	_deltaTime = deltaTime;
 }
 
 void IZeldaRendererAdapter::EndDraw()
 {
+	_renderer->Render(_deltaTime);
 	return;
 }
 

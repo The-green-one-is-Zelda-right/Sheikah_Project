@@ -169,9 +169,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\IZeldaRendererAdapter.h" />
+    <ClInclude Include="RendererObjectMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IZeldaRendererAdapter.cpp" />
+    <ClCompile Include="RendererObjectMgr.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,11 +1,16 @@
 ﻿#pragma once
+#pragma warning(push)
+#pragma warning(disable: 4819 26495)
 #include "IZeldaRenderer.h"
-#include <map>
+#pragma warning (pop)
 
+
+class RendererObjectMgr;
 namespace flt
 {
 	class IRenderer;
 }
+
 
 class IZeldaRendererAdapter : public IZeldaRenderer
 {
@@ -43,6 +48,8 @@ private:
 	bool _fullScreen;
 	float _screenDepth;
 	float _cameraNear;
+	float _deltaTime;
 	flt::IRenderer* _renderer;
+	RendererObjectMgr* _rendererObjectMgr;
 };
 
