@@ -82,62 +82,71 @@ int main()
 		using namespace flt;
 		using namespace flt::test;
 
-		Vector3f up{ 0.0f, 0.0f, 1.0f };
-		Vector3f right{ 0.0f, 1.0f, 0.0f };
-		Vector3f forward{ 1.0f, 0.0f, 0.0f };
+		Quaternion q1{ 0.0f, 0.0f, 0.0f, 1.0f };
+		q1.SetEuler(1.f, 2.f, 3.f);
+		//Vector3f up{ 0.0f, 0.0f, 1.0f };
+		//Vector3f right{ 0.0f, 1.0f, 0.0f };
+		//Vector3f forward{ 1.0f, 0.0f, 0.0f };
 
-		CoordSystem coord = CoordSystem::DX11();
-		std::cout << "CoordSystem::GetDX11()" << std::endl;
-		coord.PrintfCoord();
-		//coord.ConvertFrom(CoordSystem::Unreal(), up);
-		//coord.ConvertFrom(CoordSystem::Unreal(), right);
-		//coord.ConvertFrom(CoordSystem::Unreal(), forward);
-		CoordSystem::Convert(CoordSystem::Unreal(), CoordSystem::DX11(), up);
-		CoordSystem::Convert(CoordSystem::Unreal(), CoordSystem::DX11(), right);
-		CoordSystem::Convert(CoordSystem::Unreal(), CoordSystem::DX11(), forward);
-		TestVectorPrint(up, forward, right);
+		//CoordSystem coord = CoordSystem::DX11();
+		//std::cout << "CoordSystem::GetDX11()" << std::endl;
+		//coord.PrintfCoord();
+		////coord.ConvertFrom(CoordSystem::Unreal(), up);
+		////coord.ConvertFrom(CoordSystem::Unreal(), right);
+		////coord.ConvertFrom(CoordSystem::Unreal(), forward);
+		//CoordSystem::Convert(CoordSystem::Unreal(), CoordSystem::DX11(), up);
+		//CoordSystem::Convert(CoordSystem::Unreal(), CoordSystem::DX11(), right);
+		//CoordSystem::Convert(CoordSystem::Unreal(), CoordSystem::DX11(), forward);
+		//TestVectorPrint(up, forward, right);
 
-		coord = CoordSystem::Unreal();
-		std::cout << "CoordSystem::GetUnreal()" << std::endl;
-		coord.PrintfCoord();
+		//coord = CoordSystem::Unreal();
+		//std::cout << "CoordSystem::GetUnreal()" << std::endl;
+		//coord.PrintfCoord();
+		////coord.ConvertFrom(CoordSystem::DX11(), up);
+		////coord.ConvertFrom(CoordSystem::DX11(), right);
+		////coord.ConvertFrom(CoordSystem::DX11(), forward);
+		//CoordSystem::Convert(CoordSystem::DX11(), CoordSystem::Unreal(), up);
+		//CoordSystem::Convert(CoordSystem::DX11(), CoordSystem::Unreal(), right);
+		//CoordSystem::Convert(CoordSystem::DX11(), CoordSystem::Unreal(), forward);
+		//TestVectorPrint(up, forward, right);
+
+		//coord = CoordSystem::OpenGL();
+		//std::cout << "CoordSystem::GetOpenGL()" << std::endl;
+		//coord.PrintfCoord();
 		//coord.ConvertFrom(CoordSystem::DX11(), up);
 		//coord.ConvertFrom(CoordSystem::DX11(), right);
 		//coord.ConvertFrom(CoordSystem::DX11(), forward);
-		CoordSystem::Convert(CoordSystem::DX11(), CoordSystem::Unreal(), up);
-		CoordSystem::Convert(CoordSystem::DX11(), CoordSystem::Unreal(), right);
-		CoordSystem::Convert(CoordSystem::DX11(), CoordSystem::Unreal(), forward);
-		TestVectorPrint(up, forward, right);
+		//TestVectorPrint(up, forward, right);
 
-		coord = CoordSystem::OpenGL();
-		std::cout << "CoordSystem::GetOpenGL()" << std::endl;
-		coord.PrintfCoord();
-		coord.ConvertFrom(CoordSystem::DX11(), up);
-		coord.ConvertFrom(CoordSystem::DX11(), right);
-		coord.ConvertFrom(CoordSystem::DX11(), forward);
-		TestVectorPrint(up, forward, right);
+		//coord = CoordSystem::Max3D();
+		//std::cout << "CoordSystem::Get3DsMax()" << std::endl;
+		//coord.PrintfCoord();
+		//coord.ConvertFrom(CoordSystem::OpenGL(), up);
+		//coord.ConvertFrom(CoordSystem::OpenGL(), right);
+		//coord.ConvertFrom(CoordSystem::OpenGL(), forward);
+		//TestVectorPrint(up, forward, right);
 
-		coord = CoordSystem::Max3D();
-		std::cout << "CoordSystem::Get3DsMax()" << std::endl;
-		coord.PrintfCoord();
-		coord.ConvertFrom(CoordSystem::OpenGL(), up);
-		coord.ConvertFrom(CoordSystem::OpenGL(), right);
-		coord.ConvertFrom(CoordSystem::OpenGL(), forward);
-		TestVectorPrint(up, forward, right);
-
-		coord = CoordSystem::Unreal();
-		std::cout << "CoordSystem::GetUnreal()" << std::endl;
-		coord.PrintfCoord();
-		coord.ConvertFrom(CoordSystem::DX11(), up);
-		coord.ConvertFrom(CoordSystem::DX11(), right);
-		coord.ConvertFrom(CoordSystem::DX11(), forward);
-		TestVectorPrint(up, forward, right);
+		//coord = CoordSystem::Unreal();
+		//std::cout << "CoordSystem::GetUnreal()" << std::endl;
+		//coord.PrintfCoord();
+		//coord.ConvertFrom(CoordSystem::DX11(), up);
+		//coord.ConvertFrom(CoordSystem::DX11(), right);
+		//coord.ConvertFrom(CoordSystem::DX11(), forward);
+		//TestVectorPrint(up, forward, right);
 
 		ModelLoader loader;
 		std::wstring filePath = L"..\\x64\\fbx\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Ganondorf (TotK).fbx";
+		std::wstring zUpYForward = L"..\\x64\\fbx\\Test\\ZY.fbx";
+		std::wstring yUpZForward = L"..\\x64\\fbx\\Test\\YZ.fbx";
+		std::wstring xUpYForward = L"..\\x64\\fbx\\Test\\XY.fbx";
 
 		std::filesystem::path currPath = std::filesystem::current_path();
-		if (std::filesystem::exists(filePath))
-			loader.Load(filePath);
+		//if (std::filesystem::exists(filePath))
+		//	loader.Load(filePath);
+
+		loader.Load(zUpYForward);
+		loader.Load(yUpZForward);
+		loader.Load(xUpYForward);
 	}
 #pragma endregion
 

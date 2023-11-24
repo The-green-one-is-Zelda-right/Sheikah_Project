@@ -17,7 +17,7 @@ namespace flt
 		CoordSystem(const Vector3f& up, const Vector3f& front, bool rightHanded);
 		//CoordSystem(const Vector3f& up, const Vector3f& front, const Vector3f& right);
 
-		void ConvertFrom(CoordSystem destCoord, Vector3f& outConvData);
+		void ConvertFrom(CoordSystem srcCoord, Vector3f& outConvData);
 
 		void PrintfCoord();
 

@@ -14,6 +14,7 @@ namespace flt
 	public:
 		constexpr Vector4f() noexcept : m{ .m128_f32{0.0f, 0.0f, 0.0f, 0.0f} } {}
 		constexpr Vector4f(float x, float y, float z, float w) noexcept : m{ .m128_f32{x, y, z, w} } {}
+		constexpr Vector4f(double x, double y, double z, double w) noexcept : m{ .m128_f32{static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), static_cast<float>(w)} } {}
 		constexpr Vector4f(__m128 m) noexcept : m(m) {}
 		Vector4f(const Vector3f& v, float w) noexcept;
 		constexpr Vector4f(Vector4f&&) noexcept = default;

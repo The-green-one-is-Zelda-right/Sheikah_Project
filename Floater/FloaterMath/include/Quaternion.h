@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 //#include <immintrin.h>
 
@@ -14,6 +14,11 @@ namespace flt
 {
 	struct __declspec(dllexport) Quaternion : public Vector4f
 	{
+		enum class  AxisOrder
+		{
+			XYZ, XZY, YXZ, YZX, ZXY, ZYX
+		};
+
 		constexpr Quaternion() noexcept : Vector4f(0.0f, 0.0f, 0.0f, 1.0f) {}
 		Quaternion(float x, float y, float z, float w) noexcept : Vector4f(Vector4f{ x, y, z, w }.Normalize()) {}
 		constexpr Quaternion(const Vector4f& v) noexcept : Vector4f(v) {}
@@ -27,8 +32,8 @@ namespace flt
 		constexpr Quaternion& operator=(Quaternion&&) noexcept = default;
 		constexpr Quaternion& operator=(const Quaternion&) noexcept = default;
 
-		void SetEuler(float degreeX, float degreeY, float defreeZ) noexcept;
-		void SetEuler(const Vector3f& euler) noexcept;
+		void SetEuler(float degreeX, float degreeY, float defreeZ, AxisOrder order = AxisOrder::YXZ) noexcept;
+		void SetEuler(const Vector3f& euler, AxisOrder order = AxisOrder::YXZ) noexcept;
 
 		Vector3f GetEuler() const noexcept;
 

@@ -12,6 +12,7 @@ namespace flt
 	{
 		constexpr Vector3f() noexcept : m{ 0.0f, 0.0f, 0.0f } {}
 		constexpr Vector3f(float x, float y, float z) noexcept : m{ x, y, z } {}
+		constexpr Vector3f(double x, double y, double z) noexcept : m{ static_cast<float>(x), static_cast<float>(y), static_cast<float>(z) } {}
 		constexpr Vector3f(Vector3f&&) noexcept = default;
 		constexpr Vector3f(const Vector3f&) noexcept = default;
 		constexpr Vector3f& operator=(Vector3f&&) noexcept = default;

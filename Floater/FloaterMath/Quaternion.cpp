@@ -1,34 +1,120 @@
 ﻿#include <cmath>
 #include "./include/Quaternion.h"
+#include "../FloaterUtil/include/FloaterMacro.h"
 
 
 namespace flt
 {
-	void Quaternion::SetEuler(float degreeX, float degreeY, float degreeZ) noexcept
+	void Quaternion::SetEuler(float degreeX, float degreeY, float degreeZ, AxisOrder order) noexcept
 	{
 		float radX = DegToRad(degreeX * 0.5f);
 		float radY = DegToRad(degreeY * 0.5f);
 		float radZ = DegToRad(degreeZ * 0.5f);
 
-		//// 일단 YXZ 순서로 구현
-		float cosR = cosf(radZ);
-		float sinR = sinf(radZ);
-		float cosY = cosf(radY);
-		float sinY = sinf(radY);
-		float cosP = cosf(radX);
-		float sinP = sinf(radX);
+		switch (order)
+		{
+			case flt::Quaternion::AxisOrder::XYZ:
+			{
+				float cos1 = cosf(radX);
+				float sin1 = sinf(radX);
+				float cos2 = cosf(radY);
+				float sin2 = sinf(radY);
+				float cos3 = cosf(radZ);
+				float sin3 = sinf(radZ);
 
-		w = cosR * cosP * cosY + sinR * sinP * sinY;
-		x = cosR * sinP * cosY + sinR * cosP * sinY;
-		y = cosR * cosP * sinY - sinR * sinP * cosY;
-		z = sinR * cosP * cosY - cosR * sinP * sinY;
+				w = cos1 * cos2 * cos3 - sin1 * sin2 * sin3;
+				x = sin1 * cos2 * cos3 + sin2 * sin3 * cos1;
+				y = sin2 * cos1 * cos3 - sin1 * sin3 * cos2;
+				z = sin1 * sin2 * cos3 + sin3 * cos1 * cos2;
+			}
+			break;
+			case flt::Quaternion::AxisOrder::XZY:
+			{
+				float cos1 = cosf(radX);
+				float sin1 = sinf(radX);
+				float cos2 = cosf(radZ);
+				float sin2 = sinf(radZ);
+				float cos3 = cosf(radY);
+				float sin3 = sinf(radY);
+
+				w = sin1 * sin2 * sin3 + cos1 * cos2 * cos3;
+				x = sin1 * cos2 * cos3 - sin2 * sin3 * cos1;
+				y = sin3 * cos1 * cos2 - sin1 * sin2 * cos3;
+				z = sin1 * sin3 * cos2 + sin2 * cos1 * cos3;
+			}
+			break;
+			case flt::Quaternion::AxisOrder::YXZ:
+			{
+				//// 일단 YXZ 순서로 구현
+				float cos1 = cosf(radY);
+				float sin1 = sinf(radY);
+				float cos2 = cosf(radX);
+				float sin2 = sinf(radX);
+				float cos3 = cosf(radZ);
+				float sin3 = sinf(radZ);
+
+				w = sin1 * sin2 * sin3 + cos1 * cos2 * cos3;
+				x = sin1 * sin3 * cos2 + sin2 * cos1 * cos3;
+				y = sin1 * cos2 * cos3 - sin2 * sin3 * cos1;
+				z = sin3 * cos1 * cos2 - sin1 * sin2 * cos3;
+			}
+			break;
+			case flt::Quaternion::AxisOrder::YZX:
+			{
+				float cos1 = cosf(radY);
+				float sin1 = sinf(radY);
+				float cos2 = cosf(radZ);
+				float sin2 = sinf(radZ);
+				float cos3 = cosf(radX);
+				float sin3 = sinf(radX);
+
+				w = cos1 * cos2 * cos3 - sin1 * sin2 * sin3;
+				x = sin1 * sin2 * cos3 + sin3 * cos1 * cos2;
+				y = sin1 * cos2 * cos3 + sin2 * sin3 * cos1;
+				z = sin2 * cos1 * cos3 - sin1 * sin3 * cos2;
+			}
+			break;
+			case flt::Quaternion::AxisOrder::ZXY:
+			{
+				float cos1 = cosf(radZ);
+				float sin1 = sinf(radZ);
+				float cos2 = cosf(radX);
+				float sin2 = sinf(radX);
+				float cos3 = cosf(radY);
+				float sin3 = sinf(radY);
+
+				w = cos1 * cos2 * cos3 - sin1 * sin2 * sin3;
+				x = sin2 * cos1 * cos3 - sin1 * sin3 * cos2;
+				y = sin1 * sin2 * cos3 + sin3 * cos1 * cos2;
+				z = sin1 * cos2 * cos3 + sin2 * sin3 * cos1;
+			}
+			break;
+			case flt::Quaternion::AxisOrder::ZYX:
+			{
+				float cos1 = cosf(radZ);
+				float sin1 = sinf(radZ);
+				float cos2 = cosf(radY);
+				float sin2 = sinf(radY);
+				float cos3 = cosf(radX);
+				float sin3 = sinf(radX);
+
+				w = sin1 * sin2 * sin3 + cos1 * cos2 * cos3;
+				x = sin3 * cos1 * cos2 - sin1 * sin2 * cos3;
+				y = sin1 * sin3 * cos2 + sin2 * cos1 * cos3;
+				z = sin1 * cos2 * cos3 - sin2 * sin3 * cos1;
+			}
+			break;
+			default:
+				ASSERT(false, "Invalid AxisOrder");
+				break;
+		}
 
 		Normalize();
 	}
 
-	void Quaternion::SetEuler(const Vector3f& euler) noexcept
+	void Quaternion::SetEuler(const Vector3f& euler, AxisOrder order) noexcept
 	{
-		SetEuler(euler.x, euler.y, euler.z);
+		SetEuler(euler.x, euler.y, euler.z, order);
 	}
 
 	Vector3f Quaternion::GetEuler() const noexcept

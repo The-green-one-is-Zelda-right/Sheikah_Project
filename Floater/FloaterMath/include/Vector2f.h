@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <cmath>
 
@@ -8,6 +8,7 @@ namespace flt
 	{
 		constexpr Vector2f() noexcept : m{ 0.0f, 0.0f } {}
 		constexpr Vector2f(float x, float y) noexcept : m{ x, y } {}
+		constexpr Vector2f(double x, double y) noexcept : m{ static_cast<float>(x), static_cast<float>(y) } {}
 		constexpr Vector2f(Vector2f&&) noexcept = default;
 		constexpr Vector2f(const Vector2f&) noexcept = default;
 		constexpr Vector2f& operator=(Vector2f&&) noexcept = default;
