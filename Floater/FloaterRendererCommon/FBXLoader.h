@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "CoordSystem.h"
 #include <string>
 #pragma warning(push)
 #pragma warning(disable: 26813 26495)
@@ -16,6 +17,8 @@ namespace flt
 		void Load(const std::wstring& filePath);
 
 	private:
+		CoordSystem CreateFBXCoodSystem(FbxScene* pScene);
+		
 		void PrintNodeRecursive(FbxNode* pNode, int depth);
 
 	private:

@@ -1,7 +1,6 @@
 ﻿#include "../FloaterUtil/include/FloaterMacro.h"
 #include "../FloaterUtil/include/ConvString.h"
 #include "FBXLoader.h"
-#include <fbxsdk.h>
 #include <iostream>
 
 
@@ -36,21 +35,19 @@ void flt::FBXLoader::Load(const std::wstring& filePath)
 		ASSERT(false, "importer Init Fail");
 	}
 
-
 	FbxScene* scene = FbxScene::Create(_pManager, "");
 	importer->Import(scene);
 	importer->Destroy();
 
-	FbxNode* rootNode = scene->GetRootNode();
-	int upSign = 0;
-	auto upVector = scene->GetGlobalSettings().GetAxisSystem().GetUpVector(upSign);
+	FbxAxisSystem dx11Axis(FbxAxisSystem::eDirectX);
+	dx11Axis.ConvertScene(scene);
 
-	// up벡터가 x 라면 나머지 두 축은 y, z이기 때문에 ParityEven이면 y, ParityOdd이면 z
-	// up벡터가 y 라면 나머지 두 축은 x, z이기 때문에 ParityEven이면 x, ParityOdd이면 z
-	// up벡터가 z 라면 나머지 두 축은 x, y이기 때문에 ParityEven이면 x, ParityOdd이면 y
-	int frontSign = 0;
-	auto frontVector = scene->GetGlobalSettings().GetAxisSystem().GetFrontVector(frontSign);
-	auto coordSystem = scene->GetGlobalSettings().GetAxisSystem().GetCoorSystem();
+	auto dxCoordSystem = CreateFBXCoodSystem(scene);
+	FbxAxisSystem{ FbxAxisSystem::eMax }.ConvertScene(scene);
+	//dxCoordSystem = CreateFBXCoodSystem(scene);
+
+	FbxNode* rootNode = scene->GetRootNode();
+
 	PrintNodeRecursive(rootNode, 0);
 
 	if (rootNode)
@@ -65,6 +62,11 @@ void flt::FBXLoader::Load(const std::wstring& filePath)
 			FbxNodeAttribute::EType attributeType = childNode->GetNodeAttribute()->GetAttributeType();
 			if (attributeType != FbxNodeAttribute::eMesh)
 				continue;
+
+			FbxTransform transform = childNode->GetTransform();
+			FbxDouble3 translation = childNode->LclTranslation;
+			FbxDouble3 rotation = childNode->LclRotation;
+			FbxDouble3 scaling = childNode->LclScaling;
 
 			FbxMesh* mesh = childNode->GetMesh();
 			if (mesh == nullptr)
@@ -90,6 +92,68 @@ void flt::FBXLoader::Load(const std::wstring& filePath)
 	}
 
 
+}
+
+flt::CoordSystem flt::FBXLoader::CreateFBXCoodSystem(FbxScene* pScene)
+{
+	int upSign = 0;
+	auto upVector = pScene->GetGlobalSettings().GetAxisSystem().GetUpVector(upSign);
+
+	// up벡터가 x 라면 나머지 두 축은 y, z이기 때문에 ParityEven이면 y, ParityOdd이면 z
+	// up벡터가 y 라면 나머지 두 축은 x, z이기 때문에 ParityEven이면 x, ParityOdd이면 z
+	// up벡터가 z 라면 나머지 두 축은 x, y이기 때문에 ParityEven이면 x, ParityOdd이면 y
+	int frontSign = 0;
+	auto frontVector = pScene->GetGlobalSettings().GetAxisSystem().GetFrontVector(frontSign);
+
+	auto coordSystem = pScene->GetGlobalSettings().GetAxisSystem().GetCoorSystem();
+	bool rightHanded = false;
+
+	if (coordSystem == fbxsdk::FbxAxisSystem::eRightHanded)
+	{
+		rightHanded = true;
+	}
+	else
+	{
+		rightHanded = false;
+	}
+
+	CoordSystem::Axis upAxis = CoordSystem::Axis::X;
+	CoordSystem::Axis frontAxis = CoordSystem::Axis::Y;
+
+	switch (upVector)
+	{
+		case FbxAxisSystem::eXAxis:
+		{
+			upAxis = CoordSystem::Axis::X;
+			if (frontVector == FbxAxisSystem::eParityEven)
+				frontAxis = CoordSystem::Axis::Y;
+			else
+				frontAxis = CoordSystem::Axis::Z;
+		}
+
+		break;
+		case FbxAxisSystem::eYAxis:
+		{
+			upAxis = CoordSystem::Axis::Y;
+			if (frontVector == FbxAxisSystem::eParityEven)
+				frontAxis = CoordSystem::Axis::X;
+			else
+				frontAxis = CoordSystem::Axis::Z;
+		}
+		break;
+		case FbxAxisSystem::eZAxis:
+		{
+			upAxis = CoordSystem::Axis::Z;
+			if (frontVector == FbxAxisSystem::eParityEven)
+				frontAxis = CoordSystem::Axis::X;
+			else
+				frontAxis = CoordSystem::Axis::Y;
+		}
+		break;
+	}
+
+
+	return CoordSystem{ upSign, frontSign, upAxis, frontAxis, rightHanded };
 }
 
 void flt::FBXLoader::PrintNodeRecursive(FbxNode* pNode, int depth)
