@@ -1,10 +1,13 @@
-#pragma once
+﻿#pragma once
 
 #include <cmath>
 
 
+
 namespace flt
 {
+	struct Matrix3f;
+
 	struct __declspec(dllexport) Vector3f
 	{
 		constexpr Vector3f() noexcept : m{ 0.0f, 0.0f, 0.0f } {}
@@ -16,6 +19,8 @@ namespace flt
 		~Vector3f() noexcept = default;
 
 		//operator Vector4f() const noexcept;
+
+		bool operator==(const Vector3f& rhs) const noexcept;
 
 		constexpr Vector3f& operator+=(const Vector3f& rhs) noexcept
 		{
@@ -60,6 +65,11 @@ namespace flt
 		constexpr Vector3f operator/(const float rhs) const noexcept
 		{
 			return Vector3f(*this) /= rhs;
+		}
+		constexpr Vector3f& operator*=(const Matrix3f& rhs) noexcept;
+		constexpr Vector3f operator*(const Matrix3f& rhs) const noexcept
+		{
+			return Vector3f(*this) *= rhs;
 		}
 		constexpr Vector3f operator-() const noexcept
 		{
@@ -109,6 +119,11 @@ namespace flt
 		};
 
 		static Vector3f Lerp(const Vector3f& v0, const Vector3f& v1, float t) noexcept;
+
+		static Vector3f Zero() noexcept
+		{
+			return Vector3f(0.0f, 0.0f, 0.0f);
+		}
 	};
 
 }

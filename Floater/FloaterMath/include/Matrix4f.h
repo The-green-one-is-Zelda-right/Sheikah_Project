@@ -7,7 +7,7 @@
 
 namespace flt
 {
-	struct __declspec(dllexport) Matrix4f
+	struct __declspec(dllexport) Matrix4f final
 	{
 		constexpr Matrix4f() noexcept : v{ {0.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f, 0.0f} } {}
 		constexpr Matrix4f(
@@ -30,6 +30,43 @@ namespace flt
 		///DX 의존성 제거를 위한 주석처리
 		//operator DirectX::XMMATRIX() const noexcept;
 
+		Matrix4f& operator+=(const Matrix4f& rhs)
+		{
+			// 내부에서 sse 명령어 사용.
+			v[0] += rhs.v[0];
+			v[1] += rhs.v[1];
+			v[2] += rhs.v[2];
+			v[3] += rhs.v[3];
+			return *this;
+
+			////SSE version
+			//v[0].m = _mm_add_ps(v[0].m, rhs.v[0].m);
+			//v[1].m = _mm_add_ps(v[1].m, rhs.v[1].m);
+			//v[2].m = _mm_add_ps(v[2].m, rhs.v[2].m);
+			//v[3].m = _mm_add_ps(v[3].m, rhs.v[3].m);
+			//return *this;
+		}
+		Matrix4f operator+(const Matrix4f& rhs) const
+		{
+			Matrix4f temp = *this;
+			temp += rhs;
+			return temp;
+		}
+		Matrix4f& operator-=(const Matrix4f& rhs)
+		{
+			// 내부에서 sse
+			v[0] -= rhs.v[0];
+			v[1] -= rhs.v[1];
+			v[2] -= rhs.v[2];
+			v[3] -= rhs.v[3];
+			return *this;
+		}
+		Matrix4f operator-(const Matrix4f& rhs) const
+		{
+			Matrix4f temp = *this;
+			temp -= rhs;
+			return temp;
+		}
 		Matrix4f& operator*=(const Matrix4f& rhs) noexcept
 		{
 			Matrix4f temp = *this;
@@ -70,7 +107,26 @@ namespace flt
 
 			return *this;
 		}
-
+		Matrix4f operator*(const Matrix4f& rhs) const noexcept
+		{
+			Matrix4f temp = *this;
+			temp *= rhs;
+			return temp;
+		}
+		Matrix4f& operator*=(float rhs) noexcept
+		{
+			v[0] *= rhs;
+			v[1] *= rhs;
+			v[2] *= rhs;
+			v[3] *= rhs;
+			return *this;
+		}
+		Matrix4f operator*(float rhs) const noexcept
+		{
+			Matrix4f temp = *this;
+			temp *= rhs;
+			return temp;
+		}
 		Matrix4f& operator/=(float rhs) noexcept
 		{
 			v[0] /= rhs;
@@ -79,24 +135,10 @@ namespace flt
 			v[3] /= rhs;
 			return *this;
 		}
-
-		Matrix4f operator*(const Matrix4f& rhs) const noexcept
+		Matrix4f operator/(float rhs) const noexcept
 		{
 			Matrix4f temp = *this;
-			temp *= rhs;
-			return temp;
-		}
-
-		static Matrix4f Identity() noexcept
-		{
-			Matrix4f temp
-			{
-				1.0f, 0.0f, 0.0f, 0.0f,
-				0.0f, 1.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 1.0f, 0.0f,
-				0.0f, 0.0f, 0.0f, 1.0f
-			};
-
+			temp /= rhs;
 			return temp;
 		}
 
@@ -130,7 +172,6 @@ namespace flt
 
 			return det;
 		}
-
 		float Determinant3x3() const
 		{
 			float det
@@ -143,7 +184,6 @@ namespace flt
 
 			return det;
 		}
-
 		Matrix4f Transpose()  const noexcept
 		{
 			return Matrix4f
@@ -154,7 +194,6 @@ namespace flt
 				e[0][3], e[1][3], e[2][3], e[3][3]
 			};
 		}
-
 		Matrix4f Inverse() const noexcept
 		{
 			float det = this->Determinant();
@@ -164,15 +203,17 @@ namespace flt
 			float epsilon = 0.00000001f;
 			if (det < epsilon && det > -epsilon)
 			{
-				return Matrix4f
-				{
-					1.0f, 0.0f, 0.0f, 0.0f,
-					0.0f, 1.0f, 0.0f, 0.0f,
-					0.0f, 0.0f, 1.0f, 0.0f,
-					0.0f, 0.0f, 0.0f, 1.0f
-				};
+				//return Matrix4f
+				//{
+				//	1.0f, 0.0f, 0.0f, 0.0f,
+				//	0.0f, 1.0f, 0.0f, 0.0f,
+				//	0.0f, 0.0f, 1.0f, 0.0f,
+				//	0.0f, 0.0f, 0.0f, 1.0f
+				//};
+				return Identity();
 			}
 
+			float invDet = 1.0f / det;
 			Matrix4f metrix
 			{
 				e[1][1] * e[2][2] * e[3][3] + e[1][2] * e[2][3] * e[3][1] + e[1][3] * e[2][1] * e[3][2] - e[1][1] * e[2][3] * e[3][2] - e[1][2] * e[2][1] * e[3][3] - e[1][3] * e[2][2] * e[3][1],
@@ -192,12 +233,24 @@ namespace flt
 				e[0][0] * e[1][2] * e[3][1] + e[0][1] * e[1][0] * e[3][2] + e[0][2] * e[1][1] * e[3][0] - e[0][0] * e[1][1] * e[3][2] - e[0][1] * e[1][2] * e[3][0] - e[0][2] * e[1][0] * e[3][1],
 				e[0][0] * e[1][1] * e[2][2] + e[0][1] * e[1][2] * e[2][0] + e[0][2] * e[1][0] * e[2][1] - e[0][0] * e[1][2] * e[2][1] - e[0][1] * e[1][0] * e[2][2] - e[0][2] * e[1][1] * e[2][0]
 			};
-			metrix /= det;
+			metrix *= invDet;
 
 			return metrix;
 		}
+		static Matrix4f Identity() noexcept
+		{
+			Matrix4f temp
+			{
+				1.0f, 0.0f, 0.0f, 0.0f,
+				0.0f, 1.0f, 0.0f, 0.0f,
+				0.0f, 0.0f, 1.0f, 0.0f,
+				0.0f, 0.0f, 0.0f, 1.0f
+			};
 
-		// 곱셈 시간 비교용 함수
+			return temp;
+		}
+
+		// sse와 곱셈 시간 비교용 함수
 		Matrix4f& Mul(const Matrix4f rhs)
 		{
 			Matrix4f temp = *this;

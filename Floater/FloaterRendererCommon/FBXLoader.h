@@ -22,5 +22,4 @@ namespace flt
 		FbxManager* _pManager;
 		FbxIOSettings* _pIOSettings;
 	};
-
 }

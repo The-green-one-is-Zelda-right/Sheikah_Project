@@ -12,4 +12,6 @@ namespace flt
 	{
 		return std::fmod(radian, 2.f * PI<float>) * 180.f / PI<float>;
 	}
+
+	float FLOAT_EPSILON = 1.192092896e-07F;
 }

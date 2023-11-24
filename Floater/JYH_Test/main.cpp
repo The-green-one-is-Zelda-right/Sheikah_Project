@@ -21,7 +21,7 @@
 #include "../FloaterRendererCommon/include/Camera.h"
 
 #include "../FloaterRendererCommon/include/ModelLoader.h"
-
+#include "../FloaterRendererCommon/CoordSystem.h"
 #include <unordered_map>
 #include <filesystem>
 #pragma endregion
@@ -38,6 +38,40 @@ void StackOverflow()
 }
 #pragma warning (pop)
 
+char TestGetAxis(const flt::Vector3f& vec)
+{
+	if (vec.x == 1.0f || vec.x == -1.0f)
+	{
+		return 'x';
+	}
+	else if (vec.y == 1.0f || vec.y == -1.0f)
+	{
+		return 'y';
+	}
+	else if (vec.z == 1.0f || vec.z == -1.0f)
+	{
+		return 'z';
+	}
+	else
+	{
+		return 'n';
+	}
+}
+
+void TestVectorPrint(const flt::Vector3f& up, const flt::Vector3f& front, const flt::Vector3f& right)
+{
+	std::cout << "up : " << TestGetAxis(up)
+		<< " front: " << TestGetAxis(front)
+		<< " rignt: " << TestGetAxis(right) << std::endl;
+
+	std::cout << "up : " << up.x + up.y + up.z
+		<< " front: " << front.x + front.y + front.z
+		<< " rignt: " << right.x + right.y + right.z << std::endl;
+
+	std::cout << "--------------------------------" << std::endl;
+
+}
+
 int main()
 {
 	setlocale(LC_ALL, ".UTF8");
@@ -48,11 +82,61 @@ int main()
 		using namespace flt;
 		using namespace flt::test;
 
+		Vector3f up{ 0.0f, 0.0f, 1.0f };
+		Vector3f right{ 0.0f, 1.0f, 0.0f };
+		Vector3f forward{ 1.0f, 0.0f, 0.0f };
+
+		CoordSystem coord = CoordSystem::DX11();
+		std::cout << "CoordSystem::GetDX11()" << std::endl;
+		coord.PrintfCoord();
+		//coord.ConvertFrom(CoordSystem::Unreal(), up);
+		//coord.ConvertFrom(CoordSystem::Unreal(), right);
+		//coord.ConvertFrom(CoordSystem::Unreal(), forward);
+		CoordSystem::Convert(CoordSystem::Unreal(), CoordSystem::DX11(), up);
+		CoordSystem::Convert(CoordSystem::Unreal(), CoordSystem::DX11(), right);
+		CoordSystem::Convert(CoordSystem::Unreal(), CoordSystem::DX11(), forward);
+		TestVectorPrint(up, forward, right);
+
+		coord = CoordSystem::Unreal();
+		std::cout << "CoordSystem::GetUnreal()" << std::endl;
+		coord.PrintfCoord();
+		//coord.ConvertFrom(CoordSystem::DX11(), up);
+		//coord.ConvertFrom(CoordSystem::DX11(), right);
+		//coord.ConvertFrom(CoordSystem::DX11(), forward);
+		CoordSystem::Convert(CoordSystem::DX11(), CoordSystem::Unreal(), up);
+		CoordSystem::Convert(CoordSystem::DX11(), CoordSystem::Unreal(), right);
+		CoordSystem::Convert(CoordSystem::DX11(), CoordSystem::Unreal(), forward);
+		TestVectorPrint(up, forward, right);
+
+		coord = CoordSystem::OpenGL();
+		std::cout << "CoordSystem::GetOpenGL()" << std::endl;
+		coord.PrintfCoord();
+		coord.ConvertFrom(CoordSystem::DX11(), up);
+		coord.ConvertFrom(CoordSystem::DX11(), right);
+		coord.ConvertFrom(CoordSystem::DX11(), forward);
+		TestVectorPrint(up, forward, right);
+
+		coord = CoordSystem::Max3D();
+		std::cout << "CoordSystem::Get3DsMax()" << std::endl;
+		coord.PrintfCoord();
+		coord.ConvertFrom(CoordSystem::OpenGL(), up);
+		coord.ConvertFrom(CoordSystem::OpenGL(), right);
+		coord.ConvertFrom(CoordSystem::OpenGL(), forward);
+		TestVectorPrint(up, forward, right);
+
+		coord = CoordSystem::Unreal();
+		std::cout << "CoordSystem::GetUnreal()" << std::endl;
+		coord.PrintfCoord();
+		coord.ConvertFrom(CoordSystem::DX11(), up);
+		coord.ConvertFrom(CoordSystem::DX11(), right);
+		coord.ConvertFrom(CoordSystem::DX11(), forward);
+		TestVectorPrint(up, forward, right);
+
 		ModelLoader loader;
 		std::wstring filePath = L"..\\x64\\fbx\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Ganondorf (TotK).fbx";
 
 		std::filesystem::path currPath = std::filesystem::current_path();
-		if(std::filesystem::exists(filePath))
+		if (std::filesystem::exists(filePath))
 			loader.Load(filePath);
 	}
 #pragma endregion

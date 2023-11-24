@@ -8,4 +8,6 @@ namespace flt
 	__declspec(dllexport) float DegToRad(float degree);
 
 	__declspec(dllexport) float RadToDeg(float radian);
+
+	extern __declspec(dllexport) float FLOAT_EPSILON;
 }

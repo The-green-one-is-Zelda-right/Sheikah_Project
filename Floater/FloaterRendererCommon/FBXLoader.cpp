@@ -42,7 +42,15 @@ void flt::FBXLoader::Load(const std::wstring& filePath)
 	importer->Destroy();
 
 	FbxNode* rootNode = scene->GetRootNode();
+	int upSign = 0;
+	auto upVector = scene->GetGlobalSettings().GetAxisSystem().GetUpVector(upSign);
 
+	// up벡터가 x 라면 나머지 두 축은 y, z이기 때문에 ParityEven이면 y, ParityOdd이면 z
+	// up벡터가 y 라면 나머지 두 축은 x, z이기 때문에 ParityEven이면 x, ParityOdd이면 z
+	// up벡터가 z 라면 나머지 두 축은 x, y이기 때문에 ParityEven이면 x, ParityOdd이면 y
+	int frontSign = 0;
+	auto frontVector = scene->GetGlobalSettings().GetAxisSystem().GetFrontVector(frontSign);
+	auto coordSystem = scene->GetGlobalSettings().GetAxisSystem().GetCoorSystem();
 	PrintNodeRecursive(rootNode, 0);
 
 	if (rootNode)

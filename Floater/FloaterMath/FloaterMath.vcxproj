@@ -163,9 +163,11 @@
     <ClInclude Include="include\Vector2f.h" />
     <ClInclude Include="include\Vector3f.h" />
     <ClInclude Include="include\Vector4f.h" />
+    <ClInclude Include="include\Matrix3f.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="Matrix3f.cpp" />
     <ClCompile Include="Matrix4f.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Vector3f.cpp" />

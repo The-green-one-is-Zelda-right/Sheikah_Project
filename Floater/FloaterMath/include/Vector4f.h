@@ -91,7 +91,6 @@ namespace flt
 		{
 			return sqrt(x * x + y * y + z * z + w * w);
 		}
-
 		Vector4f& Normalize() noexcept
 		{
 			float norm = Norm();
@@ -102,17 +101,14 @@ namespace flt
 
 			return *this /= norm;
 		}
-
 		Vector4f Normalized() const noexcept
 		{
 			return Vector4f(*this).Normalize();
 		}
-
 		float Vector3Norm() const noexcept
 		{
 			return sqrt(x * x + y * y + z * z);
 		}
-
 		Vector4f& Vector3Normalize() noexcept
 		{
 			float tmp = this->w;
@@ -127,12 +123,10 @@ namespace flt
 			this->w = tmp;
 			return *this;
 		}
-
 		Vector4f Vector3Normalized() const noexcept
 		{
 			return Vector4f(*this).Vector3Normalize();
 		}
-
 		constexpr Vector4f Vector3Cross(const Vector4f& rhs) const noexcept
 		{
 			return Vector4f(
@@ -142,14 +136,12 @@ namespace flt
 				0.0f
 			);
 		}
-
 		float Vector3Dot(const Vector4f& rhs) const noexcept
 		{
 			return _mm_cvtss_f32(_mm_dp_ps(m, rhs.m, 0x71));
 			//__m128 tmp = _mm_mul_ps(m, rhs.m);
 			//return tmp.m128_f32[0] + tmp.m128_f32[1] + tmp.m128_f32[2];
 		}
-
 		float Dot(const Vector4f& rhs) const noexcept
 		{
 			return _mm_cvtss_f32(_mm_dp_ps(m, rhs.m, 0xff));
