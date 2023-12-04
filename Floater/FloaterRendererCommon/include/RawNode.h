@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Transform.h"
 #include "RawMesh.h"
 #include "RawSkin.h"
@@ -14,6 +14,7 @@ namespace flt
 	struct RawNode
 	{
 		RawNode(const std::wstring& name);
+		~RawNode();
 
 		std::wstring name;
 		Transform transform;

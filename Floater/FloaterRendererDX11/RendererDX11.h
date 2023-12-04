@@ -21,7 +21,6 @@ namespace flt
 	using comptr = Microsoft::WRL::ComPtr<T>;
 
 
-
 	class RendererDX11 : public IRenderer
 	{
 	public:

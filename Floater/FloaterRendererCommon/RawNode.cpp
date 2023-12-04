@@ -13,3 +13,20 @@ flt::RawNode::RawNode(const std::wstring& name) :
 
 }
 
+flt::RawNode::~RawNode()
+{
+	if (mesh != nullptr)
+		delete mesh;
+	if (skin != nullptr)
+		delete skin;
+	if (animation != nullptr)
+		delete animation;
+	if (camera != nullptr)
+		delete camera;
+
+	for (auto& child : children)
+	{
+		delete child.second;
+	}
+}
+
