@@ -11,7 +11,7 @@ namespace flt
 		ModelLoader();
 		~ModelLoader();
 
-		void Load(std::wstring path);
+		bool Load(std::wstring path);
 
 	private:
 		FBXLoader* _pFBXLoader;

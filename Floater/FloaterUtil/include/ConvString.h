@@ -3,6 +3,6 @@
 
 namespace flt
 {
-	std::wstring convToWstring(const std::string& str);
-	std::string convToString(const std::wstring& str);
+	std::wstring ConvertToWstring(const std::string& str);
+	std::string ConvertToString(const std::wstring& str);
 }

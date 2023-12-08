@@ -6,13 +6,15 @@
 #include "Camera.h"
 
 #include <string>
-#include <map>
+#include <vector>
+//#include <map>
 
 
 namespace flt
 {
 	struct RawNode
 	{
+		RawNode() : RawNode(L"") {}
 		RawNode(const std::wstring& name);
 		~RawNode();
 
@@ -25,6 +27,7 @@ namespace flt
 
 		int boneIndex;
 
-		std::multimap<std::wstring, RawNode*> children;
+		RawNode* parent;
+		std::vector<RawNode*> children;
 	};
 }

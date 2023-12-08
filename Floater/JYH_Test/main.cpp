@@ -140,9 +140,7 @@ int main()
 		std::wstring yUpZForward = L"..\\x64\\fbx\\Test\\YZ.fbx";
 		std::wstring xUpYForward = L"..\\x64\\fbx\\Test\\XY.fbx";
 
-		std::filesystem::path currPath = std::filesystem::current_path();
-		//if (std::filesystem::exists(filePath))
-		//	loader.Load(filePath);
+		//std::filesystem::path currPath = std::filesystem::current_path();
 
 		loader.Load(zUpYForward);
 		loader.Load(yUpZForward);

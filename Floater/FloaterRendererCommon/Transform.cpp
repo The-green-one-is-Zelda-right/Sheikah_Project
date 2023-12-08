@@ -3,13 +3,13 @@
 #include <DirectXMath.h>
 #include <cmath>
 
+
 flt::Transform::~Transform()
 {
 	for (auto& child : _children)
 	{
 		child->SetParent(nullptr);
 	}
-
 }
 
 void flt::Transform::SetMatrix(const Matrix4f& worldMatrix)

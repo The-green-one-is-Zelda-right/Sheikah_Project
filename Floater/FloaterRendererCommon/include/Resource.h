@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <string>
 #include <iostream>
 #include "ResourceMgr.h"
@@ -14,8 +14,13 @@ namespace flt
 		friend class ResourceMgr;
 
 		ResourceBase(const std::wstring& key) :
+			ResourceBase(key, nullptr)
+		{
+
+		}
+		ResourceBase(const std::wstring& key, void* pData) :
 			_key(key),
-			_pData(nullptr)
+			_pData(pData)
 		{
 
 		}
@@ -26,6 +31,9 @@ namespace flt
 		{
 			other._pData = nullptr;
 		}
+		virtual ~ResourceBase()
+		{
+		}
 
 		ResourceBase& operator=(const ResourceBase& other) = delete;
 		ResourceBase& operator=(ResourceBase&& other) noexcept
@@ -35,22 +43,18 @@ namespace flt
 			other._pData = nullptr;
 			return *this;
 		}
-
-		virtual ~ResourceBase()
-		{
-		}
-
+		
 	protected:
 		std::wstring _key;
 		void* _pData;
 	};
 
 	template <typename T>
-	concept ReleaseAble = requires(T a) {
+	concept HasRelease = requires(T a) {
 		{ a.Release() } -> std::same_as<void>;
 	};
 
-	template<ReleaseAble Derived>
+	template<HasRelease Derived>
 	struct Resource : ResourceBase
 	{
 	public:

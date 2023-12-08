@@ -46,10 +46,8 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CoordSystem.cpp" />
     <ClCompile Include="FBXLoader.cpp" />
-    <ClCompile Include="IBuilder.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="RawNode.cpp" />
-    <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceMgr.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>

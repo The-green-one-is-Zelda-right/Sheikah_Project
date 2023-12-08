@@ -32,7 +32,7 @@ namespace flt
 
 		virtual void* operator()(std::wstring* typeName) const final
 		{
-			*typeName = convToWstring(typeid(Derived).name());
+			*typeName = ConvertToWstring(typeid(Derived).name());
 
 			return build();
 		}

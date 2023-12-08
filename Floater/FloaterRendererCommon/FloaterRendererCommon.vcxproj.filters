@@ -77,12 +77,6 @@
     <ClCompile Include="FBXLoader.cpp">
       <Filter>Loader</Filter>
     </ClCompile>
-    <ClCompile Include="IBuilder.cpp">
-      <Filter>Factory</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource.cpp">
-      <Filter>Factory</Filter>
-    </ClCompile>
     <ClCompile Include="ResourceMgr.cpp">
       <Filter>Factory</Filter>
     </ClCompile>

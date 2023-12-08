@@ -8,6 +8,7 @@ flt::RawNode::RawNode(const std::wstring& name) :
 	animation(nullptr),
 	camera(nullptr),
 	boneIndex(-1),
+	parent(nullptr),
 	children()
 {
 
@@ -15,18 +16,14 @@ flt::RawNode::RawNode(const std::wstring& name) :
 
 flt::RawNode::~RawNode()
 {
-	if (mesh != nullptr)
-		delete mesh;
-	if (skin != nullptr)
-		delete skin;
-	if (animation != nullptr)
-		delete animation;
-	if (camera != nullptr)
-		delete camera;
+	delete mesh;
+	delete skin;
+	delete animation;
+	delete camera;
 
 	for (auto& child : children)
 	{
-		delete child.second;
+		delete child;
 	}
 }
 
