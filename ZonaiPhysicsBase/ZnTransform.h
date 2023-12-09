@@ -1,5 +1,5 @@
 #pragma once
-#include "ZonaiMath.h"
+#include "../ZonaiMath/ZonaiMath.h"
 
 namespace ZonaiMath
 {
@@ -9,20 +9,18 @@ namespace ZonaiMath
 
 namespace ZonaiPhysics
 {
-	using namespace ZonaiMath;
-
 	class ZnTransform
 	{
 	public:
 		ZnTransform() noexcept = default;
 
-		ZnTransform(const Vector3D& _vec) noexcept : position(_vec), quaternion()
+		ZnTransform(const ZonaiMath::Vector3D& _vec) noexcept : position(_vec), quaternion()
 		{}
 
-		ZnTransform(const Quaternion& _qat) noexcept : position(), quaternion(_qat)
+		ZnTransform(const ZonaiMath::Quaternion& _qat) noexcept : position(), quaternion(_qat)
 		{}
 
-		ZnTransform(const Vector3D& _vec, const Quaternion& _qat) noexcept : position(_vec), quaternion(_qat)
+		ZnTransform(const ZonaiMath::Vector3D& _vec, const ZonaiMath::Quaternion& _qat) noexcept : position(_vec), quaternion(_qat)
 		{}
 
 		ZnTransform(const ZnTransform& _tran) noexcept : position(_tran.position), quaternion(_tran.quaternion)
@@ -35,7 +33,7 @@ namespace ZonaiPhysics
 		}
 
 	public:
-		Vector3D position;
-		Quaternion quaternion;
+		ZonaiMath::Vector3D position;
+		ZonaiMath::Quaternion quaternion;
 	};
 }

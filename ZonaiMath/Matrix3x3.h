@@ -76,9 +76,9 @@ namespace ZonaiMath
 		/// <summary>
 		/// 멤버 함수
 		/// </summary>
-		float Determinant() noexcept;
-		Matrix3x3 Transpose() noexcept;
-		Matrix3x3 Inverse() noexcept;
+		float Determinant() const noexcept;
+		Matrix3x3 Transpose() const noexcept;
+		Matrix3x3 Inverse() const noexcept;
 
 		/// <summary>
 		/// 연산자 오버로딩
@@ -93,10 +93,10 @@ namespace ZonaiMath
 		bool operator== (const Matrix3x3&) const noexcept;
 	};
 
-	const Matrix3x3 Matrix3x3::Zero = {};
-	const Matrix3x3 Matrix3x3::Identity = {
-				1.f, 0.f, 0.f,
-				0.f, 1.f, 0.f,
-				0.f, 0.f, 1.f,
-			};
+	//constexpr Matrix3x3 Matrix3x3::Zero = {};
+	//constexpr Matrix3x3 Matrix3x3::Identity = {
+	//			1.f, 0.f, 0.f,
+	//			0.f, 1.f, 0.f,
+	//			0.f, 0.f, 1.f,
+	//		};
 }

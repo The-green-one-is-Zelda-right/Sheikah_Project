@@ -93,7 +93,5 @@ namespace ZonaiMath
 
 		bool operator == (const Vector4D&) const noexcept;
 	};
-	
-	const Vector4D Vector4D::Zero = {};
 }
 

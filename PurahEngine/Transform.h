@@ -43,6 +43,11 @@ namespace PurahEngine
 		void SetLocalRotation(Eigen::Quaternionf setRotation);
 		// 스케일 세팅
 		void SetLocalScale(Eigen::Vector3f setScale);
+
+		Eigen::Vector3f up = Eigen::Vector3f::UnitY();
+		Eigen::Vector3f right = Eigen::Vector3f::UnitX();
+		Eigen::Vector3f front = Eigen::Vector3f::UnitZ();
+
 	private:
 		// 위치
 		Eigen::Vector3f position;

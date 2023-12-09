@@ -93,10 +93,4 @@ namespace ZonaiMath
 	};
 
 	Vector3D operator * (const Quaternion&, const Vector3D&) noexcept;
-
-	const Vector3D Vector3D::Zero = {};
-
-	const Vector3D Vector3D::Forward = { 0.f, 0.f, 1.f };
-	const Vector3D Vector3D::Up = { 0.f, 1.f, 0.f };
-	const Vector3D Vector3D::Right = { 1.f, 0.f, 0.f };
 }

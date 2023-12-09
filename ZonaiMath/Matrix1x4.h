@@ -29,7 +29,7 @@ namespace ZonaiMath
 		constexpr Matrix1x4& operator= (const Matrix1x4&) noexcept = default;
 		constexpr Matrix1x4& operator= (Matrix1x4&&) noexcept = default;
 
-		explicit operator Vector4D() noexcept;
+		explicit operator Vector4D() const noexcept;
 
 		/// <summary>
 		/// ¸â¹ö º¯¼ö

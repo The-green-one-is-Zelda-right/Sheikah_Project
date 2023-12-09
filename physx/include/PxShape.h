@@ -157,13 +157,13 @@ public:
 	virtual		void	release() = 0;
 
 	/**
-	\brief Adjust the geometry of the shape.
+	\brief 도형의 기하학을 조절합니다.
 
-	\note The type of the passed in geometry must match the geometry type of the shape.
-	\note It is not allowed to change the geometry type of a shape.
-	\note This function does not guarantee correct/continuous behavior when objects are resting on top of old or new geometry.
+	\note 전달된 기하학의 유형은 도형의 기하학 유형과 일치해야 합니다.
+	\note 도형의 기하학 유형을 변경하는 것은 허용되지 않습니다.
+	\note 이 함수는 객체가 이전 또는 새 기하학 위에 안정적으로 존재할 때 올바르고 연속된 동작을 보장하지 않습니다.
 
-	\param[in] geometry New geometry of the shape.
+	\param[in] geometry 도형의 새로운 기하학입니다.
 
 	@see PxGeometry PxGeometryType getGeometryType()
 	*/
@@ -196,33 +196,35 @@ public:
 //@{
 
 	/**
-	\brief Sets the pose of the shape in actor space, i.e. relative to the actors to which they are attached.
-	
-	This transformation is identity by default.
+	\brief 도형을 액터 공간에서의 포즈로 설정합니다.
+	즉, 해당 도형이 연결된 액터에 대한 상대적인 위치를 나타냅니다.
 
-	The local pose is an attribute of the shape, and so will apply to all actors to which the shape is attached.
+	기본적으로 이 변환은 항등 변환입니다.
 
-	<b>Sleeping:</b> Does <b>NOT</b> wake the associated actor up automatically.
+	로컬 포즈는 도형의 속성이며, 따라서 해당 도형이 연결된 모든 액터에 적용됩니다.
 
-	<i>Note:</i> Does not automatically update the inertia properties of the owning actor (if applicable); use the
-	PhysX extensions method #PxRigidBodyExt::updateMassAndInertia() to do this.
+	<b>휴면 상태:</b> 연관된 액터를 자동으로 깨우지 <b>않습니다.</b>
 
-	<b>Default:</b> the identity transform
+	<i>참고:</i> 소유 액터의 관성 속성을 자동으로 업데이트하지 않습니다(해당되는 경우);
+	이를 수행하려면 PhysX 확장 메서드 #PxRigidBodyExt::updateMassAndInertia()를 사용하세요.
 
-	\param[in] pose	The new transform from the actor frame to the shape frame. <b>Range:</b> rigid body transform
+	<b>기본값:</b> 항등 변환
 
-	@see getLocalPose() 
+	\param[in] pose 액터 프레임에서 도형 프레임으로의 새로운 변환입니다. <b>범위:</b> 강체 변환
+
+	@see getLocalPose()
 	*/
 	virtual		void	setLocalPose(const PxTransform& pose)		= 0;
 
 	/**
-	\brief Retrieves the pose of the shape in actor space, i.e. relative to the actor they are owned by.
+	\brief 액터 공간에서의 도형의 포즈를 검색합니다.
+	즉, 해당 도형이 소유한 액터를 기준으로 상대적인 위치를 나타냅니다.
 
-	This transformation is identity by default.
+	기본적으로 이 변환은 항등 변환입니다.
 
-	\return Pose of shape relative to the actor's frame.
+	\return 액터 프레임을 기준으로 한 도형의 포즈.
 
-	@see setLocalPose() 
+	@see setLocalPose()
 	*/
 	virtual		PxTransform	getLocalPose()	const	= 0;
 
@@ -262,6 +264,7 @@ public:
 	virtual		void	setQueryFilterData(const PxFilterData& data)	= 0;
 
 	/**
+	 *
 	\brief Retrieves the shape's Query filter data.
 
 	@see setQueryFilterData() 

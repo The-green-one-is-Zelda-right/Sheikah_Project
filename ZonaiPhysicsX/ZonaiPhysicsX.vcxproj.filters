@@ -1,61 +1,54 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="00. ZonaiPhysicsX">
-      <UniqueIdentifier>{9314a595-cff3-47c3-9826-51d2f4a8efbb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. World">
-      <UniqueIdentifier>{5da4d5d5-a0b5-44fd-92b2-625b53a5230f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. RigidBody">
-      <UniqueIdentifier>{8aa7239d-2e33-4faa-8c45-44120e55505e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Joint">
-      <UniqueIdentifier>{c74a0f46-1a4d-4e3c-aa8d-d41150143a21}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Collider">
-      <UniqueIdentifier>{1ac945e8-5897-4d31-b191-f8a8dfbe15c4}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="ZonaiPhysicsX.h">
-      <Filter>00. ZonaiPhysicsX</Filter>
-    </ClInclude>
-    <ClInclude Include="World.h">
-      <Filter>01. World</Filter>
-    </ClInclude>
-    <ClInclude Include="RigidBody.h">
-      <Filter>02. RigidBody</Filter>
-    </ClInclude>
-    <ClInclude Include="Collider.h">
-      <Filter>03. Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="Joint.h">
-      <Filter>04. Joint</Filter>
-    </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="FixedJoint.h">
-      <Filter>04. Joint</Filter>
-    </ClInclude>
-=======
->>>>>>> 49329f7c854b5a1bc6f7f78c07b81085dead6dbe
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="World.cpp">
-      <Filter>01. World</Filter>
-    </ClCompile>
+    <ClCompile Include="ZnPhysicsX.cpp" />
     <ClCompile Include="RigidBody.cpp">
-      <Filter>02. RigidBody</Filter>
+      <Filter>Rigidbody</Filter>
     </ClCompile>
     <ClCompile Include="Collider.cpp">
-      <Filter>03. Collider</Filter>
+      <Filter>Collider</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="FixedJoint.cpp">
-=======
-    <ClCompile Include="Joint.cpp">
->>>>>>> 49329f7c854b5a1bc6f7f78c07b81085dead6dbe
-      <Filter>04. Joint</Filter>
+      <Filter>Joint</Filter>
     </ClCompile>
+    <ClCompile Include="SphericalJoint.cpp">
+      <Filter>Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxCollider.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ZnPhysicsX.h" />
+    <ClInclude Include="ZonaiPhysicsX.h" />
+    <ClInclude Include="RigidBody.h">
+      <Filter>Rigidbody</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="FixedJoint.h">
+      <Filter>Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="Joint.h">
+      <Filter>Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="SphericalJoint.h">
+      <Filter>Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxCollider.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Collider">
+      <UniqueIdentifier>{539620a7-3fb4-4f3a-bd51-a11e0a7a04de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rigidbody">
+      <UniqueIdentifier>{5ff07861-2445-4018-842b-cbeb394dad60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Joint">
+      <UniqueIdentifier>{b4341449-1497-499a-be4e-49f85d6d0d1a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

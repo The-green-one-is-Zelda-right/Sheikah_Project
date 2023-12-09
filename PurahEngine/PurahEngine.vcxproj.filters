@@ -40,6 +40,15 @@
     <Filter Include="Renderer">
       <UniqueIdentifier>{1c75baf9-836a-402b-9bf3-7d6e9543ba43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{4c2fd85b-b061-4d34-a3a0-a44bd07a3344}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Component">
+      <UniqueIdentifier>{a5ee2fac-18dc-415c-9ec1-ae489d02ba83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\System">
+      <UniqueIdentifier>{0ec0ba64-b61e-4d0f-9a22-7626faedf853}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Component.cpp">
@@ -57,7 +66,7 @@
     <ClCompile Include="Transform.cpp">
       <Filter>Core\Transform</Filter>
     </ClCompile>
-    <ClCompile Include="Collision.cpp">
+    <ClCompile Include="Collider.cpp">
       <Filter>Collision</Filter>
     </ClCompile>
     <ClCompile Include="RigidBody.cpp">
@@ -78,6 +87,9 @@
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsSystem.cpp">
+      <Filter>Physics\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,7 +112,7 @@
       <Filter>Core\dll</Filter>
     </ClInclude>
     <ClInclude Include="PurahEngine.h" />
-    <ClInclude Include="Collision.h">
+    <ClInclude Include="Collider.h">
       <Filter>Collision</Filter>
     </ClInclude>
     <ClInclude Include="RigidBody.h">
@@ -120,6 +132,9 @@
     </ClInclude>
     <ClInclude Include="Renderer.h">
       <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsSystem.h">
+      <Filter>Physics\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

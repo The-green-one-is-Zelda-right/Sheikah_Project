@@ -3,7 +3,14 @@
 
 namespace ZonaiMath
 {
-	Matrix3x3 Matrix3x3::Transpose() noexcept
+	const Matrix3x3 Matrix3x3::Zero = {};
+	const Matrix3x3 Matrix3x3::Identity = {
+			1.f, 0.f, 0.f,
+			0.f, 1.f, 0.f,
+			0.f, 0.f, 1.f,
+		};
+
+	Matrix3x3 Matrix3x3::Transpose() const noexcept
 	{
 		return Matrix3x3
 		{
@@ -13,7 +20,7 @@ namespace ZonaiMath
 		};
 	}
 
-	Matrix3x3 Matrix3x3::Inverse() noexcept
+	Matrix3x3 Matrix3x3::Inverse() const noexcept
 	{
 		Matrix3x3 result{};
 
@@ -40,9 +47,9 @@ namespace ZonaiMath
 		return result;
 	}
 
-	float Matrix3x3::Determinant() noexcept
+	float Matrix3x3::Determinant() const noexcept
 	{
-		float det =
+		const float det =
 			e00 * (e11 * e22 - e21 * e12) -
 			e01 * (e10 * e22 - e20 * e12) +
 			e02 * (e10 * e21 - e20 * e11);
@@ -52,8 +59,7 @@ namespace ZonaiMath
 
 	Matrix3x3 Matrix3x3::operator+(const Matrix3x3& other) const noexcept
 	{
-		return Matrix3x3
-		(
+		return {
 			(this->e[0][0] + other.e[0][0]),
 			(this->e[0][1] + other.e[0][1]),
 			(this->e[0][2] + other.e[0][2]),
@@ -65,7 +71,7 @@ namespace ZonaiMath
 			(this->e[2][0] + other.e[2][0]),
 			(this->e[2][1] + other.e[2][1]),
 			(this->e[2][2] + other.e[2][2])
-		);
+		};
 	}
 
 	Matrix3x3& Matrix3x3::operator+=(const Matrix3x3& other) noexcept
@@ -87,8 +93,7 @@ namespace ZonaiMath
 
 	Matrix3x3 Matrix3x3::operator-(const Matrix3x3& other) const noexcept
 	{
-		return Matrix3x3
-		(
+		return {
 			(this->e[0][0] - other.e[0][0]),
 			(this->e[0][1] - other.e[0][1]),
 			(this->e[0][2] - other.e[0][2]),
@@ -100,7 +105,7 @@ namespace ZonaiMath
 			(this->e[2][0] - other.e[2][0]),
 			(this->e[2][1] - other.e[2][1]),
 			(this->e[2][2] - other.e[2][2])
-		);
+		};
 	}
 
 	Matrix3x3& Matrix3x3::operator-=(const Matrix3x3& other) noexcept
@@ -124,8 +129,7 @@ namespace ZonaiMath
 	{
 		Matrix3x3 mat(*this);
 		
-		return Matrix3x3
-		(
+		return {
 			(this->e[0][0] * other.e[0][0] + this->e[0][1] * other.e[1][0] + this->e[0][2] * other.e[2][0]),
 			(this->e[0][0] * other.e[0][1] + this->e[0][1] * other.e[1][1] + this->e[0][2] * other.e[2][1]),
 			(this->e[0][0] * other.e[0][2] + this->e[0][1] * other.e[1][2] + this->e[0][2] * other.e[2][2]),
@@ -137,7 +141,7 @@ namespace ZonaiMath
 			(this->e[2][0] * other.e[0][0] + this->e[2][1] * other.e[1][0] + this->e[2][2] * other.e[2][0]),
 			(this->e[2][0] * other.e[0][1] + this->e[2][1] * other.e[1][1] + this->e[2][2] * other.e[2][1]),
 			(this->e[2][0] * other.e[0][2] + this->e[2][1] * other.e[1][2] + this->e[2][2] * other.e[2][2])
-		);
+		};
 	}
 
 	Matrix3x3& Matrix3x3::operator*=(const Matrix3x3& other) noexcept

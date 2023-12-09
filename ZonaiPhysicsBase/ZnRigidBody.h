@@ -29,7 +29,7 @@ namespace ZonaiPhysics
 
 	public:
 							ZnRigidBody() noexcept = default;
-		virtual				~ZnRigidBody() noexcept = 0;
+		virtual				~ZnRigidBody() noexcept = default;
 
 	public:
 		/**

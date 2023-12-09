@@ -13,3 +13,7 @@ namespace PurahEngine
 	};
 }
 
+class RigidBody
+{
+};
+

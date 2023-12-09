@@ -9,6 +9,9 @@
 
 namespace ZonaiMath
 {
+	const Quaternion Quaternion::Zero = { 0.f, 0.f, 0.f, 0.f };
+	const Quaternion Quaternion::Identity = { 1.f, 0.f, 0.f, 0.f };
+
 	Quaternion::operator Vector4D() noexcept
 	{
 		return Vector4D{ x, y, z, w };

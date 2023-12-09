@@ -33,9 +33,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ZnPhysicsBase.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="00. Base">
       <UniqueIdentifier>{48d10095-33ae-4459-a74e-3d0c78ce16d4}</UniqueIdentifier>
     </Filter>

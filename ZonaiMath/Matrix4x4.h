@@ -93,14 +93,14 @@ namespace ZonaiMath
 		Matrix4x4 operator/ (const Matrix4x4&) const noexcept;
 		Matrix4x4& operator/= (const Matrix4x4&) noexcept;
 
-		bool operator == (const Matrix4x4&) noexcept;
+		bool operator == (const Matrix4x4&) const noexcept;
 	};
 
-	const Matrix4x4 Matrix4x4::Zero = {};
-	const Matrix4x4 Matrix4x4::Identity = {
-				1.f, 0.f, 0.f, 0.f,
-				0.f, 1.f, 0.f, 0.f,
-				0.f, 0.f, 1.f, 0.f,
-				0.f, 0.f, 0.f, 1.f,
-			};
+	//constexpr Matrix4x4 Matrix4x4::Zero = {};
+	//constexpr Matrix4x4 Matrix4x4::Identity = {
+	//			1.f, 0.f, 0.f, 0.f,
+	//			0.f, 1.f, 0.f, 0.f,
+	//			0.f, 0.f, 1.f, 0.f,
+	//			0.f, 0.f, 0.f, 1.f,
+	//		};
 }

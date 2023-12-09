@@ -11,7 +11,7 @@ namespace ZonaiPhysics
 	class FixedJoint : public Joint
 	{
 	public:
-					FixedJoint() noexcept;
+					FixedJoint() noexcept = default;
 		virtual		~FixedJoint() noexcept = default;
 
 	public:
@@ -29,6 +29,12 @@ namespace ZonaiPhysics
 
 		virtual void		SetBreakForce(float _force, float _torque) noexcept override;
 		virtual void		GetBreakForce(float& _force, float& _torque) const noexcept override;
+
+		void SetLocalPosition(const Vector3D&) noexcept override;
+		Vector3D GetLocalPosition() const noexcept override;
+
+		void SetLocalQuaternion(const Quaternion&) noexcept override;
+		Quaternion GetLocalQuaternion() const noexcept override;
 
 	private:
 		physx::PxFixedJoint* joint;

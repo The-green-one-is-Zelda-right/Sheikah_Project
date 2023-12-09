@@ -3,6 +3,8 @@
 
 namespace ZonaiMath
 {
+	const Vector2D Vector2D::Zero = {};
+
 	float Vector2D::Length() const noexcept
 	{
 		return std::sqrtf((x * x) + (y * y));

@@ -65,6 +65,4 @@ namespace ZonaiMath
 	};
 
 	Vector2D operator* (float, const Vector2D&) noexcept;
-
-	const Vector2D Vector2D::Zero = {};
 }

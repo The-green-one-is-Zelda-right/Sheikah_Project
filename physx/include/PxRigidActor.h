@@ -132,34 +132,33 @@ public:
 */
 
 	/**
-	\brief Attach a shape to an actor 
+	\brief 모양을 액터에 부착합니다.
 
-	This call will increment the reference count of the shape.
+	이 호출은 모양의 참조 횟수를 증가시킵니다.
 
-	\note Mass properties of dynamic rigid actors will not automatically be recomputed 
-	to reflect the new mass distribution implied by the shape. Follow this call with a call to 
-	the PhysX extensions method #PxRigidBodyExt::updateMassAndInertia() to do that.
+	\note 동적 강체 액터의 질량 속성은 자동으로 재계산되지 않아 새로운 모양이 암시하는 새 질량 분포를 반영하지 않습니다. 이 호출 이후에는 PhysX 확장 메서드 #PxRigidBodyExt::updateMassAndInertia()를 호출하여 이를 수행하세요.
 
-	Attaching a triangle mesh, heightfield or plane geometry shape configured as eSIMULATION_SHAPE is not supported for 
-	non-kinematic PxRigidDynamic instances.
+	eSIMULATION_SHAPE로 구성된 삼각형 메시, 높낮이 필드 또는 평면 지오메트리 모양은 비-키네마틱 PxRigidDynamic 인스턴스에 대해 지원되지 않습니다.
 
-	<b>Sleeping:</b> Does <b>NOT</b> wake the actor up automatically.
+	<b>휴면 상태:</b> 액터를 자동으로 깨우지 <b>않습니다.</b>
 
-	\param[in] shape	the shape to attach.
+	\param[in] shape 부착할 모양입니다.
 
-	\return True if success.
+	\return 성공하면 true.
 	*/
 	virtual bool				attachShape(PxShape& shape) = 0;
 
+
 	/**
-	\brief Detach a shape from an actor. 
-	
-	This will also decrement the reference count of the PxShape, and if the reference count is zero, will cause it to be deleted.
+	\brief 액터에서 모양을 분리합니다.
 
-	<b>Sleeping:</b> Does <b>NOT</b> wake the actor up automatically.
+	이는 또한 PxShape의 참조 횟수를 감소시키며, 참조 횟수가 0이되면 해당 모양이 삭제됩니다.
 
-	\param[in] shape	the shape to detach.
-	\param[in] wakeOnLostTouch Specifies whether touching objects from the previous frame should get woken up in the next frame. Only applies to PxArticulationReducedCoordinate and PxRigidActor types.
+	<b>휴면 상태:</b> 액터를 자동으로 깨우지 <b>않습니다.</b>
+
+	\param[in] shape 분리할 모양입니다.
+	\param[in] wakeOnLostTouch 이전 프레임에서 접촉했던 객체가 다음 프레임에서 깨어날지 여부를 지정합니다.
+	PxArticulationReducedCoordinate 및 PxRigidActor 유형에만 적용됩니다.
 	*/
 	virtual void				detachShape(PxShape& shape, bool wakeOnLostTouch = true) = 0;
 

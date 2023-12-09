@@ -4,7 +4,14 @@
 #include <Eigen/dense>
 
 #include "GraphicsResourceID.h"
+
+ 
+#ifdef YH_RENDERER
+#include "../Floater/ZeldaGraphicsAdapter/include/IZeldaRendererAdapter.h"
+#else
 #include "IZeldaRenderer.h"
+#endif
+
 #include "ZeldaGraphics.h"
 #include "ZeldaGraphicsAPI.h"
 

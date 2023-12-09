@@ -4,7 +4,7 @@
 
 namespace ZonaiMath
 {
-	Matrix1x4::operator Vector4D() noexcept
+	Matrix1x4::operator Vector4D() const noexcept
 	{
 		return Vector4D{ this->e00, this->e01, this->e02, this->e03 };
 	}
@@ -74,6 +74,10 @@ namespace ZonaiMath
 
 	bool Matrix1x4::operator==(const Matrix1x4& _mat) const noexcept
 	{
-		return (e00 == _mat.e00) && (e01 == _mat.e01) && (e02 == _mat.e02) && (e03 == _mat.e03);
+		return
+			(e00 == _mat.e00) && 
+			(e01 == _mat.e01) && 
+			(e02 == _mat.e02) && 
+			(e03 == _mat.e03);
 	}
 }

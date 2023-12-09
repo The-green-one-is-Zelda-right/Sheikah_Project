@@ -4,12 +4,23 @@
 #include "Transform.h"
 #include "SceneManager.h"
 #include "InputManager.h"
+#include "PhysicsSystem.h"
 #include <Eigen/Dense>
 
 #include <cassert>
 
+#ifdef YH_DEBUG
+#pragma comment (lib, "../Debug/ZeldaGraphicsAdapter.lib")
+#elif YH_RELEASE
+#pragma comment (lib, "../Release/ZeldaGraphicsAdapter.lib")
+#endif
+
+
 void PurahEngine::GraphicsManager::Initialize(HWND hWnd)
 {
+#ifdef YH_RENDERER
+	renderer = new IZeldaRendererAdapter();
+#else
 	zeldaGraphicsDLL = LoadLibrary(L"ZeldaGraphics.dll");
 	if (zeldaGraphicsDLL == nullptr)
 	{
@@ -23,8 +34,11 @@ void PurahEngine::GraphicsManager::Initialize(HWND hWnd)
 		assert(0);
 	}
 	renderer = createZeldaRenderer();
+#endif
 	renderer->Initialize(1920, 1080, true, hWnd, false, 1000.0f, 1.0f);
 	renderer->CreateBasicResources();
+
+
 }
 
 void PurahEngine::GraphicsManager::Run()
@@ -58,14 +72,12 @@ void PurahEngine::GraphicsManager::Run()
 		}
 	}
 	renderer->BeginDraw(0.0f);
-	float angle = 45.0f;
-	Eigen::Matrix3f rotation_matrix;
-	rotation_matrix = Eigen::AngleAxisf(angle, Eigen::Vector3f::UnitY());
-	test.block<3, 3>(0, 0) = rotation_matrix;
+	float angle = 10.0f;
 
 	if (PurahEngine::InputManager::Getinstance().IsKeyPressed('Q') == true)
 	{
-		testObject->GetComponent<Transform>()->Rotate(Eigen::Vector3f::UnitY(), angle);
+		//testObject->GetComponent<Transform>()->Rotate(Eigen::Vector3f::UnitY(), angle);
+		testObject->GetComponent<Transform>()->Rotate(testObject->GetComponent<Transform>()->up, angle);
 	}
 
 	if (PurahEngine::InputManager::Getinstance().IsKeyPressed('E') == true)
@@ -73,23 +85,31 @@ void PurahEngine::GraphicsManager::Run()
 		testObject->GetComponent<Transform>()->Rotate(Eigen::Vector3f::UnitY(), -angle);
 	}
 
-	if (PurahEngine::InputManager::Getinstance().IsKeyPressed(VK_UP) == true)
+	if (PurahEngine::InputManager::Getinstance().IsKeyPressed('W') == true)
+	{
+		testObject->GetComponent<Transform>()->SetLocalPosition(testObject->GetComponent<Transform>()->GetLocalPosition() + Eigen::Vector3f(0.0f, 0.1f, 0.0f));
+	}
+	if (PurahEngine::InputManager::Getinstance().IsKeyPressed('S') == true)
+	{
+		testObject->GetComponent<Transform>()->SetLocalPosition(testObject->GetComponent<Transform>()->GetLocalPosition() + Eigen::Vector3f(0.0f, -0.1f, 0.0f));
+	}
+	if (PurahEngine::InputManager::Getinstance().IsKeyPressed('A') == true)
+	{
+		testObject->GetComponent<Transform>()->SetLocalPosition(testObject->GetComponent<Transform>()->GetLocalPosition() + Eigen::Vector3f(-0.1f, 0.0f, 0.0f));
+	}
+	if (PurahEngine::InputManager::Getinstance().IsKeyPressed('D') == true)
+	{
+		testObject->GetComponent<Transform>()->SetLocalPosition(testObject->GetComponent<Transform>()->GetLocalPosition() + Eigen::Vector3f(0.1f, 0.0f, 0.0f));
+	}
+
+	if (PurahEngine::InputManager::Getinstance().IsKeyPressed('Z') == true)
 	{
 		testObject->GetComponent<Transform>()->SetLocalScale(testObject->GetComponent<Transform>()->GetLocalScale().cwiseProduct(Eigen::Vector3f(1.1f, 1.1f, 1.1f)));
 	}
 
-	if (PurahEngine::InputManager::Getinstance().IsKeyPressed(VK_DOWN) == true)
+	if (PurahEngine::InputManager::Getinstance().IsKeyPressed('C') == true)
 	{
 		testObject->GetComponent<Transform>()->SetLocalScale(testObject->GetComponent<Transform>()->GetLocalScale().cwiseQuotient(Eigen::Vector3f(1.1f, 1.1f, 1.1f)));
-	}
-
-	if (PurahEngine::InputManager::Getinstance().IsKeyPressed('W') == true)
-	{
-		testObject->GetComponent<Transform>()->SetLocalPosition(testObject->GetComponent<Transform>()->GetLocalPosition() + Eigen::Vector3f(0.0f, 1.0f, 0.0f));
-	}
-	if (PurahEngine::InputManager::Getinstance().IsKeyPressed('S') == true)
-	{
-		testObject->GetComponent<Transform>()->SetLocalPosition(testObject->GetComponent<Transform>()->GetLocalPosition() + Eigen::Vector3f(0.0f, -1.0f, 0.0f));
 	}
 
 	renderer->DrawCube(testObject->GetComponent<Transform>()->GetLocalMatrix(), textureID, false, 0, 1, 0, 1);

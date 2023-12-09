@@ -1,10 +1,16 @@
-#include "Vector3D.h"
-
 #include "Matrix4x4.h"
 
 
 namespace ZonaiMath
 {
+	const Matrix4x4 Matrix4x4::Zero = {};
+	const Matrix4x4 Matrix4x4::Identity = {
+				1.f, 0.f, 0.f, 0.f,
+				0.f, 1.f, 0.f, 0.f,
+				0.f, 0.f, 1.f, 0.f,
+				0.f, 0.f, 0.f, 1.f,
+	};
+
 	Matrix4x4 Matrix4x4::Transpose() const noexcept
 	{
 		return Matrix4x4
@@ -33,7 +39,7 @@ namespace ZonaiMath
 	{
 		Matrix4x4 result{};
 
-		float det = Determinant();
+		const float det = Determinant();
 
 		if (det == 0.0f)
 		{
@@ -41,7 +47,7 @@ namespace ZonaiMath
 			return result;
 		}
 
-		float invDet = 1.0f / det;
+		const float invDet = 1.0f / det;
 
 		/*
 		Matrix4x4 MT = (*this).Transpose();
@@ -183,7 +189,7 @@ namespace ZonaiMath
 
 	float Matrix4x4::Determinant() const noexcept
 	{
-		float det =
+		const float det =
 			e00 * e11 * e22 * e33 +
 			e00 * e12 * e23 * e31 +
 			e00 * e13 * e21 * e32 +
@@ -264,7 +270,7 @@ namespace ZonaiMath
 
 	Matrix4x4& Matrix4x4::operator*=(const Matrix4x4& other) noexcept
 	{
-		Matrix4x4 temp
+		const Matrix4x4 temp
 		(
 			other.e00, other.e10, other.e20, other.e30,
 			other.e01, other.e11, other.e21, other.e31,
@@ -272,10 +278,10 @@ namespace ZonaiMath
 			other.e03, other.e13, other.e23, other.e33
 		);
 
-		__m128 m0{ this->m[0] };
-		__m128 m1{ this->m[1] };
-		__m128 m2{ this->m[2] };
-		__m128 m3{ this->m[3] };
+		const __m128 m0{ this->m[0] };
+		const __m128 m1{ this->m[1] };
+		const __m128 m2{ this->m[2] };
+		const __m128 m3{ this->m[3] };
 
 		// 행렬 연산은 내적과 비슷하다...
 		this->e00 = _mm_cvtss_f32(_mm_dp_ps(m0, temp.m[0], 0xff));
@@ -314,7 +320,7 @@ namespace ZonaiMath
 		return *this;
 	}
 
-	bool Matrix4x4::operator==(const Matrix4x4& _mat) noexcept
+	bool Matrix4x4::operator==(const Matrix4x4& _mat) const noexcept
 	{
 		return 
 			(this->r[0] == _mat.r[0]) && 

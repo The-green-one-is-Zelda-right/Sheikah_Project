@@ -57,7 +57,7 @@ namespace ZonaiMath
 		/// <summary>
 		/// ¸â¹ö ÇÔ¼ö
 		/// </summary>
-		float Determinant() const noexcept;
+		static float Determinant() noexcept;
 		Matrix2x2 Transpose() const noexcept;
 		Matrix2x2 Inverse() const noexcept;
 
@@ -71,12 +71,12 @@ namespace ZonaiMath
 		Matrix2x2 operator* (const Matrix2x2&) const noexcept;
 		Matrix2x2& operator*= (const Matrix2x2&) noexcept;
 
-		bool operator == (const Matrix2x2&) noexcept;
+		bool operator == (const Matrix2x2&) const noexcept;
 	};
 
-	const Matrix2x2 Matrix2x2::Zero = {};
-	const Matrix2x2 Matrix2x2::Identity = {
-				1.f, 0.f,
-				0.f, 1.f,
-	};
+	//constexpr Matrix2x2 Matrix2x2::Zero = {};
+	//constexpr Matrix2x2 Matrix2x2::Identity = {
+	//			1.f, 0.f,
+	//			0.f, 1.f,
+	//};
 }

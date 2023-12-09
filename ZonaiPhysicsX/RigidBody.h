@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 #include "ForceType.h"
 #include "ZnRigidBody.h"
 
@@ -16,10 +18,11 @@ namespace physx
 	class PxRigidActor;
 }
 
-
 namespace ZonaiPhysics
 {
 	using namespace ZonaiMath;
+
+	class Collider;
 
 	class RigidBody : public ZnRigidBody
 	{
@@ -106,9 +109,14 @@ namespace ZonaiPhysics
 		__declspec(property(get = GetQuaternion, put = SetQuaternion))
 			Quaternion quaternion;
 
+	public:
+		void AddCollider(Collider*) noexcept;
+		void CanSimulate() noexcept;
+		physx::PxRigidDynamic* getRigidDynamic() const noexcept;
+
 	private:
 		physx::PxRigidDynamic* rigidbody_;
-		physx::PxRigidStatic* rigidstatic_;
+		std::vector<ZonaiPhysics::Collider*> shapes_;
 	};
 } // namespace ZonaiPhysics
 

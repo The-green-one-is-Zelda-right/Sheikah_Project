@@ -30,9 +30,6 @@
     <ClInclude Include="ZnShape.h" />
     <ClInclude Include="ZnTransform.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="ZnPhysicsBase.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

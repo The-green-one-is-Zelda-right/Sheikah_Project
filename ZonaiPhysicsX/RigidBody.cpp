@@ -4,15 +4,10 @@
 
 namespace ZonaiPhysics
 {
-	RigidBody::RigidBody() noexcept
-	{
-
-	}
-
 	RigidBody::RigidBody(physx::PxPhysics*& _factory) noexcept
 	{
 		using namespace physx;
-		rigidbody_ = _factory->createRigidDynamic(PxTransform(PxVec3()));
+		rigidbody_ = _factory->createRigidDynamic(PxTransform(PxVec3(0,0,0)));
 	}
 
 	RigidBody::~RigidBody() noexcept
@@ -27,24 +22,24 @@ namespace ZonaiPhysics
 
 	bool RigidBody::IsSleeping() const noexcept
 	{
-		rigidbody_->isSleeping();
+		return rigidbody_->isSleeping();
 	}
 
 	DynamicLocks RigidBody::GetDynamicLockFlags() const noexcept
 	{
-		return (uint8_t)rigidbody_->getRigidDynamicLockFlags();
+		return static_cast<uint8_t>(rigidbody_->getRigidDynamicLockFlags());
 	}
 
 	void RigidBody::SetDynamicLockFlag(DynamicLock _flag, bool _value) noexcept
 	{
 		using namespace physx;
-		rigidbody_->setRigidDynamicLockFlag((PxRigidDynamicLockFlag::Enum)_flag, _value);
+		rigidbody_->setRigidDynamicLockFlag(static_cast<PxRigidDynamicLockFlag::Enum>(_flag), _value);
 	}
 
 	void RigidBody::SetDynamicLockFlags(DynamicLocks _flags) noexcept
 	{
 		using namespace physx;
-		rigidbody_->setRigidDynamicLockFlags((PxRigidDynamicLockFlags)(_flags));
+		rigidbody_->setRigidDynamicLockFlags(static_cast<PxRigidDynamicLockFlags>(_flags));
 	}
 
 	void* RigidBody::GetUserData() const noexcept
@@ -76,7 +71,7 @@ namespace ZonaiPhysics
 	{
 		using namespace physx;
 		PxVec3 I = rigidbody_->getMassSpaceInertiaTensor();
-		return Vector3D(I.x, I.y, I.z);
+		return { I.x, I.y, I.z };
 	}
 
 	void RigidBody::SetInertiaTensor(const Vector3D& _I) noexcept
@@ -109,7 +104,7 @@ namespace ZonaiPhysics
 	{
 		using namespace physx;
 		PxVec3 v = rigidbody_->getLinearVelocity();
-		return Vector3D(v.x, v.y, v.z);
+		return { v.x, v.y, v.z };
 	}
 
 	void RigidBody::SetLinearVelocity(const Vector3D& _velocity) noexcept
@@ -122,7 +117,7 @@ namespace ZonaiPhysics
 	{
 		using namespace physx;
 		PxVec3 v = rigidbody_->getAngularVelocity();
-		return Vector3D(v.x, v.y, v.z);
+		return { v.x, v.y, v.z };
 	}
 
 	void RigidBody::SetAngularVelocity(const Vector3D& _velocity) noexcept
@@ -154,7 +149,7 @@ namespace ZonaiPhysics
 	Vector3D RigidBody::GetPosition() const noexcept
 	{
 		auto transform = rigidbody_->getGlobalPose();
-		return Vector3D(transform.p.x, transform.p.y, transform.p.z);
+		return { transform.p.x, transform.p.y, transform.p.z };
 	}
 
 	void RigidBody::SetPosition(const Vector3D& _position) noexcept
@@ -171,7 +166,7 @@ namespace ZonaiPhysics
 	{
 		using namespace physx;
 		PxTransform t = rigidbody_->getGlobalPose();
-		return Quaternion(t.q.w, t.q.x, t.q.y, t.q.z);
+		return { t.q.w, t.q.x, t.q.y, t.q.z };
 	}
 
 	void RigidBody::SetQuaternion(const Quaternion& _quaternion) noexcept
@@ -188,7 +183,7 @@ namespace ZonaiPhysics
 	void RigidBody::AddForce(const Vector3D& _force, ForceType _type) noexcept
 	{
 		using namespace physx;
-		rigidbody_->addForce(PxVec3(_force.x, _force.y, _force.z), (PxForceMode::Enum)_type);
+		rigidbody_->addForce(PxVec3(_force.x, _force.y, _force.z), static_cast<PxForceMode::Enum>(_type));
 	}
 
 	void RigidBody::ClearForce() noexcept
@@ -199,11 +194,28 @@ namespace ZonaiPhysics
 	void RigidBody::AddTorque(const Vector3D& _torque, ForceType _type) noexcept
 	{
 		using namespace physx;
-		rigidbody_->addForce(PxVec3(_torque.x, _torque.y, _torque.z), (PxForceMode::Enum)_type);
+		rigidbody_->addForce(PxVec3(_torque.x, _torque.y, _torque.z), static_cast<PxForceMode::Enum>(_type));
 	}
 
 	void RigidBody::ClearTorque() noexcept
 	{
 		rigidbody_->clearTorque();
 	}
+
+	void RigidBody::AddCollider(Collider* _collider) noexcept
+	{
+		shapes_.push_back(_collider);
+	}
+
+	void RigidBody::CanSimulate() noexcept
+	{
+		using namespace physx;
+		rigidbody_->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
+	}
+
+	physx::PxRigidDynamic* RigidBody::getRigidDynamic() const noexcept
+	{
+		return rigidbody_;
+	}
+
 } // namespace ZonaiPhysics

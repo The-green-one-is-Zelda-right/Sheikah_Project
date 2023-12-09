@@ -90,7 +90,4 @@ namespace ZonaiMath
 	Quaternion operator /= (const float, const Quaternion&) noexcept;
 	Quaternion operator * (const float, const Quaternion&) noexcept;
 	Quaternion operator / (const float, const Quaternion&) noexcept;
-
-	const Quaternion Quaternion::Zero = { 0.f, 0.f, 0.f, 0.f };
-	const Quaternion Quaternion::Identity = { 1.f, 0.f, 0.f, 0.f };
 }
