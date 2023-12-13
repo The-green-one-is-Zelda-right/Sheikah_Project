@@ -28,6 +28,9 @@
     <Filter Include="Renderer">
       <UniqueIdentifier>{29a520e2-db3b-4489-b642-91d1a92a1700}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Font">
+      <UniqueIdentifier>{7febb21a-a802-4040-a664-5001c346adaf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DX11Node.cpp">
@@ -53,6 +56,9 @@
     </ClCompile>
     <ClCompile Include="CreateRenderer.cpp">
       <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Font</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +100,9 @@
     </ClInclude>
     <ClInclude Include="RendererDX11.h">
       <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Font</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

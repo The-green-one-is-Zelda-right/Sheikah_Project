@@ -57,6 +57,9 @@ void flt::FBXLoader::Load(const std::wstring& filePath)
 	fbxsdk::FbxAxisSystem dx11Axis(fbxsdk::FbxAxisSystem::eDirectX);
 	dx11Axis.ConvertScene(_scene);
 
+	// 삼각형 폴리곤으로 변경.
+	fbxsdk::FbxGeometryConverter meshConverter(_pManager);
+	meshConverter.Triangulate(_scene, true);
 
 
 	auto fileCoord = CreateFBXCoodSystem(_scene);
@@ -230,6 +233,12 @@ bool flt::FBXLoader::LoadToRawNode(fbxsdk::FbxNode& node, RawNode* outNode)
 	// Transform 세팅
 	LoadToTransform(node.EvaluateLocalTransform(), &outNode->transform);
 
+	fbxsdk::FbxVector4 tl = node.GetGeometricTranslation(fbxsdk::FbxNode::eSourcePivot);
+	fbxsdk::FbxVector4 ro = node.GetGeometricRotation(fbxsdk::FbxNode::eSourcePivot);
+	fbxsdk::FbxVector4 sc = node.GetGeometricScaling(fbxsdk::FbxNode::eSourcePivot);
+
+
+
 	// Mesh 세팅
 	fbxsdk::FbxMesh* pMesh = node.GetMesh();
 	if (pMesh != nullptr)
@@ -247,12 +256,65 @@ bool flt::FBXLoader::CreateMesh(fbxsdk::FbxMesh& mesh, RawMesh** outMesh)
 {
 	*outMesh = new RawMesh();
 
+	// 아래 레이어들 특히 UV레이어는 여러개 있을 수 있음.
+	int normalLayerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eNormal);
+	for (int i = 0; i < normalLayerCount; ++i)
+	{
+		std::vector<Vector3f> testNormalVector;
+		fbxsdk::FbxLayerElementNormal* normalLayer = mesh.GetElementNormal(i);
+		GetNormal(normalLayer, &testNormalVector);
+	}
+
+	int uvLayerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eUV);
+	for (int i = 0; i < uvLayerCount; ++i)
+	{
+		std::vector<Vector2f> testUvVector;
+		fbxsdk::FbxLayerElementUV* uvLayer = mesh.GetElementUV(i);
+		GetUV(uvLayer, &testUvVector);
+	}
+
+	int colorLayerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eVertexColor);
+	for (int i = 0; i < colorLayerCount; ++i)
+	{
+		std::vector<Vector4f> testColorVector;
+		fbxsdk::FbxLayerElementVertexColor* colorLayer = mesh.GetElementVertexColor(i);
+		GetColor(colorLayer, &testColorVector);
+	}
+
+	int tangentLayerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eTangent);
+	for (int i = 0; i < tangentLayerCount; ++i)
+	{
+		std::vector<Vector3f> testTangentVector;
+		fbxsdk::FbxLayerElementTangent* tangentLayer = mesh.GetElementTangent(i);
+		GetTangent(tangentLayer, &testTangentVector);
+	}
+
+	int binormalLayerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eBiNormal);
+	for (int i = 0; i < binormalLayerCount; ++i)
+	{
+		std::vector<Vector3f> testBinormalVector;
+		fbxsdk::FbxLayerElementBinormal* binormalLayer = mesh.GetElementBinormal(i);
+		GetBinormal(binormalLayer, &testBinormalVector);
+	}
+
+
+
+	//auto uvLayer = mesh.GetLayer(0);
+	//int testBinormalCount = mesh.GetElementBinormalCount();
+	//int testTangentCount = mesh.GetElementTangentCount();
+	//int testVertexColorCount = mesh.GetElementVertexColorCount();
+	//int testVertexCount = mesh.GetControlPointsCount();
+
+
 	int vertexCount = mesh.GetControlPointsCount();
 	(*outMesh)->vertices.reserve(vertexCount);
 	for (int i = 0; i < vertexCount; ++i)
 	{
 		auto vertex = mesh.GetControlPointAt(i);
-		(*outMesh)->vertices.emplace_back(vertex.mData[0], vertex.mData[1], vertex.mData[2]);
+		Vector3f pos{ vertex.mData[0], vertex.mData[1], vertex.mData[2] };
+		Vector2f Tex{};
+		Vector3f Normal{};
+		(*outMesh)->vertices.emplace_back(pos, Tex, Normal);
 	}
 
 	int polygonCount = mesh.GetPolygonCount();
@@ -366,12 +428,195 @@ bool flt::FBXLoader::CreateAnimation(fbxsdk::FbxNode& node, RawAnimation** outAn
 				Transform transform;
 				LoadToTransform(node.EvaluateLocalTransform(animCurveKeyTime), &transform);
 				(*outAnimation)->keyDatas.emplace_back(animCurveKeyTimeSecond, transform);
-
 			}
 		}
 	}
 
 	return true;
+}
+
+void flt::FBXLoader::GetNormal(fbxsdk::FbxLayerElementNormal* pNormalLayer, std::vector<Vector3f>* outVector)
+{
+	ASSERT(pNormalLayer, "pNormalLayer is nullptr");
+
+	fbxsdk::FbxLayerElementArrayTemplate<fbxsdk::FbxVector4>& elementNormal = pNormalLayer->GetDirectArray();
+	fbxsdk::FbxLayerElementArrayTemplate<int>* pIndices = nullptr;
+
+	auto referenceMode = pNormalLayer->GetReferenceMode();
+	if (referenceMode == fbxsdk::FbxLayerElement::eIndexToDirect || referenceMode == fbxsdk::FbxLayerElement::eIndex)
+	{
+		pIndices = &pNormalLayer->GetIndexArray();
+	}
+
+	auto mappingMode = pNormalLayer->GetMappingMode();
+	// ByPolygonVertex : 폴리곤의 각 정점 별로 매핑
+	// ByControlPoint : 컨트롤 포인트 별로 매핑
+	// ByPolygon : 폴리곤 별로 매핑
+	// TODO : 매핑 방법별로 별도 처리를 해줘야 함. 일단은 ByPolygonVertex만 처리.
+	ASSERT(mappingMode == fbxsdk::FbxLayerElement::eByPolygonVertex, "mappingMode is not ByPolygonVertex");
+
+	int elementCount = elementNormal.GetCount();
+
+	outVector->reserve(elementCount);
+
+	for (int i = 0; i < elementCount; ++i)
+	{
+		int index = i;
+		if (pIndices != nullptr)
+		{
+			index = pIndices->GetAt(i);
+		}
+
+		fbxsdk::FbxVector4 normal = elementNormal.GetAt(index);
+		outVector->emplace_back(normal.mData[0], normal.mData[1], normal.mData[2]);
+	}
+}
+
+void flt::FBXLoader::GetUV(fbxsdk::FbxLayerElementUV* pUVLayer, std::vector<Vector2f>* outVector)
+{
+	ASSERT(pUVLayer, "pUVLayer is nullptr");
+
+	fbxsdk::FbxLayerElementArrayTemplate<fbxsdk::FbxVector2>& elementUV = pUVLayer->GetDirectArray();
+	fbxsdk::FbxLayerElementArrayTemplate<int>* pIndices = nullptr;
+
+	auto referenceMode = pUVLayer->GetReferenceMode();
+	if (referenceMode == fbxsdk::FbxLayerElement::eIndexToDirect || referenceMode == fbxsdk::FbxLayerElement::eIndex)
+	{
+		pIndices = &pUVLayer->GetIndexArray();
+	}
+
+	auto mappingMode = pUVLayer->GetMappingMode();
+	// TODO : 매핑 방법 별로 별도 처리를 해줘야 함. 일단은 ByPolygonVertex만 처리.
+	ASSERT(mappingMode == fbxsdk::FbxLayerElement::eByPolygonVertex, "mappingMode is not ByPolygonVertex");
+
+	int elementCount = elementUV.GetCount();
+
+	outVector->reserve(elementCount);
+
+	for (int i = 0; i < elementCount; ++i)
+	{
+		int index = i;
+		if (pIndices != nullptr)
+		{
+			index = pIndices->GetAt(i);
+		}
+
+		fbxsdk::FbxVector2 uv = elementUV.GetAt(index);
+		outVector->emplace_back(uv.mData[0], uv.mData[1]);
+	}
+
+}
+
+void flt::FBXLoader::GetColor(fbxsdk::FbxLayerElementVertexColor* pColorLayer, std::vector<Vector4f>* outVector)
+{
+	ASSERT(pColorLayer, "pColorLayer is nullptr");
+
+	fbxsdk::FbxLayerElementArrayTemplate<fbxsdk::FbxColor>& elementColor = pColorLayer->GetDirectArray();
+	fbxsdk::FbxLayerElementArrayTemplate<int>* pIndices = nullptr;
+
+	auto referenceMode = pColorLayer->GetReferenceMode();
+	if (referenceMode == fbxsdk::FbxLayerElement::eIndexToDirect || referenceMode == fbxsdk::FbxLayerElement::eIndex)
+	{
+		pIndices = &pColorLayer->GetIndexArray();
+	}
+
+	auto mappingMode = pColorLayer->GetMappingMode();
+	// ByPolygonVertex : 폴리곤의 각 정점 별로 매핑
+	// ByControlPoint : 컨트롤 포인트 별로 매핑
+	// ByPolygon : 폴리곤 별로 매핑
+	// TODO : 매핑 방법별로 별도 처리를 해줘야 함. 일단은 ByPolygonVertex만 처리.
+	ASSERT(mappingMode == fbxsdk::FbxLayerElement::eByPolygonVertex, "mappingMode is not ByPolygonVertex");
+
+	int elementCount = elementColor.GetCount();
+
+	outVector->reserve(elementCount);
+
+	for (int i = 0; i < elementCount; ++i)
+	{
+		int index = i;
+		if (pIndices != nullptr)
+		{
+			index = pIndices->GetAt(i);
+		}
+
+		fbxsdk::FbxColor color = elementColor.GetAt(index);
+		
+		outVector->emplace_back(color.mRed, color.mGreen, color.mBlue, color.mAlpha);
+	}
+}
+
+void flt::FBXLoader::GetTangent(fbxsdk::FbxLayerElementTangent* pTangentLayer, std::vector<Vector3f>* outVector)
+{
+	ASSERT(pTangentLayer, "pTangentLayer is nullptr");
+
+	fbxsdk::FbxLayerElementArrayTemplate<fbxsdk::FbxVector4>& elementTangent = pTangentLayer->GetDirectArray();
+	fbxsdk::FbxLayerElementArrayTemplate<int>* pIndices = nullptr;
+
+	auto referenceMode = pTangentLayer->GetReferenceMode();
+	if (referenceMode == fbxsdk::FbxLayerElement::eIndexToDirect || referenceMode == fbxsdk::FbxLayerElement::eIndex)
+	{
+		pIndices = &pTangentLayer->GetIndexArray();
+	}
+
+	auto mappingMode = pTangentLayer->GetMappingMode();
+	// ByPolygonVertex : 폴리곤의 각 정점 별로 매핑
+	// ByControlPoint : 컨트롤 포인트 별로 매핑
+	// ByPolygon : 폴리곤 별로 매핑
+	// TODO : 매핑 방법별로 별도 처리를 해줘야 함. 일단은 ByPolygonVertex만 처리.
+	ASSERT(mappingMode == fbxsdk::FbxLayerElement::eByPolygonVertex, "mappingMode is not ByPolygonVertex");
+
+	int elementCount = elementTangent.GetCount();
+
+	outVector->reserve(elementCount);
+
+	for (int i = 0; i < elementCount; ++i)
+	{
+		int index = i;
+		if (pIndices != nullptr)
+		{
+			index = pIndices->GetAt(i);
+		}
+
+		fbxsdk::FbxVector4 tangent = elementTangent.GetAt(index);
+		outVector->emplace_back(tangent.mData[0], tangent.mData[1], tangent.mData[2]);
+	}
+}
+
+void flt::FBXLoader::GetBinormal(fbxsdk::FbxLayerElementBinormal* pBinormalLayer, std::vector<Vector3f>* outVector)
+{
+	ASSERT(pBinormalLayer, "pBinormalLayer is nullptr");
+
+	fbxsdk::FbxLayerElementArrayTemplate<fbxsdk::FbxVector4>& elementBinormal = pBinormalLayer->GetDirectArray();
+	fbxsdk::FbxLayerElementArrayTemplate<int>* pIndices = nullptr;
+
+	auto referenceMode = pBinormalLayer->GetReferenceMode();
+	if (referenceMode == fbxsdk::FbxLayerElement::eIndexToDirect || referenceMode == fbxsdk::FbxLayerElement::eIndex)
+	{
+		pIndices = &pBinormalLayer->GetIndexArray();
+	}
+
+	auto mappingMode = pBinormalLayer->GetMappingMode();
+	// ByPolygonVertex : 폴리곤의 각 정점 별로 매핑
+	// ByControlPoint : 컨트롤 포인트 별로 매핑
+	// ByPolygon : 폴리곤 별로 매핑
+	// TODO : 매핑 방법별로 별도 처리를 해줘야 함. 일단은 ByPolygonVertex만 처리.
+	ASSERT(mappingMode == fbxsdk::FbxLayerElement::eByPolygonVertex, "mappingMode is not ByPolygonVertex");
+
+	int elementCount = elementBinormal.GetCount();
+
+	outVector->reserve(elementCount);
+
+	for (int i = 0; i < elementCount; ++i)
+	{
+		int index = i;
+		if (pIndices != nullptr)
+		{
+			index = pIndices->GetAt(i);
+		}
+
+		fbxsdk::FbxVector4 binormal = elementBinormal.GetAt(index);
+		outVector->emplace_back(binormal.mData[0], binormal.mData[1], binormal.mData[2]);
+	}
 }
 
 void flt::FBXLoader::PrintNodeRecursive(fbxsdk::FbxNode* pNode, int depth)

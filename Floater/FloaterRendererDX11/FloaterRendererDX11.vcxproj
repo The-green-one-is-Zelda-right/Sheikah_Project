@@ -25,6 +25,7 @@
     <ClCompile Include="DX11VertexShader.cpp" />
     <ClCompile Include="DX11Mesh.cpp" />
     <ClCompile Include="DX11Node.cpp" />
+    <ClCompile Include="Font.cpp" />
     <ClCompile Include="RendererDX11.cpp" />
     <ClCompile Include="TestBuilder.cpp" />
   </ItemGroup>
@@ -33,6 +34,7 @@
     <ClInclude Include="DX11PSConstantBuffer.h" />
     <ClInclude Include="DX11VertexShader.h" />
     <ClInclude Include="DX11VSConstantBuffer.h" />
+    <ClInclude Include="Font.h" />
     <ClInclude Include="include\CreateRenderer.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Material.h" />
