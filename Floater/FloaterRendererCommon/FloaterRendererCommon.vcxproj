@@ -33,6 +33,8 @@
     <ClInclude Include="include\RawAnimation.h" />
     <ClInclude Include="include\RawSkin.h" />
     <ClInclude Include="RawShader.h" />
+    <ClInclude Include="VertedDataLayer.h" />
+    <ClInclude Include="VertexNormalData.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FloaterMath\FloaterMath.vcxproj">
@@ -50,6 +52,7 @@
     <ClCompile Include="RawNode.cpp" />
     <ClCompile Include="ResourceMgr.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="VertexNormalData.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

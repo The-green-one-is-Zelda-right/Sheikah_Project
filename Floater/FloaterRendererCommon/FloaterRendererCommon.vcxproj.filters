@@ -22,6 +22,9 @@
     <Filter Include="RawData">
       <UniqueIdentifier>{d6b8fb00-175e-4740-bb81-0d86d1a5ea02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Loader\VertexData">
+      <UniqueIdentifier>{ab203090-c065-4c5d-93cf-3d27bf80675f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Transform.h">
@@ -66,6 +69,12 @@
     <ClInclude Include="CoordSystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="VertexNormalData.h">
+      <Filter>Loader\VertexData</Filter>
+    </ClInclude>
+    <ClInclude Include="VertedDataLayer.h">
+      <Filter>Loader\VertexData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">
@@ -88,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="CoordSystem.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexNormalData.cpp">
+      <Filter>Loader\VertexData</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

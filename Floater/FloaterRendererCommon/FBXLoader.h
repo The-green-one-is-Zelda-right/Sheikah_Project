@@ -39,11 +39,13 @@ namespace flt
 		bool CreateMesh(fbxsdk::FbxMesh& mesh, RawMesh** outMesh);
 		bool CreateAnimation(fbxsdk::FbxNode& node, RawAnimation** outNode);
 
-		void GetNormal(fbxsdk::FbxLayerElementNormal* pNormalLayer, std::vector<Vector3f>* outVector);
-		void GetUV(fbxsdk::FbxLayerElementUV* pUVLayer, std::vector<Vector2f>* outVector);
-		void GetColor(fbxsdk::FbxLayerElementVertexColor* pColorLayer, std::vector<Vector4f>* outVector);
-		void GetTangent(fbxsdk::FbxLayerElementTangent* pTangentLayer, std::vector<Vector3f>* outVector);
-		void GetBinormal(fbxsdk::FbxLayerElementBinormal* pBinormalLayer, std::vector<Vector3f>* outVector);
+		void GetVertexPosition(const fbxsdk::FbxMesh& mesh, std::vector<Vector3f>* outVector);
+		void GetIndex(const fbxsdk::FbxMesh& mesh, std::vector<int>* outVector);
+		void GetVertexNormal(const fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector3f>>* outVector);
+		void GetVertexUV(const fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector2f>>* outVector);
+		void GetVertexColor(fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector4f>>* outVector);
+		void GetVertexTangent(fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector3f>>* outVector);
+		void GetVertexBinormal(fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector3f>>* outVector);
 
 		void PrintNodeRecursive(fbxsdk::FbxNode* pNode, int depth);
 		void PrintNodeVertex(fbxsdk::FbxNode* pNode);
