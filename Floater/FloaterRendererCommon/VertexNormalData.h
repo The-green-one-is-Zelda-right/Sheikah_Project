@@ -1,7 +1,12 @@
 ﻿#pragma once
 
 #include "../FloaterMath/include/Vector3f.h"
+#pragma warning(push)
+#pragma warning(disable: 26813 26495)
+#define FBXSDK_SHARED
+#define FBXSDK_NAMESPACE_USING 0
 #include "fbxsdk.h"
+#pragma warning (pop)
 #include <Vector>
 
 namespace flt

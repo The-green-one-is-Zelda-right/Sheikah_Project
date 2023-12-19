@@ -260,8 +260,8 @@ bool flt::FBXLoader::CreateMesh(fbxsdk::FbxMesh& mesh, RawMesh** outMesh)
 	std::vector<Vector3f> testPositionVector;
 	GetVertexPosition(mesh, &testPositionVector);
 
-	std::vector<int> testIndexVector;
-	GetIndex(mesh, &testIndexVector);
+	//std::vector<int> testIndexVector;
+	//GetIndex(mesh, &testIndexVector);
 
 	std::vector<std::vector<Vector3f>> testNormalVector;
 	GetVertexNormal(mesh, &testNormalVector);
@@ -274,7 +274,7 @@ bool flt::FBXLoader::CreateMesh(fbxsdk::FbxMesh& mesh, RawMesh** outMesh)
 
 	std::vector<std::vector<Vector3f>> testTangentVector;
 	GetVertexTangent(mesh, &testTangentVector);
-	
+
 	std::vector<std::vector<Vector3f>> testBinormalVector;
 	GetVertexBinormal(mesh, &testBinormalVector);
 
@@ -328,11 +328,36 @@ void flt::FBXLoader::GetVertexPosition(const fbxsdk::FbxMesh& mesh, std::vector<
 {
 	ASSERT(outVector, "outVector is nullptr");
 
-	int vertexCount = mesh.GetControlPointsCount();
-	outVector->reserve(vertexCount);
-	for (int i = 0; i < vertexCount; ++i)
+	// 먼저 인덱스를 모두 가져옴.
+	const int polygonCount = mesh.GetPolygonCount();
+	const int indexCount = polygonCount * 3;
+	//int polygonVertexCount = mesh.GetPolygonVertexCount();
+
+	std::vector<int> indexVector;
+	indexVector.reserve(indexCount);
+	for (int i = 0; i < polygonCount; ++i)
 	{
-		auto vertex = mesh.GetControlPointAt(i);
+		int polygonSize = mesh.GetPolygonSize(i);
+		ASSERT(polygonSize == 3, "polygonSize is not 3");
+
+		if (polygonSize != 3)
+		{
+			return;
+		}
+
+		for (int j = 0; j < polygonSize; ++j)
+		{
+			int index = mesh.GetPolygonVertex(i, j); // 인덱스 버퍼에 들어갈 것.
+			indexVector.push_back(index);
+		}
+	}
+
+	int vertexCount = mesh.GetControlPointsCount();
+	outVector->reserve(indexCount);
+	for (int i = 0; i < indexCount; ++i)
+	{
+		auto vertex = mesh.GetControlPointAt(indexVector[i]);
+		ASSERT(vertex.mData[3] == 1.0f || vertex.mData[3] == 0.0f, "vertex.w is not 1.0f or 0.0f");
 		outVector->emplace_back(vertex.mData[0], vertex.mData[1], vertex.mData[2]);
 	}
 }
@@ -376,11 +401,13 @@ void flt::FBXLoader::GetVertexNormal(const fbxsdk::FbxMesh& mesh, std::vector<st
 
 		fbxsdk::FbxLayerElementArrayTemplate<fbxsdk::FbxVector4>& elementNormal = normalLayer->GetDirectArray();
 		fbxsdk::FbxLayerElementArrayTemplate<int>* pIndices = nullptr;
+		int elementCount = elementNormal.GetCount();
 
 		auto referenceMode = normalLayer->GetReferenceMode();
 		if (referenceMode == fbxsdk::FbxLayerElement::eIndexToDirect || referenceMode == fbxsdk::FbxLayerElement::eIndex)
 		{
 			pIndices = &normalLayer->GetIndexArray();
+			elementCount = pIndices->GetCount();
 		}
 
 		auto mappingMode = normalLayer->GetMappingMode();
@@ -390,9 +417,9 @@ void flt::FBXLoader::GetVertexNormal(const fbxsdk::FbxMesh& mesh, std::vector<st
 		// TODO : 매핑 방법별로 별도 처리를 해줘야 함. 일단은 ByPolygonVertex만 처리.
 		ASSERT(mappingMode == fbxsdk::FbxLayerElement::eByPolygonVertex, "mappingMode is not ByPolygonVertex");
 
-		int elementCount = elementNormal.GetCount();
-
 		(*outVector)[i].reserve(elementCount);
+
+		std::cout << "normalIndex : " << std::endl;
 
 		for (int j = 0; j < elementCount; ++j)
 		{
@@ -401,7 +428,7 @@ void flt::FBXLoader::GetVertexNormal(const fbxsdk::FbxMesh& mesh, std::vector<st
 			{
 				index = pIndices->GetAt(j);
 			}
-
+			std::cout << index << std::endl;
 			fbxsdk::FbxVector4 normal = elementNormal.GetAt(index);
 			(*outVector)[i].emplace_back(normal.mData[0], normal.mData[1], normal.mData[2]);
 		}
@@ -421,18 +448,21 @@ void flt::FBXLoader::GetVertexUV(const fbxsdk::FbxMesh& mesh, std::vector<std::v
 
 		fbxsdk::FbxLayerElementArrayTemplate<fbxsdk::FbxVector2>& elementUV = pUVLayer->GetDirectArray();
 		fbxsdk::FbxLayerElementArrayTemplate<int>* pIndices = nullptr;
+		int elementCount = elementUV.GetCount();
 
 		auto referenceMode = pUVLayer->GetReferenceMode();
 		if (referenceMode == fbxsdk::FbxLayerElement::eIndexToDirect || referenceMode == fbxsdk::FbxLayerElement::eIndex)
 		{
+			// 인덱스로 참조중일 경우 인덱스의 숫자가 실제 uv의 갯수보다 많을 수 있음.
 			pIndices = &pUVLayer->GetIndexArray();
+			elementCount = pIndices->GetCount();
 		}
 
 		auto mappingMode = pUVLayer->GetMappingMode();
 		// TODO : 매핑 방법 별로 별도 처리를 해줘야 함. 일단은 ByPolygonVertex만 처리.
 		ASSERT(mappingMode == fbxsdk::FbxLayerElement::eByPolygonVertex, "mappingMode is not ByPolygonVertex");
 
-		int elementCount = elementUV.GetCount();
+
 
 		(*outVector)[i].reserve(elementCount);
 
@@ -460,14 +490,16 @@ void flt::FBXLoader::GetVertexColor(fbxsdk::FbxMesh& mesh, std::vector<std::vect
 	for (int i = 0; i < colorLayerCount; ++i)
 	{
 		fbxsdk::FbxLayerElementVertexColor* colorLayer = mesh.GetElementVertexColor(i);
-		
+
 		fbxsdk::FbxLayerElementArrayTemplate<fbxsdk::FbxColor>& elementColor = colorLayer->GetDirectArray();
 		fbxsdk::FbxLayerElementArrayTemplate<int>* pIndices = nullptr;
+		int elementCount = elementColor.GetCount();
 
 		auto referenceMode = colorLayer->GetReferenceMode();
 		if (referenceMode == fbxsdk::FbxLayerElement::eIndexToDirect || referenceMode == fbxsdk::FbxLayerElement::eIndex)
 		{
 			pIndices = &colorLayer->GetIndexArray();
+			elementCount = pIndices->GetCount();
 		}
 
 		auto mappingMode = colorLayer->GetMappingMode();
@@ -477,7 +509,6 @@ void flt::FBXLoader::GetVertexColor(fbxsdk::FbxMesh& mesh, std::vector<std::vect
 		// TODO : 매핑 방법별로 별도 처리를 해줘야 함. 일단은 ByPolygonVertex만 처리.
 		ASSERT(mappingMode == fbxsdk::FbxLayerElement::eByPolygonVertex, "mappingMode is not ByPolygonVertex");
 
-		int elementCount = elementColor.GetCount();
 
 		(*outVector)[i].reserve(elementCount);
 
@@ -495,7 +526,7 @@ void flt::FBXLoader::GetVertexColor(fbxsdk::FbxMesh& mesh, std::vector<std::vect
 		}
 	}
 
-	
+
 }
 
 void flt::FBXLoader::GetVertexTangent(fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector3f>>* outVector)
@@ -511,11 +542,13 @@ void flt::FBXLoader::GetVertexTangent(fbxsdk::FbxMesh& mesh, std::vector<std::ve
 
 		fbxsdk::FbxLayerElementArrayTemplate<fbxsdk::FbxVector4>& elementTangent = pTangentLayer->GetDirectArray();
 		fbxsdk::FbxLayerElementArrayTemplate<int>* pIndices = nullptr;
+		int elementCount = elementTangent.GetCount();
 
 		auto referenceMode = pTangentLayer->GetReferenceMode();
 		if (referenceMode == fbxsdk::FbxLayerElement::eIndexToDirect || referenceMode == fbxsdk::FbxLayerElement::eIndex)
 		{
 			pIndices = &pTangentLayer->GetIndexArray();
+			elementCount = pIndices->GetCount();
 		}
 
 		auto mappingMode = pTangentLayer->GetMappingMode();
@@ -525,7 +558,6 @@ void flt::FBXLoader::GetVertexTangent(fbxsdk::FbxMesh& mesh, std::vector<std::ve
 		// TODO : 매핑 방법별로 별도 처리를 해줘야 함. 일단은 ByPolygonVertex만 처리.
 		ASSERT(mappingMode == fbxsdk::FbxLayerElement::eByPolygonVertex, "mappingMode is not ByPolygonVertex");
 
-		int elementCount = elementTangent.GetCount();
 
 		(*outVector)[i].reserve(elementCount);
 
@@ -556,11 +588,13 @@ void flt::FBXLoader::GetVertexBinormal(fbxsdk::FbxMesh& mesh, std::vector<std::v
 
 		fbxsdk::FbxLayerElementArrayTemplate<fbxsdk::FbxVector4>& elementBinormal = pBinormalLayer->GetDirectArray();
 		fbxsdk::FbxLayerElementArrayTemplate<int>* pIndices = nullptr;
+		int elementCount = elementBinormal.GetCount();
 
 		auto referenceMode = pBinormalLayer->GetReferenceMode();
 		if (referenceMode == fbxsdk::FbxLayerElement::eIndexToDirect || referenceMode == fbxsdk::FbxLayerElement::eIndex)
 		{
 			pIndices = &pBinormalLayer->GetIndexArray();
+			elementCount = pIndices->GetCount();
 		}
 
 		auto mappingMode = pBinormalLayer->GetMappingMode();
@@ -570,7 +604,6 @@ void flt::FBXLoader::GetVertexBinormal(fbxsdk::FbxMesh& mesh, std::vector<std::v
 		// TODO : 매핑 방법별로 별도 처리를 해줘야 함. 일단은 ByPolygonVertex만 처리.
 		ASSERT(mappingMode == fbxsdk::FbxLayerElement::eByPolygonVertex, "mappingMode is not ByPolygonVertex");
 
-		int elementCount = elementBinormal.GetCount();
 
 		(*outVector)[i].reserve(elementCount);
 

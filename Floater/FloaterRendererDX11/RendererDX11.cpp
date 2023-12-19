@@ -1,9 +1,7 @@
 ﻿#include "RendererDX11.h"
 #include "../FloaterUtil/include/FloaterMacro.h"
 #include "DX11VSConstantBuffer.h"
-
 #include "DX11Mesh.h"
-
 #include <DirectXColors.h>
 
 #include <new>
@@ -323,7 +321,7 @@ flt::HOBJECT flt::RendererDX11::RegisterObject(RendererObject& renderable)
 	return true;
 }
 
-bool flt::RendererDX11::DeregisterObject(RendererObject& renderable)
+bool flt::RendererDX11::DeregisterObject(HOBJECT renderable)
 {
 	return false;
 }

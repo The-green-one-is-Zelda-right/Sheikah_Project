@@ -39,6 +39,7 @@ namespace flt
 		bool CreateMesh(fbxsdk::FbxMesh& mesh, RawMesh** outMesh);
 		bool CreateAnimation(fbxsdk::FbxNode& node, RawAnimation** outNode);
 
+
 		void GetVertexPosition(const fbxsdk::FbxMesh& mesh, std::vector<Vector3f>* outVector);
 		void GetIndex(const fbxsdk::FbxMesh& mesh, std::vector<int>* outVector);
 		void GetVertexNormal(const fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector3f>>* outVector);

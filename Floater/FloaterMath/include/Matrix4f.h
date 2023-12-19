@@ -109,7 +109,7 @@ namespace flt
 		}
 		Matrix4f operator*(const Matrix4f& rhs) const noexcept
 		{
-			Matrix4f temp = *this;
+			Matrix4f temp =* this;
 			temp *= rhs;
 			return temp;
 		}
@@ -200,7 +200,7 @@ namespace flt
 
 			// det가 엡실론보다 작을 경우에는 역행렬이 존재하지 않는다.
 			// 단위행렬을 리턴한다.
-			float epsilon = 0.00000001f;
+			float epsilon = FLOAT_EPSILON;
 			if (det < epsilon && det > -epsilon)
 			{
 				//return Matrix4f

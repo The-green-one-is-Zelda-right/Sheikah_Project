@@ -40,7 +40,7 @@ namespace flt
 
 		virtual bool Render(float deltaTime) = 0;
 		virtual HOBJECT RegisterObject(RendererObject& renderable) = 0;
-		virtual bool DeregisterObject(RendererObject& renderable) = 0;
+		virtual bool DeregisterObject(HOBJECT renderable) = 0;
 
 		virtual bool Test() { return false; };
 	};

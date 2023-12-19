@@ -24,6 +24,11 @@
 #include "../FloaterRendererCommon/CoordSystem.h"
 #include <unordered_map>
 #include <filesystem>
+
+#include "../FloaterMath/include/Common.h"
+#include "../FloaterMath/include/Vector2f.h"
+#include "../FloaterMath/include/Vector3f.h"
+
 #pragma endregion
 
 #include "../ZeldaGraphicsAdapter/include/IZeldaRendererAdapter.h"
@@ -69,7 +74,6 @@ void TestVectorPrint(const flt::Vector3f& up, const flt::Vector3f& front, const 
 		<< " rignt: " << right.x + right.y + right.z << std::endl;
 
 	std::cout << "--------------------------------" << std::endl;
-
 }
 
 int main()
@@ -81,6 +85,13 @@ int main()
 	{
 		using namespace flt;
 		using namespace flt::test;
+
+		Vector2f vec2f_1{ 1.0f + FLOAT_EPSILON, 2.0f };
+		Vector2f vec2f_2{ 1.0f, 2.0f };
+
+		std::cout << "vec2f_1 < vec2f_2 : " << ((vec2f_1 <=> vec2f_2) < 0) << std::endl;
+		std::cout << "vec2f_1 > vec2f_2 : " << ((vec2f_1 <=> vec2f_2) > 0) << std::endl;
+		std::cout << "vec2f_1 == vec2f_2 : " << ((vec2f_1 <=> vec2f_2) == 0) << std::endl;
 
 		Quaternion q1{ 0.0f, 0.0f, 0.0f, 1.0f };
 		q1.SetEuler(1.f, 2.f, 3.f);
@@ -172,7 +183,7 @@ int main()
 
 	flt::RendererObject childRenderable(childNode, isDraw, L"testChildObject");
 	renderable.name = L"testChild";
-	renderer->RegisterObject(childRenderable);
+	auto objectID = renderer->RegisterObject(childRenderable);
 
 	//ASSERT(renderer, "렌더러 생성 실패");
 
@@ -262,6 +273,6 @@ int main()
 		Sleep(10);
 	}
 
-	renderer->DeregisterObject(renderable);
+	renderer->DeregisterObject(objectID);
 	platform.Finalize();
 }

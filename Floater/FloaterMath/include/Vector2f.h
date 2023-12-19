@@ -1,6 +1,8 @@
 ﻿#pragma once
 
+#include "Common.h"
 #include <cmath>
+#include <compare>
 
 namespace flt
 {
@@ -14,6 +16,41 @@ namespace flt
 		constexpr Vector2f& operator=(Vector2f&&) noexcept = default;
 		constexpr Vector2f& operator=(const Vector2f&) noexcept = default;
 		~Vector2f() noexcept = default;
+
+		// 두 수중 큰 값 * epsilon 값보다 차이가 적다면 같은것으로 간주.
+		// x, y 우선순위로 비교.
+		std::partial_ordering operator<=>(const Vector2f& rhs) const noexcept
+		{
+			std::partial_ordering order = std::partial_ordering::unordered;
+
+			float epsilonX = std::fmaxf(x, rhs.x) * FLOAT_EPSILON;
+			if (x - rhs.x < -epsilonX)
+			{
+				order = std::partial_ordering::less;
+			}
+			else if (x - rhs.x > epsilonX)
+			{
+				order = std::partial_ordering::greater;
+			}
+			else
+			{
+				float epsilonY = std::fmaxf(y, rhs.y) * FLOAT_EPSILON;
+				if (y - rhs.y < -epsilonY)
+				{
+					order = std::partial_ordering::less;
+				}
+				else if (y - rhs.y > epsilonY)
+				{
+					order = std::partial_ordering::greater;
+				}
+				else
+				{
+					order = std::partial_ordering::equivalent;
+				}
+			}
+
+			return order;
+		}
 
 		Vector2f& operator+=(const Vector2f& rhs) noexcept
 		{

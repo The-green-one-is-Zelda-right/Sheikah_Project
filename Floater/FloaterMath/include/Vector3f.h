@@ -1,7 +1,8 @@
 ﻿#pragma once
 
+#include "Common.h"
 #include <cmath>
-
+#include <compare>
 
 
 namespace flt
@@ -22,6 +23,53 @@ namespace flt
 		//operator Vector4f() const noexcept;
 
 		bool operator==(const Vector3f& rhs) const noexcept;
+
+		// 두 수중 큰 값 * epsilon 값보다 차이가 적다면 같은것으로 간주.
+		// x, y, z 우선순위로 비교.
+		std::partial_ordering operator<=>(const Vector3f& rhs) const noexcept
+		{
+			std::partial_ordering order = std::partial_ordering::unordered;
+
+			float epsilonX = std::fmaxf(x, rhs.x) * FLOAT_EPSILON;
+			if (x - rhs.x < -epsilonX)
+			{
+				order = std::partial_ordering::less;
+			}
+			else if (x - rhs.x > epsilonX)
+			{
+				order = std::partial_ordering::greater;
+			}
+			else
+			{
+				float epsilonY = std::fmaxf(y, rhs.y) * FLOAT_EPSILON;
+				if (y - rhs.y < -epsilonY)
+				{
+					order = std::partial_ordering::less;
+				}
+				else if (y - rhs.y > epsilonY)
+				{
+					order = std::partial_ordering::greater;
+				}
+				else
+				{
+					float epsilonZ = std::fmaxf(z, rhs.z) * FLOAT_EPSILON;
+					if (z - rhs.z < -epsilonZ)
+					{
+						order = std::partial_ordering::less;
+					}
+					else if (z - rhs.z > epsilonZ)
+					{
+						order = std::partial_ordering::greater;
+					}
+					else
+					{
+						order = std::partial_ordering::equivalent;
+					}
+				}
+			}
+
+			return order;
+		}
 
 		constexpr Vector3f& operator+=(const Vector3f& rhs) noexcept
 		{

@@ -10,19 +10,23 @@ namespace flt
 {
 	struct Vertex
 	{
-		using type = struct
+		using type = struct _Type
 		{
-			Vector3f Pos;
-			Vector2f Tex;
-			Vector3f Normal;
+			Vector3f pos;
+			Vector2f tex;
+			Vector3f normal;
+			Vector3f binormal;
+			Vector3f tangent;
 		};
 
-		static constexpr unsigned int numElements = 3;
+		static constexpr unsigned int numElements = 5;
 		static constexpr D3D11_INPUT_ELEMENT_DESC layout[numElements] =
 		{
-			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(type, Pos), D3D11_INPUT_PER_VERTEX_DATA, 0},
-			{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(type, Tex), D3D11_INPUT_PER_VERTEX_DATA, 0},
-			{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(type, Normal), D3D11_INPUT_PER_VERTEX_DATA, 0}
+			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(type, pos), D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(type, tex), D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(type, normal), D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(type, binormal), D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(type, tangent), D3D11_INPUT_PER_VERTEX_DATA, 0}
 		};
 	};
 
@@ -38,7 +42,7 @@ namespace flt
 			texture(nullptr),
 			sampler(nullptr)
 		{}
-		
+
 		void Release();
 
 		Resource<DX11VertexShader> vertexShader;

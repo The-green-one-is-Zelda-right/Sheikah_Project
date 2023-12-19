@@ -155,7 +155,7 @@ namespace flt
 		Matrix3f Inverse() const
 		{
 			float det = Determinant();
-			float epsilon = 0.00000001f;
+			float epsilon = FLOAT_EPSILON;
 			if (det < epsilon && det > -epsilon)
 			{
 				return Matrix3f::Identity();
