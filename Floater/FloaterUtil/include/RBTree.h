@@ -41,11 +41,11 @@ namespace flt
 		};
 		struct Node
 		{
-			Node() : Node(Key{}, Value{}, Color::RED, &s_nil, &s_nil, &s_nil) {}
+			Node() : Node(Key{}, Value{}, Color::RED, & s_nil, & s_nil, & s_nil) {}
 			Node(Key key, Value value) : Node(key, value, Color::RED, &s_nil, &s_nil, &s_nil) {}
 			Node(Key key, Value value, Color color, Node* pParent, Node* pLeft, Node* pRight) :
 				key(key), value(value), color(color),
-				pParent(pParent), pLeft(pLeft), pRight(pRight) 
+				pParent(pParent), pLeft(pLeft), pRight(pRight)
 			{
 				if (pParent == nullptr)
 				{
@@ -117,12 +117,10 @@ namespace flt
 
 		class iterator
 		{
+			friend class RBTree<Key, Value>;
 		public:
 			iterator() : iterator(nullptr) {}
 			iterator(Node* pNode) : _pNode(pNode) {}
-			//iterator(const iterator& other);
-			//iterator(iterator&& other) noexcept;
-			//~iterator();
 
 			bool operator==(const iterator& other)
 			{
@@ -248,7 +246,57 @@ namespace flt
 template<typename Key, typename Value>
 void flt::RBTree<Key, Value>::erase(ConstKeyRef_t key)
 {
-	ASSERT(false, "Not Implemented");
+	Node* pNode = Find(key)._pNode;
+
+	if (pNode == &s_nil)
+	{
+		return;
+	}
+
+	if (pNode->pLeft != &s_nil && pNode->pRight != &s_nil)
+	{
+		Node* pNext = pNode->pRight;
+		while (pNext->pLeft != &s_nil)
+		{
+			pNext = pNext->pLeft;
+		}
+
+		pNode->key = pNext->key;
+		pNode->value = pNext->value;
+		pNode = pNext;
+	}
+
+	Node* pChild = (pNode->pLeft == &s_nil) ? pNode->pRight : pNode->pLeft;
+
+	pChild->pParent = pNode->pParent;
+
+	if (pNode->pParent->pLeft == pNode)
+	{
+		pNode->pParent->pLeft = pChild;
+	}
+	else if (pNode->pParent->pRight == pNode)
+	{
+		pNode->pParent->pRight = pChild;
+	}
+
+	if (pNode->color == Color::BLACK)
+	{
+		if (pChild->color == Color::RED)
+		{
+			pChild->color = Color::BLACK;
+		}
+		else
+		{
+			delete_case1(pChild);
+		}
+	}
+
+	if(pNode->pParent == &s_nil)
+	{
+		_root = pChild;
+	}
+
+	_memoryPool.Free(pNode);
 	--_size;
 }
 
@@ -414,6 +462,125 @@ void flt::RBTree<Key, Value>::InsertCase5(Node* pNode)
 	}
 }
 
+
+template<typename Key, typename Value>
+void flt::RBTree<Key, Value>::delete_case1(Node* pNode)
+{
+	if (pNode->pParent != &s_nil)
+	{
+		delete_case2(pNode);
+	}
+}
+
+
+template<typename Key, typename Value>
+void flt::RBTree<Key, Value>::delete_case2(Node* pNode)
+{
+	Node* pSibling = pNode->GetSibling();
+	if (pSibling->color == Color::RED)
+	{
+		pNode->pParent->color = Color::RED;
+		pSibling->color = Color::BLACK;
+
+		if (pNode == pNode->pParent->pLeft)
+		{
+			RotateLeft(pNode->pParent);
+		}
+		else
+		{
+			RotateRight(pNode->pParent);
+		}
+	}
+	delete_case3(pNode);
+}
+
+template<typename Key, typename Value>
+void flt::RBTree<Key, Value>::delete_case3(Node* pNode)
+{
+	Node* pSibling = pNode->GetSibling();
+
+	if (pNode->pParent->color == Color::BLACK &&
+		pSibling->color == Color::BLACK &&
+		pSibling->pLeft->color == Color::BLACK &&
+		pSibling->pRight->color == Color::BLACK)
+	{
+		pSibling->color = Color::RED;
+		delete_case1(pNode->pParent);
+	}
+	else
+	{
+		delete_case4(pNode);
+	}
+}
+
+template<typename Key, typename Value>
+void flt::RBTree<Key, Value>::delete_case4(Node* pNode)
+{
+	Node* pSibling = pNode->GetSibling();
+
+	if (pNode->pParent->color == Color::RED &&
+		pSibling->color == Color::BLACK &&
+		pSibling->pLeft->color == Color::BLACK &&
+		pSibling->pRight->color == Color::BLACK)
+	{
+		pSibling->color = Color::RED;
+		pNode->pParent->color = Color::BLACK;
+	}
+	else
+	{
+		delete_case5(pNode);
+	}
+}
+
+template<typename Key, typename Value>
+void flt::RBTree<Key, Value>::delete_case5(Node* pNode)
+{
+	Node* pSibling = pNode->GetSibling();
+
+	if (pSibling->color == Color::BLACK)
+	{
+		if (pNode == pNode->pParent->pLeft &&
+			pSibling->pRight->color == Color::BLACK &&
+			pSibling->pLeft->color == Color::RED)
+		{
+			pSibling->color = Color::RED;
+			pSibling->pLeft->color = Color::BLACK;
+			RotateRight(pSibling);
+		}
+		else if (pNode == pNode->pParent->pRight &&
+			pSibling->pLeft->color == Color::BLACK &&
+			pSibling->pRight->color == Color::RED)
+		{
+			pSibling->color = Color::RED;
+			pSibling->pRight->color = Color::BLACK;
+			RotateLeft(pSibling);
+		}
+	}
+
+	delete_case6(pNode);
+}
+
+template<typename Key, typename Value>
+void flt::RBTree<Key, Value>::delete_case6(Node* pNode)
+{
+	Node* pSibling = pNode->GetSibling();
+
+	pSibling->color = pNode->pParent->color;
+	pNode->pParent->color = Color::BLACK;
+
+	if (pNode == pNode->pParent->pLeft)
+	{
+		pSibling->pRight->color = Color::BLACK;
+		RotateLeft(pNode->pParent);
+	}
+	else
+	{
+		pSibling->pLeft->color = Color::BLACK;
+		RotateRight(pNode->pParent);
+	}
+}
+
+
 template<typename Key, typename Value>
 bool flt::RBTree<Key, Value>::Insert(Key& key, const Value& value)
 {
@@ -567,7 +734,7 @@ void flt::RBTree<Key, Value>::Clear()
 
 
 template<typename Key, typename Value>
-flt::RBTree<Key, Value>::RBTree() : 
+flt::RBTree<Key, Value>::RBTree() :
 	RBTree(1024)
 {
 

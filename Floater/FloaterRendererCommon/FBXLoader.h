@@ -10,6 +10,8 @@
 #include "../FloaterMath/include/Vector2f.h"
 #include "../FloaterMath/include/Vector3f.h"
 #include "../FloaterMath/include/Vector4f.h"
+#include "../FloaterUtil/include/RBTree.h"
+#include "./include/RawMesh.h"
 #include <string>
 #include <vector>
 
@@ -57,5 +59,7 @@ namespace flt
 		fbxsdk::FbxIOSettings* _pIOSettings;
 		fbxsdk::FbxImporter* _importer;
 		fbxsdk::FbxScene* _scene;
+
+		flt::RBTree<RawVertex, int> _splitVertexMap;
 	};
 }

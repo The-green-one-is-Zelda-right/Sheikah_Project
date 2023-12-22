@@ -30,34 +30,37 @@ namespace flt
 		{
 			std::partial_ordering order = std::partial_ordering::unordered;
 
-			float epsilonX = std::fmaxf(x, rhs.x) * FLOAT_EPSILON;
-			if (x - rhs.x < -epsilonX)
+			float epsilonX = std::fabsf(std::fmaxf(x, rhs.x)) * FLOAT_EPSILON;
+			float sub = x - rhs.x;
+			if (sub < -epsilonX)
 			{
 				order = std::partial_ordering::less;
 			}
-			else if (x - rhs.x > epsilonX)
+			else if (sub > epsilonX)
 			{
 				order = std::partial_ordering::greater;
 			}
 			else
 			{
-				float epsilonY = std::fmaxf(y, rhs.y) * FLOAT_EPSILON;
-				if (y - rhs.y < -epsilonY)
+				float epsilonY = std::fabsf(std::fmaxf(y, rhs.y)) * FLOAT_EPSILON;
+				sub = y - rhs.y;
+				if (sub < -epsilonY)
 				{
 					order = std::partial_ordering::less;
 				}
-				else if (y - rhs.y > epsilonY)
+				else if (sub > epsilonY)
 				{
 					order = std::partial_ordering::greater;
 				}
 				else
 				{
-					float epsilonZ = std::fmaxf(z, rhs.z) * FLOAT_EPSILON;
-					if (z - rhs.z < -epsilonZ)
+					float epsilonZ = std::fabsf(std::fmaxf(z, rhs.z)) * FLOAT_EPSILON;
+					sub = z - rhs.z;
+					if (sub < -epsilonZ)
 					{
 						order = std::partial_ordering::less;
 					}
-					else if (z - rhs.z > epsilonZ)
+					else if (sub > epsilonZ)
 					{
 						order = std::partial_ordering::greater;
 					}

@@ -86,12 +86,8 @@ int main()
 		using namespace flt;
 		using namespace flt::test;
 
-		Vector2f vec2f_1{ 1.0f + FLOAT_EPSILON, 2.0f };
-		Vector2f vec2f_2{ 1.0f, 2.0f };
-
-		std::cout << "vec2f_1 < vec2f_2 : " << ((vec2f_1 <=> vec2f_2) < 0) << std::endl;
-		std::cout << "vec2f_1 > vec2f_2 : " << ((vec2f_1 <=> vec2f_2) > 0) << std::endl;
-		std::cout << "vec2f_1 == vec2f_2 : " << ((vec2f_1 <=> vec2f_2) == 0) << std::endl;
+		//TesterRBTree tester;
+		//tester.Test();
 
 		Quaternion q1{ 0.0f, 0.0f, 0.0f, 1.0f };
 		q1.SetEuler(1.f, 2.f, 3.f);

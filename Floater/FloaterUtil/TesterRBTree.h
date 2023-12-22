@@ -28,6 +28,8 @@ namespace flt
 			void Inorder(Node* pNode, std::vector<int>* outVector);
 			void Postorder(Node* pNode, std::vector<int>* outVector);
 
+			bool CheckDepth(flt::RBTree<int, int>& tree);
+
 			void CheckDepthRecursive(Node* pNode, int depth, int* outMinDepth, int* outMaxDepth);
 			bool CheckBlackDepthRecursive(Node* pNode, int depth, int* outBlackDepth);
 

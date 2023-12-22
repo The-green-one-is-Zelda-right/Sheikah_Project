@@ -23,7 +23,7 @@ namespace flt
 		{
 			std::partial_ordering order = std::partial_ordering::unordered;
 
-			float epsilonX = std::fmaxf(x, rhs.x) * FLOAT_EPSILON;
+			float epsilonX = std::fabsf(std::fmaxf(x, rhs.x)) * FLOAT_EPSILON;
 			if (x - rhs.x < -epsilonX)
 			{
 				order = std::partial_ordering::less;
@@ -34,7 +34,7 @@ namespace flt
 			}
 			else
 			{
-				float epsilonY = std::fmaxf(y, rhs.y) * FLOAT_EPSILON;
+				float epsilonY = std::fabsf(std::fmaxf(y, rhs.y)) * FLOAT_EPSILON;
 				if (y - rhs.y < -epsilonY)
 				{
 					order = std::partial_ordering::less;

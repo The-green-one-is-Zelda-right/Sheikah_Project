@@ -278,6 +278,31 @@ bool flt::FBXLoader::CreateMesh(fbxsdk::FbxMesh& mesh, RawMesh** outMesh)
 	std::vector<std::vector<Vector3f>> testBinormalVector;
 	GetVertexBinormal(mesh, &testBinormalVector);
 
+	for (int i = 0; i < testPositionVector.size(); ++i)
+	{
+		RawVertex vertex;
+		vertex.pos = testPositionVector[i];
+		vertex.normal = testNormalVector[0][i];
+		vertex.tex = testUvVector[0][i];
+		//vertex.tangent = testTangentVector[0][i];
+		//vertex.binormal = testBinormalVector[0][i];
+
+		auto iter = _splitVertexMap.Find(vertex);
+		int index = -1;
+		if (iter == _splitVertexMap.end())
+		{
+			index = (*outMesh)->vertices.size();
+			_splitVertexMap.Insert(vertex, index);
+			(*outMesh)->vertices.push_back(vertex);
+		}
+		else
+		{
+			index = iter->value;
+		}
+		(*outMesh)->indices.push_back(index);
+	}
+
+	_splitVertexMap.Clear();
 
 	auto materialCount = mesh.GetElementMaterialCount();
 	auto materialElement = mesh.GetElementMaterial();
