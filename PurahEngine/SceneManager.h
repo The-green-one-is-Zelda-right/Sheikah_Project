@@ -12,7 +12,7 @@ namespace PurahEngine
 	class Camera;
 	class Transform;
 
-	class SceneManager
+	class PURAHENGINE_API SceneManager
 	{
 	private:
 		SceneManager();
@@ -30,6 +30,8 @@ namespace PurahEngine
 		void SetMainCamera(Camera * camera);
 
 		void SetName(std::wstring name);
+
+		void Update();
 
 	private:
 		void Initialize();

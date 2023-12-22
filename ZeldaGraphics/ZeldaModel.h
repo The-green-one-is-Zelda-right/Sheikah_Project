@@ -5,32 +5,110 @@
 
 #include <vector>
 #include <string>
+#include <queue>
+#include <unordered_map>
+#include <algorithm>
 
-#include "ModelingData.h"
 #include "ZeldaGraphicsDefine.h"
+#include "FBXData.h"
+
+#include "ConstantBuffer.h"
 
 class ZeldaMesh;
-class ZeldaTexture;
+class ZeldaMaterial;
+class ZeldaShader;
+class ZeldaLight;
 
 class ZeldaModel
 {
+private:
+	struct Node
+	{
+		Node* parent;
+		std::vector<Node*> children;
+
+		std::wstring name;
+
+		std::vector<unsigned int> meshes;
+
+		DirectX::XMMATRIX finalTM;
+		DirectX::XMMATRIX worldMatrix;
+		DirectX::XMMATRIX transformMatrix;
+		DirectX::XMMATRIX offsetMatrix;
+	};
+
+	struct Mesh
+	{
+		ZeldaMesh* meshData;
+
+		unsigned int materialIndex;
+	};
+
+	struct AnimationKeyInfo
+	{
+		DirectX::XMVECTOR scale;
+		DirectX::XMVECTOR rotation;
+		DirectX::XMVECTOR position;
+	};
+
+	struct Animation
+	{
+		double duration; // Æ½´ç ½Ã°£
+		double tickPerSecond; // ½Ã°£´ç Æ½
+
+		// key: nodeName
+		// value: map<time, Matrix> 
+		std::map<std::wstring, std::map<double, AnimationKeyInfo>> animationKey;
+	};
+
 public:
 	~ZeldaModel();
 
-	unsigned int GetMeshCount();
-	ZeldaMesh* GetMesh(unsigned int meshNum);
-	ZeldaTexture* GetTexture(unsigned int meshNum);
+	void Render(
+		ID3D11DeviceContext* deviceContext,
+		ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
+		ConstantBuffer<BoneBufferType, ShaderType::VertexShader>* boneConstBuffer,
+		ConstantBuffer<LightBufferType, ShaderType::PixelShader>* lightConstBuffer,
+		ConstantBuffer<UseBufferType, ShaderType::PixelShader>* useConstBuffer,
+		ConstantBuffer<ColorBufferType, ShaderType::PixelShader>* colorConstBuffer,
+		DirectX::XMMATRIX worldMatrix,
+		ZeldaShader* shader,
+		ZeldaLight* light,
+		const std::wstring& animationName,
+		float animationTime
+	);
+
+	std::vector<std::wstring> GetAnimationList();
+	std::vector<float> GetAnimationPlayTime();
 
 private:
-	ZeldaModel(ZNode* root, const std::vector<ZMesh*>& meshes, const std::vector<ZMaterial*>& materials, const std::vector<ZeldaMesh*>& zeldaMeshes, const std::vector<ZeldaTexture*>& zeldaTextures);
+	ZeldaModel(ID3D11Device* device, FBXLoader::Model* fbxModel);
 	ZeldaModel(const ZeldaModel& zeldaModel) = delete;
 
-	ZNode* root;
-	std::vector<ZMesh*> meshes;
-	std::vector<ZMaterial*> materials;
+	void CopyNode(Node* node, FBXLoader::Bone* bone, std::map<std::wstring, Node*>& nodeTable);
 
-	std::vector<ZeldaMesh*> zeldaMeshes;
-	std::vector<ZeldaTexture*> zeldaTextures;
+	void RenderAnimation(
+		ID3D11DeviceContext* deviceContext,
+		ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
+		ConstantBuffer<BoneBufferType, ShaderType::VertexShader>* boneConstBuffer,
+		ConstantBuffer<LightBufferType, ShaderType::PixelShader>* lightConstBuffer,
+		ConstantBuffer<UseBufferType, ShaderType::PixelShader>* useConstBuffer,
+		ConstantBuffer<ColorBufferType, ShaderType::PixelShader>* colorConstBuffer,
+		DirectX::XMMATRIX worldMatrix,
+		ZeldaShader* shader,
+		ZeldaLight* light,
+		const std::wstring& animationName,
+		float animationTime
+	);
+
+	Node* root;
+	std::vector<Node*> bones;
+	std::vector<ZeldaMesh*> meshes;
+	std::vector<unsigned int> materialIndex; // meshes[0]Àº materials[materialIndex[0]]À» °¡Áü
+	std::vector<ZeldaMaterial*> materials;
+	std::unordered_map<std::wstring, Animation*> animationTable;
+
+	bool updatedWorldMatrix;
 
 	friend class ResourceManager;
 };

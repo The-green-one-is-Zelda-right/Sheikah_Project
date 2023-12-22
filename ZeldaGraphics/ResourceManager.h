@@ -118,11 +118,6 @@ private:
 	ZeldaMesh* cubeMesh;
 	ZeldaShader* defaultShader;
 
-	void CopyNodeData(ZNode* node, const aiNode* assimpNode, const aiScene* assimpScene, const std::vector<ZMesh*>& meshes);
-	
-	// Return pair<vertexbuffer, indexbuffer>
-	std::pair<ID3D11Buffer*, ID3D11Buffer*> CreateBufferFromZMesh(ZMesh* mesh);
-
 	//singleton
 public:
 	static ResourceManager& GetInstance();

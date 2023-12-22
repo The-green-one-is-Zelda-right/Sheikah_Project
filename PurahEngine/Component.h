@@ -1,8 +1,11 @@
 #pragma once
+#include "PurahEngineAPI.h"
 
 namespace PurahEngine
 {
-	class Component
+	class GameObject;
+
+	class PURAHENGINE_API Component
 	{
 	protected:
 		Component();
@@ -47,7 +50,10 @@ namespace PurahEngine
 		// 마우스가 오브젝트에서 벗어났을 때 호출
 		virtual void OnMouseExit();
 
+		GameObject* GetGameObject();
 
+	public:
+		GameObject* gameObject;
 	};
 }
 

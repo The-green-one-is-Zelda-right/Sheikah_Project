@@ -37,17 +37,25 @@ void PurahEngine::SceneManager::SetName(std::wstring name)
 	sceneName = name;
 }
 
+void PurahEngine::SceneManager::Update()
+{
+	for (PurahEngine::GameObject* object : objectList)
+	{
+		for (auto component : object->componentList)
+		{
+			component->Update();
+		}
+	}
+}
+
 void PurahEngine::SceneManager::Initialize()
 {
 	// 씬을 초기화할때 카메라를 씬에 생성해둔다.
 	if (mainCamera == nullptr)
 	{
-		//GameObject* object = CreateGameObject(L"MainCamera");
-		//Camera* tmp = object->AddComponent<Camera>();
-		//Transform* cameraTransform = object->GetComponent<Transform>();
-		//cameraTransform->SetLocalPosition(cameraPosition);
-		//tmp->UpdateCamera(cameraTransform->GetLocalMatrix(), 3.141592654f / 4.0f, 1.0f, 1000.0f);
-		//mainCamera = tmp;
+		GameObject* object = CreateGameObject(L"MainCamera");
+		Camera* tmp = object->AddComponent<Camera>();
+		mainCamera = tmp;
 	}
 }
 

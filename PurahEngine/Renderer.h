@@ -1,17 +1,23 @@
 #pragma once
-#include "IZeldaRenderer.h"
+#include "PurahEngineAPI.h"
+
 #include "Component.h"
+#include "IRenderer.h"
 
 namespace PurahEngine
 {
-	class Renderer : public Component, IZeldaRenderer
+	class PURAHENGINE_API Renderer : public Component, IRenderer
 	{
 	public:
 		Renderer();
 		~Renderer();
 
-	public:
-		virtual void Render(IZeldaRenderer* graphics) abstract;
+		virtual void Render(IZeldaRenderer* renderer) override;
+
+		void AddTexture(TextureID textureID);
+	private:
+		TextureID texture;
+
 	};
 }
 

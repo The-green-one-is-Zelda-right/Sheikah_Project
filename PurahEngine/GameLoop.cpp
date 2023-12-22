@@ -61,6 +61,7 @@ void PurahEngine::GameLoop::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gameNam
 	// SceneManager 초기화
 	PurahEngine::SceneManager::GetInstance().Initialize();
 
+	// PhysicsSysyem 초기화
 	PurahEngine::PhysicsSystem::GetInstance().Initialize();
 
 	rigidBody = PurahEngine::PhysicsSystem::GetInstance().CreateRigidBody(L"RigidBody");
@@ -107,11 +108,11 @@ void PurahEngine::GameLoop::Finalize()
 
 void PurahEngine::GameLoop::run()
 {
-	PurahEngine::PhysicsSystem::GetInstance().Simulation(1.f / 100.f);
+	PurahEngine::PhysicsSystem::GetInstance().Simulation(1.f / 600.f);
 	auto position = rigidBody->GetPosition();
 
-
 	PurahEngine::InputManager::Getinstance().Update();
+	PurahEngine::SceneManager::GetInstance().Update();
 
 	PurahEngine::GraphicsManager::GetInstance().Run();
 }

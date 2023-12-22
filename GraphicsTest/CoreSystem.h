@@ -76,6 +76,7 @@ private:
 	CameraID mainCameraID;
 	TextureID scdTextureID;
 	ModelID fbxID;
+	ModelID fbxID2;
 
 
 	//singleton

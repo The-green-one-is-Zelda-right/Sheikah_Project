@@ -2,6 +2,8 @@
 
 #include "ZeldaGraphicsAPI.h"
 
+#include <vector>
+
 class IZeldaRenderer;
 
 namespace ZeldaGraphics

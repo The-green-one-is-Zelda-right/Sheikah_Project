@@ -1,4 +1,7 @@
 #pragma once
+
+#include "PurahEngineAPI.h"
+
 #include <windows.h>
 #include <Eigen/core>
 #include <Eigen/dense>
@@ -17,15 +20,25 @@
 
 namespace PurahEngine
 {
-	class GraphicsManager
+	class Camera;
+	class Renderer;
+
+	class PURAHENGINE_API GraphicsManager
 	{
 	public:
 		void Initialize(HWND hWnd);
 		void Run();
 
+		IZeldaRenderer* GetRenderer();
+
+		void AddRenderer(Renderer* render);
+		void RemoveRenderer();
+
 	private:
 		HMODULE zeldaGraphicsDLL;
 		IZeldaRenderer* renderer;
+
+		std::vector<Renderer*> rendererList;
 
 	private:
 		GraphicsManager();

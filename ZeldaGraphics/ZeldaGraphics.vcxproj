@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="ConstantBufferManager.h" />
-    <ClInclude Include="FBXLoader.h" />
     <ClInclude Include="header\GraphicsResourceID.h" />
     <ClInclude Include="header\IZeldaRenderer.h" />
     <ClInclude Include="header\ZeldaGraphics.h" />
@@ -30,12 +29,16 @@
     <ClInclude Include="IDGenerator.h" />
     <ClInclude Include="IDrawable.h" />
     <ClInclude Include="MathConverter.h" />
-    <ClInclude Include="ModelingData.h" />
+    <ClInclude Include="ModelingData.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ZeldaCamera.h" />
     <ClInclude Include="ZeldaDX11Renderer.h" />
     <ClInclude Include="ZeldaGraphicsDefine.h" />
     <ClInclude Include="ZeldaLight.h" />
+    <ClInclude Include="ZeldaMaterial.h" />
     <ClInclude Include="ZeldaMesh.h" />
     <ClInclude Include="ZeldaModel.h" />
     <ClInclude Include="ZeldaShader.h" />
@@ -43,15 +46,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConstantBufferManager.cpp" />
-    <ClCompile Include="FBXLoader.cpp" />
     <ClCompile Include="IDGenerator.cpp" />
     <ClCompile Include="MathConverter.cpp" />
-    <ClCompile Include="ModelingData.cpp" />
+    <ClCompile Include="ModelingData.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="ZeldaCamera.cpp" />
     <ClCompile Include="ZeldaDX11Renderer.cpp" />
     <ClCompile Include="ZeldaGraphics.cpp" />
+    <ClCompile Include="ZeldaGraphicsDefine.cpp" />
     <ClCompile Include="ZeldaLight.cpp" />
+    <ClCompile Include="ZeldaMaterial.cpp" />
     <ClCompile Include="ZeldaMesh.cpp" />
     <ClCompile Include="ZeldaModel.cpp" />
     <ClCompile Include="ZeldaShader.cpp" />
@@ -63,12 +70,16 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="VertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="TestShader.hlsl" />
   </ItemGroup>
@@ -166,15 +177,15 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)assimpInc;$(SolutionDir)eigen-3.4.0;$(SolutionDir)DirectXTex\Inc;$(SolutionDir)ZeldaGraphics\header</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ZeldaFBXLoader;$(SolutionDir)assimpInc;$(SolutionDir)eigen-3.4.0;$(SolutionDir)DirectXTex\Inc;$(SolutionDir)DirectXTK\Inc;$(SolutionDir)ZeldaGraphics\header</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>Rpcrt4.lib;assimp-vc143-mtd.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;directxtex.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)assimpLib\$(Configuration);$(SolutionDir)DirectXTex\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ZeldaFBXLoader.lib;DirectXTK.lib;Rpcrt4.lib;assimp-vc143-mtd.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;directxtex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)assimpLib\$(Configuration);$(SolutionDir)DirectXTex\$(Platform)\$(Configuration)\;$(SolutionDir)DirectXTK\$(Platform)\$(Configuration)\;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /R /Y "$(TargetDir)*.cso" "$(SolutionDir)\GraphicsTest\CompiledShader\"</Command>
@@ -190,7 +201,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)assimpInc;$(SolutionDir)eigen-3.4.0;$(SolutionDir)DirectXTex\Inc;$(SolutionDir)ZeldaGraphics\header</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ZeldaFBXLoader;$(SolutionDir)assimpInc;$(SolutionDir)eigen-3.4.0;$(SolutionDir)DirectXTex\Inc;$(SolutionDir)DirectXTK\Inc;$(SolutionDir)ZeldaGraphics\header</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -199,8 +210,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>Rpcrt4.lib;assimp-vc143-mt.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;directxtex.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)assimpLib\$(Configuration);$(SolutionDir)DirectXTex\$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ZeldaFBXLoader.lib;DirectXTK.lib;Rpcrt4.lib;assimp-vc143-mt.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;directxtex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)assimpLib\$(Configuration);$(SolutionDir)DirectXTex\$(Platform)\$(Configuration)\;$(SolutionDir)DirectXTK\$(Platform)\$(Configuration)\;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /R /Y "$(TargetDir)*.cso" "$(SolutionDir)\GraphicsTest\CompiledShader\"</Command>

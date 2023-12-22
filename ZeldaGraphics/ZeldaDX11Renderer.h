@@ -6,11 +6,15 @@
 
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include <SpriteBatch.h>
 
 class ZeldaCamera;
 class ZeldaShader;
 class ZeldaModel;
 class ZeldaLight;
+class ZeldaTexture;
+class ZeldaMaterial;
+class IRenderable;
 
 class ZeldaDX11Renderer : public IZeldaRenderer
 {
@@ -23,6 +27,9 @@ public:
 
 	virtual void DrawCube(const Eigen::Matrix4f& worldMatrix, TextureID texture, bool wireFrame, float r, float g, float b, float a) override;
 	virtual void DrawModel(const Eigen::Matrix4f& worldMatrix, ModelID model, bool wireFrame) override;
+	virtual void DrawAnimation(const Eigen::Matrix4f& worldMatrix, ModelID model, std::wstring animationName, float animationTime, bool wireFrame) override;
+
+	virtual void DrawSprite(const Eigen::Vector2f& position, TextureID texture) override;
 
 	virtual void CreateBasicResources() override;
 	virtual void ReleaseBasicResources() override;
@@ -32,6 +39,8 @@ public:
 
 	virtual ModelID CreateModel(const std::wstring& modelingFilePath) override;
 	virtual bool ReleaseModel(ModelID modelID) override;
+	virtual std::vector<std::wstring> GetAnimationListByModel(ModelID modelID) override;
+	virtual std::vector<float> GetAnimationPlayTime(ModelID modelID) override;
 
 	virtual CameraID CreateCamera() override;
 	virtual bool ReleaseCamera(CameraID cameraID) override;
@@ -57,6 +66,8 @@ private:
 
 	ZeldaLight* light;
 
+	DirectX::SpriteBatch* spriteBatch;
+
 	HWND hWnd;
 	unsigned int screenWidth;
 	unsigned int screenHeight;
@@ -66,8 +77,9 @@ private:
 
 	// Constant Buffer
 	ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer;
+	ConstantBuffer<BoneBufferType, ShaderType::VertexShader>* boneConstBuffer;
+
 	ConstantBuffer<LightBufferType, ShaderType::PixelShader>* lightConstBuffer;
 	ConstantBuffer<UseBufferType, ShaderType::PixelShader>* useConstBuffer;
 	ConstantBuffer<ColorBufferType, ShaderType::PixelShader>* colorConstBuffer;
-
 };

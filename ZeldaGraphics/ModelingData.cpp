@@ -1,6 +1,7 @@
 #include "ModelingData.h"
 
 ZNode::ZNode() :
+	transformMatrix(DirectX::XMMatrixIdentity()),
 	parent(nullptr)
 {
 }
@@ -11,6 +12,16 @@ ZNode::~ZNode()
 	{
 		delete children[i];
 	}
+}
+
+DirectX::XMMATRIX ZNode::GetWorldTransformMatrix()
+{
+	if (parent != nullptr)
+	{
+		return transformMatrix * parent->GetWorldTransformMatrix();
+	}
+
+	return transformMatrix;
 }
 
 ZMesh::ZMesh() :

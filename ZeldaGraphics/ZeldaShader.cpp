@@ -48,8 +48,6 @@ bool ZeldaShader::Initialize(ID3D11Device* device, const std::wstring& vsFileNam
 	ID3DBlob* errorMessage;
 	ID3DBlob* vertexShaderBuffer;
 	ID3DBlob* pixelShaderBuffer;
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[VertexType::size];
-	unsigned int numElements;
 	D3D11_SAMPLER_DESC samplerDesc;
 
 	// Initialize the pointers this function will use to null.
@@ -85,17 +83,8 @@ bool ZeldaShader::Initialize(ID3D11Device* device, const std::wstring& vsFileNam
 		pixelShaderBuffer->GetBufferSize(), nullptr, &pixelShader);
 	if (FAILED(result)) return false;
 
-	// Create the vertex input layout description.
-	// This setup needs to match the VertexType structure in the ModelClass and in the shader.
-	polygonLayout[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-	polygonLayout[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-	polygonLayout[2] = { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-
-	// Get a count of the elements in the layout.
-	numElements = VertexType::size;
-
 	// Create the vertex input layout.
-	result = device->CreateInputLayout(polygonLayout, numElements,
+	result = device->CreateInputLayout(VertexType::layout, VertexType::size,
 		vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), &layout);
 	if (FAILED(result)) return false;
 
@@ -129,7 +118,7 @@ bool ZeldaShader::Initialize(ID3D11Device* device, const std::wstring& vsFileNam
 	return true;
 }
 
-bool ZeldaShader::Render(ID3D11DeviceContext* deviceContext, ZeldaMesh* mesh, ZeldaTexture* texture)
+bool ZeldaShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, ZeldaTexture* texture)
 {
 	bool result = true;
 
@@ -140,9 +129,14 @@ bool ZeldaShader::Render(ID3D11DeviceContext* deviceContext, ZeldaMesh* mesh, Ze
 	}
 	if (!result) return false;
 	// Now render the prepared buffers with the shader.
-	RenderShader(deviceContext, mesh->GetIndexCount());
+	RenderShader(deviceContext, indexCount);
 
 	return true;
+}
+
+ID3D11SamplerState* ZeldaShader::GetSamplerState()
+{
+	return samplerState;
 }
 
 bool ZeldaShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, ID3D11ShaderResourceView* texture)

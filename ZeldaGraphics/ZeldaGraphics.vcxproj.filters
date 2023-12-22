@@ -39,6 +39,9 @@
     <Filter Include="Core\ConstantBuffer">
       <UniqueIdentifier>{52be387d-a7d5-43d6-9fb3-30d067281a36}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Resource\Material">
+      <UniqueIdentifier>{b3791b9a-a885-4871-8e82-b7edb03650ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\IZeldaRenderer.h">
@@ -86,12 +89,6 @@
     <ClInclude Include="ZeldaCamera.h">
       <Filter>Core\Resource\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="ModelingData.h">
-      <Filter>Core\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="FBXLoader.h">
-      <Filter>Core\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
       <Filter>Core\ConstantBuffer</Filter>
     </ClInclude>
@@ -104,6 +101,12 @@
     <ClInclude Include="ZeldaModel.h">
       <Filter>Core\Resource\Model</Filter>
     </ClInclude>
+    <ClInclude Include="ModelingData.h">
+      <Filter>Core\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ZeldaMaterial.h">
+      <Filter>Core\Resource\Material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZeldaLight.cpp">
@@ -114,9 +117,6 @@
     </ClCompile>
     <ClCompile Include="ZeldaTexture.cpp">
       <Filter>Core\Resource\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>Core\Resource</Filter>
     </ClCompile>
     <ClCompile Include="ZeldaMesh.cpp">
       <Filter>Core\Resource\Mesh</Filter>
@@ -136,9 +136,6 @@
     <ClCompile Include="ZeldaCamera.cpp">
       <Filter>Core\Resource\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="FBXLoader.cpp">
-      <Filter>Core\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="ConstantBufferManager.cpp">
       <Filter>Core\ConstantBuffer</Filter>
     </ClCompile>
@@ -147,6 +144,15 @@
     </ClCompile>
     <ClCompile Include="ModelingData.cpp">
       <Filter>Core\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Core\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ZeldaGraphicsDefine.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ZeldaMaterial.cpp">
+      <Filter>Core\Resource\Material</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

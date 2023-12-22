@@ -79,3 +79,8 @@ void PurahEngine::Component::OnMouseExit()
 {
 
 }
+
+PurahEngine::GameObject* PurahEngine::Component::GetGameObject()
+{
+	return gameObject;
+}

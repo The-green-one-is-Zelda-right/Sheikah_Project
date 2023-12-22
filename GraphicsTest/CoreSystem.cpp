@@ -2,6 +2,8 @@
 
 #include <fstream>
 #include <cassert>
+#include <vector>
+#include <chrono>
 
 #include "GraphicsResourceID.h"
 
@@ -200,27 +202,128 @@ bool CoreSystem::IsRun()
  
 void CoreSystem::run()
 {
+	static auto current_time = std::chrono::high_resolution_clock::now();
+	static auto last_time = std::chrono::high_resolution_clock::now();
+	current_time = std::chrono::high_resolution_clock::now();
+
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(current_time - last_time);
+	auto deltaTime = static_cast<float>(duration.count()) / 1000000.0f;
+
+	if (deltaTime < 0.016f)
+	{
+		Sleep(16 - static_cast<int>(deltaTime * 1000.0f));
+		deltaTime = 0.016f;
+	}
+
+	if (deltaTime != 0.0f)
+	{
+		static int lastFPS = 0;
+		static int currentFPS = 0;
+
+		lastFPS = currentFPS;
+		currentFPS = 1.0f / deltaTime;
+
+		if (currentFPS != lastFPS)
+		{
+			OutputDebugString((std::to_wstring(currentFPS) + L"\n").c_str());
+		}
+	}
+
+	last_time = current_time;
+
+	static Eigen::Matrix4f cameraMatrix;
+
+	static std::vector<std::wstring> animationList;
+	static std::vector<std::wstring> animationList2;
+	static std::vector<float> animationPlayTimeList;
+	static std::vector<float> animationPlayTimeList2;
+
 	static bool firstRun = true;
 	if (firstRun)
 	{
 		firstRun = false;
 
 		scdTextureID = renderer->CreateTexture(L"scd.jpg");
-		fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Ganondorf (TotK).fbx");
+		//fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Building\\Building.fbx");
+		//fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Ganondorf (TotK).fbx");
+		fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Dying6.fbx");
+		//fbxID = renderer->CreateModel(L"C:\\Users\\BEOMJOON\\Downloads\\Capoeira.fbx");
+		//fbxID = renderer->CreateModel(L"Box2.fbx");
+		//fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Cylinder\\Cylinder.fbx");
+		//fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Timmy_Shooting\\Timmy_Shooting.fbx");
 
+		fbxID2 = renderer->CreateModel(L"D:\\GA4th4Q_Project\\Tree\\5_Project\\ZeldaEngine\\Resources\\FBX\\Boss\\Boss.fbx");
+		
 		mainCameraID = renderer->CreateCamera();
 
 		renderer->SetMainCamera(mainCameraID);
 
-		Eigen::Matrix4f cameraMatrix;
 		cameraMatrix <<
 			1.0f, 0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 1.0f, -10.0f,
-			0.0f, 0.0f, 0.0f, 0.0f;
+			0.0f, 0.0f, 0.0f, 1.0f;
 
-		renderer->UpdateCamera(mainCameraID, cameraMatrix, 3.141592654f / 4.0f, 1.0f, 1000.0f);
+		animationList = renderer->GetAnimationListByModel(fbxID);
+		animationPlayTimeList = renderer->GetAnimationPlayTime(fbxID);
+
+		animationList2 = renderer->GetAnimationListByModel(fbxID2);
+		animationPlayTimeList2 = renderer->GetAnimationPlayTime(fbxID2);
 	}
+
+	const static float moveSpeed = 0.5f;
+	const static float rotateSpeed = 0.03f;
+
+	float rotateX = 0.0f;
+	float rotateY = 0.0f;
+	Eigen::Vector4f moveDelta = Eigen::Vector4f::Zero();
+
+	if (GetAsyncKeyState('W')) moveDelta += (cameraMatrix * Eigen::Vector4f::UnitZ()) * moveSpeed;
+	if (GetAsyncKeyState('S')) moveDelta -= (cameraMatrix * Eigen::Vector4f::UnitZ()) * moveSpeed;
+	if (GetAsyncKeyState('A')) moveDelta -= (cameraMatrix * Eigen::Vector4f::UnitX()) * moveSpeed;
+	if (GetAsyncKeyState('D')) moveDelta += (cameraMatrix * Eigen::Vector4f::UnitX()) * moveSpeed;
+	if (GetAsyncKeyState('Q')) moveDelta -= (cameraMatrix * Eigen::Vector4f::UnitY()) * moveSpeed;
+	if (GetAsyncKeyState('E')) moveDelta += (cameraMatrix * Eigen::Vector4f::UnitY()) * moveSpeed;
+	if (GetAsyncKeyState(VK_UP)) rotateX -= rotateSpeed;
+	if (GetAsyncKeyState(VK_DOWN)) rotateX += rotateSpeed;
+	if (GetAsyncKeyState(VK_LEFT)) rotateY -= rotateSpeed;
+	if (GetAsyncKeyState(VK_RIGHT)) rotateY += rotateSpeed;
+
+	if (GetAsyncKeyState(VK_CONTROL))
+	{
+		moveDelta *= 10;
+		rotateX *= 10;
+		rotateY *= 10;
+		if (GetAsyncKeyState(VK_SHIFT))
+		{
+			moveDelta *= 10;
+			rotateX *= 10;
+			rotateY *= 10;
+		}
+	}
+
+	Eigen::Matrix4f cameraRotateY;
+	cameraRotateY <<
+		cos(rotateY), 0, sin(rotateY), 0,
+		0, 1, 0, 0,
+		-sin(rotateY), 0, cos(rotateY), 0,
+		0, 0, 0, 1;
+	Eigen::Matrix4f cameraRotateX;
+	cameraRotateX <<
+		1, 0, 0, 0,
+		0, cos(rotateX), -sin(rotateX), 0,
+		0, sin(rotateX), cos(rotateX), 0,
+		0, 0, 0, 1;
+	Eigen::Matrix4f cameraMove;
+	cameraMove <<
+		1, 0, 0, moveDelta.x(),
+		0, 1, 0, moveDelta.y(),
+		0, 0, 1, moveDelta.z(),
+		0, 0, 0, 1;
+
+	cameraMatrix = cameraMove * cameraMatrix * cameraRotateX * cameraRotateY;
+
+	renderer->UpdateCamera(mainCameraID, cameraMatrix, 3.141592654f / 4.0f, 1.0f, 10000000.0f);
 
 	renderer->BeginDraw(0.016f);
 
@@ -272,18 +375,89 @@ void CoreSystem::run()
 		sin(rotation2), 0, cos(rotation2), 0,
 		0.0f, 0, 0, 1;
 
-
-	renderer->DrawCube(fallingMatrix * worldMatrix, scdTextureID, false, 1.0f, 1.0f, 1.0f, 1.0f);
-	//renderer->DrawCube(fallingMatrix * worldMatrix2, ID_NULL, false, 0.0f, 1.0f, 1.0f, 1.0f);
-
 	Eigen::Matrix4f ganonMatrix;
 	ganonMatrix <<
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 50,
+		0.1, 0, 0, 0,
+		0, 0.1, 0, 0,
+		0, 0, 0.1, 30,
 		0, 0, 0, 1;
 
-	renderer->DrawModel(ganonMatrix, fbxID, false);
+	// 애니메이션 테스트 코드
+	const static int repeatPlay = 5;
+
+	static float animationTime = 0.0f;
+	static int animationNumber = 0;
+	static int playCount = 0;
+	animationTime += deltaTime;
+
+	if (animationList.size() != 0)
+	{
+		while (animationTime >= animationPlayTimeList[animationNumber])
+		{
+			animationTime -= animationPlayTimeList[animationNumber];
+			playCount += 1;
+
+			if (playCount >= repeatPlay)
+			{
+				playCount = 0;
+				animationNumber += 1;
+
+				if (animationNumber >= animationList.size())
+				{
+					animationNumber = 0;
+				}
+			}
+		}
+	}
+
+	static float animationTime2 = 0.0f;
+	static int animationNumber2 = 0;
+	static int playCount2 = 0;
+	animationTime2 += deltaTime;
+
+	if (animationList2.size() != 0)
+	{
+		while (animationTime2 >= animationPlayTimeList2[animationNumber2])
+		{
+			animationTime2 -= animationPlayTimeList2[animationNumber2];
+			playCount2 += 1;
+
+			if (playCount2 >= repeatPlay)
+			{
+				playCount2 = 0;
+				animationNumber2 += 1;
+
+				if (animationNumber2 >= animationList2.size())
+				{
+					animationNumber2 = 0;
+				}
+			}
+		}
+	}
+	
+
+	//renderer->DrawModel(worldMatrix, fbxID, false);
+	//renderer->DrawModel(ganonMatrix, fbxID, false);
+
+	for (int i = 0; i < 80; i++)
+	{
+		renderer->DrawAnimation(ganonMatrix, fbxID, animationList[animationNumber], animationTime, false);
+		renderer->DrawAnimation(ganonMatrix, fbxID2, animationList2[animationNumber2], animationTime2, false);
+	}
+
+	renderer->DrawCube(Eigen::Matrix4f::Identity(), scdTextureID, false, 1.0f, 0.0f, 0.0f, 1.0f);
+	//renderer->DrawCube(fallingMatrix * worldMatrix2, ID_NULL, false, 0.0f, 1.0f, 1.0f, 1.0f);
+
+	static int scdX = 0;
+	scdX += 12;
+
+	if (scdX > 1920)
+	{
+		scdX -= 1920;
+	}
+
+	renderer->DrawSprite({ scdX, 0 }, scdTextureID);
+	renderer->DrawSprite({ 1920 - scdX, 540 }, scdTextureID);
 	
 	renderer->EndDraw();
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include "PurahEngineAPI.h"
 
 #include <windows.h>
 
@@ -6,7 +7,7 @@
 
 namespace PurahEngine
 {
-	class InputManager
+	class PURAHENGINE_API InputManager
 	{
 	private:
 		InputManager();

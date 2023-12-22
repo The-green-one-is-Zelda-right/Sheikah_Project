@@ -1,12 +1,13 @@
 #pragma once
 #include "Component.h"
+#include "PurahEngineAPI.h"
 
 #include <Eigen\Dense>
 #include <vector>
 
 namespace PurahEngine
 {
-	class Transform : public Component
+	class PURAHENGINE_API Transform : public Component
 	{
 	public:
 		Transform();

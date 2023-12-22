@@ -1,7 +1,13 @@
 #pragma once
 
+#include <d3d11.h>
+#include <DirectXMath.h>
+
 #include <vector>
 #include <string>
+
+class ZeldaMesh;
+class ZeldaTexture;
 
 struct ZVertex
 {
@@ -41,8 +47,15 @@ struct ZNode
 {
 	ZNode();
 	~ZNode();
+
+	DirectX::XMMATRIX GetWorldTransformMatrix();
+
+	DirectX::XMMATRIX transformMatrix;
+
 	ZNode* parent;
 	std::vector<ZNode*> children;
 
 	std::vector<ZMesh*> meshes;
+	std::vector<ZeldaMesh*> zeldaMeshes;
+	std::vector<ZeldaTexture*> zeldaTextures;
 };

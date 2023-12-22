@@ -29,7 +29,7 @@ public:
 		}
 	}
 
-	void SetData(bufferType data)
+	void SetData(const bufferType& data)
 	{
 		this->data = data;
 	}
