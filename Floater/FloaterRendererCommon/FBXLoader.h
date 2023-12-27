@@ -45,10 +45,12 @@ namespace flt
 		void GetVertexPosition(const fbxsdk::FbxMesh& mesh, std::vector<Vector3f>* outVector);
 		void GetIndex(const fbxsdk::FbxMesh& mesh, std::vector<int>* outVector);
 		void GetVertexNormal(const fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector3f>>* outVector);
-		void GetVertexUV(const fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector2f>>* outVector);
+		void GetVertexUV(fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector2f>>* outVector);
 		void GetVertexColor(fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector4f>>* outVector);
 		void GetVertexTangent(fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector3f>>* outVector);
 		void GetVertexBinormal(fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector3f>>* outVector);
+
+		fbxsdk::FbxVector2 ReadUV(fbxsdk::FbxMesh& mesh, int controlPointIndex, int vertexCounter, int uvLayer);
 
 		void PrintNodeRecursive(fbxsdk::FbxNode* pNode, int depth);
 		void PrintNodeVertex(fbxsdk::FbxNode* pNode);

@@ -149,6 +149,7 @@ int main()
 
 		//std::filesystem::path currPath = std::filesystem::current_path();
 
+		loader.Load(L"..\\x64\\fbx\\PBR_BasicShader.blend");
 		loader.Load(zUpYForward);
 		loader.Load(yUpZForward);
 		loader.Load(xUpYForward);

@@ -27,6 +27,9 @@ public:
 
 	virtual void DrawCube(const Eigen::Matrix4f& worldMatrix, TextureID texture, bool wireFrame, float r, float g, float b, float a) override;
 	virtual void DrawModel(const Eigen::Matrix4f& worldMatrix, ModelID model, bool wireFrame) override;
+	virtual void DrawAnimation(const Eigen::Matrix4f& worldMatrix, ModelID model, std::wstring animationName, float animationTime, bool wireFrame) override;
+
+	virtual void DrawSprite(const Eigen::Vector2f& position, TextureID texture) override;
 
 	virtual void CreateBasicResources() override;
 	virtual void ReleaseBasicResources() override;
@@ -36,6 +39,8 @@ public:
 
 	virtual ModelID CreateModel(const std::wstring& modelingFilePath) override;
 	virtual bool ReleaseModel(ModelID modelID) override;
+	virtual std::vector<std::wstring> GetAnimationListByModel(ModelID modelID) override;
+	virtual std::vector<float> GetAnimationPlayTime(ModelID model) override;
 
 	virtual CameraID CreateCamera() override;
 	virtual bool ReleaseCamera(CameraID cameraID) override;

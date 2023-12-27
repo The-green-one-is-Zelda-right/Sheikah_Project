@@ -3,6 +3,7 @@
 #include "../../FloaterMath/include/Vector3f.h"
 #include "../../FloaterMath/include/Vector4f.h"
 #include <vector>
+#include <string>
 
 namespace flt
 {
@@ -48,5 +49,15 @@ namespace flt
 	{
 		std::vector<RawVertex> vertices;
 		std::vector<int> indices;
+
+		//std::wstring albedo;
+		//std::wstring normal;
+		//std::wstring metallic;
+		//std::wstring roughness;
+		//std::wstring specular;
+		//std::wstring height;
+		//std::wstring opacity;
+		//std::wstring emissive;
+		//std::wstring ao;
 	};
 }

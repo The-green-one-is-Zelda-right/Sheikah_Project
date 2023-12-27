@@ -25,6 +25,9 @@
     <Filter Include="Loader\VertexData">
       <UniqueIdentifier>{ab203090-c065-4c5d-93cf-3d27bf80675f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Loader\impl">
+      <UniqueIdentifier>{17584974-1792-4f76-b154-c89e2b6efe51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Transform.h">
@@ -35,9 +38,6 @@
     </ClInclude>
     <ClInclude Include="include\IRenderer.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="FBXLoader.h">
-      <Filter>Loader</Filter>
     </ClInclude>
     <ClInclude Include="include\IBuilder.h">
       <Filter>Factory</Filter>
@@ -63,9 +63,6 @@
     <ClInclude Include="RawShader.h">
       <Filter>RawData</Filter>
     </ClInclude>
-    <ClInclude Include="include\ModelLoader.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CoordSystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -75,6 +72,18 @@
     <ClInclude Include="VertedDataLayer.h">
       <Filter>Loader\VertexData</Filter>
     </ClInclude>
+    <ClInclude Include="AssimpLoader.h">
+      <Filter>Loader\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="FBXLoader.h">
+      <Filter>Loader\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="GLTFLoader.h">
+      <Filter>Loader\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ModelLoader.h">
+      <Filter>Loader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">
@@ -83,23 +92,29 @@
     <ClCompile Include="Camera.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="FBXLoader.cpp">
-      <Filter>Loader</Filter>
-    </ClCompile>
     <ClCompile Include="ResourceMgr.cpp">
       <Filter>Factory</Filter>
     </ClCompile>
     <ClCompile Include="RawNode.cpp">
       <Filter>RawData</Filter>
     </ClCompile>
-    <ClCompile Include="ModelLoader.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="CoordSystem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="VertexNormalData.cpp">
       <Filter>Loader\VertexData</Filter>
+    </ClCompile>
+    <ClCompile Include="AssimpLoader.cpp">
+      <Filter>Loader\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="FBXLoader.cpp">
+      <Filter>Loader\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="GLTFLoader.cpp">
+      <Filter>Loader\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelLoader.cpp">
+      <Filter>Loader</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

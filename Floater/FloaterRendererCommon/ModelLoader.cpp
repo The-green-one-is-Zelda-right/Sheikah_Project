@@ -1,10 +1,14 @@
 ﻿#include "../FloaterUtil/include/FloaterMacro.h"
 #include "./include/ModelLoader.h"
 #include "FBXLoader.h"
+#include "GLTFLoader.h"
+#include "AssimpLoader.h"
 #include <filesystem>
 
 flt::ModelLoader::ModelLoader() :
-	_pFBXLoader(new(std::nothrow) FBXLoader())
+	_pFBXLoader(new(std::nothrow) FBXLoader()),
+	_pGLTFLoader(new(std::nothrow) GLTFLoader()),
+	_pAssimpLoader(new(std::nothrow) AssimpLoader())
 {
 
 }
@@ -12,6 +16,8 @@ flt::ModelLoader::ModelLoader() :
 flt::ModelLoader::~ModelLoader()
 {
 	delete _pFBXLoader;
+	delete _pGLTFLoader;
+	delete _pAssimpLoader;
 }
 
 bool flt::ModelLoader::Load(std::wstring path)
@@ -22,6 +28,30 @@ bool flt::ModelLoader::Load(std::wstring path)
 		return false;
 	}
 
-	_pFBXLoader->Load(path);
+	size_t pos = path.find_last_of(L".");
+	std::wstring extension = path.substr(pos + 1);
+	for (auto& c : extension)
+	{
+		c = towlower(c);
+	}
+
+	_pAssimpLoader->Load(path);
+
+	return true;
+
+	if (extension == L"fbx")
+	{
+		_pFBXLoader->Load(path);
+	}
+	else if (extension == L"gltf" || extension == L"glb")
+	{
+		_pGLTFLoader->Load(path);
+	}
+	else
+	{
+		ASSERT(false, "Not Supported File");
+		return false;
+	}
+
 	return true;
 }

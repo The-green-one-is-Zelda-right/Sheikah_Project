@@ -82,6 +82,16 @@ void IZeldaRendererAdapter::DrawModel(const Eigen::Matrix4f& worldMatrix, ModelI
 
 }
 
+void IZeldaRendererAdapter::DrawAnimation(const Eigen::Matrix4f& worldMatrix, ModelID model, std::wstring animationName, float animationTime, bool wireFrame)
+{
+
+}
+
+void IZeldaRendererAdapter::DrawSprite(const Eigen::Vector2f& position, TextureID texture)
+{
+
+}
+
 void IZeldaRendererAdapter::CreateBasicResources()
 {
 
@@ -110,6 +120,16 @@ ModelID IZeldaRendererAdapter::CreateModel(const std::wstring& modelingFilePath)
 bool IZeldaRendererAdapter::ReleaseModel(ModelID modelID)
 {
 	return false;
+}
+
+std::vector<std::wstring> IZeldaRendererAdapter::GetAnimationListByModel(ModelID modelID)
+{
+	return std::vector<std::wstring>();
+}
+
+std::vector<float> IZeldaRendererAdapter::GetAnimationPlayTime(ModelID model)
+{
+	return std::vector<float>();
 }
 
 CameraID IZeldaRendererAdapter::CreateCamera()

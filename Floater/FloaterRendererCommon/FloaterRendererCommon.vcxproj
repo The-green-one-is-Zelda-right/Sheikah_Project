@@ -19,8 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssimpLoader.h" />
     <ClInclude Include="CoordSystem.h" />
     <ClInclude Include="FBXLoader.h" />
+    <ClInclude Include="GLTFLoader.h" />
     <ClInclude Include="include\IBuilder.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\ModelLoader.h" />
@@ -45,9 +47,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AssimpLoader.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CoordSystem.cpp" />
     <ClCompile Include="FBXLoader.cpp" />
+    <ClCompile Include="GLTFLoader.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="RawNode.cpp" />
     <ClCompile Include="ResourceMgr.cpp" />
@@ -154,7 +158,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <OpenMPSupport>true</OpenMPSupport>
       <AssemblerOutput>All</AssemblerOutput>
-      <AdditionalIncludeDirectories>..\External\include\fbx\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\External\include\fbx\;..\External\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -179,7 +183,7 @@
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zo %(AdditionalOptions)</AdditionalOptions>
       <AssemblerOutput>All</AssemblerOutput>
-      <AdditionalIncludeDirectories>..\External\include\fbx\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\External\include\fbx\;..\External\include\assimp\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

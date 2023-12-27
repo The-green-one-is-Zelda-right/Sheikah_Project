@@ -415,7 +415,7 @@ void flt::FBXLoader::GetIndex(const fbxsdk::FbxMesh& mesh, std::vector<int>* out
 
 void flt::FBXLoader::GetVertexNormal(const fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector3f>>* outVector)
 {
-	ASSERT(outVector, "outVector is nullptr");
+	/*ASSERT(outVector, "outVector is nullptr");
 
 	int normalLayerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eNormal);
 	outVector->resize(normalLayerCount);
@@ -457,11 +457,114 @@ void flt::FBXLoader::GetVertexNormal(const fbxsdk::FbxMesh& mesh, std::vector<st
 			fbxsdk::FbxVector4 normal = elementNormal.GetAt(index);
 			(*outVector)[i].emplace_back(normal.mData[0], normal.mData[1], normal.mData[2]);
 		}
+	}*/
+	ASSERT(outVector, "outVector is nullptr");
+
+	int layerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eNormal);
+	outVector->resize(layerCount);
+
+	for (int i = 0; i < layerCount; ++i)
+	{
+		int triCount = mesh.GetPolygonCount();
+		(*outVector)[i].reserve(triCount * 3);
+		const fbxsdk::FbxLayerElementNormal* pNormalLayer = mesh.GetElementNormal(i);
+
+		switch (pNormalLayer->GetMappingMode())
+		{
+			case fbxsdk::FbxGeometryElement::eByControlPoint:
+			{
+				int controlPointIndex = mesh.GetPolygonVertex(0, 0);
+
+				switch (pNormalLayer->GetReferenceMode())
+				{
+					case fbxsdk::FbxGeometryElement::eDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int controlPointIndex = mesh.GetPolygonVertex(triIndex, vertexIndex);
+								fbxsdk::FbxVector4 normal = pNormalLayer->GetDirectArray().GetAt(controlPointIndex);
+								(*outVector)[i].emplace_back(normal.mData[0], normal.mData[1], normal.mData[2]);
+							}
+						}
+					}
+					break;
+					case fbxsdk::FbxGeometryElement::eIndexToDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int controlPointIndex = mesh.GetPolygonVertex(triIndex, vertexIndex);
+								int index = pNormalLayer->GetIndexArray().GetAt(controlPointIndex);
+								fbxsdk::FbxVector4 normal = pNormalLayer->GetDirectArray().GetAt(index);
+								(*outVector)[i].emplace_back(normal.mData[0], normal.mData[1], normal.mData[2]);
+							}
+						}
+					}
+					break;
+					default:
+					{
+						ASSERT(false, "Unhandled enum");
+					}
+					break;
+				}
+			}
+			break;
+
+			case fbxsdk::FbxGeometryElement::eByPolygonVertex:
+			{
+				switch (pNormalLayer->GetReferenceMode())
+				{
+					case fbxsdk::FbxGeometryElement::eDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int vertexCounter = triIndex * 3 + vertexIndex;
+								fbxsdk::FbxVector4 normal = pNormalLayer->GetDirectArray().GetAt(vertexCounter);
+								(*outVector)[i].emplace_back(normal.mData[0], normal.mData[1], normal.mData[2]);
+							}
+						}
+					}
+					break;
+					case fbxsdk::FbxGeometryElement::eIndexToDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int vertexCounter = triIndex * 3 + vertexIndex;
+								int index = pNormalLayer->GetIndexArray().GetAt(vertexCounter);
+								fbxsdk::FbxVector4 normal = pNormalLayer->GetDirectArray().GetAt(index);
+								(*outVector)[i].emplace_back(normal.mData[0], normal.mData[1], normal.mData[2]);
+							}
+						}
+					}
+					break;
+					default:
+					{
+						ASSERT(false, "Unhandled enum");
+					}
+					break;
+				}
+			}
+			break;
+
+			default:
+			{
+				ASSERT(false, "Unhandled enum");
+			}
+			break;
+		}
 	}
 }
 
-void flt::FBXLoader::GetVertexUV(const fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector2f>>* outVector)
+void flt::FBXLoader::GetVertexUV(fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector2f>>* outVector)
 {
+/*
 	ASSERT(outVector, "outVector is nullptr");
 
 	int uvLayerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eUV);
@@ -487,8 +590,6 @@ void flt::FBXLoader::GetVertexUV(const fbxsdk::FbxMesh& mesh, std::vector<std::v
 		// TODO : 매핑 방법 별로 별도 처리를 해줘야 함. 일단은 ByPolygonVertex만 처리.
 		ASSERT(mappingMode == fbxsdk::FbxLayerElement::eByPolygonVertex, "mappingMode is not ByPolygonVertex");
 
-
-
 		(*outVector)[i].reserve(elementCount);
 
 		for (int j = 0; j < elementCount; ++j)
@@ -500,7 +601,126 @@ void flt::FBXLoader::GetVertexUV(const fbxsdk::FbxMesh& mesh, std::vector<std::v
 			}
 
 			fbxsdk::FbxVector2 uv = elementUV.GetAt(index);
+			if (referenceMode == fbxsdk::FbxLayerElement::eByPolygonVertex)
+			{
+				auto index = mesh.GetTextureUVIndex(i, j);
+			}
 			(*outVector)[i].emplace_back(uv.mData[0], uv.mData[1]);
+		}
+	}*/
+	ASSERT(outVector, "outVector is nullptr");
+
+	int layerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eUV);
+	outVector->resize(layerCount);
+
+	auto materialCount = mesh.GetElementMaterialCount();
+	fbxsdk::FbxLayerElementMaterial* materialLayer = mesh.GetElementMaterial(0);
+	auto mode = materialLayer->GetMappingMode();
+	int materialIndex = materialLayer->GetIndexArray().GetAt(0);
+
+
+	auto indexCount = materialLayer->GetIndexArray().GetCount();
+	auto index = materialLayer->GetIndexArray().GetAt(0);
+	fbxsdk::FbxSurfaceMaterial* material = mesh.GetNode()->GetMaterial(index);
+
+
+	for (int i = 0; i < layerCount; ++i)
+	{
+		int triCount = mesh.GetPolygonCount();
+		(*outVector)[i].reserve(triCount * 3);
+		const fbxsdk::FbxLayerElementUV* pUVLayer = mesh.GetElementUV(i);
+		//fbxsdk::FbxTexture* pTexture = mesh.GetScene()->GetTexture(i);
+
+		switch (pUVLayer->GetMappingMode())
+		{
+			case fbxsdk::FbxGeometryElement::eByControlPoint:
+			{
+				int controlPointIndex = mesh.GetPolygonVertex(0, 0);
+
+				switch (pUVLayer->GetReferenceMode())
+				{
+					case fbxsdk::FbxGeometryElement::eDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int controlPointIndex = mesh.GetPolygonVertex(triIndex, vertexIndex);
+								fbxsdk::FbxVector2 uv = pUVLayer->GetDirectArray().GetAt(controlPointIndex);
+								(*outVector)[i].emplace_back(uv.mData[0], uv.mData[1]);
+							}
+						}
+					}
+					break;
+					case fbxsdk::FbxGeometryElement::eIndexToDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int controlPointIndex = mesh.GetPolygonVertex(triIndex, vertexIndex);
+								int index = pUVLayer->GetIndexArray().GetAt(controlPointIndex);
+								fbxsdk::FbxVector2 uv = pUVLayer->GetDirectArray().GetAt(index);
+								(*outVector)[i].emplace_back(uv.mData[0], uv.mData[1]);
+							}
+						}
+					}
+					break;
+					default:
+					{
+						ASSERT(false, "Unhandled enum");
+					}
+					break;
+				}
+			}
+			break;
+
+			case fbxsdk::FbxGeometryElement::eByPolygonVertex:
+			{
+				switch (pUVLayer->GetReferenceMode())
+				{
+					case fbxsdk::FbxGeometryElement::eDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int vertexCounter = mesh.GetTextureUVIndex(triIndex, vertexIndex);
+								fbxsdk::FbxVector2 uv = pUVLayer->GetDirectArray().GetAt(vertexCounter);
+								(*outVector)[i].emplace_back(uv.mData[0], uv.mData[1]);
+							}
+						}
+					}
+					break;
+					case fbxsdk::FbxGeometryElement::eIndexToDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int vertexCounter = mesh.GetTextureUVIndex(triIndex, vertexIndex);
+								int index = pUVLayer->GetIndexArray().GetAt(vertexCounter);
+								fbxsdk::FbxVector2 uv = pUVLayer->GetDirectArray().GetAt(index);
+								(*outVector)[i].emplace_back(uv.mData[0], uv.mData[1]);
+							}
+						}
+					}
+					break;
+					default:
+					{
+						ASSERT(false, "Unhandled enum");
+					}
+					break;
+				}
+			}
+			break;
+			default:
+			{
+				ASSERT(false, "Unhandled enum");
+			}
+			break;
 		}
 	}
 }
@@ -556,7 +776,7 @@ void flt::FBXLoader::GetVertexColor(fbxsdk::FbxMesh& mesh, std::vector<std::vect
 
 void flt::FBXLoader::GetVertexTangent(fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector3f>>* outVector)
 {
-	ASSERT(outVector, "outVector is nullptr");
+	/*ASSERT(outVector, "outVector is nullptr");
 
 	int tangentLayerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eTangent);
 	outVector->resize(tangentLayerCount);
@@ -597,12 +817,114 @@ void flt::FBXLoader::GetVertexTangent(fbxsdk::FbxMesh& mesh, std::vector<std::ve
 			fbxsdk::FbxVector4 tangent = elementTangent.GetAt(index);
 			(*outVector)[i].emplace_back(tangent.mData[0], tangent.mData[1], tangent.mData[2]);
 		}
+	}*/
+	ASSERT(outVector, "outVector is nullptr");
+
+	int layerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eTangent);
+	outVector->resize(layerCount);
+
+	for (int i = 0; i < layerCount; ++i)
+	{
+		int triCount = mesh.GetPolygonCount();
+		(*outVector)[i].reserve(triCount * 3);
+		const fbxsdk::FbxLayerElementTangent* pTangentLayer = mesh.GetElementTangent(i);
+
+		switch (pTangentLayer->GetMappingMode())
+		{
+			case fbxsdk::FbxGeometryElement::eByControlPoint:
+			{
+				int controlPointIndex = mesh.GetPolygonVertex(0, 0);
+
+				switch (pTangentLayer->GetReferenceMode())
+				{
+					case fbxsdk::FbxGeometryElement::eDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int controlPointIndex = mesh.GetPolygonVertex(triIndex, vertexIndex);
+								fbxsdk::FbxVector4 tangent = pTangentLayer->GetDirectArray().GetAt(controlPointIndex);
+								(*outVector)[i].emplace_back(tangent.mData[0], tangent.mData[1], tangent.mData[2]);
+							}
+						}
+					}
+					break;
+					case fbxsdk::FbxGeometryElement::eIndexToDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int controlPointIndex = mesh.GetPolygonVertex(triIndex, vertexIndex);
+								int index = pTangentLayer->GetIndexArray().GetAt(controlPointIndex);
+								fbxsdk::FbxVector4 tangent = pTangentLayer->GetDirectArray().GetAt(index);
+								(*outVector)[i].emplace_back(tangent.mData[0], tangent.mData[1], tangent.mData[2]);
+							}
+						}
+					}
+					break;
+					default:
+					{
+						ASSERT(false, "Unhandled enum");
+					}
+					break;
+				}
+			}
+			break;
+
+			case fbxsdk::FbxGeometryElement::eByPolygonVertex:
+			{
+				switch (pTangentLayer->GetReferenceMode())
+				{
+					case fbxsdk::FbxGeometryElement::eDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int vertexCounter = triIndex * 3 + vertexIndex;
+								fbxsdk::FbxVector4 tangent = pTangentLayer->GetDirectArray().GetAt(vertexCounter);
+								(*outVector)[i].emplace_back(tangent.mData[0], tangent.mData[1], tangent.mData[2]);
+							}
+						}
+					}
+					break;
+					case fbxsdk::FbxGeometryElement::eIndexToDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int vertexCounter = triIndex * 3 + vertexIndex;
+								int index = pTangentLayer->GetIndexArray().GetAt(vertexCounter);
+								fbxsdk::FbxVector4 tangent = pTangentLayer->GetDirectArray().GetAt(index);
+								(*outVector)[i].emplace_back(tangent.mData[0], tangent.mData[1], tangent.mData[2]);
+							}
+						}
+					}
+					break;
+					default:
+					{
+						ASSERT(false, "Unhandled enum");
+					}
+					break;
+				}
+			}
+			break;
+
+			default:
+			{
+				ASSERT(false, "Unhandled enum");
+			}
+			break;
+		}
 	}
 }
 
 void flt::FBXLoader::GetVertexBinormal(fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector3f>>* outVector)
 {
-	ASSERT(outVector, "outVector is nullptr");
+	/*ASSERT(outVector, "outVector is nullptr");
 
 	int binormalLayerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eBiNormal);
 	outVector->resize(binormalLayerCount);
@@ -643,7 +965,176 @@ void flt::FBXLoader::GetVertexBinormal(fbxsdk::FbxMesh& mesh, std::vector<std::v
 			fbxsdk::FbxVector4 binormal = elementBinormal.GetAt(index);
 			(*outVector)[i].emplace_back(binormal.mData[0], binormal.mData[1], binormal.mData[2]);
 		}
+	}*/
+	ASSERT(outVector, "outVector is nullptr");
+
+	int layerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eBiNormal);
+	outVector->resize(layerCount);
+
+	for (int i = 0; i < layerCount; ++i)
+	{
+		int triCount = mesh.GetPolygonCount();
+		(*outVector)[i].reserve(triCount * 3);
+		const fbxsdk::FbxLayerElementBinormal* pBinormalLayer = mesh.GetElementBinormal(i);
+
+		switch (pBinormalLayer->GetMappingMode())
+		{
+			case fbxsdk::FbxGeometryElement::eByControlPoint:
+			{
+				int controlPointIndex = mesh.GetPolygonVertex(0, 0);
+
+				switch (pBinormalLayer->GetReferenceMode())
+				{
+					case fbxsdk::FbxGeometryElement::eDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int controlPointIndex = mesh.GetPolygonVertex(triIndex, vertexIndex);
+								fbxsdk::FbxVector4 binormal = pBinormalLayer->GetDirectArray().GetAt(controlPointIndex);
+								(*outVector)[i].emplace_back(binormal.mData[0], binormal.mData[1], binormal.mData[2]);
+							}
+						}
+					}
+					break;
+					case fbxsdk::FbxGeometryElement::eIndexToDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int controlPointIndex = mesh.GetPolygonVertex(triIndex, vertexIndex);
+								int index = pBinormalLayer->GetIndexArray().GetAt(controlPointIndex);
+								fbxsdk::FbxVector4 binormal = pBinormalLayer->GetDirectArray().GetAt(index);
+								(*outVector)[i].emplace_back(binormal.mData[0], binormal.mData[1], binormal.mData[2]);
+							}
+						}
+					}
+					break;
+					default:
+					{
+						ASSERT(false, "Unhandled enum");
+					}
+					break;
+				}
+			}
+			break;
+
+			case fbxsdk::FbxGeometryElement::eByPolygonVertex:
+			{
+				switch (pBinormalLayer->GetReferenceMode())
+				{
+					case fbxsdk::FbxGeometryElement::eDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int vertexCounter = triIndex * 3 + vertexIndex;
+								fbxsdk::FbxVector4 binormal = pBinormalLayer->GetDirectArray().GetAt(vertexCounter);
+								(*outVector)[i].emplace_back(binormal.mData[0], binormal.mData[1], binormal.mData[2]);
+							}
+						}
+					}
+					break;
+					case fbxsdk::FbxGeometryElement::eIndexToDirect:
+					{
+						for (int triIndex = 0; triIndex < triCount; ++triIndex)
+						{
+							for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
+							{
+								int vertexCounter = triIndex * 3 + vertexIndex;
+								int index = pBinormalLayer->GetIndexArray().GetAt(vertexCounter);
+								fbxsdk::FbxVector4 binormal = pBinormalLayer->GetDirectArray().GetAt(index);
+								(*outVector)[i].emplace_back(binormal.mData[0], binormal.mData[1], binormal.mData[2]);
+							}
+						}
+					}
+					break;
+					default:
+					{
+						ASSERT(false, "Unhandled enum");
+					}
+					break;
+				}
+			}
+			break;
+
+			default:
+			{
+				ASSERT(false, "Unhandled enum");
+			}
+			break;
+		}
 	}
+}
+
+fbxsdk::FbxVector2 flt::FBXLoader::ReadUV(fbxsdk::FbxMesh& mesh, int controlPointIndex, int vertexCounter, int uvLayer)
+{
+	fbxsdk::FbxVector2 ret;
+
+	if (mesh.GetElementUVCount() < vertexCounter)
+	{
+		ASSERT(false, "mesh.GetElementUVCount() < vertexCounter");
+		return ret;
+	}
+
+	fbxsdk::FbxGeometryElementUV* pVertexUV = mesh.GetElementUV(uvLayer);
+
+	switch (pVertexUV->GetMappingMode())
+	{
+		case fbxsdk::FbxGeometryElement::eByControlPoint:
+		{
+			switch (pVertexUV->GetReferenceMode())
+			{
+				case fbxsdk::FbxGeometryElement::eDirect:
+				{
+					ret = pVertexUV->GetDirectArray().GetAt(controlPointIndex);
+				}
+				break;
+				case fbxsdk::FbxGeometryElement::eIndexToDirect:
+				{
+					int index = pVertexUV->GetIndexArray().GetAt(controlPointIndex);
+					ret = pVertexUV->GetDirectArray().GetAt(index);
+				}
+				break;
+				default:
+				{
+					ASSERT(false, "Unhandled enum");
+				}
+				break;
+			}
+		}
+		break;
+
+		case fbxsdk::FbxGeometryElement::eByPolygonVertex:
+		{
+			switch (pVertexUV->GetReferenceMode())
+			{
+				case fbxsdk::FbxGeometryElement::eDirect:
+				{
+					ret = pVertexUV->GetDirectArray().GetAt(vertexCounter);
+				}
+				break;
+				case fbxsdk::FbxGeometryElement::eIndexToDirect:
+				{
+					int index = pVertexUV->GetIndexArray().GetAt(vertexCounter);
+					ret = pVertexUV->GetDirectArray().GetAt(index);
+				}
+				break;
+				default:
+				{
+					ASSERT(false, "Unhandled enum");
+				}
+				break;
+			}
+		}
+		default:
+			break;
+	}
+
+	return ret;
 }
 
 void flt::FBXLoader::PrintNodeRecursive(fbxsdk::FbxNode* pNode, int depth)
