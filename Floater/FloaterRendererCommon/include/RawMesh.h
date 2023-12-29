@@ -10,8 +10,14 @@ namespace flt
 	struct RawVertex
 	{
 		RawVertex() = default;
-		RawVertex(const Vector3f& pos, const Vector2f& tex, const Vector3f& normal)
-			: pos(pos), tex(tex), normal(normal) {}
+		RawVertex(const Vector3f& pos, const Vector2f uvs[10], const Vector3f& normal)
+			: pos(pos), uvs(), normal(normal) 
+		{
+			for (int i = 0; i < 10; ++i)
+			{
+				this->uvs[i] = uvs[i];
+			}
+		}
 
 		std::partial_ordering operator<=>(const RawVertex& other) const
 		{
@@ -21,11 +27,15 @@ namespace flt
 				return result;
 			}
 
-			result = tex <=> other.tex;
-			if (result == std::partial_ordering::less || result == std::partial_ordering::greater)
+			for (int i = 0; i < 10; ++i)
 			{
-				return result;
+				result = uvs[i] <=> other.uvs[i];
+				if (result == std::partial_ordering::less || result == std::partial_ordering::greater)
+				{
+					return result;
+				}
 			}
+
 			return normal <=> other.normal;
 			return result;
 		}
@@ -39,7 +49,7 @@ namespace flt
 		}
 
 		Vector3f pos;
-		Vector2f tex;
+		Vector2f uvs[10];
 		Vector3f normal;
 		Vector3f binormal;
 		Vector3f tangent;

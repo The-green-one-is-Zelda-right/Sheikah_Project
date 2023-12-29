@@ -283,7 +283,7 @@ bool flt::FBXLoader::CreateMesh(fbxsdk::FbxMesh& mesh, RawMesh** outMesh)
 		RawVertex vertex;
 		vertex.pos = testPositionVector[i];
 		vertex.normal = testNormalVector[0][i];
-		vertex.tex = testUvVector[0][i];
+		vertex.uvs[0] = testUvVector[0][i];
 		//vertex.tangent = testTangentVector[0][i];
 		//vertex.binormal = testBinormalVector[0][i];
 
@@ -291,7 +291,7 @@ bool flt::FBXLoader::CreateMesh(fbxsdk::FbxMesh& mesh, RawMesh** outMesh)
 		int index = -1;
 		if (iter == _splitVertexMap.end())
 		{
-			index = (*outMesh)->vertices.size();
+			index = (int)((*outMesh)->vertices.size());
 			_splitVertexMap.Insert(vertex, index);
 			(*outMesh)->vertices.push_back(vertex);
 		}
@@ -564,50 +564,50 @@ void flt::FBXLoader::GetVertexNormal(const fbxsdk::FbxMesh& mesh, std::vector<st
 
 void flt::FBXLoader::GetVertexUV(fbxsdk::FbxMesh& mesh, std::vector<std::vector<Vector2f>>* outVector)
 {
-/*
-	ASSERT(outVector, "outVector is nullptr");
+	/*
+		ASSERT(outVector, "outVector is nullptr");
 
-	int uvLayerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eUV);
-	outVector->resize(uvLayerCount);
+		int uvLayerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eUV);
+		outVector->resize(uvLayerCount);
 
-	for (int i = 0; i < uvLayerCount; ++i)
-	{
-		const fbxsdk::FbxLayerElementUV* pUVLayer = mesh.GetElementUV(i);
-
-		fbxsdk::FbxLayerElementArrayTemplate<fbxsdk::FbxVector2>& elementUV = pUVLayer->GetDirectArray();
-		fbxsdk::FbxLayerElementArrayTemplate<int>* pIndices = nullptr;
-		int elementCount = elementUV.GetCount();
-
-		auto referenceMode = pUVLayer->GetReferenceMode();
-		if (referenceMode == fbxsdk::FbxLayerElement::eIndexToDirect || referenceMode == fbxsdk::FbxLayerElement::eIndex)
+		for (int i = 0; i < uvLayerCount; ++i)
 		{
-			// 인덱스로 참조중일 경우 인덱스의 숫자가 실제 uv의 갯수보다 많을 수 있음.
-			pIndices = &pUVLayer->GetIndexArray();
-			elementCount = pIndices->GetCount();
-		}
+			const fbxsdk::FbxLayerElementUV* pUVLayer = mesh.GetElementUV(i);
 
-		auto mappingMode = pUVLayer->GetMappingMode();
-		// TODO : 매핑 방법 별로 별도 처리를 해줘야 함. 일단은 ByPolygonVertex만 처리.
-		ASSERT(mappingMode == fbxsdk::FbxLayerElement::eByPolygonVertex, "mappingMode is not ByPolygonVertex");
+			fbxsdk::FbxLayerElementArrayTemplate<fbxsdk::FbxVector2>& elementUV = pUVLayer->GetDirectArray();
+			fbxsdk::FbxLayerElementArrayTemplate<int>* pIndices = nullptr;
+			int elementCount = elementUV.GetCount();
 
-		(*outVector)[i].reserve(elementCount);
-
-		for (int j = 0; j < elementCount; ++j)
-		{
-			int index = j;
-			if (pIndices != nullptr)
+			auto referenceMode = pUVLayer->GetReferenceMode();
+			if (referenceMode == fbxsdk::FbxLayerElement::eIndexToDirect || referenceMode == fbxsdk::FbxLayerElement::eIndex)
 			{
-				index = pIndices->GetAt(j);
+				// 인덱스로 참조중일 경우 인덱스의 숫자가 실제 uv의 갯수보다 많을 수 있음.
+				pIndices = &pUVLayer->GetIndexArray();
+				elementCount = pIndices->GetCount();
 			}
 
-			fbxsdk::FbxVector2 uv = elementUV.GetAt(index);
-			if (referenceMode == fbxsdk::FbxLayerElement::eByPolygonVertex)
+			auto mappingMode = pUVLayer->GetMappingMode();
+			// TODO : 매핑 방법 별로 별도 처리를 해줘야 함. 일단은 ByPolygonVertex만 처리.
+			ASSERT(mappingMode == fbxsdk::FbxLayerElement::eByPolygonVertex, "mappingMode is not ByPolygonVertex");
+
+			(*outVector)[i].reserve(elementCount);
+
+			for (int j = 0; j < elementCount; ++j)
 			{
-				auto index = mesh.GetTextureUVIndex(i, j);
+				int index = j;
+				if (pIndices != nullptr)
+				{
+					index = pIndices->GetAt(j);
+				}
+
+				fbxsdk::FbxVector2 uv = elementUV.GetAt(index);
+				if (referenceMode == fbxsdk::FbxLayerElement::eByPolygonVertex)
+				{
+					auto index = mesh.GetTextureUVIndex(i, j);
+				}
+				(*outVector)[i].emplace_back(uv.mData[0], uv.mData[1]);
 			}
-			(*outVector)[i].emplace_back(uv.mData[0], uv.mData[1]);
-		}
-	}*/
+		}*/
 	ASSERT(outVector, "outVector is nullptr");
 
 	int layerCount = mesh.GetLayerCount(fbxsdk::FbxLayerElement::eUV);
@@ -1130,6 +1130,8 @@ fbxsdk::FbxVector2 flt::FBXLoader::ReadUV(fbxsdk::FbxMesh& mesh, int controlPoin
 				break;
 			}
 		}
+		break;
+
 		default:
 			break;
 	}

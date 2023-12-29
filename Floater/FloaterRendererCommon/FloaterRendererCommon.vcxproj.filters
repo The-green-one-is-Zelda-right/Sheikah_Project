@@ -84,6 +84,12 @@
     <ClInclude Include="include\ModelLoader.h">
       <Filter>Loader</Filter>
     </ClInclude>
+    <ClInclude Include="RawMaterial.h">
+      <Filter>RawData</Filter>
+    </ClInclude>
+    <ClInclude Include="RawTexture.h">
+      <Filter>RawData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">
@@ -115,6 +121,12 @@
     </ClCompile>
     <ClCompile Include="ModelLoader.cpp">
       <Filter>Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="RawMaterial.cpp">
+      <Filter>RawData</Filter>
+    </ClCompile>
+    <ClCompile Include="RawTexture.cpp">
+      <Filter>RawData</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
