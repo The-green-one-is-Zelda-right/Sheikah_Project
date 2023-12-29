@@ -1,12 +1,6 @@
 #pragma once
 #include "ZnObject.h"
-
-namespace ZonaiMath
-{
-	class Vector3D;
-	class Quaternion;
-}
-
+#include <Eigen/Dense>
 
 namespace ZonaiPhysics
 {
@@ -17,24 +11,12 @@ namespace ZonaiPhysics
 		virtual				~ZnCollider() noexcept = default;
 
 	public:
-		/**
-		위치
-		*/
-		virtual ZonaiMath::Vector3D	GetPosition() const noexcept = 0;
-		virtual void		SetPosition(const ZonaiMath::Vector3D& _position) noexcept = 0;
-
-		/**
-		회전
-		*/
-		virtual ZonaiMath::Quaternion	GetQuaternion() const noexcept = 0;
-		virtual void		SetQuaternion(const ZonaiMath::Quaternion& _quaternion) noexcept = 0;
-
-		/**
-		유저 데이터
-		*/
-		virtual void*		GetUserData() const noexcept = 0;
-		virtual void		SetUserData(void* _userData) noexcept = 0;
-
 		virtual void		SetTrigger(bool) noexcept = 0;
+
+		virtual Eigen::Vector3f GetLocalPosition() const noexcept = 0;
+		virtual void SetLocalPosition(const Eigen::Vector3f&) noexcept = 0;
+
+		virtual Eigen::Quaternionf GetLocalQuaternion() const noexcept = 0;
+		virtual void SetLocalQuaternion(const Eigen::Quaternionf&) noexcept = 0;
 	};
 }

@@ -16,9 +16,6 @@
     <Filter Include="Core\dll">
       <UniqueIdentifier>{2615fabf-51e8-4853-b558-ee689eada209}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Collision">
-      <UniqueIdentifier>{e90a2f97-4873-49a2-83ea-e26301fa1877}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Rigidbody">
       <UniqueIdentifier>{2fa25854-fdb6-4c93-a1d5-bf1c6f681791}</UniqueIdentifier>
     </Filter>
@@ -49,8 +46,11 @@
     <Filter Include="Physics\System">
       <UniqueIdentifier>{0ec0ba64-b61e-4d0f-9a22-7626faedf853}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Time">
-      <UniqueIdentifier>{cc65efa9-ceee-4df9-80eb-c5c6b0b7df75}</UniqueIdentifier>
+    <Filter Include="Collider">
+      <UniqueIdentifier>{e90a2f97-4873-49a2-83ea-e26301fa1877}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Component\Joint">
+      <UniqueIdentifier>{6731ae7b-2c71-4b93-8193-77819af87f22}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -70,7 +70,7 @@
       <Filter>Core\Transform</Filter>
     </ClCompile>
     <ClCompile Include="Collider.cpp">
-      <Filter>Collision</Filter>
+      <Filter>Collider</Filter>
     </ClCompile>
     <ClCompile Include="RigidBody.cpp">
       <Filter>Rigidbody</Filter>
@@ -94,8 +94,15 @@
     <ClCompile Include="PhysicsSystem.cpp">
       <Filter>Physics\System</Filter>
     </ClCompile>
-    <ClCompile Include="TimeController.cpp">
-      <Filter>Time</Filter>
+    <ClCompile Include="TimeController.cpp" />
+    <ClCompile Include="BoxCollider.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Joint.cpp">
+      <Filter>Physics\Component\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="FixedJoint.cpp">
+      <Filter>Physics\Component\Joint</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -119,7 +126,7 @@
     </ClInclude>
     <ClInclude Include="PurahEngine.h" />
     <ClInclude Include="Collider.h">
-      <Filter>Collision</Filter>
+      <Filter>Collider</Filter>
     </ClInclude>
     <ClInclude Include="RigidBody.h">
       <Filter>Rigidbody</Filter>
@@ -142,11 +149,16 @@
     <ClInclude Include="PhysicsSystem.h">
       <Filter>Physics\System</Filter>
     </ClInclude>
-    <ClInclude Include="TimeController.h">
-      <Filter>Time</Filter>
+    <ClInclude Include="IRenderer.h" />
+    <ClInclude Include="TimeController.h" />
+    <ClInclude Include="BoxCollider.h">
+      <Filter>Collider</Filter>
     </ClInclude>
-    <ClInclude Include="IRenderer.h">
-      <Filter>Renderer</Filter>
+    <ClInclude Include="Joint.h">
+      <Filter>Physics\Component\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="FixedJoint.h">
+      <Filter>Physics\Component\Joint</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

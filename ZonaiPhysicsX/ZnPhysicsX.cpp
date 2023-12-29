@@ -1,9 +1,9 @@
-#include "ZonaiMath.h"
-
-#include "PxPhysicsAPI.h"
-
 #include "BoxCollider.h"
 #include "RigidBody.h"
+
+#include "FixedJoint.h"
+#include "SphereCollider.h"
+#include "ZnRaycastInfo.h"
 
 #include "ZnPhysicsX.h"
 
@@ -21,10 +21,11 @@ namespace ZonaiPhysics
 		physics = PxCreatePhysics(PX_PHYSICS_VERSION, *foundation, PxTolerancesScale(), true, pvd);
 		PxInitExtensions(*physics, pvd);
 
-		PxSceneDesc sceneDesc(physics->getTolerancesScale());
+		PxSceneDesc sceneDesc(physics->getTolerancesScale()); 
 		sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 		dispatcher = PxDefaultCpuDispatcherCreate(2);
 		sceneDesc.cpuDispatcher = dispatcher;
+		// sceneDesc.simulationEventCallback = NULL;
 		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 		scene = physics->createScene(sceneDesc);
 
@@ -61,6 +62,11 @@ namespace ZonaiPhysics
 		PX_RELEASE(foundation);
 	}
 
+	void ZnPhysicsX::WorldClear() noexcept
+	{
+
+	}
+
 	/// <summary>
 	/// 강체를 만들어서 반환
 	/// </summary>
@@ -75,7 +81,7 @@ namespace ZonaiPhysics
 			scene->addActor(*result->getRigidDynamic());
 		}
 
-		result->getRigidDynamic()->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, false);
+		result->CanSimulate(true);
 
 		return result;
 	}
@@ -83,21 +89,58 @@ namespace ZonaiPhysics
 	/// <summary>
 	/// 강체를 찾아서 거기에 콜라이더를 붙임.
 	/// </summary>
-	ZnCollider* ZnPhysicsX::CreatBoxCollider(const std::wstring& _id, float x, float y, float z) noexcept
+	ZnCollider* ZnPhysicsX::CreateBoxCollider(const std::wstring& _id, float x, float y, float z) noexcept
 	{
 		RigidBody* body = FindRigidBody(_id);
 
 		if (body == nullptr)
 		{
 			body = new RigidBody(physics);
-			body->getRigidDynamic()->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, true);
+			body->CanSimulate(false);
 			bodies.insert(std::make_pair(_id, body));
 			scene->addActor(*body->getRigidDynamic());
 		}
 
-		Collider* newRigidBody = new BoxCollider(physics, body, ZonaiMath::Vector3D(x, y, z), material);
+		Collider* newRigidBody = new BoxCollider(physics, body, Eigen::Vector3f(x, y, z), material);
 
 		return newRigidBody;
+	}
+
+	ZnCollider* ZnPhysicsX::CreateSphereCollider(const std::wstring& _id, float radius) noexcept
+	{
+		RigidBody* body = FindRigidBody(_id);
+
+		if (body == nullptr)
+		{
+			body = new RigidBody(physics);
+			body->CanSimulate(false);
+			bodies.insert(std::make_pair(_id, body));
+			scene->addActor(*body->getRigidDynamic());
+		}
+
+		Collider* newRigidBody = new SphereCollider(physics, body, radius, material);
+
+		return newRigidBody;
+	}
+
+	ZnJoint* ZnPhysicsX::CreateFixedJoint(ZnRigidBody* _object0, const ZnTransform& _transform0, ZnRigidBody* _object1, const ZnTransform& _transform1) noexcept
+	{
+		auto ob0 = dynamic_cast<RigidBody*>(_object0);
+		auto ob1 = dynamic_cast<RigidBody*>(_object1);
+
+		auto* joint = new FixedJoint(physics, ob0, _transform0, ob1, _transform1);
+
+		return  joint;
+	}
+
+	ZnJoint* ZnPhysicsX::CreateDistanceJoint(ZnRigidBody* _object0, const ZnTransform& _transform0, ZnRigidBody* _object1, const ZnTransform& _transform1) noexcept
+	{
+		return nullptr;
+	}
+
+	bool ZnPhysicsX::Raycast(const Eigen::Vector3f&, const Eigen::Vector3f&, float, ZnRaycastInfo&) noexcept
+	{
+		return true;
 	}
 
 	RigidBody* ZnPhysicsX::FindRigidBody(const std::wstring& _id) noexcept
@@ -111,12 +154,12 @@ namespace ZonaiPhysics
 		return nullptr;
 	}
 
-// 	ZnCollider* ZnPhysicsX::CreatPlaneCollider(const std::wstring&, float x, float y) noexcept
+// 	ZnCollider* ZnPhysicsX::CreatePlaneCollider(const std::wstring&, float x, float y) noexcept
 // 	{
 // 
 // 	}
 // 
-// 	ZnCollider* ZnPhysicsX::CreatSphereCollider(const std::wstring&, float radius) noexcept
+// 	ZnCollider* ZnPhysicsX::CreateSphereCollider(const std::wstring&, float radius) noexcept
 // 	{
 // 
 // 	}
@@ -135,7 +178,14 @@ namespace ZonaiPhysics
 	{
 		ZnPhysicsBase* CreatePhysics()
 		{
-			return new ZnPhysicsX();
+			static ZnPhysicsBase* instance = nullptr;
+
+			if (instance == nullptr)
+			{
+				instance = new ZnPhysicsX();
+			}
+
+			return instance;
 		}
 	}
 

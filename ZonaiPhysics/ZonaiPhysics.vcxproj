@@ -126,7 +126,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)ZonaiMath\;$(SolutionDir)ZonaiPhysicsBase\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ZonaiPhysicsBase\;$(SolutionDir)eigen-3.4.0;$(SolutionDir)ZonaiMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,24 +159,23 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Box.h" />
+    <ClInclude Include="BoxShape.h" />
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="CapsuleCollider.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Joint.h" />
-    <ClInclude Include="MeshCollider.h" />
     <ClInclude Include="RigidBody.h" />
+    <ClInclude Include="Shape.h" />
     <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="World.h" />
     <ClInclude Include="ZonaiPhysics.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Box.cpp" />
+    <ClCompile Include="BoxShape.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="CapsuleCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Joint.cpp" />
-    <ClCompile Include="MeshCollider.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="World.cpp" />

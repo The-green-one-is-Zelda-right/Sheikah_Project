@@ -1,9 +1,11 @@
 #pragma once
 #include <string>
+#include <vector>
 #include <windows.h>
 
 namespace ZonaiPhysics
 {
+	class Joint;
 	class ZnPhysicsBase;
 	class ZnRigidBody;
 	class ZnCollider;
@@ -11,6 +13,10 @@ namespace ZonaiPhysics
 
 namespace PurahEngine
 {
+	class Collider;
+	class RigidBody;
+	class Joint;
+
 	class PhysicsSystem
 	{
 	public:
@@ -26,10 +32,16 @@ namespace PurahEngine
 	private:
 		ZonaiPhysics::ZnPhysicsBase* physics;
 		HMODULE ZonaiPhysicsXDLL;
+
 	public:
 		void Initialize() noexcept;
 		void Simulation(float _dt) noexcept;
+		void SimulateResult();
 		void Finalize() noexcept;
+
+		std::vector<RigidBody*> bodies;
+		std::vector<Collider*> colliders;
+		std::vector<Joint*> joints;
 
 	public:
 		ZonaiPhysics::ZnRigidBody*	CreateRigidBody(const std::wstring&) noexcept;

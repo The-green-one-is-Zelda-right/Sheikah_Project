@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "Camera.h"
+#include "PhysicsSystem.h"
 
 PurahEngine::SceneManager::SceneManager()
 	: mainCamera(nullptr), cameraPosition(Eigen::Vector3f(0.0f, 0.0f, -10.0f))
@@ -39,6 +40,8 @@ void PurahEngine::SceneManager::SetName(std::wstring name)
 
 void PurahEngine::SceneManager::Update()
 {
+	PhysicsSystem::GetInstance().SimulateResult();
+
 	for (PurahEngine::GameObject* object : objectList)
 	{
 		for (auto component : object->componentList)

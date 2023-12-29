@@ -157,25 +157,25 @@ namespace physx
 		virtual	void	flushUpdates()	= 0;
 
 		/**
-		\brief Performs a raycast against objects in the scene, returns results in a PxRaycastBuffer object
-		or via a custom user callback implementation inheriting from PxRaycastCallback.
+		\brief 씬에서 객체에 대한 레이캐스트를 수행하고,
+		결과를 PxRaycastBuffer 객체나 PxRaycastCallback에서 파생된 사용자 정의 콜백 구현을 통해 반환합니다.
 
-		\note	Touching hits are not ordered.
-		\note	Shooting a ray from within an object leads to different results depending on the shape type. Please check the details in user guide article SceneQuery. User can ignore such objects by employing one of the provided filter mechanisms.
+		\note 터치 히트는 순서대로 정렬되지 않습니다.
+		\note 객체 내에서 레이를 발사하면 형상 유형에 따라 다른 결과가 나타납니다. 자세한 내용은 사용자 가이드의 SceneQuery 기사를 확인하세요. 사용자는 제공된 필터 메커니즘 중 하나를 사용하여 이러한 객체를 무시할 수 있습니다.
 
-		\param[in] origin		Origin of the ray.
-		\param[in] unitDir		Normalized direction of the ray.
-		\param[in] distance		Length of the ray. Has to be in the [0, inf) range.
-		\param[out] hitCall		Raycast hit buffer or callback object used to report raycast hits.
-		\param[in] hitFlags		Specifies which properties per hit should be computed and returned via the hit callback.
-		\param[in] filterData	Filtering data passed to the filter shader. 
-		\param[in] filterCall	Custom filtering logic (optional). Only used if the corresponding #PxQueryFlag flags are set. If NULL, all hits are assumed to be blocking.
-		\param[in] cache		Cached hit shape (optional). Ray is tested against cached shape first. If no hit is found the ray gets queried against the scene.
-								Note: Filtering is not executed for a cached shape if supplied; instead, if a hit is found, it is assumed to be a blocking hit.
-								Note: Using past touching hits as cache will produce incorrect behavior since the cached hit will always be treated as blocking.
-		\param[in] queryFlags	Optional flags controlling the query.
+		\param[in] origin		레이의 원점.
+		\param[in] unitDir		레이의 정규화된 방향.
+		\param[in] distance		레이의 길이. [0, inf) 범위에 있어야 합니다.
+		\param[out] hitCall		레이캐스트 히트 버퍼 또는 레이캐스트 히트를 보고하기 위해 사용되는 사용자 정의 콜백 객체.
+		\param[in] hitFlags		히트당 계산되고 히트 콜백을 통해 반환되어야 하는 속성을 지정합니다.
+		\param[in] filterData	필터 쉐이더로 전달되는 필터링 데이터.
+		\param[in] filterCall	사용자 정의 필터 로직 (선택 사항). 해당 #PxQueryFlag 플래그가 설정된 경우에만 사용됩니다. NULL이면 모든 히트가 차단되었다고 가정됩니다.
+		\param[in] cache		캐시된 히트 형상 (선택 사항). 레이는 먼저 캐시된 형상과 비교됩니다. 히트가 없으면 레이가 씬에 대해 쿼리됩니다.
+								참고: 제공된 경우 캐시된 형상에 대한 필터링은 실행되지 않습니다. 대신 히트가 발생하면 항상 차단 히트로 간주됩니다.
+								참고: 지난 터치 히트를 캐시로 사용하면 캐시된 히트가 항상 차단 히트로 처리되기 때문에 잘못된 동작을 일으킬 수 있습니다.
+		\param[in] queryFlags	쿼리를 제어하는 선택적 플래그.
 
-		\return True if any touching or blocking hits were found or any hit was found in case PxQueryFlag::eANY_HIT was specified.
+		\return 어떤 터치 히트나 차단 히트가 발견되었거나 PxQueryFlag::eANY_HIT이 지정된 경우 어떤 히트가 발견되었으면 true를 반환합니다.
 
 		@see PxRaycastCallback PxRaycastBuffer PxQueryFilterData PxQueryFilterCallback PxQueryCache PxRaycastHit PxQueryFlag PxQueryFlag::eANY_HIT PxGeometryQueryFlag
 		*/
@@ -185,29 +185,30 @@ namespace physx
 								const PxQueryCache* cache = NULL, PxGeometryQueryFlags queryFlags = PxGeometryQueryFlag::eDEFAULT) const = 0;
 
 		/**
-		\brief Performs a sweep test against objects in the scene, returns results in a PxSweepBuffer object
-		or via a custom user callback implementation inheriting from PxSweepCallback.
+		\brief 씬에서 객체에 대한 스윕 테스트를 수행하고,
+		결과를 PxSweepBuffer 객체나 PxSweepCallback에서 파생된 사용자 정의 콜백 구현을 통해 반환합니다.
 	
-		\note	Touching hits are not ordered.
-		\note	If a shape from the scene is already overlapping with the query shape in its starting position,
-				the hit is returned unless eASSUME_NO_INITIAL_OVERLAP was specified.
+		\note 터치 히트는 순서대로 정렬되지 않습니다.
+		\note 씬의 형상이 쿼리 형상과 시작 위치에서 이미 겹치는 경우 eASSUME_NO_INITIAL_OVERLAP이 지정되지 않은 한 해당 히트가 반환됩니다.
 
-		\param[in] geometry		Geometry of object to sweep (supported types are: box, sphere, capsule, convex).
-		\param[in] pose			Pose of the sweep object.
-		\param[in] unitDir		Normalized direction of the sweep.
-		\param[in] distance		Sweep distance. Needs to be in [0, inf) range and >0 if eASSUME_NO_INITIAL_OVERLAP was specified. Will be clamped to PX_MAX_SWEEP_DISTANCE.
-		\param[out] hitCall		Sweep hit buffer or callback object used to report sweep hits.
-		\param[in] hitFlags		Specifies which properties per hit should be computed and returned via the hit callback.
-		\param[in] filterData	Filtering data and simple logic.
-		\param[in] filterCall	Custom filtering logic (optional). Only used if the corresponding #PxQueryFlag flags are set. If NULL, all hits are assumed to be blocking.
-		\param[in] cache		Cached hit shape (optional). Sweep is performed against cached shape first. If no hit is found the sweep gets queried against the scene.
-								Note: Filtering is not executed for a cached shape if supplied; instead, if a hit is found, it is assumed to be a blocking hit.
-								Note: Using past touching hits as cache will produce incorrect behavior since the cached hit will always be treated as blocking.
-		\param[in] inflation	This parameter creates a skin around the swept geometry which increases its extents for sweeping. The sweep will register a hit as soon as the skin touches a shape, and will return the corresponding distance and normal.
-								Note: ePRECISE_SWEEP doesn't support inflation. Therefore the sweep will be performed with zero inflation.	
-		\param[in] queryFlags	Optional flags controlling the query.
-	
-		\return True if any touching or blocking hits were found or any hit was found in case PxQueryFlag::eANY_HIT was specified.
+		\param[in] geometry		스윕할 객체의 기하학(지원되는 유형은: 박스, 스피어, 캡슐, 복소체)입니다.
+		\param[in] pose			스윕 객체의 포즈입니다.
+		\param[in] unitDir		스윕의 정규화된 방향입니다.
+		\param[in] distance		스윕 거리입니다. [0, inf) 범위에 있어야 하며 eASSUME_NO_INITIAL_OVERLAP이 지정된 경우 >0이어야 합니다.
+								PX_MAX_SWEEP_DISTANCE로 클램핑됩니다.
+		\param[out] hitCall		스윕 히트 버퍼 또는 스윕 히트를 보고하기 위해 사용되는 사용자 정의 콜백 객체입니다.
+		\param[in] hitFlags		히트당 계산되고 히트 콜백을 통해 반환되어야 하는 속성을 지정합니다.
+		\param[in] filterData	필터링 데이터 및 간단한 논리입니다.
+		\param[in] filterCall	사용자 정의 필터 로직 (선택 사항). 해당 #PxQueryFlag 플래그가 설정된 경우에만 사용됩니다.
+								NULL이면 모든 히트가 차단되었다고 가정됩니다.
+		\param[in] cache		캐시된 히트 형상 (선택 사항). 스윕은 먼저 캐시된 형상과 비교됩니다. 히트가 없으면 스윕이 씬에 대해 쿼리됩니다.
+								참고: 제공된 경우 캐시된 형상에 대한 필터링은 실행되지 않습니다. 대신 히트가 발생하면 항상 차단 히트로 간주됩니다.
+								참고: 지난 터치 히트를 캐시로 사용하면 캐시된 히트가 항상 차단 히트로 처리되기 때문에 잘못된 동작을 일으킬 수 있습니다.
+		\param[in] inflation	이 매개변수는 스윕 기하학 주위에 스킨을 생성하여 스윕 기하학의 범위를 확장합니다. 스윕은 스킨이 형상에 닿는 즉시 히트를 등록하고 해당 거리와 법선을 반환합니다.
+								참고: ePRECISE_SWEEP는 팽창을 지원하지 않습니다. 따라서 스윕은 제로 팽창으로 수행됩니다.
+		\param[in] queryFlags	쿼리를 제어하는 선택적 플래그.
+
+		\return 어떤 터치 히트나 차단 히트가 발견되었거나 PxQueryFlag::eANY_HIT이 지정된 경우 어떤 히트가 발견되었으면 true를 반환합니다.
 
 		@see PxSweepCallback PxSweepBuffer PxQueryFilterData PxQueryFilterCallback PxSweepHit PxQueryCache PxGeometryQueryFlag
 		*/
@@ -217,25 +218,28 @@ namespace physx
 								const PxQueryCache* cache = NULL, const PxReal inflation = 0.0f, PxGeometryQueryFlags queryFlags = PxGeometryQueryFlag::eDEFAULT) const = 0;
 
 		/**
-		\brief Performs an overlap test of a given geometry against objects in the scene, returns results in a PxOverlapBuffer object
-		or via a custom user callback implementation inheriting from PxOverlapCallback.
-	
-		\note Filtering: returning eBLOCK from user filter for overlap queries will cause a warning (see #PxQueryHitType).
+		\brief 씬에서 객체에 대한 겹침 테스트를 수행하고,
+		결과를 PxOverlapBuffer 객체나 PxOverlapCallback에서 파생된 사용자 정의 콜백 구현을 통해 반환합니다.
+		
+		\note 필터링: 겹침 쿼리에 대한 사용자 필터에서 eBLOCK을 반환하면 경고가 발생합니다(#PxQueryHitType 참조).
 
-		\param[in] geometry		Geometry of object to check for overlap (supported types are: box, sphere, capsule, convex).
-		\param[in] pose			Pose of the object.
-		\param[out] hitCall		Overlap hit buffer or callback object used to report overlap hits.
-		\param[in] filterData	Filtering data and simple logic. See #PxQueryFilterData #PxQueryFilterCallback
-		\param[in] filterCall	Custom filtering logic (optional). Only used if the corresponding #PxQueryFlag flags are set. If NULL, all hits are assumed to overlap.
-		\param[in] cache		Cached hit shape (optional). Overlap is performed against cached shape first. If no hit is found the overlap gets queried against the scene.
-		\param[in] queryFlags	Optional flags controlling the query.
-		Note: Filtering is not executed for a cached shape if supplied; instead, if a hit is found, it is assumed to be a blocking hit.
-		Note: Using past touching hits as cache will produce incorrect behavior since the cached hit will always be treated as blocking.
+		\param[in] geometry		겹침을 확인할 객체의 기하학(지원되는 유형은: 박스, 스피어, 캡슐, 복소체)입니다.
+		\param[in] pose			객체의 포즈입니다.
+		\param[out] hitCall		겹침 히트 버퍼 또는 겹침 히트를 보고하기 위해 사용되는 사용자 정의 콜백 객체입니다.
+		\param[in] filterData	필터링 데이터 및 간단한 논리입니다. #PxQueryFilterData #PxQueryFilterCallback 참조
+		\param[in] filterCall	사용자 정의 필터 로직 (선택 사항). 해당 #PxQueryFlag 플래그가 설정된 경우에만 사용됩니다.
+								NULL이면 모든 히트가 겹친 것으로 가정됩니다.
+		\param[in] cache		캐시된 히트 형상 (선택 사항). 겹침은 먼저 캐시된 형상과 비교됩니다. 히트가 없으면 겹침이 씬에 대해 쿼리됩니다.
+								참고: 제공된 경우 캐시된 형상에 대한 필터링은 실행되지 않습니다. 대신 히트가 발생하면 항상 차단 히트로 간주됩니다.
+								참고: 지난 터치 히트를 캐시로 사용하면 캐시된 히트가 항상 차단 히트로 처리되기 때문에 잘못된 동작을 일으킬 수 있습니다.
+		\param[in] queryFlags	쿼리를 제어하는 선택적 플래그.
+		참고: 제공된 경우 캐시된 형상에 대한 필터링은 실행되지 않습니다. 대신 히트가 발생하면 항상 차단 히트로 간주됩니다.
+		참고: 지난 터치 히트를 캐시로 사용하면 캐시된 히트가 항상 차단 히트로 처리되기 때문에 잘못된 동작을 일으킬 수 있습니다.
 
-		\return True if any touching or blocking hits were found or any hit was found in case PxQueryFlag::eANY_HIT was specified.
+		\return 어떤 터치 히트나 차단 히트가 발견되었거나 PxQueryFlag::eANY_HIT이 지정된 경우 어떤 히트가 발견되었으면 true를 반환합니다.
 
-		\note eBLOCK should not be returned from user filters for overlap(). Doing so will result in undefined behavior, and a warning will be issued.
-		\note If the PxQueryFlag::eNO_BLOCK flag is set, the eBLOCK will instead be automatically converted to an eTOUCH and the warning suppressed.
+		\note eBLOCK을 overlap()에 대한 사용자 필터에서 반환해서는 안 됩니다. 이렇게 하면 정의되지 않은 동작이 발생하고 경고가 발생합니다.
+		\note PxQueryFlag::eNO_BLOCK 플래그가 설정된 경우 eBLOCK은 자동으로 eTOUCH로 자동 변환되고 경고가 억제됩니다.
 
 		@see PxOverlapCallback PxOverlapBuffer PxHitFlags PxQueryFilterData PxQueryFilterCallback PxGeometryQueryFlag
 		*/

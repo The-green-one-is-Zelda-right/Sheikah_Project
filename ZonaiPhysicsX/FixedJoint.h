@@ -1,42 +1,45 @@
 #pragma once
-#include "Joint.h"
+#include "ZnFixedJoint.h"
+#include "PxPhysicsAPI.h"
+#include <Eigen/Dense>
 
 namespace physx
 {
+	class PxPhysics;
 	class PxFixedJoint;
 }
 
 namespace ZonaiPhysics
 {
-	class FixedJoint : public Joint
+	class ZnTransform;
+	class ZnRigidBody;
+	class RigidBody;
+
+	class FixedJoint : public ZnFixedJoint
 	{
 	public:
-					FixedJoint() noexcept = default;
-		virtual		~FixedJoint() noexcept = default;
+							FixedJoint() noexcept = delete;
+							FixedJoint(
+								physx::PxPhysics*& _factory, 
+								RigidBody* _object0, const ZnTransform& _transform0, 
+								RigidBody* _object1, const ZnTransform& _transform1) noexcept;
+		virtual				~FixedJoint() noexcept;
 
 	public:
-		virtual void		SetObject(ZnObject*, ZnObject*) noexcept override;
-		virtual void		GetObject(ZnObject*&, ZnObject*&) const noexcept override;
+		void		SetLocalPosition(eOBJECT, const Eigen::Vector3f&) noexcept override;
+		Eigen::Vector3f	GetLocalPosition(eOBJECT) const noexcept override;
 
-		virtual void		SetLocalPosition(ObjectIndex, const Vector3D&) noexcept override;
-		virtual Vector3D	GetLocalPosition(ObjectIndex) const noexcept override;
+		void		SetLocalQuaternion(eOBJECT, const Eigen::Quaternionf&) noexcept override;
+		Eigen::Quaternionf	GetLocalQuaternion(eOBJECT) const noexcept override;
 
-		virtual void		SetLocalQuaternion(ObjectIndex, const Quaternion&) noexcept override;
-		virtual Quaternion	GetLocalQuaternion(ObjectIndex) const noexcept override;
+		Eigen::Vector3f	GetRelativeLinearVelocity() const noexcept override;
+		Eigen::Vector3f	GetRelativeAngularVelocity() const noexcept override;
 
-		virtual Vector3D	GetRelativeLinearVelocity() const noexcept override;
-		virtual Vector3D	GetRelativeAngularVelocity() const noexcept override;
-
-		virtual void		SetBreakForce(float _force, float _torque) noexcept override;
-		virtual void		GetBreakForce(float& _force, float& _torque) const noexcept override;
-
-		void SetLocalPosition(const Vector3D&) noexcept override;
-		Vector3D GetLocalPosition() const noexcept override;
-
-		void SetLocalQuaternion(const Quaternion&) noexcept override;
-		Quaternion GetLocalQuaternion() const noexcept override;
+		void		SetBreakForce(float _force, float _torque) noexcept override;
+		void		GetBreakForce(float& _force, float& _torque) const noexcept override;
 
 	private:
+		RigidBody* object[2];
 		physx::PxFixedJoint* joint;
 	};
 } // namespace ZonaiPhysics

@@ -1,67 +1,98 @@
-#include "ZonaiMath.h"
+#include "RigidBody.h"
+#include "ZnTransform.h"
 
-#include "PxPhysicsAPI.h"
 #include "FixedJoint.h"
 
 namespace ZonaiPhysics
 {
-	void FixedJoint::SetObject(ZnObject*, ZnObject*) noexcept
+	FixedJoint::FixedJoint(
+		physx::PxPhysics*& _factory, 
+		RigidBody* _object0, const ZnTransform& _transform0,
+		RigidBody* _object1, const ZnTransform& _transform1) noexcept
 	{
+		object[0] = _object0;
+		object[1] = _object1;
 
+		using namespace physx;
+
+		physx::PxTransform t0{}, t1{};
+
+		t0.p.x = _transform0.position.x();
+		t0.p.y = _transform0.position.y();
+		t0.p.z = _transform0.position.z();
+
+		t0.q.x = _transform0.quaternion.x();
+		t0.q.y = _transform0.quaternion.y();
+		t0.q.z = _transform0.quaternion.z();
+		t0.q.w = _transform0.quaternion.w();
+
+		t1.p.x = _transform1.position.x();
+		t1.p.y = _transform1.position.y();
+		t1.p.z = _transform1.position.z();
+
+		t1.q.x = _transform1.quaternion.x();
+		t1.q.y = _transform1.quaternion.y();
+		t1.q.z = _transform1.quaternion.z();
+		t1.q.w = _transform1.quaternion.w();
+
+		joint = physx::PxFixedJointCreate(
+			*_factory,
+			_object0->getRigidDynamic(), t0,
+			_object1->getRigidDynamic(), t1
+		);
 	}
 
-	void FixedJoint::GetObject(ZnObject*&, ZnObject*&) const noexcept
+	FixedJoint::~FixedJoint() noexcept
 	{
-
+		joint->release();
 	}
 
-	void FixedJoint::SetLocalPosition(ObjectIndex _index, const Vector3D& _p) noexcept
+	void FixedJoint::SetLocalPosition(eOBJECT _index, const Eigen::Vector3f& _localPos) noexcept
 	{
 		using namespace physx;
-		PxTransform transform = joint->getLocalPose(static_cast<PxJointActorIndex::Enum>(_index));
-		transform.p.x = _p.x;
-		transform.p.y = _p.y;
-		transform.p.z = _p.z;
-		joint->setLocalPose(static_cast<PxJointActorIndex::Enum>(_index), transform);
+		const auto index = static_cast<PxJointActorIndex::Enum>(_index);
+		PxTransform t = joint->getLocalPose(index);
+		t.p = { _localPos.x(), _localPos.y() , _localPos.z() };
+		joint->setLocalPose(index, t);
 	}
 
-	Vector3D FixedJoint::GetLocalPosition(ObjectIndex _index) const noexcept
+	Eigen::Vector3f FixedJoint::GetLocalPosition(eOBJECT _index) const noexcept
 	{
 		using namespace physx;
-		PxTransform transform = joint->getLocalPose(static_cast<PxJointActorIndex::Enum>(_index));
-		return {transform.p.x, transform.p.y, transform.p.z};
+		const auto index = static_cast<PxJointActorIndex::Enum>(_index);
+		PxTransform t = joint->getLocalPose(index);
+		return { t.p.x, t.p.y , t.p.z };
 	}
 
-	void FixedJoint::SetLocalQuaternion(ObjectIndex _index, const Quaternion& _q) noexcept
+	void FixedJoint::SetLocalQuaternion(eOBJECT _index, const Eigen::Quaternionf& _localQuat) noexcept
 	{
 		using namespace physx;
-		PxTransform transform = joint->getLocalPose(static_cast<PxJointActorIndex::Enum>(_index));
-		transform.q.w = _q.w;
-		transform.q.x = _q.x;
-		transform.q.y = _q.y;
-		transform.q.z = _q.z;
-		joint->setLocalPose(static_cast<PxJointActorIndex::Enum>(_index), transform);
+		const auto index = static_cast<PxJointActorIndex::Enum>(_index);
+		PxTransform t = joint->getLocalPose(index);
+		t.q = { _localQuat.x(), _localQuat.y() , _localQuat.z(), _localQuat.w() };
+		joint->setLocalPose(index, t);
 	}
 
-	Quaternion FixedJoint::GetLocalQuaternion(ObjectIndex _index) const noexcept
+	Eigen::Quaternionf FixedJoint::GetLocalQuaternion(eOBJECT _index) const noexcept
 	{
 		using namespace physx;
-		PxTransform transform = joint->getLocalPose(static_cast<PxJointActorIndex::Enum>(_index));
-		return {transform.q.w, transform.q.x, transform.q.y, transform.q.z};
+		const auto index = static_cast<PxJointActorIndex::Enum>(_index);
+		PxTransform t = joint->getLocalPose(index);
+		return { t.q.x, t.q.y , t.q.z, t.q.w };
 	}
 
-	Vector3D FixedJoint::GetRelativeLinearVelocity() const noexcept
+	Eigen::Vector3f FixedJoint::GetRelativeLinearVelocity() const noexcept
 	{
 		using namespace physx;
-		PxVec3 velo = joint->getRelativeLinearVelocity();
-		return { velo.x, velo.y, velo.z };
+		const auto& velo = joint->getRelativeLinearVelocity();
+		return { velo.x, velo.y ,velo.z };
 	}
 
-	Vector3D FixedJoint::GetRelativeAngularVelocity() const noexcept
+	Eigen::Vector3f FixedJoint::GetRelativeAngularVelocity() const noexcept
 	{
 		using namespace physx;
-		PxVec3 velo = joint->getRelativeAngularVelocity();
-		return {velo.x, velo.y, velo.z};
+		const auto& velo = joint->getRelativeAngularVelocity();
+		return { velo.x, velo.y ,velo.z };
 	}
 
 	void FixedJoint::SetBreakForce(float _force, float _torque) noexcept
@@ -72,25 +103,5 @@ namespace ZonaiPhysics
 	void FixedJoint::GetBreakForce(float& _force, float& _torque) const noexcept
 	{
 		joint->getBreakForce(_force, _torque);
-	}
-
-	void FixedJoint::SetLocalPosition(const Vector3D& _localPosition) noexcept
-	{
-		// joint->setLocalPose()
-	}
-
-	Vector3D FixedJoint::GetLocalPosition() const noexcept
-	{
-		return {};
-	}
-
-	void FixedJoint::SetLocalQuaternion(const Quaternion&) noexcept
-	{
-		//joint->setLocalPose();
-	}
-
-	Quaternion FixedJoint::GetLocalQuaternion() const noexcept
-	{
-		return {};
 	}
 }

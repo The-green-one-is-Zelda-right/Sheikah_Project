@@ -2,9 +2,10 @@
 #include "../ZonaiPhysicsBase/ZnPhysicsBase.h"
 #include <cassert>
 
+#include "RigidBody.h"
+
 namespace PurahEngine
 {
-
 	void PhysicsSystem::Initialize() noexcept
 	{
 		ZonaiPhysicsXDLL = LoadLibrary(L"ZonaiPhysicsX.dll");
@@ -37,6 +38,15 @@ namespace PurahEngine
 	void PhysicsSystem::Simulation(float _dt) noexcept
 	{
 		physics->Simulation(_dt);
+		//
+	}
+
+	void PhysicsSystem::SimulateResult()
+	{
+		for (auto& e : bodies)
+		{
+			e->SimulateResult();
+		}
 	}
 
 	void PhysicsSystem::Finalize() noexcept

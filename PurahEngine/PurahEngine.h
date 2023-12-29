@@ -10,6 +10,8 @@
 #include "InputManager.h"
 #include "GameObject.h"
 #include "Renderer.h"
+#include "RigidBody.h"
+#include "BoxCollider.h"
 
 namespace PurahEngine
 {

@@ -35,15 +35,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Componentmanager.h" />
+    <ClInclude Include="FixedJoint.h" />
     <ClInclude Include="GameLoop.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GraphicsManager.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="IRenderer.h" />
+    <ClInclude Include="Joint.h" />
     <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="PurahEngine.h" />
     <ClInclude Include="PurahEngineAPI.h" />
@@ -54,14 +57,17 @@
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Componentmanager.cpp" />
+    <ClCompile Include="FixedJoint.cpp" />
     <ClCompile Include="GameLoop.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GraphicsManager.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Joint.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="PurahEngine.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -226,7 +232,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)eigen-3.4.0;$(SolutionDir)ZeldaGraphics\header\;$(SolutionDir)Floater\ZeldaGraphicsAdapter\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)eigen-3.4.0;$(SolutionDir)ZeldaGraphics\header\;$(SolutionDir)Floater\ZeldaGraphicsAdapter\;$(SolutionDir)ZonaiPhysicsBase\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

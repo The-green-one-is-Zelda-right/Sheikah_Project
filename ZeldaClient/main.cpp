@@ -6,6 +6,11 @@
 #include "TestMovement.h"
 #include "CameraMovement.h"
 
+namespace PurahEngine
+{
+	class BoxCollider;
+}
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
 	std::wstring gameName = L"test";
@@ -31,7 +36,42 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	static CameraID cameraID = CameraID::ID_NULL;
 
 
-	
+
+
+	PurahEngine::GameObject* box = PurahEngine::SceneManager::GetInstance().CreateGameObject(L"Box01");
+
+	auto boxTrans = box->GetComponent<PurahEngine::Transform>();
+	boxTrans->SetLocalPosition({ 0, 5, 0 });
+
+	auto colliderBox = box->AddComponent<PurahEngine::BoxCollider>();
+	colliderBox->SetSize({ 0.5f, 0.5f, 0.5f });
+
+	auto rigid = box->AddComponent<PurahEngine::RigidBody>();
+	rigid->SetMass(10.f);
+	rigid->SetKinematic(false);
+
+	auto cube = box->AddComponent<PurahEngine::Renderer>();
+
+
+
+	PurahEngine::GameObject* box2 = PurahEngine::SceneManager::GetInstance().CreateGameObject(L"Box02");
+
+	auto trans = box2->GetComponent<PurahEngine::Transform>();
+	trans->SetLocalPosition({0.f, -5.f, 0.f});
+
+	auto colliderBox2 = box2->AddComponent<PurahEngine::BoxCollider>();
+	colliderBox2->SetSize({ 100, 0.5f, 100 });
+
+	auto rigid2 = box2->AddComponent<PurahEngine::RigidBody>();
+	rigid2->SetMass(10.f);
+	rigid2->SetKinematic(true);
+
+	auto cube2 = box2->AddComponent<PurahEngine::Renderer>();
+
+	colliderBox->Awake();
+	colliderBox2->Awake();
+	rigid->Awake();
+	rigid2->Awake();
 
 	PurahEngine::GameObject* testObject = PurahEngine::SceneManager::GetInstance().CreateGameObject(L"testObject");
 	PurahEngine::GameObject* camera = PurahEngine::SceneManager::GetInstance().GetMainCamera()->GetGameObject();
@@ -52,6 +92,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	}
 	testObject->GetComponent<PurahEngine::Renderer>()->AddTexture(textureID);
 
+	cube->AddTexture(textureID);
+	cube2->AddTexture(textureID);
 
 	//PurahEngine::Run(); ¿ªÇÒ
 	CreateRun(nCmdShow);

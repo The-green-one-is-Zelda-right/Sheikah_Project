@@ -130,7 +130,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)physx\include;$(SolutionDir)physx\include\cudamanager;$(SolutionDir)physx\include\source\physxextensions\src;C:\packman-repo\chk\freeglut-windows\3.4_1.1\include;$(SolutionDir)physx\include\source\foundation\include;$(SolutionDir)physx\include\source\geomutils\include;$(SolutionDir)physx\snippets\graphics\include;$(SolutionDir)physx\snippets\compiler;$(SolutionDir)physx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)physx\include;$(SolutionDir)physx\include\cudamanager;$(SolutionDir)physx\include\source\physxextensions\src;C:\packman-repo\chk\freeglut-windows\3.4_1.1\include;$(SolutionDir)physx\include\source\foundation\include;$(SolutionDir)physx\include\source\geomutils\include;$(SolutionDir)physx\snippets\graphics\include;$(SolutionDir)physx\snippets\compiler;$(SolutionDir)physx;$(SolutionDir)eigen-3.4.0;$(SolutionDir)ZonaiPhysicsBase;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OmitFramePointers>

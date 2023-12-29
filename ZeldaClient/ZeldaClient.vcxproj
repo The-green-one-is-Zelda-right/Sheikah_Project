@@ -106,7 +106,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)PurahEngine;$(SolutionDir)eigen-3.4.0;$(SolutionDir)ZeldaGraphics\header\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)PurahEngine;$(SolutionDir)eigen-3.4.0;$(SolutionDir)ZeldaGraphics\header\;$(SolutionDir)ZonaiPhysicsBase;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

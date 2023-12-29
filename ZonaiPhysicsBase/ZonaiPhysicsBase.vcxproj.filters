@@ -4,19 +4,7 @@
     <ClInclude Include="ZnObject.h">
       <Filter>00. Base</Filter>
     </ClInclude>
-    <ClInclude Include="ZnRigidBody.h">
-      <Filter>00. Base</Filter>
-    </ClInclude>
-    <ClInclude Include="ZnShape.h">
-      <Filter>00. Base</Filter>
-    </ClInclude>
     <ClInclude Include="ZnPhysicsBase.h">
-      <Filter>00. Base</Filter>
-    </ClInclude>
-    <ClInclude Include="ZnCollider.h">
-      <Filter>00. Base</Filter>
-    </ClInclude>
-    <ClInclude Include="ZnJoint.h">
       <Filter>00. Base</Filter>
     </ClInclude>
     <ClInclude Include="ZnCollision.h">
@@ -31,6 +19,30 @@
     <ClInclude Include="ForceType.h">
       <Filter>02. Enum</Filter>
     </ClInclude>
+    <ClInclude Include="ZnRaycastInfo.h">
+      <Filter>01. Struct</Filter>
+    </ClInclude>
+    <ClInclude Include="ZnSimulationCallback.h">
+      <Filter>00. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ZnJoint.h">
+      <Filter>00. Base\joint</Filter>
+    </ClInclude>
+    <ClInclude Include="ZnFixedJoint.h">
+      <Filter>00. Base\joint</Filter>
+    </ClInclude>
+    <ClInclude Include="ZnRigidBody.h">
+      <Filter>00. Base\rigidbody</Filter>
+    </ClInclude>
+    <ClInclude Include="ZnShape.h">
+      <Filter>00. Base\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="ZnCollider.h">
+      <Filter>00. Base\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="ZnSphericalJoint.h">
+      <Filter>00. Base\joint</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Base">
@@ -41,6 +53,15 @@
     </Filter>
     <Filter Include="02. Enum">
       <UniqueIdentifier>{ac1dbfca-3f5d-4a34-92d5-15979022e33a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Base\joint">
+      <UniqueIdentifier>{4436b1c2-2fc2-4b42-9f98-9ec51c63f079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Base\rigidbody">
+      <UniqueIdentifier>{1478daba-785b-41b1-a2c6-88dd0a0c23df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Base\collider">
+      <UniqueIdentifier>{0859ca70-cb44-475a-962a-0a4fdba25eda}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

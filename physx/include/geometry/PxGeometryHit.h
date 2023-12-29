@@ -57,27 +57,26 @@ struct PxHitFlag
 {
 	enum Enum
 	{
-		ePOSITION					= (1<<0),	//!< "position" member of #PxQueryHit is valid
-		eNORMAL						= (1<<1),	//!< "normal" member of #PxQueryHit is valid
-		eUV							= (1<<3),	//!< "u" and "v" barycentric coordinates of #PxQueryHit are valid. Not applicable to sweep queries.
-		eASSUME_NO_INITIAL_OVERLAP	= (1<<4),	//!< Performance hint flag for sweeps when it is known upfront there's no initial overlap.
-												//!< NOTE: using this flag may cause undefined results if shapes are initially overlapping.
-		eANY_HIT					= (1<<5),	//!< Report any first hit. Used for geometries that contain more than one primitive. For meshes,
-												//!< if neither eMESH_MULTIPLE nor eANY_HIT is specified, a single closest hit will be reported.
-		eMESH_MULTIPLE				= (1<<6),	//!< Report all hits for meshes rather than just the first. Not applicable to sweep queries.
-		eMESH_ANY					= eANY_HIT,	//!< @deprecated Deprecated, please use eANY_HIT instead.
-		eMESH_BOTH_SIDES			= (1<<7),	//!< Report hits with back faces of mesh triangles. Also report hits for raycast
-												//!< originating on mesh surface and facing away from the surface normal. Not applicable to sweep queries.
-												//!< Please refer to the user guide for heightfield-specific differences.
-		ePRECISE_SWEEP				= (1<<8),	//!< Use more accurate but slower narrow phase sweep tests.
-												//!< May provide better compatibility with PhysX 3.2 sweep behavior.
-		eMTD						= (1<<9),	//!< Report the minimum translation depth, normal and contact point.
-		eFACE_INDEX					= (1<<10),	//!< "face index" member of #PxQueryHit is valid
+		ePOSITION = (1 << 0),					//!< #PxQueryHit의 "position" 멤버가 유효합니다.
+		eNORMAL = (1 << 1),						//!< #PxQueryHit의 "normal" 멤버가 유효합니다.
+		eUV = (1 << 3),							//!< #PxQueryHit의 "u" 및 "v" 바리센트릭 좌표가 유효합니다. 스윕 쿼리에는 해당되지 않습니다.
+		eASSUME_NO_INITIAL_OVERLAP = (1 << 4),  //!< 초기 겹침이 없다는 것이 알려진 경우 스윕의 성능 힌트 플래그입니다.
+												//!< 참고: 이 플래그를 사용하면 형상이 초기에 겹침하는 경우 정의되지 않은 결과가 발생할 수 있습니다.
+		eANY_HIT = (1 << 5),					//!< 어떤 첫 번째 히트든 보고합니다. 하나 이상의 기본체를 포함하는 지오메트리에 사용됩니다. 
+												//!< 메쉬의 경우 eMESH_MULTIPLE 또는 eANY_HIT이 지정되지 않은 경우 가장 가까운 히트 하나만 보고됩니다.
+		eMESH_MULTIPLE = (1 << 6),				//!< 메쉬의 모든 히트를 보고 하나 이상의 기본체를 포함하는 지오메트리에 사용됩니다. 스윕 쿼리에는 해당되지 않습니다.
+		eMESH_ANY = eANY_HIT,					//!< @deprecated 폐지됨, 대신 eANY_HIT을 사용하세요.
+		eMESH_BOTH_SIDES = (1 << 7),			//!< 메쉬 삼각형의 뒷면과의 히트를 보고 메쉬 표면에서 시작되고 표면 법선에서 멀어지는 레이캐스트의 히트를 보고합니다. 
+												//!< 스윕 쿼리에는 해당되지 않습니다. 높이 필드에 대한 특정 차이점에 대해서는 사용자 가이드를 참조하세요.
+		ePRECISE_SWEEP = (1 << 8),				//!< 더 정확하지만 느린 네어페이즈 스윕 테스트를 사용합니다. 
+												//!< PhysX 3.2 스윕 동작과 더 좋은 호환성을 제공할 수 있습니다.
+		eMTD = (1 << 9),						//!< 최소 평행이동 깊이, 법선 및 접촉점을 보고합니다.
+		eFACE_INDEX = (1 << 10),				//!< #PxQueryHit의 "face index" 멤버가 유효합니다.
 
-		eDEFAULT					= ePOSITION|eNORMAL|eFACE_INDEX,
+		eDEFAULT = ePOSITION | eNORMAL | eFACE_INDEX,
 
-		/** \brief Only this subset of flags can be modified by pre-filter. Other modifications will be discarded. */
-		eMODIFIABLE_FLAGS			= eMESH_MULTIPLE|eMESH_BOTH_SIDES|eASSUME_NO_INITIAL_OVERLAP|ePRECISE_SWEEP
+		/** \brief 사전 필터에 의해 수정 가능한 플래그의 이 하위 집합만 수정할 수 있습니다. 다른 수정은 버려집니다. */
+		eMODIFIABLE_FLAGS = eMESH_MULTIPLE | eMESH_BOTH_SIDES | eASSUME_NO_INITIAL_OVERLAP | ePRECISE_SWEEP
 	};
 };
 
@@ -96,56 +95,59 @@ struct PxQueryHit
 	PX_INLINE			PxQueryHit() : faceIndex(0xFFFFffff) {}
 
 	/**
-	Face index of touched triangle, for triangle meshes, convex meshes and height fields.
+	삼각형 메쉬, 복소 메쉬 및 높이 필드의 터치된 삼각형의 면 인덱스입니다.
 
-	\note This index will default to 0xFFFFffff value for overlap queries.
-	\note Please refer to the user guide for more details for sweep queries.
-	\note This index is remapped by mesh cooking. Use #PxTriangleMesh::getTrianglesRemap() to convert to original mesh index.
-	\note For convex meshes use #PxConvexMesh::getPolygonData() to retrieve touched polygon data.
+	\note	겹침 쿼리의 경우 이 인덱스는 기본값으로 0xFFFFffff 값이 됩니다.
+	\note	스윕 쿼리에 대한 자세한 내용은 사용자 가이드를 참조하세요.
+	\note	이 인덱스는 메쉬 쿠킹에 의해 다시 매핑됩니다.
+			원래 메쉬 인덱스로 변환하려면 #PxTriangleMesh::getTrianglesRemap()를 사용하세요.
+	\note	복소 메쉬의 경우 #PxConvexMesh::getPolygonData()를 사용하여 터치된 폴리곤 데이터를 검색하세요.
 	*/
 	PxU32				faceIndex;
 };
 
 /**
-\brief Scene query hit information for raycasts and sweeps returning hit position and normal information.
+\brief 레이캐스트 및 스윕의 히트 위치 및 법선 정보에 대한 씬 쿼리 히트 정보입니다.
 
-::PxHitFlag flags can be passed to scene query functions, as an optimization, to cause the SDK to
-only generate specific members of this structure.
+::PxHitFlag 플래그는 씬 쿼리 함수에 전달될 수 있으며
+최적화를 위해 SDK가 이 구조체의 특정 멤버만 생성하도록 지정할 수 있습니다.
 */
 struct PxLocationHit : PxQueryHit
 {
 	PX_INLINE			PxLocationHit() : flags(0), position(PxVec3(0)), normal(PxVec3(0)), distance(PX_MAX_REAL)	{}
 
 	/**
-	\note For raycast hits: true for shapes overlapping with raycast origin.
-	\note For sweep hits: true for shapes overlapping at zero sweep distance.
+	\note	레이캐스트 히트의 경우: 레이캐스트 원점과 겹치는 형상이면 true입니다.
+	\note	스윕 히트의 경우: 제로 스윕 거리에서 겹치는 형상이면 true입니다.
 
 	@see PxRaycastHit PxSweepHit
 	*/
 	PX_INLINE bool		hadInitialOverlap() const { return (distance <= 0.0f); }
 
-	// the following fields are set in accordance with the #PxHitFlags
-	PxHitFlags			flags;		//!< Hit flags specifying which members contain valid values.
-	PxVec3				position;	//!< World-space hit position (flag: #PxHitFlag::ePOSITION)
-	PxVec3				normal;		//!< World-space hit normal (flag: #PxHitFlag::eNORMAL)
+	// 다음 필드들은 #PxHitFlags에 따라 설정됩니다.
+	PxHitFlags flags;   //!< 유효한 값을 포함하는 멤버를 지정하는 히트 플래그.
+	PxVec3 position;    //!< 월드 공간 히트 위치 (플래그: #PxHitFlag::ePOSITION)
+	PxVec3 normal;      //!< 월드 공간 히트 법선 (플래그: #PxHitFlag::eNORMAL)
 
 	/**
-	\brief	Distance to hit.
-	\note	If the eMTD flag is used, distance will be a negative value if shapes are overlapping indicating the penetration depth.
-	\note	Otherwise, this value will be >= 0 */
+	\brief 히트까지의 거리.
+	\note	eMTD 플래그를 사용하는 경우 형상이 겹치는 경우 음수 값으로 거리가 표시되며, 이는 침투 깊이를 나타냅니다.
+	\note	그렇지 않은 경우 이 값은 >= 0일 것입니다.
+	*/
 	PxF32				distance;
 };
 
 /**
-\brief Stores results of raycast queries.
+\brief 레이캐스트 쿼리의 결과를 저장합니다.
 
-::PxHitFlag flags can be passed to raycast function, as an optimization, to cause the SDK to only compute specified members of this
-structure.
+레이캐스트 함수에는 ::PxHitFlag 플래그가 전달될 수 있으며,
+최적화를 위해 SDK가 이 구조체의 특정 멤버만 계산하도록 지정할 수 있습니다.
 
-Some members like barycentric coordinates are currently only computed for triangle meshes and height fields, but next versions
-might provide them in other cases. The client code should check #flags to make sure returned values are valid.
+바리센트릭 좌표와 같은 일부 멤버는 현재 삼각형 메쉬 및 높이 필드에 대해서만 계산되지만,
+향후 버전에서는 다른 경우에도 제공될 수 있습니다.
+클라이언트 코드는 #flags를 확인하여 반환된 값이 유효한지 확인해야 합니다.
 
-@see PxScene.raycast 
+@see PxScene.raycast
 */
 struct PxGeomRaycastHit : PxLocationHit
 {
@@ -153,7 +155,7 @@ struct PxGeomRaycastHit : PxLocationHit
 
 	// the following fields are set in accordance with the #PxHitFlags
 
-	PxReal	u, v;			//!< barycentric coordinates of hit point, for triangle mesh and height field (flag: #PxHitFlag::eUV)
+	PxReal	u, v;			//!< 히트 지점의 삼각형 메쉬 및 높이 필드에 대한 바리센트릭 좌표 (플래그: #PxHitFlag::eUV)
 };
 
 /**

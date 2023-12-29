@@ -53,18 +53,18 @@ class PxRigidActor : public PxActor
 {
 public:
 	/**
-	\brief Deletes the rigid actor object.
+	 *\brief 강체 액터 객체를 삭제합니다.
 
-	Also releases any shapes associated with the actor.
+	또한 액터와 관련된 모든 형상을 해제합니다.
 
-	Releasing an actor will affect any objects that are connected to the actor (constraint shaders like joints etc.).
-	Such connected objects will be deleted upon scene deletion, or explicitly by the user by calling release()
-	on these objects. It is recommended to always remove all objects that reference actors before the actors
-	themselves are removed. It is not possible to retrieve list of dead connected objects.
+	액터를 해제하면 액터에 연결된 모든 객체(조인트 등과 같은 제약 쉐이더)에 영향을 미칩니다.
+	이러한 연결된 객체는 씬 삭제 시 또는 사용자가 명시적으로 이러한 객체들에 대해 release()를 호출하여 삭제됩니다.
+	액터 자체를 제거하기 전에 항상 액터를 참조하는 모든 객체를 제거하는 것이 좋습니다.
+	죽은 연결된 객체의 목록을 검색하는 것은 불가능합니다.
 
-	<b>Sleeping:</b> This call will awaken any sleeping actors contacting the deleted actor (directly or indirectly).
+	<b>슬리핑:</b> 이 호출은 삭제된 액터와 직접 또는 간접적으로 연락하는 모든 슬리핑 액터를 깨웁니다.
 
-	Calls #PxActor::release() so you might want to check the documentation of that method as well.
+	#PxActor::release()를 호출하므로 해당 메서드의 설명도 확인하는 것이 좋습니다.
 
 	@see PxActor::release()
 	*/

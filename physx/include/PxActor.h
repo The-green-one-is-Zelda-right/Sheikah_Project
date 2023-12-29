@@ -194,11 +194,11 @@ class PxActor : public PxBase
 {
 public:
 	/**
-	\brief Deletes the actor.
-	
-	Do not keep a reference to the deleted instance.
+	\brief 액터를 삭제합니다.
 
-	If the actor belongs to a #PxAggregate object, it is automatically removed from the aggregate.
+	삭제된 인스턴스에 대한 참조를 유지하지 마십시오.
+
+	액터가 #PxAggregate 객체에 속하는 경우 해당 액터는 자동으로 집합에서 제거됩니다.
 
 	@see PxBase.release(), PxAggregate
 	*/

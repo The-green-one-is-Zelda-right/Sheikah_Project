@@ -1,49 +1,44 @@
 #pragma once
-
-namespace ZonaiMath
-{
-	class Vector3D;
-	class Quaternion;
-}
+#include <Eigen/Dense>
 
 
 namespace ZonaiPhysics
 {
-	using namespace ZonaiMath;
+	using namespace Eigen;
 	
 	class ZnObject;
 
 	class ZnJoint
 	{
 	public:
+		enum class eOBJECT
+		{
+			eJOINT_OBJECT0 = 0,
+			eJOINT_OBJECT1 = 1,
+		};
+
+	public:
 							ZnJoint() noexcept = default;
-		virtual				~ZnJoint() noexcept = 0;
+		virtual				~ZnJoint() noexcept = default;
 
 	public:
 		/**
-		오브젝트를 조인트로 연결함.
-		둘 중 하나는 NULL일 수 있음.
-		*/
-		virtual void		SetObject(ZnObject*, ZnObject*) noexcept = 0;
-		virtual void		GetObject(ZnObject*&, ZnObject*&) const noexcept = 0;
-		
-		/**
 		오브젝트의 포지션
 		*/
-		virtual void		SetLocalPosition(const Vector3D&) noexcept = 0;
-		virtual Vector3D	GetLocalPosition() const noexcept = 0;
+		virtual void		SetLocalPosition(eOBJECT, const Eigen::Vector3f&) noexcept = 0;
+		virtual Eigen::Vector3f	GetLocalPosition(eOBJECT) const noexcept = 0;
 
 		/**
 		오브젝트의 로테이션
 		*/
-		virtual void		SetLocalQuaternion(const Quaternion&) noexcept = 0;
-		virtual Quaternion	GetLocalQuaternion() const noexcept = 0;
+		virtual void		SetLocalQuaternion(eOBJECT, const Eigen::Quaternionf&) noexcept = 0;
+		virtual Eigen::Quaternionf	GetLocalQuaternion(eOBJECT) const noexcept = 0;
 
 		/**
 		오브젝트0을 기준으로 오브젝트1의 상대 속도를 반환함.
 		*/
-		virtual Vector3D	GetRelativeLinearVelocity() const noexcept = 0;
-		virtual Vector3D	GetRelativeAngularVelocity() const noexcept = 0;
+		virtual Eigen::Vector3f	GetRelativeLinearVelocity() const noexcept = 0;
+		virtual Eigen::Vector3f	GetRelativeAngularVelocity() const noexcept = 0;
 
 		/**
 		조인트 파괴 힘을 설정함

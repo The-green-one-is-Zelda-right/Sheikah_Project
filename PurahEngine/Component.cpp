@@ -1,6 +1,6 @@
 #include "Component.h"
 
-PurahEngine::Component::Component()
+PurahEngine::Component::Component() : gameObject(nullptr)
 {
 
 }
@@ -80,7 +80,7 @@ void PurahEngine::Component::OnMouseExit()
 
 }
 
-PurahEngine::GameObject* PurahEngine::Component::GetGameObject()
+PurahEngine::GameObject* PurahEngine::Component::GetGameObject() const
 {
 	return gameObject;
 }

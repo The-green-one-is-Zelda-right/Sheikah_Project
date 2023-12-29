@@ -55,14 +55,14 @@ struct PxPairFlag
 		/**
 		\brief 동적 해결기에서 이 충돌 쌍의 연락을 처리합니다.
 
-		\note 충돌한 액터가 강체인 경우에만 영향을 미칩니다.
+		\note	충돌한 액터가 강체인 경우에만 영향을 미칩니다.
 		*/
 		eSOLVE_CONTACT = (1 << 0),
 
 		/**
 		\brief 이 충돌 쌍에 대한 연락 수정 콜백을 호출합니다.
-
-		\note 충돌한 액터가 강체인 경우에만 영향을 미칩니다.
+			
+		\note	충돌한 액터가 강체인 경우에만 영향을 미칩니다.
 
 		@see PxContactModifyCallback
 		*/
@@ -75,8 +75,8 @@ struct PxPairFlag
 		다른 객체가 트리거 볼륨에 들어갈 때 즉시 트리거 콜백이 호출됩니다.
 		두 충돌 객체가 트리거 모양이 아닌 경우, 이 충돌 쌍의 액터가 접촉을 시작할 때 연락 보고 콜백이 호출됩니다.
 
-		\note 충돌한 액터가 강체인 경우에만 영향을 미칩니다.
-		\note eDETECT_DISCRETE_CONTACT 또는 eDETECT_CCD_CONTACT가 활성화된 경우에만 영향을 미칩니다.
+		\note	충돌한 액터가 강체인 경우에만 영향을 미칩니다.
+		\note	eDETECT_DISCRETE_CONTACT 또는 eDETECT_CCD_CONTACT가 활성화된 경우에만 영향을 미칩니다.
 
 		@see PxSimulationEventCallback.onContact() PxSimulationEventCallback.onTrigger()
 		*/
@@ -84,15 +84,15 @@ struct PxPairFlag
 
 		/**
 		\brief 이 충돌 쌍이 접촉 중일 때 연락 보고 콜백을 호출합니다.
-
+		ii
 		두 충돌 객체가 트리거 모양이 아닌 경우, 이 충돌 쌍의 액터가 접촉 중일 때 연락 보고 콜백이 호출됩니다.
 
-		\note 트리거는 이 이벤트를 지원하지 않습니다.
-		지속적인 트리거 접촉은 eNOTIFY_TOUCH_FOUND/eNOTIFY_TOUCH_LOST 이벤트를 따로 관찰하여 추적되어야 합니다.
-		\note 충돌한 액터가 강체인 경우에만 영향을 미칩니다.
-		\note 접촉 중인 객체가 자고 있으면 보고가 전송되지 않습니다.
-		\note eDETECT_DISCRETE_CONTACT 또는 eDETECT_CCD_CONTACT가 활성화된 경우에만 영향을 미칩니다.
-		\note 이미 접촉 중인 쌍에 대해이 플래그가 활성화되면, 쌍이 접촉을 잃고 다시 접촉할 때까지 eNOTIFY_TOUCH_PERSISTS 이벤트가 없을 것입니다.
+		\note	트리거는 이 이벤트를 지원하지 않습니다.
+				지속적인 트리거 접촉은 eNOTIFY_TOUCH_FOUND/eNOTIFY_TOUCH_LOST 이벤트를 따로 관찰하여 추적되어야 합니다.
+		\note	충돌한 액터가 강체인 경우에만 영향을 미칩니다.
+		\note	접촉 중인 객체가 자고 있으면 보고가 전송되지 않습니다.
+		\note	eDETECT_DISCRETE_CONTACT 또는 eDETECT_CCD_CONTACT가 활성화된 경우에만 영향을 미칩니다.
+		\note	이미 접촉 중인 쌍에 대해이 플래그가 활성화되면, 쌍이 접촉을 잃고 다시 접촉할 때까지 eNOTIFY_TOUCH_PERSISTS 이벤트가 없을 것입니다.
 
 		@see PxSimulationEventCallback.onContact() PxSimulationEventCallback.onTrigger()
 		*/
@@ -105,9 +105,9 @@ struct PxPairFlag
 		다른 객체가 트리거 볼륨을 벗어날 때 즉시 트리거 콜백이 호출됩니다.
 		두 충돌 객체가 트리거 모양이 아닌 경우, 이 충돌 쌍의 액터가 접촉을 중단할 때 연락 보고 콜백이 호출됩니다.
 
-		\note 충돌한 액터가 강체인 경우에만 영향을 미칩니다.
-		\note 이 이벤트는 충돌 객체 중 하나가 삭제되면 발생합니다.
-		\note eDETECT_DISCRETE_CONTACT 또는 eDETECT_CCD_CONTACT가 활성화된 경우에만 영향을 미칩니다.
+		\note	충돌한 액터가 강체인 경우에만 영향을 미칩니다.
+		\note	이 이벤트는 충돌 객체 중 하나가 삭제되면 발생합니다.
+		\note	eDETECT_DISCRETE_CONTACT 또는 eDETECT_CCD_CONTACT가 활성화된 경우에만 영향을 미칩니다.
 
 		@see PxSimulationEventCallback.onContact() PxSimulationEventCallback.onTrigger()
 		*/
@@ -169,10 +169,10 @@ struct PxPairFlag
 		/**
 		\brief 이 충돌 쌍의 연락 보고에서 연락점을 제공합니다.
 
-		\note 충돌한 액터가 강체이고 eNOTIFY_TOUCH_... 또는
-		eNOTIFY_THRESHOLD_FORCE_... 플래그와 함께 사용될 때만 영향을 미칩니다.
-		\note eDETECT_DISCRETE_CONTACT 또는
-		eDETECT_CCD_CONTACT가 활성화된 경우에만 영향을 미칩니다.
+		\note	충돌한 액터가 강체이고 eNOTIFY_TOUCH_... 또는
+				eNOTIFY_THRESHOLD_FORCE_... 플래그와 함께 사용될 때만 영향을 미칩니다.
+		\note	eDETECT_DISCRETE_CONTACT 또는
+				eDETECT_CCD_CONTACT가 활성화된 경우에만 영향을 미칩니다.
 
 		@see PxSimulationEventCallback.onContact() PxContactPair PxContactPair.extractContacts()
 		*/
@@ -181,20 +181,20 @@ struct PxPairFlag
 		/**
 		\brief 이 플래그는 이 쌍이 이산 충돌 감지 연락을 생성하는지 여부를 나타냅니다.
 
-		\note 연락은 eSOLVE_CONTACT가 활성화된 경우에만 응답됩니다.
+		\note	연락은 eSOLVE_CONTACT가 활성화된 경우에만 응답됩니다.
 		*/
 		eDETECT_DISCRETE_CONTACT = (1 << 10),
 
 		/**
 		\brief 이 플래그는 이 쌍이 CCD(Continuous Collision Detection) 연락을 생성하는지 여부를 나타냅니다.
 
-		\note 연락은 이 쌍에 eSOLVE_CONTACT가 활성화된 경우에만 응답됩니다.
-		\note 이 기능을 사용하려면 씬에 PxSceneFlag::eENABLE_CCD가 활성화되어 있어야 합니다.
-		\note 쌍의 비정적 바디는 올바르게 작동하려면 PxRigidBodyFlag::eENABLE_CCD가 지정되어야 합니다.
-		\note 이 플래그는 트리거 모양과 함께 사용되지 않습니다.
-		그러나 트리거 모양을 사용하지 않고 쌍에 eNOTIFY_TOUCH_FOUND 및
-		eNOTIFY_TOUCH_LOST를 요청하고 쌍에 eSOLVE_CONTACT를 활성화하지 않도록 설정하여
-		CCD 트리거 이벤트를 흉내낼 수 있습니다.
+		\note	연락은 이 쌍에 eSOLVE_CONTACT가 활성화된 경우에만 응답됩니다.
+		\note	이 기능을 사용하려면 씬에 PxSceneFlag::eENABLE_CCD가 활성화되어 있어야 합니다.
+		\note	쌍의 비정적 바디는 올바르게 작동하려면 PxRigidBodyFlag::eENABLE_CCD가 지정되어야 합니다.
+		\note	이 플래그는 트리거 모양과 함께 사용되지 않습니다.
+				그러나 트리거 모양을 사용하지 않고 쌍에 eNOTIFY_TOUCH_FOUND 및
+				eNOTIFY_TOUCH_LOST를 요청하고 쌍에 eSOLVE_CONTACT를 활성화하지 않도록 설정하여
+				CCD 트리거 이벤트를 흉내낼 수 있습니다.
 
 		@see PxRigidBodyFlag::eENABLE_CCD
 		@see PxSceneFlag::eENABLE_CCD
@@ -207,10 +207,10 @@ struct PxPairFlag
 		충돌 쌍이 연락 보고를 활성화한 경우, 연락이 해결되기 전의 강체의 속도가 제공됩니다.
 		쌍이 접촉을 잃은 경우 데이터가 제공되지 않습니다.
 
-		\note 일반적으로 이러한 속도를 요청하는 것은 필요하지 않습니다.
-		왜냐하면 이러한 속도는 제공된 PxRigidActor 객체에서 직접 조회할 수 있기 때문입니다.
-		그러나 시뮬레이션이 실행 중에 강체의 속도가 설정될 수 있는 경우가 있기 때문에
-		시뮬레이션이 사용한 속도가 아닌 이 새로운 속도가 연락 보고 콜백에서 반환될 수 있습니다.
+		\note	일반적으로 이러한 속도를 요청하는 것은 필요하지 않습니다.
+				왜냐하면 이러한 속도는 제공된 PxRigidActor 객체에서 직접 조회할 수 있기 때문입니다.
+				그러나 시뮬레이션이 실행 중에 강체의 속도가 설정될 수 있는 경우가 있기 때문에
+				시뮬레이션이 사용한 속도가 아닌 이 새로운 속도가 연락 보고 콜백에서 반환될 수 있습니다.
 
 		@see PxSimulationEventCallback.onContact(), PxContactPairVelocity, PxContactPairHeader.extraDataStream
 		*/
@@ -232,13 +232,13 @@ struct PxPairFlag
 		충돌 쌍이 연락 보고를 활성화한 경우, 연락 이벤트 시간의 강체 포즈가 제공됩니다.
 		쌍이 접촉을 잃은 경우 데이터가 제공되지 않습니다.
 
-		\note 보통은 이러한 포즈를 요청하는 것이 필요하지 않습니다.
-		왜냐하면 이러한 포즈는 제공된 PxRigidActor 객체에서 직접 조회할 수 있기 때문입니다.
-		그러나 시뮬레이션 실행 중에 강체의 포즈가 설정될 수 있는 경우가 있으며
-		이러한 경우 연락 보고 콜백에서는 시뮬레이션이 사용한 포즈가 아닌 이 새로운 포즈가 반환될 수 있습니다.
-		다른 사용 사례는 여러 패스가 활성화된 CCD의 경우입니다.
-		빠르게 이동하는 객체가 동일한 객체에 여러 번 튀어올라갈 수 있습니다.
-		이 플래그를 사용하면 각 충돌 이벤트에서 충돌 시점의 강체 포즈를 요청할 수 있습니다.
+		\note	보통은 이러한 포즈를 요청하는 것이 필요하지 않습니다.
+				왜냐하면 이러한 포즈는 제공된 PxRigidActor 객체에서 직접 조회할 수 있기 때문입니다.
+				그러나 시뮬레이션 실행 중에 강체의 포즈가 설정될 수 있는 경우가 있으며
+				이러한 경우 연락 보고 콜백에서는 시뮬레이션이 사용한 포즈가 아닌 이 새로운 포즈가 반환될 수 있습니다.
+				다른 사용 사례는 여러 패스가 활성화된 CCD의 경우입니다.
+				빠르게 이동하는 객체가 동일한 객체에 여러 번 튀어올라갈 수 있습니다.
+				이 플래그를 사용하면 각 충돌 이벤트에서 충돌 시점의 강체 포즈를 요청할 수 있습니다.
 
 		@see PxSimulationEventCallback.onContact(), PxContactPairPose, PxContactPairHeader.extraDataStream
 		*/

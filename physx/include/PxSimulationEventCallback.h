@@ -338,7 +338,7 @@ PX_FLAGS_OPERATORS(PxContactPairHeaderFlag::Enum, PxU16)
 
 
 /**
-\brief An Instance of this class is passed to PxSimulationEventCallback.onContact().
+\brief 이 클래스의 인스턴스가 PxSimulationEventCallback.onContact()에 전달됩니다.
 
 @see PxSimulationEventCallback.onContact()
 */
@@ -348,54 +348,55 @@ struct PxContactPairHeader
 		PX_INLINE	PxContactPairHeader() {}
 
 	/**
-	\brief The two actors of the notification shape pairs.
+	\brief	알림 모양 쌍의 두 액터입니다.
 
-	\note The actor pointers might reference deleted actors. This will be the case if PxPairFlag::eNOTIFY_TOUCH_LOST
-		  or PxPairFlag::eNOTIFY_THRESHOLD_FORCE_LOST events were requested for the pair and one of the involved actors 
-		  gets deleted or removed from the scene. Check the #flags member to see whether that is the case.
-		  Do not dereference a pointer to a deleted actor. The pointer to a deleted actor is only provided 
-		  such that user data structures which might depend on the pointer value can be updated.
+	\note	액터 포인터는 삭제된 액터를 참조할 수 있습니다.
+			이는 PxPairFlag::eNOTIFY_TOUCH_LOST
+			또는 PxPairFlag::eNOTIFY_THRESHOLD_FORCE_LOST 이벤트가
+			쌍에 대해 요청되었으며 관련된 액터 중 하나가 삭제되거나 씬에서 제거된 경우에 발생합니다.
+			이 경우인지 여부를 확인하려면 #flags 멤버를 확인하십시오. 삭제된 액터에 대한 포인터를 역참조하지 마십시오.
+			삭제된 액터에 대한 포인터는 포인터 값에 의존할 수 있는 사용자 데이터 구조를 업데이트할 수 있도록 제공됩니다.
 
 	@see PxActor
 	*/
-	PxActor*				actors[2];
+	PxActor*					actors[2];
 
 	/**
-	\brief Stream containing extra data as requested in the PxPairFlag flags of the simulation filter.
+	\brief 시뮬레이션 필터의 PxPairFlag 플래그에서 요청한 대로 추가 데이터를 포함하는 스트림입니다.
 
-	This pointer is only valid if any kind of extra data information has been requested for the contact report pair (see #PxPairFlag::ePOST_SOLVER_VELOCITY etc.),
-	else it will be NULL.
-	
+	이 포인터는 연락처 보고 쌍에 대한 어떤 종류의 추가 데이터 정보도 요청되지 않은 경우에만 유효합니다
+	(예: #PxPairFlag::ePOST_SOLVER_VELOCITY 등), 그렇지 않으면 NULL일 것입니다.
+
 	@see PxPairFlag
 	*/
 	const PxU8*					extraDataStream;
 	
 	/**
-	\brief Size of the extra data stream [bytes] 
+	\brief 추가 데이터 스트림의 크기 [바이트]
 	*/
 	PxU16						extraDataStreamSize;
 
 	/**
-	\brief Additional information on the contact report pair.
+	\brief 접촉 보고 쌍에 대한 추가 정보입니다.
 
 	@see PxContactPairHeaderFlag
 	*/
 	PxContactPairHeaderFlags	flags;
 
 	/**
-	\brief pointer to the contact pairs
+	\brief 접촉 쌍에 대한 포인터입니다.
 	*/
 	const struct PxContactPair*	pairs;
 
 	/**
-	\brief number of contact pairs
+	\brief 접촉 쌍의 수입니다.
 	*/
 	PxU32						nbPairs;
 };
 
 
 /**
-\brief Collection of flags providing information on contact report pairs.
+\brief 연락처 보고서 쌍에 대한 정보를 제공하는 플래그 모음입니다.
 
 @see PxContactPair
 */
@@ -404,43 +405,43 @@ struct PxContactPairFlag
 	enum Enum
 	{
 		/**
-		\brief The shape with index 0 has been removed from the actor/scene.
+		\brief 인덱스가 0인 도형은 액터/씬에서 제거되었습니다.
 		*/
 		eREMOVED_SHAPE_0				= (1<<0),
 
 		/**
-		\brief The shape with index 1 has been removed from the actor/scene.
+		\brief 인덱스가 1인 모양이 배우/씬에서 제거되었습니다.
 		*/
 		eREMOVED_SHAPE_1				= (1<<1),
 
 		/**
-		\brief First actor pair contact.
+		\brief 첫 번째 액터 쌍 접촉.
 
-		The provided shape pair marks the first contact between the two actors, no other shape pair has been touching prior to the current simulation frame.
+		제공된 셰이프 쌍은 두 액터 간의 첫 번째 접촉을 표시하며, 현재 시뮬레이션 프레임 이전에 다른 셰이프 쌍이 접촉한 적이 없습니다.
 
-		\note: This info is only available if #PxPairFlag::eNOTIFY_TOUCH_FOUND has been declared for the pair.
+		\note: 이 정보는 해당 쌍에 대해 #PxPairFlag::eNOTIFY_TOUCH_FOUND가 선언된 경우에만 사용할 수 있습니다.
 		*/
 		eACTOR_PAIR_HAS_FIRST_TOUCH		= (1<<2),
 
 		/**
-		\brief All contact between the actor pair was lost.
+		\brief 액터 쌍 간의 모든 접촉이 손실되었습니다.
 
-		All contact between the two actors has been lost, no shape pairs remain touching after the current simulation frame.
+		두 액터 간의 모든 접촉이 끊어졌으며 현재 시뮬레이션 프레임 이후에는 어떤 셰이프 쌍도 접촉하지 않습니다.
 		*/
 		eACTOR_PAIR_LOST_TOUCH			= (1<<3),
 
 		/**
-		\brief Internal flag, used by #PxContactPair.extractContacts()
+		\brief 내부 플래그, #PxContactPair.extractContacts()에 사용됩니다.
 
-		The applied contact impulses are provided for every contact point. 
-		This is the case if #PxPairFlag::eSOLVE_CONTACT has been set for the pair.
+		적용된 접촉 임펄스는 모든 접촉점에 대해 제공됩니다. 
+		페어에 #PxPairFlag::eSOLVE_CONTACT가 설정된 경우에 해당합니다.
 		*/
 		eINTERNAL_HAS_IMPULSES			= (1<<4),
 
 		/**
-		\brief Internal flag, used by #PxContactPair.extractContacts()
+		\brief 내부 플래그, #PxContactPair.extractContacts()에 사용됩니다.
 
-		The provided contact point information is flipped with regards to the shapes of the contact pair. This mainly concerns the order of the internal triangle indices.
+		제공된 접점 정보는 접점 쌍의 모양과 관련하여 반전됩니다. 이는 주로 내부 삼각형 인덱스의 순서와 관련이 있습니다.ggg
 		*/
 		eINTERNAL_CONTACTS_ARE_FLIPPED	= (1<<5)
 	};
@@ -461,42 +462,43 @@ PX_FLAGS_OPERATORS(PxContactPairFlag::Enum, PxU16)
 struct PxContactPairPoint
 {
 	/**
-	\brief The position of the contact point between the shapes, in world space. 
+	\brief 두 형상 간의 접점 위치. 월드 공간 기준.
 	*/
 	PxVec3	position;
 
 	/**
-	\brief The separation of the shapes at the contact point.  A negative separation denotes a penetration.
+	\brief 접점에서의 형상 간의 분리. 음의 분리는 침투를 나타냅니다.
 	*/
 	PxReal	separation;
 
 	/**
-	\brief The normal of the contacting surfaces at the contact point. The normal direction points from the second shape to the first shape.
+	\brief 접점에서의 연락 표면의 법선. 법선 방향은 두 번째 형상에서 첫 번째 형상으로 향합니다.
 	*/
 	PxVec3	normal;
 
 	/**
-	\brief The surface index of shape 0 at the contact point.  This is used to identify the surface material.
+	\brief 접점에서 형상 0의 표면 인덱스. 이를 사용하여 표면 소재를 식별합니다.
 	*/
 	PxU32   internalFaceIndex0;
 
 	/**
-	\brief The impulse applied at the contact point, in world space. Divide by the simulation time step to get a force value.
+	\brief 접점에서의 충격, 월드 공간 기준. 시뮬레이션 타임 스텝으로 나누어 힘 값을 얻을 수 있습니다.
 	*/
 	PxVec3	impulse;
 
 	/**
-	\brief The surface index of shape 1 at the contact point.  This is used to identify the surface material.
+	\brief 접점에서 형상 1의 표면 인덱스. 이를 사용하여 표면 소재를 식별합니다.
 	*/
 	PxU32   internalFaceIndex1;
 };
 
 
 /**
-\brief Contact report pair information.
+\brief 연락 보고서 쌍 정보.
 
-Instances of this class are passed to PxSimulationEventCallback.onContact(). If contact reports have been requested for a pair of shapes (see #PxPairFlag),
-then the corresponding contact information will be provided through this structure.
+이 클래스의 인스턴스는 PxSimulationEventCallback.onContact()에 전달됩니다.
+쌍의 모양에 대한 연락 보고서가 요청된 경우 (참조: #PxPairFlag),
+해당 연락 정보는 이 구조체를 통해 제공됩니다.
 
 @see PxSimulationEventCallback.onContact()
 */
@@ -506,75 +508,72 @@ struct PxContactPair
 		PX_INLINE	PxContactPair() {}
 
 	/**
-	\brief The two shapes that make up the pair.
+	\brief 페어를 구성하는 두 형상.
 
-	\note The shape pointers might reference deleted shapes. This will be the case if #PxPairFlag::eNOTIFY_TOUCH_LOST
-		  or #PxPairFlag::eNOTIFY_THRESHOLD_FORCE_LOST events were requested for the pair and one of the involved shapes 
-		  gets deleted. Check the #flags member to see whether that is the case. Do not dereference a pointer to a 
-		  deleted shape. The pointer to a deleted shape is only provided such that user data structures which might 
-		  depend on the pointer value can be updated.
+	\note	형상 포인터는 삭제된 형상을 참조할 수 있습니다. 이는 페어에 대해 #PxPairFlag::eNOTIFY_TOUCH_LOST
+			또는 #PxPairFlag::eNOTIFY_THRESHOLD_FORCE_LOST 이벤트가 요청되었고 페어에 포함된 형상 중 하나가 삭제된 경우입니다.
+			이 경우 #flags 멤버를 확인하여 이것이 해당되는지 확인하세요. 삭제된 형상에 대한 포인터를 역참조하지 마십시오.
+			삭제된 형상에 대한 포인터는 포인터 값에 의존할 수 있는 사용자 데이터 구조를 업데이트하기 위해 제공됩니다.
 
 	@see PxShape
 	*/
 	PxShape*				shapes[2];
 
 	/**
-	\brief Pointer to first patch header in contact stream containing contact patch data
+	\brief 접촉 패치 데이터를 포함하는 연락처 스트림의 첫 번째 패치 헤더를 가리키는 포인터.
 
-	This pointer is only valid if contact point information has been requested for the contact report pair (see #PxPairFlag::eNOTIFY_CONTACT_POINTS).
-	Use #extractContacts() as a reference for the data layout of the stream.
+	이 포인터는 연락처 보고서 페어에 대한 연락처 포인트 정보가 요청된 경우에만 유효합니다 (#PxPairFlag::eNOTIFY_CONTACT_POINTS 참조).
+	데이터 레이아웃에 대한 참고로 #extractContacts()를 사용하세요.
 	*/
-	const PxU8* contactPatches;
+	const PxU8*				contactPatches;
 
 	/**
-	\brief Pointer to first contact point in contact stream containing contact data
+	\brief 접점 데이터를 포함하는 연락처 스트림의 첫 번째 연락처 지점을 가리키는 포인터.
 
-	This pointer is only valid if contact point information has been requested for the contact report pair (see #PxPairFlag::eNOTIFY_CONTACT_POINTS).
-	Use #extractContacts() as a reference for the data layout of the stream.
+	이 포인터는 연락처 보고서 페어에 대한 연락처 포인트 정보가 요청된 경우에만 유효합니다 (#PxPairFlag::eNOTIFY_CONTACT_POINTS 참조).
+	데이터 레이아웃에 대한 참고로 #extractContacts()를 사용하세요.
 	*/
-	const PxU8* contactPoints;
+	const PxU8*				contactPoints;
 
 	/**
-	\brief Buffer containing applied impulse data.
+	\brief 적용된 충격 데이터를 포함하는 버퍼.
 
-	This pointer is only valid if contact point information has been requested for the contact report pair (see #PxPairFlag::eNOTIFY_CONTACT_POINTS).
-	Use #extractContacts() as a reference for the data layout of the stream.
+	이 포인터는 연락처 보고서 페어에 대한 연락처 포인트 정보가 요청된 경우에만 유효합니다 (#PxPairFlag::eNOTIFY_CONTACT_POINTS 참조).
+	데이터 레이아웃에 대한 참고로 #extractContacts()를 사용하세요.
 	*/
 	const PxReal*			contactImpulses;
 
 	/**
-	\brief Size of the contact stream [bytes] including force buffer
+	\brief 포함된 힘 버퍼를 포함한 연락 스트림의 크기 [바이트]
 	*/
 	PxU32					requiredBufferSize;
 
 	/**
-	\brief Number of contact points stored in the contact stream
+	\brief 연락 스트림에 저장된 연락점의 수
 	*/
 	PxU8					contactCount;
 
 	/**
-	\brief Number of contact patches stored in the contact stream
+	\brief 연락 스트림에 저장된 연락 패치의 수
 	*/
-
 	PxU8					patchCount;
 
 	/**
-	\brief Size of the contact stream [bytes] not including force buffer
+	\brief 힘 버퍼를 제외한 연락 스트림의 크기 [바이트]
 	*/
-
 	PxU16					contactStreamSize;
 
 	/**
-	\brief Additional information on the contact report pair.
+	\brief 연락 보고서 쌍에 대한 추가 정보.
 
 	@see PxContactPairFlag
 	*/
 	PxContactPairFlags		flags;
 
 	/**
-	\brief Flags raised due to the contact.
+	\brief 연락으로 인한 플래그.
 
-	The events field is a combination of:
+	이벤트 필드는 다음을 포함합니다:
 
 	<ul>
 	<li>PxPairFlag::eNOTIFY_TOUCH_FOUND,</li>
@@ -586,10 +585,10 @@ struct PxContactPair
 	<li>PxPairFlag::eNOTIFY_THRESHOLD_FORCE_LOST</li>
 	</ul>
 
-	See the documentation of #PxPairFlag for an explanation of each.
+	각각에 대한 설명은 #PxPairFlag의 문서를 참조하세요.
 
-	\note eNOTIFY_TOUCH_CCD can get raised even if the pair did not request this event. However, in such a case it will only get
-	raised in combination with one of the other flags to point out that the other event occured during a CCD pass.
+	\note	eNOTIFY_TOUCH_CCD는 해당 쌍이 이 이벤트를 요청하지 않았더라도 발생할 수 있습니다.
+			그러나 이 경우에는 다른 플래그와 결합되어 다른 이벤트가 CCD 패스 중에 발생했음을 나타냅니다.
 
 	@see PxPairFlag
 	*/
@@ -598,24 +597,35 @@ struct PxContactPair
 	PxU32					internalData[2];	// For internal use only
 
 	/**
-	\brief Extracts the contact points from the stream and stores them in a convenient format.
+	\brief 스트림에서 연락처 지점을 추출하고 편리한 형식으로 저장합니다.
+
+	\param[out] userBuffer
+				PxContactPairPoint 구조체의 배열로 연락처 지점을 추출합니다.
+				쌍당 연락처 수는 #contactCount에 의해 정의됩니다.
 	
-	\param[out] userBuffer Array of PxContactPairPoint structures to extract the contact points to. The number of contacts for a pair is defined by #contactCount
-	\param[in] bufferSize Number of PxContactPairPoint structures the provided buffer can store.
-	\return Number of contact points written to the buffer.
+	\param[in]	bufferSize
+				제공된 버퍼에 저장할 수 있는 PxContactPairPoint 구조체의 수입니다.
+	
+	\return		버퍼에 기록된 연락처 지점의 수입니다.
 
 	@see PxContactPairPoint
 	*/
 	PX_INLINE PxU32			extractContacts(PxContactPairPoint* userBuffer, PxU32 bufferSize) const;
 
 	/**
-	\brief Helper method to clone the contact pair and copy the contact data stream into a user buffer.
-	
-	The contact data stream is only accessible during the contact report callback. This helper function provides copy functionality
-	to buffer the contact stream information such that it can get accessed at a later stage.
+	\brief 연락처 쌍을 복제하고 연락처 데이터 스트림을 사용자 버퍼로 복사하는 도우미 메서드입니다.
 
-	\param[out] newPair The contact pair info will get copied to this instance. The contact data stream pointer of the copy will be redirected to the provided user buffer. Use NULL to skip the contact pair copy operation.
-	\param[out] bufferMemory Memory block to store the contact data stream to. At most #requiredBufferSize bytes will get written to the buffer.
+	연락처 데이터 스트림은 연락처 보고서 콜백 동안에만 액세스할 수 있습니다.
+	이 도우미 함수는 연락처 스트림 정보를 나중에 액세스할 수 있도록 사용자 버퍼에 복사 기능을 제공합니다.
+
+	\param[out] newPair
+				연락처 쌍 정보가 이 인스턴스에 복사됩니다.
+				복사본의 연락처 데이터 스트림 포인터는 제공된 사용자 버퍼로 리디렉션됩니다.
+				연락처 쌍 복사 작업을 건너 뛰려면 NULL을 사용하세요.
+	
+	\param[out] bufferMemory
+				연락처 데이터 스트림을 저장할 메모리 블록입니다.
+				최대 #requiredBufferSize 바이트가 버퍼에 쓰일 것입니다.
 	*/
 	PX_INLINE void				bufferContacts(PxContactPair* newPair, PxU8* bufferMemory) const;
 
@@ -714,9 +724,9 @@ struct PxTriggerPairFlag
 {
 	enum Enum
 	{
-		eREMOVED_SHAPE_TRIGGER					= (1<<0),					//!< The trigger shape has been removed from the actor/scene.
-		eREMOVED_SHAPE_OTHER					= (1<<1),					//!< The shape causing the trigger event has been removed from the actor/scene.
-		eNEXT_FREE								= (1<<2)					//!< For internal use only.
+		eREMOVED_SHAPE_TRIGGER					= (1<<0),					//!< 트리거 모양이 액터/장면에서 제거되었습니다.
+		eREMOVED_SHAPE_OTHER					= (1<<1),					//!< 트리거 이벤트를 발생시킨 모양이 액터/장면에서 제거되었습니다.
+		eNEXT_FREE								= (1<<2)					//!< 내부적인 용도로만 사용됩니다.
 	};
 };
 
@@ -730,14 +740,17 @@ PX_FLAGS_OPERATORS(PxTriggerPairFlag::Enum, PxU8)
 
 
 /**
-\brief Descriptor for a trigger pair.
+\brief 트리거 페어에 대한 설명서입니다.
 
-An array of these structs gets passed to the PxSimulationEventCallback::onTrigger() report.
+이러한 구조체의 배열이 PxSimulationEventCallback::onTrigger() 리포트로 전달됩니다.
 
-\note The shape pointers might reference deleted shapes. This will be the case if #PxPairFlag::eNOTIFY_TOUCH_LOST
-      events were requested for the pair and one of the involved shapes gets deleted. Check the #flags member to see
-	  whether that is the case. Do not dereference a pointer to a deleted shape. The pointer to a deleted shape is 
-	  only provided such that user data structures which might depend on the pointer value can be updated.
+\note	형상 포인터는 삭제된 형상을 참조할 수 있습니다.
+		페어에 대한 #PxPairFlag::eNOTIFY_TOUCH_LOST 이벤트가 요청되었고
+		관련된 형상 중 하나가 삭제된 경우 이러한 경우입니다.
+		#flags 멤버를 확인하여 해당 여부를 확인하십시오.
+		삭제된 형상에 대한 포인터를 참조하지 마십시오.
+		삭제된 형상에 대한 포인터는 해당 포인터 값에 의존할 수 있
+		사용자 데이터 구조를 업데이트하기 위해 제공됩니다.
 
 @see PxSimulationEventCallback.onTrigger()
 */
@@ -745,19 +758,19 @@ struct PxTriggerPair
 {
 	PX_INLINE PxTriggerPair() {}
 
-	PxShape*				triggerShape;	//!< The shape that has been marked as a trigger.
-	PxActor*				triggerActor;	//!< The actor to which triggerShape is attached
-	PxShape*				otherShape;		//!< The shape causing the trigger event. \deprecated (see #PxSimulationEventCallback::onTrigger()) If collision between trigger shapes is enabled, then this member might point to a trigger shape as well.
-	PxActor*				otherActor;		//!< The actor to which otherShape is attached
-	PxPairFlag::Enum		status;			//!< Type of trigger event (eNOTIFY_TOUCH_FOUND or eNOTIFY_TOUCH_LOST). eNOTIFY_TOUCH_PERSISTS events are not supported.
-	PxTriggerPairFlags		flags;			//!< Additional information on the pair (see #PxTriggerPairFlag)
+	PxShape*				triggerShape;		//!< 트리거로 표시된 형상입니다.
+	PxActor*				triggerActor;		//!< triggerShape이 연결된 액터입니다.
+	PxShape*				otherShape;			//!< 트리거 이벤트를 유발하는 형상입니다. \deprecated (참조: #PxSimulationEventCallback::onTrigger()) 트리거 형상 간 충돌이 활성화된 경우, 이 멤버는 트리거 형상을 가리킬 수도 있습니다.
+	PxActor*				otherActor;			//!< otherShape이 연결된 액터입니다.
+	PxPairFlag::Enum		status;				//!< 트리거 이벤트의 유형 (eNOTIFY_TOUCH_FOUND 또는 eNOTIFY_TOUCH_LOST). eNOTIFY_TOUCH_PERSISTS 이벤트는 지원되지 않습니다.
+	PxTriggerPairFlags		flags;				//!< 페어에 대한 추가 정보 (참조: #PxTriggerPairFlag)
 };
 
 
 /**
-\brief Descriptor for a broken constraint.
+\brief 손상된 제약 조건에 대한 설명자입니다.
 
-An array of these structs gets passed to the PxSimulationEventCallback::onConstraintBreak() report.
+이 구조체의 배열은 PxSimulationEventCallback::onConstraintBreak() 보고서에 전달됩니다.
 
 @see PxConstraint PxSimulationEventCallback.onConstraintBreak()
 */
@@ -766,25 +779,24 @@ struct PxConstraintInfo
 	PX_INLINE PxConstraintInfo() {}
 	PX_INLINE PxConstraintInfo(PxConstraint* c, void* extRef, PxU32 t) : constraint(c), externalReference(extRef), type(t) {}
 
-	PxConstraint*	constraint;				//!< The broken constraint.
-	void*			externalReference;		//!< The external object which owns the constraint (see #PxConstraintConnector::getExternalReference())
-	PxU32			type;					//!< Unique type ID of the external object. Allows to cast the provided external reference to the appropriate type
+	PxConstraint*	constraint;				//!< 손상된 제약조건입니다.
+	void*			externalReference;      //!< 제약조건을 소유하는 외부 객체입니다 (참조: #PxConstraintConnector::getExternalReference()).
+	PxU32			type;                   //!< 외부 객체의 고유한 유형 식별자입니다. 제공된 외부 참조를 적절한 형식으로 캐스트할 수 있도록 합니다.
 };
 
 
 /**
-\brief An interface class that the user can implement in order to receive simulation events.
+\brief 시뮬레이션 이벤트를 수신하려면 사용자가 구현할 수 있는 인터페이스 클래스입니다.
 
-With the exception of onAdvance(), the events get sent during the call to either #PxScene::fetchResults() or 
-#PxScene::flushSimulation() with sendPendingReports=true. onAdvance() gets called while the simulation
-is running (that is between PxScene::simulate() or PxScene::advance() and PxScene::fetchResults()).
+onAdvance()를 제외한 이 이벤트들은 #PxScene::fetchResults() 또는 #PxScene::flushSimulation() 중 하나를 호출할 때 sendPendingReports=true로 전송됩니다.
+onAdvance()는 시뮬레이션이 실행되는 동안(PxScene::simulate() 또는 PxScene::advance()와 PxScene::fetchResults() 사이) 호출됩니다.
 
-\note SDK state should not be modified from within the callbacks. In particular objects should not
-be created or destroyed. If state modification is needed then the changes should be stored to a buffer
-and performed after the simulation step.
+\note SDK 상태는 콜백 내에서 수정되어서는 안 됩니다.
+특히 객체를 생성하거나 파괴해서는 안 됩니다.
+상태 수정이 필요한 경우 변경 사항을 버퍼에 저장하고 시뮬레이션 단계 이후에 수행해야 합니다.
 
-<b>Threading:</b> With the exception of onAdvance(), it is not necessary to make these callbacks thread safe as 
-they will only be called in the context of the user thread.
+<b>쓰레딩:</b> onAdvance()를 제외하고는 이러한 콜백을 스레드 안전하게 만들 필요가 없습니다.
+왜냐하면 이러한 콜백은 사용자 스레드의 맥락에서만 호출되기 때문입니다.
 
 @see PxScene.setSimulationEventCallback() PxScene.getSimulationEventCallback()
 */
@@ -792,107 +804,130 @@ class PxSimulationEventCallback
 	{
 	public:
 	/**
-	\brief This is called when a breakable constraint breaks.
+	\brief 파괴 가능한 제약 조건이 파괴될 때 호출됩니다.
+
+	\note	이 호출 내에서 제약 쉐이더를 해제해서는 안 됩니다!
+
+	\note	제약 조건이 파괴되지만 시간 단계가 아직 시뮬레이션 중일 때 제약 조건이 삭제되면 이벤트가 보고되지 않습니다.
+
+	\param[in]	constraints
+				파괴된 제약 조건들입니다.
 	
-	\note The user should not release the constraint shader inside this call!
-
-	\note No event will get reported if the constraint breaks but gets deleted while the time step is still being simulated.
-
-	\param[in] constraints - The constraints which have been broken.
-	\param[in] count       - The number of constraints
+	\param[in]	count
+				제약 조건의 수
 
 	@see PxConstraint PxConstraintDesc.linearBreakForce PxConstraintDesc.angularBreakForce
 	*/
 	virtual void onConstraintBreak(PxConstraintInfo* constraints, PxU32 count) = 0;
 
+
 	/**
-	\brief This is called with the actors which have just been woken up.
+	\brief 방금 깨어난 액터들에 대해 호출됩니다.
 
-	\note Only supported by rigid bodies yet.
-	\note Only called on actors for which the PxActorFlag eSEND_SLEEP_NOTIFIES has been set.
-	\note Only the latest sleep state transition happening between fetchResults() of the previous frame and fetchResults() of the current frame
-	will get reported. For example, let us assume actor A is awake, then A->putToSleep() gets called, then later A->wakeUp() gets called.
-	At the next simulate/fetchResults() step only an onWake() event will get triggered because that was the last transition.
-	\note If an actor gets newly added to a scene with properties such that it is awake and the sleep state does not get changed by 
-	the user or simulation, then an onWake() event will get sent at the next simulate/fetchResults() step.
+	\note	현재는 강체 바디에 대해서만 지원됩니다.
+	\note	eSEND_SLEEP_NOTIFIES 플래그가 설정된 액터에 대해서만 호출됩니다.
+	\note	이전 프레임의 fetchResults()와 현재 프레임의 fetchResults() 사이에서 발생한 최신 슬립 상태 전이만 보고됩니다.
+			예를 들어 액터 A가 깨어 있고, A->putToSleep()이 호출되고, 나중에 A->wakeUp()이 호출되면
+			다음 시뮬레이트/fetchResults() 단계에서는 마지막 전이이기 때문에 onWake() 이벤트만 트리거됩니다.
 
-	\param[in] actors - The actors which just woke up.
-	\param[in] count  - The number of actors
+	\note	액터가 사용자 또는 시뮬레이션에 의해 변경되지 않고 깨어 있음 상태로 씬에 새로 추가된 경우에는
+			다음 시뮬레이트/fetchResults() 단계에서 onWake() 이벤트가 전송됩니다.
+
+	\param[in]	actors
+				방금 깨어난 액터들입니다.
+	
+	\param[in]	count
+				액터의 수
 
 	@see PxScene.setSimulationEventCallback() PxSceneDesc.simulationEventCallback PxActorFlag PxActor.setActorFlag()
 	*/
 	virtual void onWake(PxActor** actors, PxU32 count) = 0;
 
+
 	/**
-	\brief This is called with the actors which have just been put to sleep.
+	\brief 방금 잠자고 있는 액터들에 대해 호출됩니다.
 
-	\note Only supported by rigid bodies yet.
-	\note Only called on actors for which the PxActorFlag eSEND_SLEEP_NOTIFIES has been set.
-	\note Only the latest sleep state transition happening between fetchResults() of the previous frame and fetchResults() of the current frame
-	will get reported. For example, let us assume actor A is asleep, then A->wakeUp() gets called, then later A->putToSleep() gets called.
-	At the next simulate/fetchResults() step only an onSleep() event will get triggered because that was the last transition (assuming the simulation
-	does not wake the actor up).
-	\note If an actor gets newly added to a scene with properties such that it is asleep and the sleep state does not get changed by 
-	the user or simulation, then an onSleep() event will get sent at the next simulate/fetchResults() step.
+	\note	현재는 강체 바디에 대해서만 지원됩니다.
+	\note	eSEND_SLEEP_NOTIFIES 플래그가 설정된 액터에 대해서만 호출됩니다.
+	
+	\note	이전 프레임의 fetchResults()와 현재 프레임의 fetchResults() 사이에서 발생한 최신 슬립 상태 전이만 보고됩니다.
+			예를 들어 액터 A가 잠자고 있고, A->wakeUp()이 호출되고, 나중에 A->putToSleep()이 호출되면
+			다음 시뮬레이트/fetchResults() 단계에서는 마지막 전이이기 때문에 onSleep() 이벤트만 트리거됩니다 (시뮬레이션이 액터를 깨우지 않은 경우).
+	
+	\note	액터가 사용자 또는 시뮬레이션에 의해 변경되지 않고 잠자고 있음 상태로 씬에 새로 추가된 경우에는
+			다음 시뮬레이트/fetchResults() 단계에서 onSleep() 이벤트가 전송됩니다.
 
-	\param[in] actors - The actors which have just been put to sleep.
-	\param[in] count  - The number of actors
+	\param[in]	actors
+				방금 잠자고 있는 액터들입니다.
+	
+	\param[in]	count
+				액터의 수
 
 	@see PxScene.setSimulationEventCallback() PxSceneDesc.simulationEventCallback PxActorFlag PxActor.setActorFlag()
 	*/
 	virtual void onSleep(PxActor** actors, PxU32 count) = 0;
 
-	/**
-	\brief This is called when certain contact events occur.
 
-	The method will be called for a pair of actors if one of the colliding shape pairs requested contact notification.
-	You request which events are reported using the filter shader/callback mechanism (see #PxSimulationFilterShader,
-	#PxSimulationFilterCallback, #PxPairFlag).
+	/** \brief 특정한 접촉 이벤트가 발생할 때 호출됩니다.
+
+	이 메서드는 충돌 형상 쌍 중 하나가 접촉 알림을 요청한 경우에 두 액터의 쌍에 대해 호출됩니다.
+	어떤 이벤트가 보고되는지는 필터 쉐이더/콜백 메커니즘을 사용하여 요청하며
+	(#PxSimulationFilterShader, #PxSimulationFilterCallback, #PxPairFlag 참조),
+	통과된 객체에 대한 참조를 유지하지 마십시오. 이 함수가 반환된 후에는 무효화될 것입니다.
+
+	\param[in]	pairHeader
+				접촉 보고를 트리거한 두 액터에 대한 정보입니다.
 	
-	Do not keep references to the passed objects, as they will be 
-	invalid after this function returns.
-
-	\param[in] pairHeader Information on the two actors whose shapes triggered a contact report.
-	\param[in] pairs The contact pairs of two actors for which contact reports have been requested. See #PxContactPair.
-	\param[in] nbPairs The number of provided contact pairs.
+	\param[in]	pairs
+				접촉 보고가 요청된 두 액터의 접촉 쌍입니다. 참조: #PxContactPair.
+	
+	\param[in]	nbPairs
+				제공된 접촉 쌍의 수입니다.
 
 	@see PxScene.setSimulationEventCallback() PxSceneDesc.simulationEventCallback PxContactPair PxPairFlag PxSimulationFilterShader PxSimulationFilterCallback
 	*/
 	virtual void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) = 0;
 
+
 	/**
-	\brief This is called with the current trigger pair events.
+	\brief 현재 트리거 쌍 이벤트와 함께 호출됩니다.
 
-	Shapes which have been marked as triggers using PxShapeFlag::eTRIGGER_SHAPE will send events
-	according to the pair flag specification in the filter shader (see #PxPairFlag, #PxSimulationFilterShader).
+	PxShapeFlag::eTRIGGER_SHAPE를 사용하여 트리거로 표시된 형상은 필터 쉐이더에서 명시된 쌍 플래그 규격에 따라 이벤트를 전송합니다
+	(#PxPairFlag, #PxSimulationFilterShader 참조).
 
-	\note Trigger shapes will no longer send notification events for interactions with other trigger shapes.
+	\note	트리거 형상은 더 이상 다른 트리거 형상과의 상호 작용에 대한 알림 이벤트를 보내지 않습니다.
 
-	\param[in] pairs - The trigger pair events.
-	\param[in] count - The number of trigger pair events.
+	\param[in]	pairs
+				트리거 쌍 이벤트입니다.
+	
+	\param[in]	count
+				트리거 쌍 이벤트의 수입니다.
 
 	@see PxScene.setSimulationEventCallback() PxSceneDesc.simulationEventCallback PxPairFlag PxSimulationFilterShader PxShapeFlag PxShape.setFlag()
 	*/
 	virtual void onTrigger(PxTriggerPair* pairs, PxU32 count) = 0;
 
 	/**
-	\brief Provides early access to the new pose of moving rigid bodies.
+	\brief 이동 중인 강체 바디의 새로운 포즈에 빠르게 접근할 수 있도록 제공합니다.
 
-	When this call occurs, rigid bodies having the #PxRigidBodyFlag::eENABLE_POSE_INTEGRATION_PREVIEW 
-	flag set, were moved by the simulation and their new poses can be accessed through the provided buffers.
-	
-	\note The provided buffers are valid and can be read until the next call to #PxScene::simulate() or #PxScene::collide().
-	
-	\note This callback gets triggered while the simulation is running. If the provided rigid body references are used to
-	read properties of the object, then the callback has to guarantee no other thread is writing to the same body at the same
-	time.
-	
-	\note The code in this callback should be lightweight as it can block the simulation, that is, the
-	#PxScene::fetchResults() call.
+	이 호출이 발생하면 #PxRigidBodyFlag::eENABLE_POSE_INTEGRATION_PREVIEW 플래그가 설정된 강체 바디들은 시뮬레이션에 의해 이동되었으며,
+	그들의 새로운 포즈에 제공된 버퍼를 통해 접근할 수 있습니다.
 
-	\param[in] bodyBuffer The rigid bodies that moved and requested early pose reporting.
-	\param[in] poseBuffer The integrated rigid body poses of the bodies listed in bodyBuffer.
-	\param[in] count The number of entries in the provided buffers.
+	\note	제공된 버퍼는 다음 #PxScene::simulate() 또는 #PxScene::collide() 호출까지 유효하며 읽을 수 있습니다.
+
+	\note	이 콜백은 시뮬레이션이 실행되는 동안 트리거됩니다.
+			객체의 속성을 읽기 위해 제공된 강체 바디 참조를 사용하는 경우 콜백은 동시에 동일한 객체에 쓰기가 없음을 보장해야 합니다.
+
+	\note	이 콜백의 코드는 경량이어야 합니다. 즉, #PxScene::fetchResults() 호출을 차단할 수 있습니다.
+
+	\param[in]	bodyBuffer
+				이동하고 이른 포즈 보고를 요청한 강체 바디들입니다.
+	
+	\param[in]	poseBuffer
+				bodyBuffer에 나열된 강체 바디들의 통합된 강체 바디 포즈입니다.
+	
+	\param[in]	count
+				제공된 버퍼의 항목 수입니다.
 
 	@see PxScene.setSimulationEventCallback() PxSceneDesc.simulationEventCallback PxRigidBodyFlag::eENABLE_POSE_INTEGRATION_PREVIEW
 	*/

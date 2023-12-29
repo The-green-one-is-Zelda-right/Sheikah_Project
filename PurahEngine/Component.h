@@ -9,8 +9,10 @@ namespace PurahEngine
 	{
 	protected:
 		Component();
+
 	public:
 		virtual ~Component();
+
 	public:
 		virtual void Awake();
 		virtual void Start();
@@ -50,10 +52,11 @@ namespace PurahEngine
 		// 마우스가 오브젝트에서 벗어났을 때 호출
 		virtual void OnMouseExit();
 
-		GameObject* GetGameObject();
+		GameObject* GetGameObject() const;
 
-	public:
+	private:
 		GameObject* gameObject;
+
+		friend GameObject;
 	};
 }
-

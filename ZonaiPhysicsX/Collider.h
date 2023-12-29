@@ -1,4 +1,5 @@
 #pragma once
+#include <Eigen/Dense>
 #include "ZnCollider.h"
 
 namespace physx
@@ -9,12 +10,6 @@ namespace physx
 	class PxRigidActor;
 }
 
-namespace ZonaiMath
-{
-	class Vector3D;
-	class Quaternion;
-}
-
 namespace ZonaiPhysics
 {
 	class RigidBody;
@@ -22,47 +17,49 @@ namespace ZonaiPhysics
 	class Collider : public ZnCollider
 	{
 	public:
-		Collider() noexcept = delete;
-		Collider(physx::PxPhysics*&, RigidBody*) noexcept;
+							Collider() noexcept = delete;
+							Collider(physx::PxPhysics*&, RigidBody*) noexcept;
 		virtual				~Collider() noexcept = default;
 
 	public:
+		void				SetTrigger(bool) noexcept final;
+
 		/**
 		위치
 		*/
-		virtual ZonaiMath::Vector3D	GetPosition() const noexcept final;
-		virtual void		SetPosition(const ZonaiMath::Vector3D& _position) noexcept final;
-		virtual ZonaiMath::Vector3D	GetLocalPosition() const noexcept final;
-		virtual void		SetLocalPosition(const ZonaiMath::Vector3D& _position) noexcept final;
+		Eigen::Vector3f		GetPosition() const noexcept final;
+		void				SetPosition(const Eigen::Vector3f& _position) noexcept final;
+		virtual  Eigen::Vector3f	GetLocalPosition() const noexcept final;
+		virtual	 void		SetLocalPosition(const Eigen::Vector3f& _position) noexcept final;
 
 		/**
 		회전
 		*/
-		virtual ZonaiMath::Quaternion	GetQuaternion() const noexcept final;
-		virtual void		SetQuaternion(const ZonaiMath::Quaternion& _quaternion) noexcept final;
-		virtual ZonaiMath::Quaternion	GetLocalQuaternion() const noexcept final;
-		virtual void		SetLocalQuaternion(const ZonaiMath::Quaternion& _quaternion) noexcept final;
-
-		virtual void		SetTrigger(bool) noexcept final;
+		Eigen::Quaternionf	GetQuaternion() const noexcept final;
+		void				SetQuaternion(const Eigen::Quaternionf& _quaternion) noexcept final;
+		virtual Eigen::Quaternionf	GetLocalQuaternion() const noexcept final;
+		virtual void		SetLocalQuaternion(const Eigen::Quaternionf& _quaternion) noexcept final;
 
 		/**
 		유저 데이터
 		*/
-		virtual void*		GetUserData() const noexcept final;
-		virtual void		SetUserData(void* _userData) noexcept final;
+		void*				GetUserData() const noexcept final;
+		void				SetUserData(void* _userData) noexcept final;
+
+	public:
 
 	public:
 		__declspec(property(get = GetPosition, put = SetPosition))
-			ZonaiMath::Vector3D position;
+			Eigen::Vector3f position;
 
 		__declspec(property(get = GetQuaternion, put = SetQuaternion))
-			ZonaiMath::Quaternion quaternion;
+			Eigen::Quaternionf quaternion;
 
 		__declspec(property(get = GetLocalPosition, put = SetLocalPosition))
-			ZonaiMath::Vector3D localPosition;
+			Eigen::Vector3f localPosition;
 
 		__declspec(property(get = GetLocalQuaternion, put = SetLocalQuaternion))
-			ZonaiMath::Quaternion localQuaternion;
+			Eigen::Quaternionf localQuaternion;
 
 	protected:
 		RigidBody* rigid_;

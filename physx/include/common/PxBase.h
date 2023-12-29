@@ -83,7 +83,7 @@ class PxBase
 {
 public:
 	/**
-	\brief Releases the PxBase instance, please check documentation of release in derived class.
+	\brief PxBase 인스턴스를 해제합니다. 파생 클래스의 release 설명서를 확인하십시오.
 	*/
 	virtual     void				release()										= 0;
 

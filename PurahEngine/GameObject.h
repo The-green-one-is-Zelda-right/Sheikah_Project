@@ -6,8 +6,6 @@
 
 namespace PurahEngine
 {
-
-
 	class Component;
 	class SceneManager;
 	class Transform;
@@ -39,6 +37,8 @@ namespace PurahEngine
 		// 마우스가 오브젝트에서 벗어났을 때 호출
 		virtual void OnMouseExit();
 
+		std::wstring GetName();
+
 	private:
 		// ComponentList로 Component 관리
 		std::vector<Component*> componentList;
@@ -57,12 +57,12 @@ namespace PurahEngine
 		{
 			T* t = new T;
 			componentList.push_back(t);
-			t->gameObject = this;
+			dynamic_cast<Component*>(t)->gameObject = this;
 			return t; // 추가된 컴포넌트 포인터를 반환
 		}
 
 		template<typename T>
-		T* GetComponent()
+		T* GetComponent() const
 		{
 			for (auto component : componentList)
 			{

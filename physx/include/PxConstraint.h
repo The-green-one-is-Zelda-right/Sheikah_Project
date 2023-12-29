@@ -89,7 +89,7 @@ struct PxConstraintShaderTable
 };
 
 /**
-\brief A plugin class for implementing constraints
+\brief 제약 조건을 구현하기 위한 플러그인 클래스
 
 @see PxPhysics.createConstraint
 */
@@ -98,38 +98,43 @@ class PxConstraint : public PxBase
 public:
 
 	/**
-	\brief Releases a PxConstraint instance.
+	\brief PxConstraint 인스턴스를 해제합니다.
 
-	\note This call does not wake up the connected rigid bodies.
+	\note 이 호출은 연결된 강체들을 깨우지 않습니다.
 
 	@see PxPhysics.createConstraint, PxBase.release()
 	*/
 	virtual void				release()														= 0;
 
 	/**
-	\brief Retrieves the scene which this constraint belongs to.
+	\brief 이 제약 조건이 속한 씬을 검색합니다.
 
-	\return Owner Scene. NULL if not part of a scene.
+	\return 소유자 씬. 씬에 속해 있지 않은 경우 NULL입니다.
 
 	@see PxScene
 	*/
 	virtual PxScene*			getScene()												const	= 0;
 
 	/**
-	\brief Retrieves the actors for this constraint.
+	\brief 이 제약 조건의 액터를 검색합니다.
 
-	\param[out] actor0 a reference to the pointer for the first actor
-	\param[out] actor1 a reference to the pointer for the second actor
+	\param[out] actor0
+				첫 번째 액터에 대한 포인터에 대한 참조
+	
+	\param[out] actor1
+				두 번째 액터에 대한 포인터에 대한 참조
 
 	@see PxActor
 	*/
 	virtual void				getActors(PxRigidActor*& actor0, PxRigidActor*& actor1)	const	= 0;
 
 	/**
-	\brief Sets the actors for this constraint.
+	\brief 이 제약 조건의 액터를 설정합니다.
 
-	\param[in] actor0 a reference to the pointer for the first actor
-	\param[in] actor1 a reference to the pointer for the second actor
+	\param[in]	actor0
+				첫 번째 액터에 대한 포인터에 대한 참조
+	\param[in]	actor1
+				두 번째 액터에 대한 포인터에 대한 참조
 
 	@see PxActor
 	*/

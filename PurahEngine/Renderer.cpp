@@ -15,7 +15,7 @@ PurahEngine::Renderer::~Renderer()
 
 void PurahEngine::Renderer::Render(IZeldaRenderer* renderer)
 {
-	Eigen::Matrix4f position = gameObject->GetComponent<PurahEngine::Transform>()->GetWorldMatrix();
+	Eigen::Matrix4f position = GetGameObject()->GetComponent<PurahEngine::Transform>()->GetWorldMatrix();
 
 	renderer->DrawCube(position, texture, false, 0, 1, 0, 1);
 }

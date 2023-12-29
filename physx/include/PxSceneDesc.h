@@ -418,9 +418,9 @@ PX_INLINE bool PxgDynamicsMemoryConfig::isValid() const
 //#endif
 
 /**
-\brief Descriptor class for scenes. See #PxScene.
+\brief 씬에 대한 설명자 클래스입니다. #PxScene 참조.
 
-This struct must be initialized with the same PxTolerancesScale values used to initialize PxPhysics.
+이 구조체는 PxPhysics를 초기화할 때 사용된 PxTolerancesScale 값으로 초기화해야 합니다.
 
 @see PxScene PxPhysics.createScene PxTolerancesScale
 */
@@ -429,123 +429,122 @@ class PxSceneDesc : public PxSceneQueryDesc
 public:
 
 	/**
-	\brief Gravity vector.
+	\brief 중력 벡터입니다.
 
-	<b>Range:</b> force vector<br>
-	<b>Default:</b> Zero
+	<b>범위:</b> 힘 벡터<br>
+	<b>기본값:</b> 제로
 
 	@see PxScene.setGravity() PxScene.getGravity()
 
-	When setting gravity, you should probably also set bounce threshold.
+	중력을 설정할 때 바운스 임계값도 설정하는 것이 좋습니다.
 	*/
 	PxVec3	gravity;
 
 	/**
-	\brief Possible notification callback.
+	\brief 가능한 알림 콜백입니다.
 
-	<b>Default:</b> NULL
+	<b>기본값:</b> NULL
 
 	@see PxSimulationEventCallback PxScene.setSimulationEventCallback() PxScene.getSimulationEventCallback()
 	*/
 	PxSimulationEventCallback*	simulationEventCallback;
 
 	/**
-	\brief Possible asynchronous callback for contact modification.
+	\brief 연락처 수정을 위한 가능한 비동기 콜백입니다.
 
-	<b>Default:</b> NULL
+	<b>기본값:</b> NULL
 
 	@see PxContactModifyCallback PxScene.setContactModifyCallback() PxScene.getContactModifyCallback()
 	*/
 	PxContactModifyCallback*	contactModifyCallback;
 
 	/**
-	\brief Possible asynchronous callback for contact modification.
+	\brief 연락처 수정을 위한 가능한 비동기 콜백입니다.
 
-	<b>Default:</b> NULL
+	<b>기본값:</b> NULL
 
 	@see PxContactModifyCallback PxScene.setContactModifyCallback() PxScene.getContactModifyCallback()
 	*/
 	PxCCDContactModifyCallback*	ccdContactModifyCallback;
 
 	/**
-	\brief Shared global filter data which will get passed into the filter shader.
+	\brief 필터 셰이더로 전달되는 공유 전역 필터 데이터입니다.
 
-	\note The provided data will get copied to internal buffers and this copy will be used for filtering calls.
+	\note 제공된 데이터는 내부 버퍼로 복사되며 이 복사본이 필터링 호출에 사용됩니다.
 
-	<b>Default:</b> NULL
+	<b>기본값:</b> NULL
 
 	@see PxSimulationFilterShader PxScene.setFilterShaderData() PxScene.getFilterShaderData()
 	*/
 	const void*	filterShaderData;
 
 	/**
-	\brief Size (in bytes) of the shared global filter data #filterShaderData.
+	\brief 공유 전역 필터 데이터 #filterShaderData의 크기(바이트 단위)입니다.
 
-	<b>Default:</b> 0
+	<b>기본값:</b> 0
 
 	@see PxSimulationFilterShader filterShaderData PxScene.getFilterShaderDataSize()
 	*/
 	PxU32	filterShaderDataSize;
 
 	/**
-	\brief The custom filter shader to use for collision filtering.
+	\brief 충돌 필터링에 사용할 사용자 정의 필터 셰이더입니다.
 
-	\note This parameter is compulsory. If you don't want to define your own filter shader you can
-	use the default shader #PxDefaultSimulationFilterShader which can be found in the PhysX extensions 
-	library.
+	\note 이 매개변수는 필수입니다.
+	자체 필터 셰이더를 정의하고 싶지 않은 경우
+	PhysX 확장 라이브러리에서 찾을 수 있는 기본 셰이더 #PxDefaultSimulationFilterShader를 사용할 수 있습니다.
 
 	@see PxSimulationFilterShader PxScene.getFilterShader()
 	*/
 	PxSimulationFilterShader	filterShader;
 
 	/**
-	\brief A custom collision filter callback which can be used to implement more complex filtering operations which need
-	access to the simulation state, for example.
+	\brief 시뮬레이션 상태에 액세스해야 하는 더 복잡한 필터링 작업을 구현하는 데 사용할 수 있는 사용자 정의 충돌 필터 콜백입니다.
 
-	<b>Default:</b> NULL
+	<b>기본값:</b> NULL
 
 	@see PxSimulationFilterCallback PxScene.getFilterCallback()
 	*/
 	PxSimulationFilterCallback*	filterCallback;
 
 	/**
-	\brief Filtering mode for kinematic-kinematic pairs in the broadphase.
+	\brief 브로드페이즈에서의 키네마틱-키네마틱 쌍에 대한 필터링 모드입니다.
 
-	<b>Default:</b> PxPairFilteringMode::eDEFAULT
+	<b>기본값:</b> PxPairFilteringMode::eDEFAULT
 
 	@see PxPairFilteringMode PxScene.getKinematicKinematicFilteringMode()
 	*/
 	PxPairFilteringMode::Enum	kineKineFilteringMode;
 
 	/**
-	\brief Filtering mode for static-kinematic pairs in the broadphase.
+	\brief 브로드페이즈에서의 정적-키네마틱 쌍에 대한 필터링 모드입니다.
 
-	<b>Default:</b> PxPairFilteringMode::eDEFAULT
+	<b>기본값:</b> PxPairFilteringMode::eDEFAULT
 
 	@see PxPairFilteringMode PxScene.getStaticKinematicFilteringMode()
 	*/
 	PxPairFilteringMode::Enum	staticKineFilteringMode;
 
 	/**
-	\brief Selects the broad-phase algorithm to use.
+	\brief 사용할 브로드페이즈 알고리즘을 선택합니다.
 
-	<b>Default:</b> PxBroadPhaseType::ePABP
+	<b>기본값:</b> PxBroadPhaseType::ePABP
 
 	@see PxBroadPhaseType PxScene.getBroadPhaseType()
 	*/
 	PxBroadPhaseType::Enum	broadPhaseType;
 
 	/**
-	\brief Broad-phase callback
+	\brief 브로드페이즈 콜백
 
-	<b>Default:</b> NULL
+	<b>기본값:</b> NULL
 
 	@see PxBroadPhaseCallback PxScene.getBroadPhaseCallback() PxScene.setBroadPhaseCallback()
 	*/
 	PxBroadPhaseCallback*	broadPhaseCallback;
 
 	/**
-	\brief Expected scene limits.
+	\brief 예상되는 씬 제한 사항입니다.
 
 	@see PxSceneLimits PxScene.getLimits()
 	*/

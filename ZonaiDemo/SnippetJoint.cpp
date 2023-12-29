@@ -38,12 +38,11 @@
 //#include "../snippets/snippetcommon/SnippetPrint.h"
 //#include "../snippets/snippetcommon/SnippetPVD.h"
 #include <windows.h>
-#include <vector>
 
-#include "../ZonaiMath/ZonaiMath.h"
-#include "../ZonaiPhysicsBase/ZnCollider.h"
-#include "../ZonaiPhysicsBase/ZnPhysicsBase.h"
-#include "../ZonaiPhysicsBase/ZnRigidBody.h"
+#include "Eigen/Dense"
+#include "ZnCollider.h"
+#include "ZnPhysicsBase.h"
+#include "ZnRigidBody.h"
 
 //using namespace physx;
 //namespace physx
@@ -210,6 +209,9 @@ void stepPhysics()// interactive
 //	return GetAsyncKeyState(key);
 //}
 
+#include "ZnJoint.h"
+#include "ZnTransform.h"
+
 int snippetMain(int, const char* const*)
 {
 	std::wstring path = L"../x64/Debug/ZonaiPhysicsX.dll";
@@ -241,16 +243,27 @@ int snippetMain(int, const char* const*)
 	physicsEngine->Initialize();
 
 
-	auto collider = physicsEngine->CreatBoxCollider(L"rigidBody", 3, 3, 3);
-	// collider->SetPosition({ 0, 50, -60 });
-	// collider->SetTrigger(true);
-
+	auto collider = physicsEngine->CreateBoxCollider(L"rigidBody", 2, 2, 2);
 	auto rigid = physicsEngine->CreateRigidBody(L"rigidBody");
-	rigid->SetPosition({ 0, 50, -60 });
+	Eigen::Vector3f pos1{ 0, 50, -10 };
+	rigid->SetPosition(pos1);
+
+	auto collider2 = physicsEngine->CreateBoxCollider(L"rigidBody2", 2, 2, 2);
+	auto rigid2 = physicsEngine->CreateRigidBody(L"rigidBody2");
+	Eigen::Vector3f pos2{ 0, 55, -5 };
+	rigid2->SetPosition({ 0, 55, -5 });
+
+	auto fixedjoint = physicsEngine->CreateFixedJoint(rigid, ZonaiPhysics::ZnTransform{{},{}}, rigid2, ZonaiPhysics::ZnTransform{{},{}});
+	fixedjoint->SetLocalPosition(ZonaiPhysics::ZnJoint::eOBJECT::eJOINT_OBJECT0, { 0, 0, 10 });
+
+	auto groundCollider = physicsEngine->CreateBoxCollider(L"ground", 30, 1, 30);
+	auto ground = physicsEngine->CreateRigidBody(L"ground");
+	ground->SetPosition({ 0, 0, -10 });
+	ground->SetKinematic(true);
 
 	while (true)
 	{
-		physicsEngine->Simulation(1.0f / 600.0f);
+		physicsEngine->Simulation(1.0f / 1000.0f);
 	}
 
 	//static const PxU32 frameCount = 100;

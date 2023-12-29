@@ -154,18 +154,18 @@ struct PxHitCallback : PxQueryThreadContext
 	PX_FORCE_INLINE bool hasAnyHits() { return (hasBlock || (nbTouches > 0)); }
 };
 
+
 /**
-\brief	Returns scene query hits (intersections) to the user in a preallocated buffer.
+\brief 미리 할당된 버퍼에 대한 씬 쿼리 히트(교차점)를 사용자에게 반환합니다.
 
-Will clip touch hits to maximum buffer capacity. When clipped, an arbitrary subset of touching hits will be discarded.
-Overflow does not trigger warnings or errors. block and hasBlock will be valid in finalizeQuery callback and after query completion.
-Touching hits are guaranteed to have closer or same distance ( <= condition) as the globally nearest blocking hit at the time any processTouches()
-callback is issued.
+터치 히트는 최대 버퍼 용량까지 클립됩니다. 클립된 경우 일부 터치 히트가 임의로 삭제됩니다.
+오버플로우는 경고나 오류를 발생시키지 않습니다.
+block 및 hasBlock은 finalizeQuery 콜백 및 쿼리 완료 후에 유효합니다.
+터치 히트는 processTouches() 콜백이 호출된 시점에서 전역으로 가장 가까운 블로킹 히트와 같거나 더 가까운 거리(<= 조건)를 보장합니다.
 
-\note	Pre-made typedef shorthands, such as ::PxRaycastBuffer can be used for raycast, overlap and sweep queries.
+\note 레이캐스트, 오버랩 및 스윕 쿼리에 대해 ::PxRaycastBuffer와 같은 미리 만들어진 typedef 약칭을 사용할 수 있습니다.
 
-@see PxHitCallback
-@see PxRaycastBuffer PxOverlapBuffer PxSweepBuffer PxRaycastBufferN PxOverlapBufferN PxSweepBufferN
+@see PxHitCallback @see PxRaycastBuffer PxOverlapBuffer PxSweepBuffer PxRaycastBufferN PxOverlapBufferN PxSweepBufferN
 */
 template<typename HitType>
 struct PxHitBuffer : public PxHitCallback<HitType>

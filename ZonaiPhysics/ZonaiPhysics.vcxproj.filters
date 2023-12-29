@@ -45,10 +45,10 @@
     <ClInclude Include="CapsuleCollider.h">
       <Filter>03. Collider</Filter>
     </ClInclude>
-    <ClInclude Include="MeshCollider.h">
-      <Filter>03. Collider</Filter>
+    <ClInclude Include="BoxShape.h">
+      <Filter>04. Shape</Filter>
     </ClInclude>
-    <ClInclude Include="Box.h">
+    <ClInclude Include="Shape.h">
       <Filter>04. Shape</Filter>
     </ClInclude>
   </ItemGroup>
@@ -74,10 +74,7 @@
     <ClCompile Include="CapsuleCollider.cpp">
       <Filter>03. Collider</Filter>
     </ClCompile>
-    <ClCompile Include="MeshCollider.cpp">
-      <Filter>03. Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="Box.cpp">
+    <ClCompile Include="BoxShape.cpp">
       <Filter>04. Shape</Filter>
     </ClCompile>
   </ItemGroup>

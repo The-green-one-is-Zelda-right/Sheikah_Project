@@ -24,9 +24,8 @@ namespace ZonaiPhysics
 	{
 	public:
 		BoxCollider() noexcept = delete;
-		BoxCollider(physx::PxPhysics*&, RigidBody*&, const ZonaiMath::Vector3D&, physx::PxMaterial*&) noexcept;
-		virtual ~BoxCollider() noexcept;
-
+		BoxCollider(physx::PxPhysics*&, RigidBody*&, const Eigen::Vector3f&, physx::PxMaterial*&) noexcept;
+		~BoxCollider() noexcept override;
 	};
 } // ZonaiPhysics
 
