@@ -141,15 +141,33 @@ int main()
 		//coord.ConvertFrom(CoordSystem::DX11(), forward);
 		//TestVectorPrint(up, forward, right);
 
+
+
 		ModelLoader loader;
 		std::wstring filePath = L"..\\x64\\fbx\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Ganondorf (TotK).fbx";
 		std::wstring zUpYForward = L"..\\x64\\fbx\\Test\\ZY.fbx";
 		std::wstring yUpZForward = L"..\\x64\\fbx\\Test\\YZ.fbx";
 		std::wstring xUpYForward = L"..\\x64\\fbx\\Test\\XY.fbx";
 
+		char buffer[1024];
+		auto str = ConvertToString(L"..\\x64\\fbx\\Test\\*.*");
+		
+		WIN32_FIND_DATAA findData;
+		HANDLE handle = FindFirstFileA(str.c_str(), &findData);
+
+		if (handle != INVALID_HANDLE_VALUE)
+		{
+			do
+			{
+				std::cout << findData.cFileName << std::endl;
+			} while(FindNextFileA(handle, &findData));
+		}
+		
+		GetFullPathNameA(str.c_str(), 1024, buffer, NULL);
+
 		//std::filesystem::path currPath = std::filesystem::current_path();
 
-		loader.Load(L"..\\x64\\fbx\\PBR_BasicShader.blend");
+		//loader.Load(L"..\\x64\\fbx\\PBR_BasicShader.blend");
 		loader.Load(zUpYForward);
 		loader.Load(yUpZForward);
 		loader.Load(xUpYForward);

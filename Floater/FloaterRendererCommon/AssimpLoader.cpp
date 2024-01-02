@@ -23,11 +23,14 @@ void flt::AssimpLoader::Load(const std::wstring& filePath)
 		aiProcess_FlipWindingOrder | aiProcess_GenSmoothNormals | aiProcess_SplitLargeMeshes |
 		aiProcess_SortByPType | aiProcess_LimitBoneWeights;
 
-	const aiScene* scene = importer.ReadFile(ConvertToString(filePath), flags);
+	std::string path = ConvertToString(filePath);
+	
+	const aiScene* scene = importer.ReadFile(path, flags);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		ASSERT(false, importer.GetErrorString());
+		auto errorStr = importer.GetErrorString();
+		ASSERT(false, errorStr);
 
 		return;
 	}
