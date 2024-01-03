@@ -60,7 +60,7 @@
     <ClInclude Include="include\RawSkin.h">
       <Filter>RawData</Filter>
     </ClInclude>
-    <ClInclude Include="RawShader.h">
+    <ClInclude Include="include\RawShader.h">
       <Filter>RawData</Filter>
     </ClInclude>
     <ClInclude Include="CoordSystem.h">
@@ -84,10 +84,10 @@
     <ClInclude Include="include\ModelLoader.h">
       <Filter>Loader</Filter>
     </ClInclude>
-    <ClInclude Include="RawMaterial.h">
+    <ClInclude Include="include\RawMaterial.h">
       <Filter>RawData</Filter>
     </ClInclude>
-    <ClInclude Include="RawTexture.h">
+    <ClInclude Include="include\RawTexture.h">
       <Filter>RawData</Filter>
     </ClInclude>
   </ItemGroup>

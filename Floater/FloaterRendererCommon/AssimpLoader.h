@@ -7,5 +7,8 @@ namespace flt
 	{
 	public:
 		void Load(const std::wstring& filePath);
+
+	private:
+
 	};
 }

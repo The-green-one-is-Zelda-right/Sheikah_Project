@@ -6,6 +6,7 @@
 #include "../FloaterUtil/include/FloaterMacro.h"
 
 #include "./include/RawMesh.h"
+#include "./include/RawMaterial.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "../External/lib/x64/debug/assimp-vc143-mtd.lib")
@@ -24,8 +25,159 @@ void flt::AssimpLoader::Load(const std::wstring& filePath)
 		aiProcess_SortByPType | aiProcess_LimitBoneWeights;
 
 	std::string path = ConvertToString(filePath);
-	
+
 	const aiScene* scene = importer.ReadFile(path, flags);
+
+	std::vector<RawMaterial> rawMaterials;
+
+	// 먼저 머티리얼 로드
+	if (scene->HasMaterials())
+	{
+		unsigned int materialCount = scene->mNumMaterials;
+		rawMaterials.resize(materialCount);
+
+		for (unsigned int i = 0; i < materialCount; ++i)
+		{
+			aiMaterial* material = scene->mMaterials[i];
+
+			aiString outStr;
+
+			auto ret = material->Get(AI_MATKEY_NAME, outStr);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].name = ConvertToWstring(outStr.C_Str());
+			}
+
+			aiColor3D diffuse;
+			ret = material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].baseColor[0] = diffuse.r;
+				rawMaterials[i].baseColor[1] = diffuse.g;
+				rawMaterials[i].baseColor[2] = diffuse.b;
+			}
+
+
+			aiColor3D ambient;
+			ret = material->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].ambient[0] = ambient.r;
+				rawMaterials[i].ambient[1] = ambient.g;
+				rawMaterials[i].ambient[2] = ambient.b;
+			}
+
+			aiColor3D specular;
+			ret = material->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].specular[0] = specular.r;
+				rawMaterials[i].specular[1] = specular.g;
+				rawMaterials[i].specular[2] = specular.b;
+			}
+
+			float shininess;
+			ret = material->Get(AI_MATKEY_SHININESS, shininess);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].roughness = shininess;
+			}
+
+
+			float opacity;
+			ret = material->Get(AI_MATKEY_OPACITY, opacity);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].opacity = opacity;
+			}
+
+			ret = material->GetTexture(aiTextureType_DIFFUSE, 0, &outStr);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].textures[RawMaterial::ALBEDO]->path = ConvertToWstring(outStr.C_Str());
+			}
+
+			ret = material->GetTexture(aiTextureType_NORMALS, 0, &outStr);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].textures[RawMaterial::NORMAL]->path = ConvertToWstring(outStr.C_Str());
+
+			}
+
+			//material->GetTexture(aiTextureType_SPECULAR, 0, &outStr);
+			//rawMaterials[i].specularMap->path = ConvertToWstring(outStr.C_Str());
+
+			ret = material->GetTexture(aiTextureType_EMISSIVE, 0, &outStr);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].textures[RawMaterial::EMISSIVE]->path = ConvertToWstring(outStr.C_Str());
+			}
+
+			ret = material->GetTexture(aiTextureType_AMBIENT, 0, &outStr);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].textures[RawMaterial::AO]->path = ConvertToWstring(outStr.C_Str());
+			}
+
+			ret = material->GetTexture(aiTextureType_HEIGHT, 0, &outStr);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].textures[RawMaterial::HEIGHT]->path = ConvertToWstring(outStr.C_Str());
+			}
+
+			ret = material->GetTexture(aiTextureType_OPACITY, 0, &outStr);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].textures[RawMaterial::OPACITY]->path = ConvertToWstring(outStr.C_Str());
+			}
+
+			ret = material->GetTexture(aiTextureType_SHININESS, 0, &outStr);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].textures[RawMaterial::ROUGHNESS]->path = ConvertToWstring(outStr.C_Str());
+			}
+
+			ret = material->GetTexture(aiTextureType_UNKNOWN, 0, &outStr);
+			if (ret == AI_SUCCESS)
+			{
+				rawMaterials[i].textures[RawMaterial::UNKNOWN]->path = ConvertToWstring(outStr.C_Str());
+			}
+
+			//// PBR용
+			//bool isPBR = false;
+			//material->Get(AI_MATKEY_USE_COLOR_MAP, isPBR);
+
+			//if (isPBR)
+			//{
+			//	aiColor3D albedo;
+			//	material->Get(AI_MATKEY_BASE_COLOR, albedo);
+
+			//	float metalic;
+			//	material->Get(AI_MATKEY_METALLIC_FACTOR, metalic);
+
+			//	float roughness;
+			//	material->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughness);
+
+			//	material->GetTexture(aiTextureType_BASE_COLOR, 0, &outStr);
+			//	std::wstring albedoTexturePath = ConvertToWstring(outStr.C_Str());
+
+			//	material->GetTexture(aiTextureType_NORMAL_CAMERA, 0, &outStr);
+			//	std::wstring normalCameraTexturePath = ConvertToWstring(outStr.C_Str());
+
+			//	material->GetTexture(aiTextureType_EMISSION_COLOR, 0, &outStr);
+			//	std::wstring emissionColorTexturePath = ConvertToWstring(outStr.C_Str());
+
+			//	material->GetTexture(aiTextureType_METALNESS, 0, &outStr);
+			//	std::wstring metalnessTexturePath = ConvertToWstring(outStr.C_Str());
+
+			//	material->GetTexture(aiTextureType_DIFFUSE_ROUGHNESS, 0, &outStr);
+			//	std::wstring diffuseRoughnessTexturePath = ConvertToWstring(outStr.C_Str());
+
+			//	material->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &outStr);
+			//	std::wstring ambientOcclusionTexturePath = ConvertToWstring(outStr.C_Str());
+			//}
+		}
+	}
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -88,8 +240,12 @@ void flt::AssimpLoader::Load(const std::wstring& filePath)
 					continue;
 				}
 
+				int texCount = mesh->mNumUVComponents[j];
+				ASSERT(texCount == 2, "텍스쳐 좌표가 2개가 아닙니다.");
+
 				for (int k = 0; k < vertexCount; ++k)
 				{
+					auto test = mesh->mTextureCoords[j][k];
 					rawMeshes[i].vertices[j].uvs[k].x = mesh->mTextureCoords[j][k].x;
 					rawMeshes[i].vertices[j].uvs[k].y = mesh->mTextureCoords[j][k].y;
 				}
@@ -129,108 +285,6 @@ void flt::AssimpLoader::Load(const std::wstring& filePath)
 				unsigned int weightCount = bone->mNumWeights;
 				aiVertexWeight* weights = bone->mWeights;
 			}*/
-		}
-	}
-
-	if (scene->HasMaterials())
-	{
-		unsigned int materialCount = scene->mNumMaterials;
-		std::vector<RawMesh> rawMeshes(materialCount);
-
-		for (unsigned int i = 0; i < materialCount; ++i)
-		{
-			aiMaterial* material = scene->mMaterials[i];
-
-			aiString outStr;
-			material->Get(AI_MATKEY_NAME, outStr);
-			std::wstring testName = ConvertToWstring(outStr.C_Str());
-
-			aiColor3D diffuse;
-			material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
-
-			aiColor3D ambient;
-			material->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
-
-			aiColor3D specular;
-			material->Get(AI_MATKEY_COLOR_SPECULAR, specular);
-
-			float shininess;
-			material->Get(AI_MATKEY_SHININESS, shininess);
-
-			float opacity;
-			material->Get(AI_MATKEY_OPACITY, opacity);
-
-			material->GetTexture(aiTextureType_DIFFUSE, 0, &outStr);
-			std::wstring diffuseTexturePath = ConvertToWstring(outStr.C_Str());
-
-			material->GetTexture(aiTextureType_NORMALS, 0, &outStr);
-			std::wstring normalTexturePath = ConvertToWstring(outStr.C_Str());
-
-			material->GetTexture(aiTextureType_SPECULAR, 0, &outStr);
-			std::wstring specularTexturePath = ConvertToWstring(outStr.C_Str());
-
-			material->GetTexture(aiTextureType_EMISSIVE, 0, &outStr);
-			std::wstring emissiveTexturePath = ConvertToWstring(outStr.C_Str());
-
-			material->GetTexture(aiTextureType_AMBIENT, 0, &outStr);
-			std::wstring ambientTexturePath = ConvertToWstring(outStr.C_Str());
-
-			material->GetTexture(aiTextureType_HEIGHT, 0, &outStr);
-			std::wstring heightTexturePath = ConvertToWstring(outStr.C_Str());
-
-			material->GetTexture(aiTextureType_OPACITY, 0, &outStr);
-			std::wstring opacityTexturePath = ConvertToWstring(outStr.C_Str());
-
-			material->GetTexture(aiTextureType_SHININESS, 0, &outStr);
-			std::wstring shininessTexturePath = ConvertToWstring(outStr.C_Str());
-
-			material->GetTexture(aiTextureType_DISPLACEMENT, 0, &outStr);
-			std::wstring displacementTexturePath = ConvertToWstring(outStr.C_Str());
-
-			material->GetTexture(aiTextureType_LIGHTMAP, 0, &outStr);
-			std::wstring lightmapTexturePath = ConvertToWstring(outStr.C_Str());
-
-			material->GetTexture(aiTextureType_REFLECTION, 0, &outStr);
-			std::wstring reflectionTexturePath = ConvertToWstring(outStr.C_Str());
-
-			material->GetTexture(aiTextureType_UNKNOWN, 0, &outStr);
-			std::wstring unknownTexturePath = ConvertToWstring(outStr.C_Str());
-
-			// PBR용
-			bool isPBR = false;
-			material->Get(AI_MATKEY_USE_COLOR_MAP, isPBR);
-
-			if (isPBR)
-			{
-				aiColor3D albedo;
-				material->Get(AI_MATKEY_BASE_COLOR, albedo);
-
-				float metalic;
-				material->Get(AI_MATKEY_METALLIC_FACTOR, metalic);
-
-				float roughness;
-				material->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughness);
-
-				material->GetTexture(aiTextureType_BASE_COLOR, 0, &outStr);
-				std::wstring albedoTexturePath = ConvertToWstring(outStr.C_Str());
-
-				material->GetTexture(aiTextureType_NORMAL_CAMERA, 0, &outStr);
-				std::wstring normalCameraTexturePath = ConvertToWstring(outStr.C_Str());
-
-				material->GetTexture(aiTextureType_EMISSION_COLOR, 0, &outStr);
-				std::wstring emissionColorTexturePath = ConvertToWstring(outStr.C_Str());
-
-				material->GetTexture(aiTextureType_METALNESS, 0, &outStr);
-				std::wstring metalnessTexturePath = ConvertToWstring(outStr.C_Str());
-
-				material->GetTexture(aiTextureType_DIFFUSE_ROUGHNESS, 0, &outStr);
-				std::wstring diffuseRoughnessTexturePath = ConvertToWstring(outStr.C_Str());
-
-				material->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &outStr);
-				std::wstring ambientOcclusionTexturePath = ConvertToWstring(outStr.C_Str());
-			}
-
-
 		}
 	}
 }

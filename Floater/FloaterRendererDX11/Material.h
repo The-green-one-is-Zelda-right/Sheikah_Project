@@ -1,9 +1,5 @@
-#pragma once
+﻿#pragma once
 
 namespace flt
 {
-	struct Material
-	{
-
-	};
 }

@@ -34,9 +34,9 @@
     <ClInclude Include="include\RawMesh.h" />
     <ClInclude Include="include\RawAnimation.h" />
     <ClInclude Include="include\RawSkin.h" />
-    <ClInclude Include="RawMaterial.h" />
-    <ClInclude Include="RawShader.h" />
-    <ClInclude Include="RawTexture.h" />
+    <ClInclude Include="include\RawMaterial.h" />
+    <ClInclude Include="include\RawShader.h" />
+    <ClInclude Include="include\RawTexture.h" />
     <ClInclude Include="VertedDataLayer.h" />
     <ClInclude Include="VertexNormalData.h" />
   </ItemGroup>

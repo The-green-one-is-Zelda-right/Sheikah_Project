@@ -5,7 +5,7 @@ namespace flt
 {
 	struct RawTexture
 	{
-		std::wstring Name;
-		std::wstring Path;
+		std::wstring name;
+		std::wstring path;
 	};
 }
