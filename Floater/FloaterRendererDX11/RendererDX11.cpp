@@ -50,6 +50,11 @@ flt::RendererDX11::RendererDX11() :
 
 }
 
+flt::RendererDX11::~RendererDX11()
+{
+	Finalize();
+}
+
 bool flt::RendererDX11::Initialize(HWND hwnd)
 {
 	_hwnd = hwnd;

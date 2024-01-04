@@ -11,7 +11,7 @@ namespace flt
 	{
 		RawVertex() = default;
 		RawVertex(const Vector3f& pos, const Vector2f uvs[10], const Vector3f& normal)
-			: pos(pos), uvs(), normal(normal) 
+			: pos(pos), uvs(), normal(normal), binormal(), tangent(), boneIndex(), boneWeight()
 		{
 			for (int i = 0; i < 10; ++i)
 			{
@@ -53,6 +53,8 @@ namespace flt
 		Vector3f normal;
 		Vector3f binormal;
 		Vector3f tangent;
+		std::vector<int> boneIndex;
+		std::vector<float> boneWeight;
 	};
 
 	struct RawMesh

@@ -33,8 +33,10 @@ flt::FBXLoader::~FBXLoader()
 	_pManager->Destroy();
 }
 
-void flt::FBXLoader::Load(const std::wstring& filePath)
+void flt::FBXLoader::Load(const std::wstring& filePath, RawScene* outRawScene)
 {
+	ASSERT(outRawScene, "outRawScene is nullptr");
+
 	std::string filePathStr = flt::ConvertToString(filePath);
 	if (!_importer->Initialize(filePathStr.c_str(), -1, _pManager->GetIOSettings()))
 	{

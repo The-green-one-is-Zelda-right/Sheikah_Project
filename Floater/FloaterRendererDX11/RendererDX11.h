@@ -25,7 +25,7 @@ namespace flt
 	{
 	public:
 		RendererDX11();
-		~RendererDX11() = default;
+		~RendererDX11();
 
 		bool Initialize(HWND hwnd);
 		bool Finalize();

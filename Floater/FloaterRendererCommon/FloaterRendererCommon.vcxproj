@@ -37,6 +37,7 @@
     <ClInclude Include="include\RawMaterial.h" />
     <ClInclude Include="include\RawShader.h" />
     <ClInclude Include="include\RawTexture.h" />
+    <ClInclude Include="include\RawScene.h" />
     <ClInclude Include="VertedDataLayer.h" />
     <ClInclude Include="VertexNormalData.h" />
   </ItemGroup>
@@ -57,6 +58,7 @@
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="RawMaterial.cpp" />
     <ClCompile Include="RawNode.cpp" />
+    <ClCompile Include="RawScene.cpp" />
     <ClCompile Include="RawTexture.cpp" />
     <ClCompile Include="ResourceMgr.cpp" />
     <ClCompile Include="Transform.cpp" />

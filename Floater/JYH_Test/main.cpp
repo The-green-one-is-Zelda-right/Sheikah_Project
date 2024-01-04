@@ -174,8 +174,8 @@ int main()
 	}
 #pragma endregion
 
-	auto adpaterTest = new IZeldaRendererAdapter();
-	adpaterTest->Initialize(1280, 720, false, NULL, false, 0.0f, 0.0f);
+	//auto adpaterTest = new IZeldaRendererAdapter();
+	//adpaterTest->Initialize(1280, 720, false, NULL, false, 0.0f, 0.0f);
 
 	flt::Platform platform{ true };
 	platform.Initialize(1280, 720, L"title", L".\\path");
@@ -189,7 +189,7 @@ int main()
 
 	flt::RendererObject renderable(node, isDraw, L"testObject");
 	renderable.name = L"test";
-	renderer->RegisterObject(renderable);
+	auto objectID1 = renderer->RegisterObject(renderable);
 
 	flt::RawNode childNode(L"testChildNode");
 	childNode.transform.SetPosition(1.0f, 0.0f, 0.0f);
@@ -198,7 +198,7 @@ int main()
 
 	flt::RendererObject childRenderable(childNode, isDraw, L"testChildObject");
 	renderable.name = L"testChild";
-	auto objectID = renderer->RegisterObject(childRenderable);
+	auto objectID2 = renderer->RegisterObject(childRenderable);
 
 	//ASSERT(renderer, "렌더러 생성 실패");
 
@@ -288,6 +288,8 @@ int main()
 		Sleep(10);
 	}
 
-	renderer->DeregisterObject(objectID);
+	renderer->DeregisterObject(objectID1);
+	renderer->DeregisterObject(objectID2);
+	platform.DestroyRenderer(renderer);
 	platform.Finalize();
 }

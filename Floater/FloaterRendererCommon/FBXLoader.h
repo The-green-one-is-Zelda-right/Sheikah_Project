@@ -18,6 +18,7 @@
 
 namespace flt
 {
+	struct RawScene;
 	struct RawNode;
 	struct RawMesh;
 	struct RawAnimation;
@@ -29,7 +30,7 @@ namespace flt
 		FBXLoader();
 		~FBXLoader();
 
-		void Load(const std::wstring& filePath);
+		void Load(const std::wstring& filePath, RawScene* outRawScene);
 
 	private:
 		CoordSystem CreateFBXCoodSystem(fbxsdk::FbxScene* pScene);

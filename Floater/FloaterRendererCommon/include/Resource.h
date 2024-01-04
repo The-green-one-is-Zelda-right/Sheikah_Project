@@ -50,11 +50,11 @@ namespace flt
 	};
 
 	template <typename T>
-	concept HasRelease = requires(T a) {
+	concept HasReleaseFunc = requires(T a) {
 		{ a.Release() } -> std::same_as<void>;
 	};
 
-	template<HasRelease Derived>
+	template<HasReleaseFunc Derived>
 	struct Resource : ResourceBase
 	{
 	public:

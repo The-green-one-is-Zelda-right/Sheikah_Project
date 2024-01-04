@@ -5,6 +5,7 @@
 #include "../FloaterUtil/include/ConvString.h"
 #include "../FloaterUtil/include/FloaterMacro.h"
 
+#include "./include/RawScene.h"
 #include "./include/RawMesh.h"
 #include "./include/RawMaterial.h"
 
@@ -14,8 +15,10 @@
 #pragma comment(lib, "../External/lib/x64/release/assimp-vc143-mt.lib")
 #endif
 
-void flt::AssimpLoader::Load(const std::wstring& filePath)
+void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene)
 {
+	ASSERT(outRawScene, "outRawScene is nullptr");
+
 	Assimp::Importer importer;
 
 	const unsigned int flags = aiProcess_Triangulate |
@@ -28,7 +31,8 @@ void flt::AssimpLoader::Load(const std::wstring& filePath)
 
 	const aiScene* scene = importer.ReadFile(path, flags);
 
-	std::vector<RawMaterial> rawMaterials;
+	std::vector<RawMaterial*>& rawMaterials = outRawScene->materials;
+
 
 	// 먼저 머티리얼 로드
 	if (scene->HasMaterials())
@@ -42,19 +46,21 @@ void flt::AssimpLoader::Load(const std::wstring& filePath)
 
 			aiString outStr;
 
+			rawMaterials[i] = new RawMaterial();
+
 			auto ret = material->Get(AI_MATKEY_NAME, outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].name = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->name = ConvertToWstring(outStr.C_Str());
 			}
 
 			aiColor3D diffuse;
 			ret = material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].baseColor[0] = diffuse.r;
-				rawMaterials[i].baseColor[1] = diffuse.g;
-				rawMaterials[i].baseColor[2] = diffuse.b;
+				rawMaterials[i]->baseColor[0] = diffuse.r;
+				rawMaterials[i]->baseColor[1] = diffuse.g;
+				rawMaterials[i]->baseColor[2] = diffuse.b;
 			}
 
 
@@ -62,25 +68,25 @@ void flt::AssimpLoader::Load(const std::wstring& filePath)
 			ret = material->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].ambient[0] = ambient.r;
-				rawMaterials[i].ambient[1] = ambient.g;
-				rawMaterials[i].ambient[2] = ambient.b;
+				rawMaterials[i]->ambient[0] = ambient.r;
+				rawMaterials[i]->ambient[1] = ambient.g;
+				rawMaterials[i]->ambient[2] = ambient.b;
 			}
 
 			aiColor3D specular;
 			ret = material->Get(AI_MATKEY_COLOR_SPECULAR, specular);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].specular[0] = specular.r;
-				rawMaterials[i].specular[1] = specular.g;
-				rawMaterials[i].specular[2] = specular.b;
+				rawMaterials[i]->specular[0] = specular.r;
+				rawMaterials[i]->specular[1] = specular.g;
+				rawMaterials[i]->specular[2] = specular.b;
 			}
 
 			float shininess;
 			ret = material->Get(AI_MATKEY_SHININESS, shininess);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].roughness = shininess;
+				rawMaterials[i]->roughness = shininess;
 			}
 
 
@@ -88,19 +94,19 @@ void flt::AssimpLoader::Load(const std::wstring& filePath)
 			ret = material->Get(AI_MATKEY_OPACITY, opacity);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].opacity = opacity;
+				rawMaterials[i]->opacity = opacity;
 			}
 
 			ret = material->GetTexture(aiTextureType_DIFFUSE, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].textures[RawMaterial::ALBEDO]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::ALBEDO]->path = ConvertToWstring(outStr.C_Str());
 			}
 
 			ret = material->GetTexture(aiTextureType_NORMALS, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].textures[RawMaterial::NORMAL]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::NORMAL]->path = ConvertToWstring(outStr.C_Str());
 
 			}
 
@@ -110,37 +116,37 @@ void flt::AssimpLoader::Load(const std::wstring& filePath)
 			ret = material->GetTexture(aiTextureType_EMISSIVE, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].textures[RawMaterial::EMISSIVE]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::EMISSIVE]->path = ConvertToWstring(outStr.C_Str());
 			}
 
 			ret = material->GetTexture(aiTextureType_AMBIENT, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].textures[RawMaterial::AO]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::AO]->path = ConvertToWstring(outStr.C_Str());
 			}
 
 			ret = material->GetTexture(aiTextureType_HEIGHT, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].textures[RawMaterial::HEIGHT]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::HEIGHT]->path = ConvertToWstring(outStr.C_Str());
 			}
 
 			ret = material->GetTexture(aiTextureType_OPACITY, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].textures[RawMaterial::OPACITY]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::OPACITY]->path = ConvertToWstring(outStr.C_Str());
 			}
 
 			ret = material->GetTexture(aiTextureType_SHININESS, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].textures[RawMaterial::ROUGHNESS]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::ROUGHNESS]->path = ConvertToWstring(outStr.C_Str());
 			}
 
 			ret = material->GetTexture(aiTextureType_UNKNOWN, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i].textures[RawMaterial::UNKNOWN]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::UNKNOWN]->path = ConvertToWstring(outStr.C_Str());
 			}
 
 			//// PBR용
@@ -190,32 +196,35 @@ void flt::AssimpLoader::Load(const std::wstring& filePath)
 	if (scene->HasMeshes())
 	{
 		unsigned int meshCount = scene->mNumMeshes;
-		std::vector<RawMesh> rawMeshes(meshCount);
+		std::vector<RawMesh*>& rawMeshes = outRawScene->meshes;
+		rawMeshes.resize(meshCount);
 
 		for (unsigned int i = 0; i < meshCount; ++i)
 		{
 			aiMesh* mesh = scene->mMeshes[i];
 			int vertexCount = mesh->mNumVertices;
-			rawMeshes[i].vertices.resize(vertexCount);
 
+			rawMeshes[i] = new RawMesh();
+			rawMeshes[i]->vertices.resize(vertexCount);
+
+			// 버텍스 별 데이터
 			if (mesh->HasPositions())
 			{
 				for (int j = 0; j < vertexCount; ++j)
 				{
-					rawMeshes[i].vertices[j].pos.x = mesh->mVertices[j].x;
-					rawMeshes[i].vertices[j].pos.y = mesh->mVertices[j].y;
-					rawMeshes[i].vertices[j].pos.z = mesh->mVertices[j].z;
+					rawMeshes[i]->vertices[j].pos.x = mesh->mVertices[j].x;
+					rawMeshes[i]->vertices[j].pos.y = mesh->mVertices[j].y;
+					rawMeshes[i]->vertices[j].pos.z = mesh->mVertices[j].z;
 				}
-
 			}
 
 			if (mesh->HasNormals())
 			{
 				for (int j = 0; j < vertexCount; ++j)
 				{
-					rawMeshes[i].vertices[j].normal.x = mesh->mNormals[j].x;
-					rawMeshes[i].vertices[j].normal.y = mesh->mNormals[j].y;
-					rawMeshes[i].vertices[j].normal.z = mesh->mNormals[j].z;
+					rawMeshes[i]->vertices[j].normal.x = mesh->mNormals[j].x;
+					rawMeshes[i]->vertices[j].normal.y = mesh->mNormals[j].y;
+					rawMeshes[i]->vertices[j].normal.z = mesh->mNormals[j].z;
 				}
 			}
 
@@ -223,13 +232,13 @@ void flt::AssimpLoader::Load(const std::wstring& filePath)
 			{
 				for (int j = 0; j < vertexCount; ++j)
 				{
-					rawMeshes[i].vertices[j].tangent.x = mesh->mTangents[j].x;
-					rawMeshes[i].vertices[j].tangent.y = mesh->mTangents[j].y;
-					rawMeshes[i].vertices[j].tangent.z = mesh->mTangents[j].z;
+					rawMeshes[i]->vertices[j].tangent.x = mesh->mTangents[j].x;
+					rawMeshes[i]->vertices[j].tangent.y = mesh->mTangents[j].y;
+					rawMeshes[i]->vertices[j].tangent.z = mesh->mTangents[j].z;
 
-					rawMeshes[i].vertices[j].binormal.x = mesh->mBitangents[j].x;
-					rawMeshes[i].vertices[j].binormal.y = mesh->mBitangents[j].y;
-					rawMeshes[i].vertices[j].binormal.z = mesh->mBitangents[j].z;
+					rawMeshes[i]->vertices[j].binormal.x = mesh->mBitangents[j].x;
+					rawMeshes[i]->vertices[j].binormal.y = mesh->mBitangents[j].y;
+					rawMeshes[i]->vertices[j].binormal.z = mesh->mBitangents[j].z;
 				}
 			}
 
@@ -246,11 +255,34 @@ void flt::AssimpLoader::Load(const std::wstring& filePath)
 				for (int k = 0; k < vertexCount; ++k)
 				{
 					auto test = mesh->mTextureCoords[j][k];
-					rawMeshes[i].vertices[j].uvs[k].x = mesh->mTextureCoords[j][k].x;
-					rawMeshes[i].vertices[j].uvs[k].y = mesh->mTextureCoords[j][k].y;
+					rawMeshes[i]->vertices[j].uvs[k].x = mesh->mTextureCoords[j][k].x;
+					rawMeshes[i]->vertices[j].uvs[k].y = mesh->mTextureCoords[j][k].y;
 				}
 			}
 
+			// 본 데이터
+			if (mesh->HasBones())
+			{
+				int boneCount = mesh->mNumBones;
+				for (int j = 0; j < boneCount; ++j)
+				{
+					aiBone* bone = mesh->mBones[j];
+
+					std::wstring testName = ConvertToWstring(bone->mName.C_Str());
+
+					int weightCount = bone->mNumWeights;
+					for (int k = 0; k < weightCount; ++k)
+					{
+						aiVertexWeight vertexWeight = bone->mWeights[k];
+
+						int vertexId = vertexWeight.mVertexId;
+						float weight = vertexWeight.mWeight;
+
+						rawMeshes[i]->vertices[vertexId].boneIndex.push_back(j);
+						rawMeshes[i]->vertices[vertexId].boneWeight.push_back(weight);
+					}
+				}
+			}
 			/*aiString outStr;
 			mesh->Get(AI_MATKEY_NAME, outStr);
 			std::wstring testName = ConvertToWstring(outStr.C_Str());

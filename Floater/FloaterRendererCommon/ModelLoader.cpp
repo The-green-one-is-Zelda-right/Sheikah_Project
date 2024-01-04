@@ -1,4 +1,5 @@
 ﻿#include "../FloaterUtil/include/FloaterMacro.h"
+#include "./include/RawScene.h"
 #include "./include/ModelLoader.h"
 #include "FBXLoader.h"
 #include "GLTFLoader.h"
@@ -35,17 +36,19 @@ bool flt::ModelLoader::Load(std::wstring path)
 		c = towlower(c);
 	}
 
-	_pAssimpLoader->Load(path);
+	RawScene rawScene;
+
+	_pAssimpLoader->Load(path, &rawScene);
 
 	return true;
 
 	if (extension == L"fbx")
 	{
-		_pFBXLoader->Load(path);
+		_pFBXLoader->Load(path, &rawScene);
 	}
 	else if (extension == L"gltf" || extension == L"glb")
 	{
-		_pGLTFLoader->Load(path);
+		_pGLTFLoader->Load(path, &rawScene);
 	}
 	else
 	{
