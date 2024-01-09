@@ -1,21 +1,21 @@
 #include "PxPhysicsAPI.h"
 #include "RigidBody.h"
-#include "SphereCollider.h"
+#include "CapsuleCollider.h"
 
 namespace ZonaiPhysics
 {
-	SphereCollider::SphereCollider(
+	CapsuleCollider::CapsuleCollider(
 		physx::PxPhysics*& _factory,
 		RigidBody*& _body,
-		const float& _offset,
+		const float& _radius,
+		const float& _height,
 		physx::PxMaterial*& _material
-	) noexcept:
-		Collider(_factory, _body)
+	) noexcept : Collider(_factory, _body)
 	{
 		using namespace physx;
 		rigid_ = _body;
 
-		shape_ = _factory->createShape(PxSphereGeometry(_offset), *_material);
+		shape_ = _factory->createShape(PxCapsuleGeometry(_radius, _height), *_material);
 		shape_->userData = this;
 
 		shape_->setFlag(PxShapeFlag::eVISUALIZATION, true);
@@ -24,7 +24,7 @@ namespace ZonaiPhysics
 		_body->getRigidDynamic()->attachShape(*shape_);
 	}
 
-	SphereCollider::~SphereCollider() noexcept
+	CapsuleCollider::~CapsuleCollider() noexcept
 	{
 		shape_->release();
 		rigid_->getRigidDynamic()->detachShape(*shape_);

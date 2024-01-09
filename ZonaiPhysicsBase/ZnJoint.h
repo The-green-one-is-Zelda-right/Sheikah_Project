@@ -11,7 +11,7 @@ namespace ZonaiPhysics
 	class ZnJoint
 	{
 	public:
-		enum class eOBJECT
+		enum eOBJECT
 		{
 			eJOINT_OBJECT0 = 0,
 			eJOINT_OBJECT1 = 1,
@@ -21,11 +21,17 @@ namespace ZonaiPhysics
 							ZnJoint() noexcept = default;
 		virtual				~ZnJoint() noexcept = default;
 
+	protected:
+		physx::PxJoint* joint;
+
 	public:
 		/**
 		오브젝트의 포지션
 		*/
-		virtual void		SetLocalPosition(eOBJECT, const Eigen::Vector3f&) noexcept = 0;
+		virtual void		SetLocalPosition(eOBJECT, const Eigen::Vector3f&) noexcept
+		{
+			
+		}
 		virtual Eigen::Vector3f	GetLocalPosition(eOBJECT) const noexcept = 0;
 
 		/**

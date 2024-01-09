@@ -48,6 +48,8 @@ namespace ZonaiPhysics
 
 	public:
 
+		void				UpdateInertiaTensor() const noexcept;
+
 	public:
 		__declspec(property(get = GetPosition, put = SetPosition))
 			Eigen::Vector3f position;

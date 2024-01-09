@@ -20,19 +20,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoxCollider.h" />
+    <ClInclude Include="CapsuleCollider.h" />
     <ClInclude Include="Collider.h" />
+    <ClInclude Include="DistanceJoint.h" />
     <ClInclude Include="FixedJoint.h" />
+    <ClInclude Include="PrismaticJoint.h" />
+    <ClInclude Include="HingeJoint.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="SphereCollider.h" />
     <ClInclude Include="SphericalJoint.h" />
+    <ClInclude Include="TemplateJoint.h" />
     <ClInclude Include="ZnPhysicsX.h" />
     <ClInclude Include="ZnSimulationCallbackX.h" />
     <ClInclude Include="ZonaiPhysicsX.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BoxCollider.cpp" />
+    <ClCompile Include="CapsuleCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="DistanceJoint.cpp" />
     <ClCompile Include="FixedJoint.cpp" />
+    <ClCompile Include="PrismaticJoint.cpp" />
+    <ClCompile Include="HingeJoint.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="SphericalJoint.cpp" />

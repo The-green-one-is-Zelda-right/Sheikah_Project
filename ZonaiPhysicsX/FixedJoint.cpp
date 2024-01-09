@@ -35,11 +35,28 @@ namespace ZonaiPhysics
 		t1.q.z = _transform1.quaternion.z();
 		t1.q.w = _transform1.quaternion.w();
 
+		PxRigidDynamic* rigid0 = nullptr;
+		PxRigidDynamic* rigid1 = nullptr;
+
+		if (_object0)
+		{
+			rigid0 = _object0->getRigidDynamic();
+		}
+		if (_object1)
+		{
+			rigid1 = _object1->getRigidDynamic();
+		}
+
 		joint = physx::PxFixedJointCreate(
 			*_factory,
-			_object0->getRigidDynamic(), t0,
-			_object1->getRigidDynamic(), t1
+			rigid0, t0,
+			rigid1, t1
 		);
+
+		if (joint)
+		{
+			joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true);
+		}
 	}
 
 	FixedJoint::~FixedJoint() noexcept
@@ -77,6 +94,8 @@ namespace ZonaiPhysics
 	{
 		using namespace physx;
 		const auto index = static_cast<PxJointActorIndex::Enum>(_index);
+		// joint->setConstraintFlag(PxConstraintFlag::)
+		// joint->getRelativeLinearVelocity()
 		PxTransform t = joint->getLocalPose(index);
 		return { t.q.x, t.q.y , t.q.z, t.q.w };
 	}

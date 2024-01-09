@@ -74,7 +74,7 @@ typedef PxFlags<PxDistanceJointFlag::Enum, PxU16> PxDistanceJointFlags;
 PX_FLAGS_OPERATORS(PxDistanceJointFlag::Enum, PxU16)
 
 /**
-\brief a joint that maintains an upper or lower bound (or both) on the distance between two points on different objects
+\brief 다른 객체의 두 지점 간의 거리에 대한 상한 또는 하한(또는 둘 다)을 유지하는 조인트
 
 @see PxDistanceJointCreate PxJoint
 */
@@ -83,181 +83,180 @@ class PxDistanceJoint : public PxJoint
 public:
 
 	/**
-	\brief Return the current distance of the joint
+	\brief 조인트의 현재 거리를 반환합니다.
 	*/
-	virtual PxReal					getDistance()	const	= 0;
-	
+	virtual PxReal getDistance() const = 0;
+
 	/**
-	\brief Set the allowed minimum distance for the joint.
+	\brief 조인트의 허용 최소 거리를 설정합니다.
 
-	The minimum	distance must be no more than the maximum distance
+	최소 거리는 최대 거리 이상이어야 합니다.
 
-	<b>Default</b> 0.0f
-	<b>Range</b> [0, PX_MAX_F32)
+	<b>기본값</b> 0.0f
+	<b>범위</b> [0, PX_MAX_F32)
 
-	\param[in] distance the minimum distance
+	\param[in] distance 최소 거리
 
 	@see PxDistanceJoint::minDistance, PxDistanceJointFlag::eMIN_DISTANCE_ENABLED getMinDistance()
 	*/
-	virtual void					setMinDistance(PxReal distance)	= 0;
+	virtual void setMinDistance(PxReal distance) = 0;
 
 	/**
-	\brief Get the allowed minimum distance for the joint.
+	\brief 조인트의 허용 최소 거리를 가져옵니다.
 
-	\return the allowed minimum distance
+	\return 허용되는 최소 거리
 
 	@see PxDistanceJoint::minDistance, PxDistanceJointFlag::eMIN_DISTANCE_ENABLED setMinDistance()
 	*/
-	virtual PxReal					getMinDistance()	const	= 0;
+	virtual PxReal getMinDistance() const = 0;
 
 	/**
-	\brief Set the allowed maximum distance for the joint.
+	\brief 조인트의 허용 최대 거리를 설정합니다.
 
-	The maximum	distance must be no less than the minimum distance. 
+	최대 거리는 최소 거리 이하이어야 합니다.
 
-	<b>Default</b> 0.0f
-	<b>Range</b> [0, PX_MAX_F32)
+	<b>기본값</b> 0.0f
+	<b>범위</b> [0, PX_MAX_F32)
 
-	\param[in] distance the maximum distance
+	\param[in] distance 최대 거리
 
 	@see PxDistanceJoint::maxDistance, PxDistanceJointFlag::eMAX_DISTANCE_ENABLED getMinDistance()
 	*/
-	virtual void					setMaxDistance(PxReal distance)	= 0;
+	virtual void setMaxDistance(PxReal distance) = 0;
 
 	/**
-	\brief Get the allowed maximum distance for the joint.
+	\brief 조인트의 허용 최대 거리를 가져옵니다.
 
-	\return the allowed maximum distance
+	\return 허용되는 최대 거리
 
 	@see PxDistanceJoint::maxDistance, PxDistanceJointFlag::eMAX_DISTANCE_ENABLED setMaxDistance()
 	*/
-	virtual PxReal					getMaxDistance()	const	= 0;
+	virtual PxReal getMaxDistance() const = 0;
 
 	/**
-	\brief Set the error tolerance of the joint.
+	\brief 조인트의 에러 허용 범위를 설정합니다.
 
-	\param[in] tolerance the distance beyond the allowed range at which the joint becomes active
+	\param[in] tolerance 조인트가 활성화되는 허용 범위를 벗어난 거리
 
 	@see PxDistanceJoint::tolerance, getTolerance()
 	*/
-	virtual void					setTolerance(PxReal tolerance)	= 0;
+	virtual void setTolerance(PxReal tolerance) = 0;
 
 	/**
-	\brief Get the error tolerance of the joint.
+	\brief 조인트의 에러 허용 범위를 가져옵니다.
 
-	the distance beyond the joint's [min, max] range before the joint becomes active.
+	조인트의 [min, max] 범위를 벗어난 거리로 조인트가 활성화되기 전의 거리입니다.
 
-	<b>Default</b> 0.25f * PxTolerancesScale::length
-	<b>Range</b> (0, PX_MAX_F32)
+	<b>기본값</b> 0.25f * PxTolerancesScale::length
+	<b>범위</b> (0, PX_MAX_F32)
 
-	This value should be used to ensure that if the minimum distance is zero and the 
-	spring function is in use, the rest length of the spring is non-zero. 
+	이 값은 최소 거리가 0이고 스프링 함수를 사용하는 경우 스프링의 잔상 길이가 0이 아님을 보장하기 위해 사용되어야 합니다.
 
 	@see PxDistanceJoint::tolerance, setTolerance()
 	*/
-	virtual PxReal					getTolerance()	const	= 0;
+	virtual PxReal getTolerance() const = 0;
 
 	/**
-	\brief Set the strength of the joint spring.
+	\brief 조인트 스프링의 강도를 설정합니다.
 
-	The spring is used if enabled, and the distance exceeds the range [min-error, max+error].
+	스프링은 활성화되고 거리가 [min-error, max+error] 범위를 초과하는 경우 사용됩니다.
 
-	<b>Default</b> 0.0f
-	<b>Range</b> [0, PX_MAX_F32)
+	<b>기본값</b> 0.0f
+	<b>범위</b> [0, PX_MAX_F32)
 
-	\param[in] stiffness the spring strength of the joint
+	\param[in] stiffness 조인트의 스프링 강도
 
 	@see PxDistanceJointFlag::eSPRING_ENABLED getStiffness()
 	*/
-	virtual void					setStiffness(PxReal stiffness)	= 0;
+	virtual void setStiffness(PxReal stiffness) = 0;
 
 	/**
-	\brief Get the strength of the joint spring.
+	\brief 조인트 스프링의 강도를 가져옵니다.
 
-	\return stiffness the spring strength of the joint
+	\return 조인트의 스프링 강도
 
 	@see PxDistanceJointFlag::eSPRING_ENABLED setStiffness()
 	*/
-	virtual PxReal					getStiffness()	const	= 0;
+	virtual PxReal getStiffness() const = 0;
 
 	/**
-	\brief Set the damping of the joint spring.
+	\brief 조인트 스프링의 감쇠를 설정합니다.
 
-	The spring is used if enabled, and the distance exceeds the range [min-error, max+error].
+	스프링은 활성화되고 거리가 [min-error, max+error] 범위를 초과하는 경우 사용됩니다.
 
-	<b>Default</b> 0.0f
-	<b>Range</b> [0, PX_MAX_F32)
+	<b>기본값</b> 0.0f
+	<b>범위</b> [0, PX_MAX_F32)
 
-	\param[in] damping the degree of damping of the joint spring of the joint
+	\param[in] damping 조인트 스프링의 감쇠 정도
 
 	@see PxDistanceJointFlag::eSPRING_ENABLED setDamping()
 	*/
-	virtual void					setDamping(PxReal damping)	= 0;
-	
-	/**
-	\brief Get the damping of the joint spring.
+	virtual void setDamping(PxReal damping) = 0;
 
-	\return the degree of damping of the joint spring of the joint
+	/**
+	\brief 조인트 스프링의 감쇠를 가져옵니다.
+
+	\return 조인트 스프링의 감쇠 정도
 
 	@see PxDistanceJointFlag::eSPRING_ENABLED setDamping()
 	*/
-	virtual PxReal					getDamping()	const	= 0;
+	virtual PxReal getDamping() const = 0;
 
 	/**
-	\brief Set the flags specific to the Distance Joint.
+	\brief Distance Joint에 특화된 플래그를 설정합니다.
 
-	<b>Default</b> PxDistanceJointFlag::eMAX_DISTANCE_ENABLED
+	<b>기본값</b> PxDistanceJointFlag::eMAX_DISTANCE_ENABLED
 
-	\param[in] flags The joint flags.
+	\param[in] flags 조인트 플래그
 
 	@see PxDistanceJointFlag setFlag() getFlags()
 	*/
-	virtual void					setDistanceJointFlags(PxDistanceJointFlags flags) = 0;
+	virtual void setDistanceJointFlags(PxDistanceJointFlags flags) = 0;
 
 	/**
-	\brief Set a single flag specific to a Distance Joint to true or false.
+	\brief Distance Joint에 특화된 단일 플래그를 true 또는 false로 설정합니다.
 
-	\param[in] flag The flag to set or clear.
-	\param[in] value the value to which to set the flag
+	\param[in] flag 설정 또는 지우려는 플래그
+	\param[in] value 플래그를 설정할 값
 
 	@see PxDistanceJointFlag, getFlags() setFlags()
 	*/
-	virtual void					setDistanceJointFlag(PxDistanceJointFlag::Enum flag, bool value) = 0;
+	virtual void setDistanceJointFlag(PxDistanceJointFlag::Enum flag, bool value) = 0;
 
 	/**
-	\brief Get the flags specific to the Distance Joint.
+	\brief Distance Joint에 특화된 플래그를 가져옵니다.
 
-	\return the joint flags
+	\return 조인트 플래그
 
 	@see PxDistanceJoint::flags, PxDistanceJointFlag setFlag() setFlags()
 	*/
-	virtual PxDistanceJointFlags	getDistanceJointFlags()	const	= 0;
+	virtual PxDistanceJointFlags getDistanceJointFlags() const = 0;
 
 	/**
-	\brief Returns string name of PxDistanceJoint, used for serialization
+	\brief PxDistanceJoint의 문자열 이름을 반환합니다. 직렬화에 사용됩니다.
 	*/
-	virtual	const char*				getConcreteTypeName() const { return "PxDistanceJoint"; }
+	virtual const char* getConcreteTypeName() const { return "PxDistanceJoint"; }
 
 protected:
 
-	//serialization
+	// 직렬화
 
 	/**
-	\brief Constructor
+	\brief 생성자
 	*/
-	PX_INLINE						PxDistanceJoint(PxType concreteType, PxBaseFlags baseFlags) : PxJoint(concreteType, baseFlags) {}
+	PX_INLINE PxDistanceJoint(PxType concreteType, PxBaseFlags baseFlags) : PxJoint(concreteType, baseFlags) {}
 
 	/**
-	\brief Deserialization constructor
+	\brief 역직렬화 생성자
 	*/
-	PX_INLINE						PxDistanceJoint(PxBaseFlags baseFlags)	: PxJoint(baseFlags) {}
+	PX_INLINE PxDistanceJoint(PxBaseFlags baseFlags) : PxJoint(baseFlags) {}
 
 	/**
-	\brief Returns whether a given type name matches with the type of this instance
-	*/							
-	virtual	bool					isKindOf(const char* name)	const { PX_IS_KIND_OF(name, "PxDistanceJoint", PxJoint);	}
+	\brief 주어진 타입 이름이 이 인스턴스의 타입과 일치하는지 여부를 반환합니다.
+	*/
+	virtual bool isKindOf(const char* name) const { PX_IS_KIND_OF(name, "PxDistanceJoint", PxJoint); }
 
-	//~serialization
+	// ~직렬화
 };
 
 #if !PX_DOXYGEN

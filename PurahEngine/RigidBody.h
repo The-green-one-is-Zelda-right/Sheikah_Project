@@ -19,7 +19,11 @@ namespace PurahEngine
 		~RigidBody() override;
 
 	public:
-		void Awake() override;
+		void		Awake() override;
+
+	public:
+		void		SetPosition(const Eigen::Vector3f& _pos) noexcept;
+		const Eigen::Vector3f& GetPosition() noexcept;
 
 	public:
 		/**

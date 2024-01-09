@@ -243,18 +243,18 @@ public:
 	virtual PxReal				getInvMassScale0()	const	= 0;
 
 	/**
-	\brief set the inverse inertia scale for actor0.
+	\brief actor0의 역관성 스케일을 설정합니다.
 
-	\param[in] invInertiaScale the scale to apply to the inverse inertia of actor0 for resolving this constraint
+	\param[in] invInertiaScale 이 제약을 해결하는 데에 actor0의 역관성에 적용할 스케일
 
 	@see getInvMassScale0
 	*/
 	virtual void				setInvInertiaScale0(PxReal invInertiaScale)	= 0;
 
 	/**
-	\brief get the inverse inertia scale for actor0.
+	\brief actor0의 역관성 스케일을 가져옵니다.
 
-	\return inverse inertia scale for actor0
+	\return actor0에 대한 역관성 스케일
 
 	@see setInvInertiaScale0
 	*/

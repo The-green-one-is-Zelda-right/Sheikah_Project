@@ -10,6 +10,6 @@ namespace ZonaiPhysics
 	{
 	public:
 					ZnFixedJoint() noexcept = default;
-		virtual		~ZnFixedJoint() noexcept = default;
+					~ZnFixedJoint() noexcept override = default;
 	};
 }

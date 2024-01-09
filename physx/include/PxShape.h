@@ -170,11 +170,11 @@ public:
 	virtual		void	setGeometry(const PxGeometry& geometry) = 0;
 
 	/**
-	\brief Retrieve a reference to the shape's geometry.
+	\brief 형상의 기하학 정보에 대한 참조를 검색합니다.
 
-	\warning The returned reference has the same lifetime as the PxShape it comes from.
+	\warning 반환된 참조는 해당 PxShape의 수명과 동일합니다.
 
-	\return	Reference to internal PxGeometry object.
+	\return 내부 PxGeometry 객체에 대한 참조.
 
 	@see PxGeometry PxGeometryType getGeometryType() setGeometry()
 	*/

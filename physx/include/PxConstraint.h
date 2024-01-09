@@ -55,17 +55,27 @@ struct PxConstraintFlag
 {
 	enum Enum
 	{
-		eBROKEN						= 1 << 0,	//!< 제약 조건이 깨졌는지 여부
-		eCOLLISION_ENABLED			= 1 << 3,	//!< 이 제약 조건이 제약하는 객체 간에 접촉을 생성해야 하는지 여부
-		eVISUALIZATION				= 1 << 4,	//!< 이 제약 조건이 시각화되어야 하는지 여부 (제약 조건 시각화가 활성화된 경우)
-		eDRIVE_LIMITS_ARE_FORCES	= 1 << 5,	//!< 구동 강도의 제한이 충격이 아니라 힘으로 표현되는지 여부
-		eIMPROVED_SLERP				= 1 << 7,	//!< D6 Slerp 드라이브의 더 나은 정확성을 위해 전처리를 수행하는지 여부 (이 플래그는 전처리가 더 이상 필요하지 않을 때 향후 릴리스에서 제거될 예정입니다)
-		eDISABLE_PREPROCESSING		= 1 << 8,	//!< 제약 조건 전처리를 억제합니다. rowResponseThreshold와 함께 사용하기 위해 만들어졌으며, 약한 조건의 제약 조건에 대해 원천적인 솔버 정확도가 감소할 수 있습니다.
-		eENABLE_EXTENDED_LIMITS		= 1 << 9,	//!< 각도 제한을 위해 확장된 제한 범위를 활성화하는지 여부 (예: 제한 값 > PxPi 또는 < -PxPi)
-		eGPU_COMPATIBLE				= 1 << 10,	//!< 제약 조건 유형이 GPU 물리 엔진에서 지원되는지 여부
-		eALWAYS_UPDATE				= 1 << 11,	//!< 매 프레임마다 제약 조건을 업데이트하는지 여부
-		eDISABLE_CONSTRAINT			= 1 << 12	//!< 제약 조건을 비활성화하는지 여부. 이 경우 SolverPrep 함수는 이 제약 조건에 대해 호출되지 않습니다.
+		eBROKEN = 1 << 0,						//!< 제약이 깨졌는지 여부
 
+		eCOLLISION_ENABLED = 1 << 3,			//!< 이 제약이 제한하는 객체 간에 접촉을 생성해야 하는지 여부
+
+		eVISUALIZATION = 1 << 4,				//!< 이 제약이 시각화되어야 하는지 여부, 시각화가 활성화된 경우
+
+		eDRIVE_LIMITS_ARE_FORCES = 1 << 5,		//!< 드라이브 강도의 제한이 충돌 대신 힘으로 작동하는지 여부
+
+		eIMPROVED_SLERP = 1 << 7,				//!< D6 Slerp Drive에서 향상된 정확도를 위한 전처리를 수행
+												//	(전처리가 더 이상 필요하지 않을 때 이 플래그는 향후 릴리스에서 제거될 것임)
+
+		eDISABLE_PREPROCESSING = 1 << 8,		//!< 제약 전처리를 억제, rowResponseThreshold와 함께 사용하기 위한 것.
+												//	 악조건의 제약에 대해 악화된 솔버 정확도를 초래할 수 있음.
+
+		eENABLE_EXTENDED_LIMITS = 1 << 9,		//!< 각도 제한에 대한 확장된 범위 활성화 (예: 제한 값 > PxPi 또는 < -PxPi)
+
+		eGPU_COMPATIBLE = 1 << 10,				//!< 제약 유형이 GPU 다이내믹스에서 지원됨
+
+		eALWAYS_UPDATE = 1 << 11,				//!< 매 프레임마다 제약을 업데이트
+
+		eDISABLE_CONSTRAINT = 1 << 12			//!< 제약 비활성화. 이 제약에 대한 SolverPrep 함수는 호출되지 않을 것임.
 	};
 };
 
@@ -174,14 +184,16 @@ public:
 	*/
 	virtual void				setFlag(PxConstraintFlag::Enum flag, bool value)				= 0;
 
-	/**
-	\brief Retrieve the constraint force most recently applied to maintain this constraint.
 
-	\note It is not allowed to use this method while the simulation is running (except during PxScene::collide(),
-	in PxContactModifyCallback or in contact report callbacks).
-	
-	\param[out] linear the constraint force
-	\param[out] angular the constraint torque
+	/**
+	\brief 이 제약을 유지하기 위해 가장 최근에 적용된 제약 힘을 검색합니다.
+
+	\note	시뮬레이션이 실행 중일 때
+			(PxScene::collide() 내에서 또는 PxContactModifyCallback이나
+			연락처 보고서 콜백 중에는 사용할 수 없습니다).
+
+	\param[out] linear 제약 힘
+	\param[out] angular 제약 토크
 	*/
 	virtual void				getForce(PxVec3& linear, PxVec3& angular)				const	= 0;
 

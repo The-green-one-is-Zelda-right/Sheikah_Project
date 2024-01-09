@@ -29,6 +29,16 @@ namespace PurahEngine
 		SetKinematic(isKinematic);
 	}
 
+	void RigidBody::SetPosition(const Eigen::Vector3f& _pos) noexcept
+	{
+		body->SetPosition(_pos);
+	}
+
+	const Eigen::Vector3f& RigidBody::GetPosition() noexcept
+	{
+		return body->GetPosition();
+	}
+
 	/// \brief 스크립트에서 호출하지 말아라
 	void RigidBody::WakeUp() noexcept
 	{

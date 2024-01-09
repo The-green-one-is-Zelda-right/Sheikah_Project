@@ -44,6 +44,11 @@ namespace ZonaiPhysics
 		rigidbody_->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, value);
 	}
 
+	void RigidBody::UpdateInertiaTensor() noexcept
+	{
+		using namespace physx;
+	}
+
 	void RigidBody::CanSimulate(bool value) const noexcept
 	{
 		using namespace physx;
@@ -85,6 +90,7 @@ namespace ZonaiPhysics
 	void RigidBody::SetMass(float _mass) noexcept
 	{
 		rigidbody_->setMass(_mass);
+		rigidbody_->setMassSpaceInertiaTensor(rigidbody_->getCMassLocalPose().p);
 	}
 
 	float RigidBody::GetInvMass() const noexcept

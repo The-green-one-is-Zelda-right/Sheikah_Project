@@ -43,6 +43,15 @@
     <ClInclude Include="ZnSphericalJoint.h">
       <Filter>00. Base\joint</Filter>
     </ClInclude>
+    <ClInclude Include="ZnDistanceJoint.h">
+      <Filter>00. Base\joint</Filter>
+    </ClInclude>
+    <ClInclude Include="ZnHingeJoint.h">
+      <Filter>00. Base\joint</Filter>
+    </ClInclude>
+    <ClInclude Include="ZnPrismaticJoint.h">
+      <Filter>00. Base\joint</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00. Base">

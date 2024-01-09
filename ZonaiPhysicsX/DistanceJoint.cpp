@@ -1,15 +1,14 @@
 #include "RigidBody.h"
 #include "ZnTransform.h"
 
-#include "SphericalJoint.h"
-
-#include <windows.h>
+#include "DistanceJoint.h"
 
 namespace ZonaiPhysics
 {
-	SphericalJoint::SphericalJoint(
+
+	DistanceJoint::DistanceJoint(
 		physx::PxPhysics*& _factory, 
-		RigidBody* _object0, const ZnTransform& _transform0,
+		RigidBody* _object0, const ZnTransform& _transform0, 
 		RigidBody* _object1, const ZnTransform& _transform1) noexcept
 	{
 		object[0] = _object0;
@@ -49,7 +48,7 @@ namespace ZonaiPhysics
 			rigid1 = _object1->getRigidDynamic();
 		}
 
-		joint = physx::PxSphericalJointCreate(
+		joint = physx::PxDistanceJointCreate(
 			*_factory,
 			rigid0, t0,
 			rigid1, t1
@@ -61,12 +60,12 @@ namespace ZonaiPhysics
 		}
 	}
 
-	SphericalJoint::~SphericalJoint() noexcept
+	DistanceJoint::~DistanceJoint() noexcept
 	{
 		joint->release();
 	}
 
-	void SphericalJoint::SetLocalPosition(eOBJECT _index, const Eigen::Vector3f& _localPos) noexcept
+	void DistanceJoint::SetLocalPosition(eOBJECT _index, const Eigen::Vector3f& _localPos) noexcept
 	{
 		using namespace physx;
 		const auto index = static_cast<PxJointActorIndex::Enum>(_index);
@@ -75,7 +74,7 @@ namespace ZonaiPhysics
 		joint->setLocalPose(index, t);
 	}
 
-	Eigen::Vector3f SphericalJoint::GetLocalPosition(eOBJECT _index) const noexcept
+	Eigen::Vector3f DistanceJoint::GetLocalPosition(eOBJECT _index) const noexcept
 	{
 		using namespace physx;
 		const auto index = static_cast<PxJointActorIndex::Enum>(_index);
@@ -83,7 +82,7 @@ namespace ZonaiPhysics
 		return { t.p.x, t.p.y , t.p.z };
 	}
 
-	void SphericalJoint::SetLocalQuaternion(eOBJECT _index, const Eigen::Quaternionf& _localQuat) noexcept
+	void DistanceJoint::SetLocalQuaternion(eOBJECT _index, const Eigen::Quaternionf& _localQuat) noexcept
 	{
 		using namespace physx;
 		const auto index = static_cast<PxJointActorIndex::Enum>(_index);
@@ -92,7 +91,7 @@ namespace ZonaiPhysics
 		joint->setLocalPose(index, t);
 	}
 
-	Eigen::Quaternionf SphericalJoint::GetLocalQuaternion(eOBJECT _index) const noexcept
+	Eigen::Quaternionf DistanceJoint::GetLocalQuaternion(eOBJECT _index) const noexcept
 	{
 		using namespace physx;
 		const auto index = static_cast<PxJointActorIndex::Enum>(_index);
@@ -100,57 +99,100 @@ namespace ZonaiPhysics
 		return { t.q.x, t.q.y , t.q.z, t.q.w };
 	}
 
-	Eigen::Vector3f SphericalJoint::GetRelativeLinearVelocity() const noexcept
+	Eigen::Vector3f DistanceJoint::GetRelativeLinearVelocity() const noexcept
 	{
 		using namespace physx;
 		const auto& velo = joint->getRelativeLinearVelocity();
 		return { velo.x, velo.y ,velo.z };
 	}
 
-	Eigen::Vector3f SphericalJoint::GetRelativeAngularVelocity() const noexcept
+	Eigen::Vector3f DistanceJoint::GetRelativeAngularVelocity() const noexcept
 	{
 		using namespace physx;
 		const auto& velo = joint->getRelativeAngularVelocity();
 		return { velo.x, velo.y ,velo.z };
 	}
 
-	void SphericalJoint::SetBreakForce(float _force, float _torque) noexcept
+	void DistanceJoint::SetBreakForce(float _force, float _torque) noexcept
 	{
 		joint->setBreakForce(_force, _torque);
 	}
 
-	void SphericalJoint::GetBreakForce(float& _force, float& _torque) const noexcept
+	void DistanceJoint::GetBreakForce(float& _force, float& _torque) const noexcept
 	{
 		joint->getBreakForce(_force, _torque);
 	}
 
-	void SphericalJoint::GetLimitAngle(float* _outY, float* _outZ)
+	float DistanceJoint::GetDistance() const
 	{
-		auto cone = joint->getLimitCone();
-
-		if (_outY)
-		{
-			*_outY = cone.yAngle;
-		}
-		if (_outZ)
-		{
-			*_outZ = cone.zAngle;
-		}
+		return joint->getDistance();
 	}
 
-	void SphericalJoint::LimitEnable(bool _value)
+	void DistanceJoint::SetMinDistance(float _distance)
+	{
+		joint->setMinDistance(_distance);
+	}
+
+	float DistanceJoint::GetMinDistance() const
+	{
+		return joint->getMinDistance();
+	}
+
+	void DistanceJoint::SetMaxDistance(float _distance)
+	{
+		joint->setMaxDistance(_distance);
+	}
+
+	float DistanceJoint::GetMaxDistance() const
+	{
+		return joint->getMaxDistance();
+	}
+
+	void DistanceJoint::SetTolerance(float _tolerance)
+	{
+		joint->setTolerance(_tolerance);
+	}
+
+	float DistanceJoint::GetTolerance() const
+	{
+		return joint->getTolerance();
+	}
+
+	void DistanceJoint::SetStiffness(float _stiffness)
+	{
+		joint->setStiffness(_stiffness);
+	}
+
+	float DistanceJoint::GetStiffness() const
+	{
+		return joint->getStiffness();
+	}
+
+	void DistanceJoint::SetDamping(float _damping)
+	{
+		joint->setDamping(_damping);
+	}
+
+	float DistanceJoint::GetDamping() const
+	{
+		return joint->getDamping();
+	}
+
+	void DistanceJoint::SetMinDistanceEnable(bool _value)
 	{
 		using namespace physx;
-		joint->setSphericalJointFlag(PxSphericalJointFlag::eLIMIT_ENABLED, _value);
+		joint->setDistanceJointFlag(PxDistanceJointFlag::eMIN_DISTANCE_ENABLED, _value);
 	}
 
-	void SphericalJoint::SetLimitCone(float _yAngle, float _zAngle)
+	void DistanceJoint::SetMaxDistanceEnable(bool _value)
 	{
-		joint->setLimitCone({ _yAngle, _zAngle });
+		using namespace physx;
+		joint->setDistanceJointFlag(PxDistanceJointFlag::eMAX_DISTANCE_ENABLED, _value);
 	}
 
-	void SphericalJoint::SetLimitCone(float _yAngle, float _zAngle, float _stiffness, float _damping)
+	void DistanceJoint::SetSpringEnable(bool _value)
 	{
-		joint->setLimitCone({ _yAngle, _zAngle, {_stiffness, _damping} });
+		using namespace physx;
+		joint->setDistanceJointFlag(PxDistanceJointFlag::eSPRING_ENABLED, _value);
 	}
 }

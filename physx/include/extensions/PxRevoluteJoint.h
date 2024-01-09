@@ -74,163 +74,168 @@ typedef PxFlags<PxRevoluteJointFlag::Enum, PxU16> PxRevoluteJointFlags;
 PX_FLAGS_OPERATORS(PxRevoluteJointFlag::Enum, PxU16)
 
 /**
+\brief 힌지 또는 축과 유사한 방식으로 동작하는 관절.
 
-\brief A joint which behaves in a similar way to a hinge or axle.
+힌지 관절은 두 객체에서 하나의 회전 자유도만 제거합니다.
+두 개체가 회전할 수 있는 축은 점과 방향 벡터로 지정됩니다.
 
- A hinge joint removes all but a single rotational degree of freedom from two objects.
- The axis along which the two bodies may rotate is specified with a point and a direction
- vector.
+힌지의 위치는 각 몸체의 관절 프레임의 원점으로 지정됩니다.
+힌지의 축은 몸체의 관절 프레임의 x-축의 방향으로 지정됩니다.
 
- The position of the hinge on each body is specified by the origin of the body's joint frame.
- The axis of the hinge is specified as the direction of the x-axis in the body's joint frame.
- 
- \image html revoluteJoint.png
+\image html revoluteJoint.png
 
- A revolute joint can be given a motor, so that it can apply a force to rotate the attached actors.
- It may also be given a limit, to restrict the revolute motion to within a certain range. In
- addition, the bodies may be projected together if the distance or angle between them exceeds
- a given threshold.
- 
- Projection, drive and limits are activated by setting the appropriate flags on the joint.
+힌지 관절은 회전력을 적용하여 연결된 액터를 회전시킬 수 있습니다.
+또한 제한을 부여하여 힌지 모션을 특정 범위 내로 제한할 수 있습니다.
+또한 거리 또는 각도가 주어진 임계값을 초과하는 경우 몸체를 투영할 수 있습니다.
 
- @see PxRevoluteJointCreate() PxJoint
+투영, 드라이브 및 제한은 관절에 해당하는 플래그를 설정하여 활성화됩니다.
+
+@see PxRevoluteJointCreate() PxJoint
 */
 class PxRevoluteJoint : public PxJoint
 {
 public:
 
 	/**
-	\brief return the angle of the joint, in the range (-2*Pi, 2*Pi]
+	\brief 관절의 각도를 가져옵니다. 범위는 (-2 * Pi, 2 * Pi]입니다.
 	*/
 	virtual PxReal getAngle()	const	= 0;
 
 	/**
-	\brief return the velocity of the joint
+	\brief 관절의 속도를 가져옵니다.
 	*/
 	virtual PxReal getVelocity()	const	= 0;
 
 	/**
-	\brief set the joint limit parameters. 
+	\brief 관절 제한 매개변수를 설정합니다.
 
-	The limit is activated using the flag PxRevoluteJointFlag::eLIMIT_ENABLED
+	한계는 PxRevoluteJointFlag::eLIMIT_ENABLED 플래그를 사용하여 활성화됩니다.
 
-	The limit angle range is (-2*Pi, 2*Pi).
+	한계 각도 범위는 (-2 * Pi, 2 * Pi)입니다.
 
-	\param[in] limits The joint limit parameters. 
+	\param[in] limits 관절 제한 매개변수.
 
 	@see PxJointAngularLimitPair getLimit()
 	*/
 	virtual void			setLimit(const PxJointAngularLimitPair& limits)	= 0;
 
 	/**
-	\brief get the joint limit parameters.
+	\brief 관절 제한 매개변수를 가져옵니다.
 
-	\return the joint limit parameters
+	\return 관절 제한 매개변수
 
 	@see PxJointAngularLimitPair setLimit()
 	*/
 	virtual PxJointAngularLimitPair getLimit()	const	= 0;
 
 	/**
-	\brief set the target velocity for the drive model.
+	\brief 드라이브 모델의 대상 속도를 설정합니다.
 
-	The motor will only be able to reach this velocity if the maxForce is sufficiently large.
-	If the joint is spinning faster than this velocity, the motor will actually try to brake
-	(see PxRevoluteJointFlag::eDRIVE_FREESPIN.)
+	드라이브는 maxForce가 충분히 큰 경우에만 이 속도에 도달할 수 있습니다.
+	관절이 이 속도보다 더 빨리 회전 중이면 드라이브는 실제로 브레이크를 시도합니다
+	(PxRevoluteJointFlag::eDRIVE_FREESPIN 참조).
 
-	The sign of this variable determines the rotation direction, with positive values going
-	the same way as positive joint angles. Setting a very large target velocity may cause
-	undesirable results.
+	이 변수의 부호는 회전 방향을 결정하며, 양수 값은 양수 관절 각도 방향으로 간다.
+	매우 큰 대상 속도를 설정하면 원하지 않는 결과가 발생할 수 있습니다.
 
-	\param[in] velocity the drive target velocity
-	\param[in] autowake Whether to wake up the joint rigids if they are asleep.
+	\param[in]	velocity
+				드라이브 대상 속도
+	\param[in]	autowake
+				관절 라이그드를 깨우는 경우 true
 
-	<b>Range:</b> (-PX_MAX_F32, PX_MAX_F32)<br>
-	<b>Default:</b> 0.0
+	<b>범위:</b> (-PX_MAX_F32, PX_MAX_F32)<br>
+	<b>기본값:</b> 0.0
 
 	@see PxRevoluteFlags::eDRIVE_FREESPIN
 	*/
 	virtual void			setDriveVelocity(PxReal velocity, bool autowake = true)	= 0;
 
 	/**
-	\brief gets the target velocity for the drive model.
+	\brief 드라이브 모델의 대상 속도를 가져옵니다.
 
-	\return the drive target velocity
+	\return 드라이브 대상 속도
 
 	@see setDriveVelocity()
 	*/
 	virtual PxReal			getDriveVelocity()	const	= 0;
 
 	/**
-	\brief sets the maximum torque the drive can exert.
-	
-	The value set here may be used either as an impulse limit or a force limit, depending on the flag PxConstraintFlag::eDRIVE_LIMITS_ARE_FORCES
+	\brief 드라이브가 적용할 수 있는 최대 토크를 설정합니다.
 
-	<b>Range:</b> [0, PX_MAX_F32)<br>
-	<b>Default:</b> PX_MAX_F32
+	여기에 설정된 값은 충격 제한 또는 힘 제한으로 사용될 수 있으며,
+	PxConstraintFlag::eDRIVE_LIMITS_ARE_FORCES 플래그에 따라 다릅니다.
+
+	<b>범위:</b> [0, PX_MAX_F32)<br>
+	<b>기본값:</b> PX_MAX_F32
 
 	@see setDriveVelocity()
 	*/
 	virtual void			setDriveForceLimit(PxReal limit)	= 0;
 
 	/**
-	\brief gets the maximum torque the drive can exert.
-	
-	\return the torque limit
+	\brief 드라이브가 적용할 수 있는 최대 토크를 가져옵니다.
+
+	\return 토크 제한
 
 	@see setDriveVelocity()
 	*/
 	virtual PxReal			getDriveForceLimit()	const	= 0;
 
 	/**
-	\brief sets the gear ratio for the drive.
-	
-	When setting up the drive constraint, the velocity of the first actor is scaled by this value, and its response to drive torque is scaled down.
-	So if the drive target velocity is zero, the second actor will be driven to the velocity of the first scaled by the gear ratio
+	\brief 드라이브의 기어 비율을 설정합니다.
 
-	<b>Range:</b> [0, PX_MAX_F32)<br>
-	<b>Default:</b> 1.0
+	드라이브 제약을 설정할 때 첫 번째 액터의 속도는 이 값으로 스케일이 조정되며,
+	드라이브 토크에 대한 응답이 다운스케일됩니다.
+	따라서 드라이브 대상 속도가 0이면 두 번째 액터는 기어 비율로 스케일된 첫 번째의 속도로 회전됩니다.
 
-	\param[in] ratio the drive gear ratio
+	<b>범위:</b> [0, PX_MAX_F32)<br>
+	<b>기본값:</b> 1.0
+
+	\param[in]	ratio
+				드라이브 기어 비율
 
 	@see getDriveGearRatio()
 	*/
 	virtual void			setDriveGearRatio(PxReal ratio)	= 0;
 
 	/**
-	\brief gets the gear ratio.
-	
-	\return the drive gear ratio
+	\brief 기어 비율을 가져옵니다.
+
+	\return 드라이브 기어 비율
 
 	@see setDriveGearRatio()
 	*/
 	virtual PxReal			getDriveGearRatio()		const	= 0;
 
 	/**
-	\brief sets the flags specific to the Revolute Joint.
+	\brief 힌지 관절에 특화된 플래그를 설정합니다.
 
-	<b>Default</b> PxRevoluteJointFlags(0)
+	<b>기본값</b> PxRevoluteJointFlags(0)
 
-	\param[in] flags The joint flags.
+	\param[in]	flags
+				관절 플래그.
 
 	@see PxRevoluteJointFlag setFlag() getFlags()
 	*/
 	virtual void			setRevoluteJointFlags(PxRevoluteJointFlags flags) = 0;
 
 	/**
-	\brief sets a single flag specific to a Revolute Joint.
+	\brief 힌지 관절에 특화된 단일 플래그를 설정합니다.
 
-	\param[in] flag The flag to set or clear.
-	\param[in] value the value to which to set the flag
+	\param[in]	flag
+				설정 또는 지울 플래그.
+	
+	\param[in]	value
+				플래그를 설정할 값
 
 	@see PxRevoluteJointFlag, getFlags() setFlags()
 	*/
 	virtual void			setRevoluteJointFlag(PxRevoluteJointFlag::Enum flag, bool value) = 0;
 
 	/**
-	\brief gets the flags specific to the Revolute Joint.
+	\brief 힌지 관절에 특화된 플래그를 가져옵니다.
 
-	\return the joint flags
+	\return 관절 플래그
 
 	@see PxRevoluteJoint::flags, PxRevoluteJointFlag setFlag() setFlags()
 	*/

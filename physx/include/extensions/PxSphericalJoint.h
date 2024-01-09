@@ -90,42 +90,41 @@ class PxSphericalJoint : public PxJoint
 public:
 	
 	/**
-	\brief Set the limit cone.
+	\brief 제한 콘을 설정합니다.
 
-	If enabled, the limit cone will constrain the angular movement of the joint to lie
-	within an elliptical cone.
+	활성화된 경우, 제한 콘이 조인트의 각 운동을 타원 모양 콘에 제한합니다.
 
-	\return the limit cone
+	\return 제한 콘
 
-	@see PxJointLimitCone setLimit() 
+	@see PxJointLimitCone setLimit()
 	*/
 	virtual PxJointLimitCone	getLimitCone()	const	= 0;
 
 	/**
-	\brief Get the limit cone.
+	\brief 제한 콘을 가져옵니다.
 
-	\param[in] limit the limit cone
+	\param[in] limit 제한 콘
 
-	@see PxJointLimitCone getLimit() 
+	@see PxJointLimitCone getLimit()
 	*/
 	virtual void				setLimitCone(const PxJointLimitCone& limit)	= 0;
 
 	/**
-	\brief get the swing angle of the joint from the Y axis
+	\brief 조인트의 Y 축으로부터의 스윙 각도를 가져옵니다.
 	*/
 	virtual PxReal				getSwingYAngle()	const	= 0;
 
 	/**
-	\brief get the swing angle of the joint from the Z axis
+	\brief 조인트의 Z 축으로부터의 스윙 각도를 가져옵니다.
 	*/
 	virtual PxReal				getSwingZAngle()	const	= 0;
 
 	/**
-	\brief Set the flags specific to the Spherical Joint.
+	\brief 구형 조인트에 특정한 플래그를 설정합니다.
 
-	<b>Default</b> PxSphericalJointFlags(0)
+	<b>기본값:</b> PxSphericalJointFlags(0)
 
-	\param[in] flags The joint flags.
+	\param[in] flags 조인트 플래그.
 
 	@see PxSphericalJointFlag setFlag() getFlags()
 	*/

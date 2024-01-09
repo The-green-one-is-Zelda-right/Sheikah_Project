@@ -1,11 +1,19 @@
-#include "BoxCollider.h"
 #include "RigidBody.h"
 
-#include "FixedJoint.h"
+#include "BoxCollider.h"
 #include "SphereCollider.h"
+#include "CapsuleCollider.h"
+
+#include "FixedJoint.h"
+#include "DistanceJoint.h"
+#include "HingeJoint.h"
+#include "PrismaticJoint.h"
+#include "SphericalJoint.h"
+
 #include "ZnRaycastInfo.h"
 
 #include "ZnPhysicsX.h"
+
 
 
 namespace ZonaiPhysics
@@ -28,6 +36,8 @@ namespace ZonaiPhysics
 		// sceneDesc.simulationEventCallback = NULL;
 		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 		scene = physics->createScene(sceneDesc);
+		scene->setVisualizationParameter(PxVisualizationParameter::eJOINT_LIMITS, 1.f);
+		scene->setVisualizationParameter(PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.f);
 
 		PxPvdSceneClient* pvdClient = scene->getScenePvdClient();
 		if (pvdClient)
@@ -123,7 +133,39 @@ namespace ZonaiPhysics
 		return newRigidBody;
 	}
 
-	ZnJoint* ZnPhysicsX::CreateFixedJoint(ZnRigidBody* _object0, const ZnTransform& _transform0, ZnRigidBody* _object1, const ZnTransform& _transform1) noexcept
+	// 	ZnCollider* ZnPhysicsX::CreatePlaneCollider(const std::wstring&, float x, float y) noexcept
+	// 	{
+	// 
+	// 	}
+	// 
+	// 	ZnCollider* ZnPhysicsX::CreateSphereCollider(const std::wstring&, float radius) noexcept
+	// 	{
+	// 
+	// 	}
+
+	ZnCollider* ZnPhysicsX::CreateCapsuleCollider(const std::wstring& _id, float _radius, float _height) noexcept
+	{
+		RigidBody* body = FindRigidBody(_id);
+
+		if (body == nullptr)
+		{
+			body = new RigidBody(physics);
+			body->CanSimulate(false);
+			bodies.insert(std::make_pair(_id, body));
+			scene->addActor(*body->getRigidDynamic());
+		}
+
+		Collider* newRigidBody = new CapsuleCollider(physics, body, _radius, _height, material);
+
+		return newRigidBody;
+	}
+
+	// 	ZnCollider* ZnPhysicsX::CreateCustomCollider(const std::wstring&) noexcept
+	// 	{
+	// 
+	// 	}
+
+	ZnFixedJoint* ZnPhysicsX::CreateFixedJoint(ZnRigidBody* _object0, const ZnTransform& _transform0, ZnRigidBody* _object1, const ZnTransform& _transform1) noexcept
 	{
 		auto ob0 = dynamic_cast<RigidBody*>(_object0);
 		auto ob1 = dynamic_cast<RigidBody*>(_object1);
@@ -133,9 +175,44 @@ namespace ZonaiPhysics
 		return  joint;
 	}
 
-	ZnJoint* ZnPhysicsX::CreateDistanceJoint(ZnRigidBody* _object0, const ZnTransform& _transform0, ZnRigidBody* _object1, const ZnTransform& _transform1) noexcept
+	ZnDistanceJoint* ZnPhysicsX::CreateDistanceJoint(ZnRigidBody* _object0, const ZnTransform& _transform0, ZnRigidBody* _object1, const ZnTransform& _transform1) noexcept
 	{
-		return nullptr;
+		auto ob0 = dynamic_cast<RigidBody*>(_object0);
+		auto ob1 = dynamic_cast<RigidBody*>(_object1);
+
+		auto* joint = new DistanceJoint(physics, ob0, _transform0, ob1, _transform1);
+
+		return  joint;
+	}
+
+	ZnSphericalJoint* ZnPhysicsX::CreateSphericalJoint(ZnRigidBody* _object0, const ZnTransform& _transform0, ZnRigidBody* _object1, const ZnTransform& _transform1) noexcept
+	{
+		auto ob0 = dynamic_cast<RigidBody*>(_object0);
+		auto ob1 = dynamic_cast<RigidBody*>(_object1);
+
+		auto* joint = new SphericalJoint(physics, ob0, _transform0, ob1, _transform1);
+
+		return  joint;
+	}
+
+	ZnHingeJoint* ZnPhysicsX::CreateRevoluteJoint(ZnRigidBody* _object0, const ZnTransform& _transform0, ZnRigidBody* _object1, const ZnTransform& _transform1) noexcept
+	{
+		auto ob0 = dynamic_cast<RigidBody*>(_object0);
+		auto ob1 = dynamic_cast<RigidBody*>(_object1);
+
+		auto* joint = new HingeJoint(physics, ob0, _transform0, ob1, _transform1);
+
+		return  joint;
+	}
+
+	ZnPrismaticJoint* ZnPhysicsX::CreatePrismaticJoint(ZnRigidBody* _object0, const ZnTransform& _transform0, ZnRigidBody* _object1, const ZnTransform& _transform1) noexcept
+	{
+		auto ob0 = dynamic_cast<RigidBody*>(_object0);
+		auto ob1 = dynamic_cast<RigidBody*>(_object1);
+
+		auto* joint = new PrismaticJoint(physics, ob0, _transform0, ob1, _transform1);
+
+		return  joint;
 	}
 
 	bool ZnPhysicsX::Raycast(const Eigen::Vector3f&, const Eigen::Vector3f&, float, ZnRaycastInfo&) noexcept
@@ -153,26 +230,6 @@ namespace ZonaiPhysics
 
 		return nullptr;
 	}
-
-// 	ZnCollider* ZnPhysicsX::CreatePlaneCollider(const std::wstring&, float x, float y) noexcept
-// 	{
-// 
-// 	}
-// 
-// 	ZnCollider* ZnPhysicsX::CreateSphereCollider(const std::wstring&, float radius) noexcept
-// 	{
-// 
-// 	}
-// 
-// 	ZnCollider* ZnPhysicsX::CreateCapsuleCollider(const std::wstring&, float radius, float height) noexcept
-// 	{
-// 
-// 	}
-// 
-// 	ZnCollider* ZnPhysicsX::CreateCustomCollider(const std::wstring&) noexcept
-// 	{
-// 
-// 	}
 
 	extern "C"
 	{

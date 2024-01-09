@@ -1,5 +1,5 @@
 #pragma once
-#include "ZnFixedJoint.h"
+#include "ZnPrismaticJoint.h"
 #include "PxPhysicsAPI.h"
 #include <Eigen/Dense>
 
@@ -15,15 +15,15 @@ namespace ZonaiPhysics
 	class ZnRigidBody;
 	class RigidBody;
 
-	class FixedJoint : public ZnFixedJoint
+	class PrismaticJoint : public ZnPrismaticJoint
 	{
 	public:
-							FixedJoint() noexcept = delete;
-							FixedJoint(
-								physx::PxPhysics*& _factory, 
-								RigidBody* _object0, const ZnTransform& _transform0, 
-								RigidBody* _object1, const ZnTransform& _transform1) noexcept;
-							~FixedJoint() noexcept override;
+		PrismaticJoint() noexcept = delete;
+		PrismaticJoint(
+			physx::PxPhysics*& _factory,
+			RigidBody* _object0, const ZnTransform& _transform0,
+			RigidBody* _object1, const ZnTransform& _transform1) noexcept;
+		~PrismaticJoint() noexcept override;
 
 	public:
 		void		SetLocalPosition(eOBJECT, const Eigen::Vector3f&) noexcept override;
@@ -40,7 +40,7 @@ namespace ZonaiPhysics
 
 	private:
 		RigidBody* object[2];
-		physx::PxFixedJoint* joint;
+		physx::PxPrismaticJoint* joint;
 	};
 } // namespace ZonaiPhysics
 

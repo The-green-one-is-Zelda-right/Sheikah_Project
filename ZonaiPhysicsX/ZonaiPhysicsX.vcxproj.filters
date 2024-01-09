@@ -21,6 +21,18 @@
     <ClCompile Include="SphereCollider.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
+    <ClCompile Include="DistanceJoint.cpp">
+      <Filter>Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="CapsuleCollider.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="PrismaticJoint.cpp">
+      <Filter>Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="HingeJoint.cpp">
+      <Filter>Joint</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ZnPhysicsX.h" />
@@ -43,6 +55,21 @@
     <ClInclude Include="ZnSimulationCallbackX.h" />
     <ClInclude Include="SphereCollider.h">
       <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="DistanceJoint.h">
+      <Filter>Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="CapsuleCollider.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="PrismaticJoint.h">
+      <Filter>Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="HingeJoint.h">
+      <Filter>Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="TemplateJoint.h">
+      <Filter>Joint</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -46,7 +46,10 @@ namespace ZonaiPhysics
 		t.p.x = _position.x();
 		t.p.y = _position.y();
 		t.p.z = _position.z();
+		rigid_->getRigidDynamic()->detachShape(*shape_);
 		shape_->setLocalPose(t);
+		rigid_->getRigidDynamic()->attachShape(*shape_);
+		UpdateInertiaTensor();
 	}
 
 	Eigen::Quaternionf Collider::GetQuaternion() const noexcept
@@ -87,5 +90,11 @@ namespace ZonaiPhysics
 	void Collider::SetUserData(void* _userData) noexcept
 	{
 		userData = _userData;
+	}
+
+	void Collider::UpdateInertiaTensor() const noexcept
+	{
+		auto pos = shape_->getLocalPose().p;
+		rigid_->getRigidDynamic()->setCMassLocalPose(shape_->getLocalPose());
 	}
 } // namespace ZonaiPhysics

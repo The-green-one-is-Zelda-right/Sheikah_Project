@@ -53,7 +53,7 @@ class PxRigidActor : public PxActor
 {
 public:
 	/**
-	 *\brief 강체 액터 객체를 삭제합니다.
+	*\brief 강체 액터 객체를 삭제합니다.
 
 	또한 액터와 관련된 모든 형상을 해제합니다.
 

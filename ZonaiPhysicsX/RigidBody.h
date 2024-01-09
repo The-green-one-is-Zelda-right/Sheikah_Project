@@ -31,6 +31,8 @@ namespace ZonaiPhysics
 
 		void			SetKinematic(bool) noexcept override;
 
+		void			UpdateInertiaTensor() noexcept;
+
 		void			CanSimulate(bool) const noexcept;
 
 		DynamicLocks	GetDynamicLockFlags() const noexcept override;

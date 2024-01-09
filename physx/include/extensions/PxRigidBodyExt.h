@@ -57,50 +57,76 @@ class PxRigidBodyExt
 {
 public:
 	/**
-	\brief Computation of mass properties for a rigid body actor
-
-	To simulate a dynamic rigid actor, the SDK needs a mass and an inertia tensor. 
-
-	This method offers functionality to compute the necessary mass and inertia properties based on the shapes declared in
-	the PxRigidBody descriptor and some additionally specified parameters. For each shape, the shape geometry, 
-	the shape positioning within the actor and the specified shape density are used to compute the body's mass and 
-	inertia properties.
-
+	\brief 강체 액터의 질량 속성 계산
+	
+	동적 강체 액터를 시뮬레이션하기 위해서는 SDK가 질량과 관성 텐서가 필요합니다.
+	
+	이 메서드는 PxRigidBody 설명자에 선언된 형상들과 몇 가지 추가로
+	지정된 매개변수를 기반으로 필요한 질량 및 관성 속성을 계산하는 기능을 제공합니다.
+	각 형상에 대해 형상 기하, 액터 내에서의 형상 위치 및 지정된 형상 밀도를 사용하여
+	몸체의 질량과 관성 속성을 계산합니다.
+	
 	<ul>
-	<li>Shapes without PxShapeFlag::eSIMULATION_SHAPE set are ignored unless includeNonSimShapes is true.</li>
-	<li>Shapes with plane, triangle mesh or heightfield geometry and PxShapeFlag::eSIMULATION_SHAPE set are not allowed for PxRigidBody collision.</li>
+	<li>PxShapeFlag::eSIMULATION_SHAPE이 설정되지 않은 형상은 includeNonSimShapes가 true인 경우에만 무시됩니다.</li>
+	<li>평면, 삼각형 메시 또는 높이 필드 기하와 PxShapeFlag::eSIMULATION_SHAPE가 설정된 형상은 PxRigidBody 충돌에 허용되지 않습니다.</li>
 	</ul>
+	
+	이 메서드는 질량, 질량 중심 및 관성 텐서를 설정합니다.
+	
+	충돌 형상이 없는 경우, 관성 텐서는 (1,1,1)로 설정되고 질량은 1로 설정됩니다.
+	
+	massLocalPose가 NULL이 아닌 경우,
+	강체의 질량 중심 매개변수는 사용자가 제공한 값(massLocalPose)으로 설정되며 관성 텐서는 해당 지점에서 해결됩니다.
+	
+	\note	액터의 모든 형상이 동일한 밀도를 가지면
+			단일 밀도 매개변수를 사용하는 updateMassAndInertia() 메서드를 대신 사용할 수 있습니다.
+	
+	\param[in,out]	body
+					강체 액터.
 
-	This method will set the mass, center of mass, and inertia tensor 
+	\param[in]		shapeDensities
+					형상당 밀도.
+					PxShapeFlag::eSIMULATION_SHAPE이 설정된 각 형상에 대해 하나의 항목이 있어야 합니다
+					(includeNonSimShapes가 true로 설정된 경우 모든 형상에 대해). 다른 형상은 무시됩니다.
+					밀도 값은 0보다 커야 합니다. \param[in] shapeDensityCount 제공된 밀도 값의 수.
 
-	if no collision shapes are found, the inertia tensor is set to (1,1,1) and the mass to 1
-
-	if massLocalPose is non-NULL, the rigid body's center of mass parameter  will be set 
-	to the user provided value (massLocalPose) and the inertia tensor will be resolved at that point.
-
-	\note If all shapes of the actor have the same density then the overloaded method updateMassAndInertia() with a single density parameter can be used instead.
-
-	\param[in,out] body The rigid body.
-	\param[in] shapeDensities The per shape densities. There must be one entry for each shape which has the PxShapeFlag::eSIMULATION_SHAPE set (or for all shapes if includeNonSimShapes is set to true). Other shapes are ignored. The density values must be greater than 0.
-	\param[in] shapeDensityCount The number of provided density values.
-	\param[in] massLocalPose The center of mass relative to the actor frame.  If set to null then (0,0,0) is assumed.
-	\param[in] includeNonSimShapes True if all kind of shapes (PxShapeFlag::eSCENE_QUERY_SHAPE, PxShapeFlag::eTRIGGER_SHAPE) should be taken into account.
-	\return Boolean. True on success else false.
-
+	\param[in]		massLocalPose
+					액터 프레임을 기준으로 한 질량 중심.
+					NULL로 설정되면 (0,0,0)으로 가정됩니다.
+					
+	\param[in]		includeNonSimShapes
+					모든 종류의 형
+					(PxShapeFlag::eSCENE_QUERY_SHAPE, PxShapeFlag::eTRIGGER_SHAPE)을 고려해야 하는 경우 true입니다.
+	
+	\return			부울 값.
+					성공하면 true, 그렇지 않으면 false.
+	
 	@see PxRigidBody::setMassLocalPose PxRigidBody::setMassSpaceInertiaTensor PxRigidBody::setMass
 	*/
 	static		bool			updateMassAndInertia(PxRigidBody& body, const PxReal* shapeDensities, PxU32 shapeDensityCount, const PxVec3* massLocalPose = NULL, bool includeNonSimShapes = false);
 
 	/**
-	\brief Computation of mass properties for a rigid body actor
+	\brief 강체 액터의 질량 속성 계산
 
-	See previous method for details.
+	자세한 내용은 이전 메서드를 참조하십시오.
 
-	\param[in,out] body The rigid body.
-	\param[in] density The density of the body. Used to compute the mass of the body. The density must be greater than 0. 
-	\param[in] massLocalPose The center of mass relative to the actor frame.  If set to null then (0,0,0) is assumed.
-	\param[in] includeNonSimShapes True if all kind of shapes (PxShapeFlag::eSCENE_QUERY_SHAPE, PxShapeFlag::eTRIGGER_SHAPE) should be taken into account.
-	\return Boolean. True on success else false.
+	\param[in,out]	body
+					강체 액터.
+
+	\param[in]		density
+					몸체의 밀도.
+					몸체의 질량을 계산하는 데 사용됩니다.
+					밀도는 0보다 커야 합니다.
+
+	\param[in]		massLocalPose
+					액터 프레임을 기준으로 한 질량 중심.
+					NULL로 설정되면 (0,0,0)으로 가정됩니다.
+
+	\param[in]		includeNonSimShapes 
+					모든 종류의 형상
+					(PxShapeFlag::eSCENE_QUERY_SHAPE, PxShapeFlag::eTRIGGER_SHAPE)을 고려해야 하는 경우 true입니다.
+
+	\return			부울 값. 성공하면 true, 그렇지 않으면 false.
 
 	@see PxRigidBody::setMassLocalPose PxRigidBody::setMassSpaceInertiaTensor PxRigidBody::setMass
 	*/
