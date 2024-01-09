@@ -27,6 +27,7 @@ namespace flt
 		void SetRotation(double degreeX, double degreeY, double degreeZ, Quaternion::AxisOrder order = Quaternion::AxisOrder::YXZ);
 		void SetRotation(const Vector3f& axis, float radian);
 		void SetRotation(const Quaternion& q);
+		void SetRotation(float x, float y, float z, float w);
 
 		Vector4f GetScale() const noexcept { return _scale; }
 		void SetScale(float x, float y, float z);
@@ -39,7 +40,7 @@ namespace flt
 		void AddRotation(const Quaternion& q);
 		void AddScale(float x, float y, float z);
 
-		Matrix4f GetTransformMatrix4f() const noexcept;
+		Matrix4f GetTranslateMatrix4f() const noexcept;
 		Matrix4f GetRotationMatrix4f() const noexcept;
 		Matrix4f GetScaleMatrix4f() const noexcept;
 		Matrix4f GetLocalMatrix4f() const noexcept;

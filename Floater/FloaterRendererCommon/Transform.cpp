@@ -55,6 +55,11 @@ void flt::Transform::SetRotation(float degreeX, float degreeY, float degreeZ, Qu
 	_rotation.SetEuler(degreeX, degreeY, degreeY, order);
 }
 
+void flt::Transform::SetRotation(float x, float y, float z, float w)
+{
+	SetRotation(Quaternion{ x, y, z, w });
+}
+
 void flt::Transform::SetRotation(double degreeX, double degreeY, double degreeZ, Quaternion::AxisOrder order)
 {
 	SetRotation(static_cast<float>(degreeX), static_cast<float>(degreeY), static_cast<float>(degreeZ), order);
@@ -62,11 +67,7 @@ void flt::Transform::SetRotation(double degreeX, double degreeY, double degreeZ,
 
 void flt::Transform::SetRotation(const Vector3f& axis, float radian)
 {
-	MakeDirtyRecursive();
-
-	Quaternion q(axis, radian);
-	_rotation = q;
-	_rotation.Normalize();
+	SetRotation(Quaternion{ axis, radian });
 }
 
 void flt::Transform::SetRotation(const Quaternion& q)
@@ -74,6 +75,7 @@ void flt::Transform::SetRotation(const Quaternion& q)
 	MakeDirtyRecursive();
 
 	_rotation = q;
+	_rotation.Normalize();
 }
 
 void flt::Transform::SetScale(float x, float y, float z)
@@ -141,7 +143,7 @@ void flt::Transform::AddScale(float x, float y, float z)
 	_scale.z += z;
 }
 
-flt::Matrix4f flt::Transform::GetTransformMatrix4f() const noexcept
+flt::Matrix4f flt::Transform::GetTranslateMatrix4f() const noexcept
 {
 	return Matrix4f
 	{
