@@ -16,8 +16,7 @@ namespace flt
 		void Load(const std::wstring& filePath, RawScene* outRawScene);
 
 	private:
-		void GetNodeRecursive(aiNode* pNode, RawNode* pRawNode);
-
+		void GetNodeRecursive(aiNode* pNode, RawNode* pRawNode, RawScene* pRawScene);
 		void PrintNodeNameRecursive(aiNode* pNode, int depth = 0);
 
 	private:

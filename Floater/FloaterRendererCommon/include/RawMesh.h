@@ -2,6 +2,8 @@
 #include "../../FloaterMath/include/Vector2f.h"
 #include "../../FloaterMath/include/Vector3f.h"
 #include "../../FloaterMath/include/Vector4f.h"
+#include "Resource.h"
+#include "IBuilder.h"
 #include <vector>
 #include <string>
 
@@ -59,17 +61,21 @@ namespace flt
 
 	struct RawMesh
 	{
+		void Release() {}
+
 		std::vector<RawVertex> vertices;
 		std::vector<int> indices;
+	};
 
-		//std::wstring albedo;
-		//std::wstring normal;
-		//std::wstring metallic;
-		//std::wstring roughness;
-		//std::wstring specular;
-		//std::wstring height;
-		//std::wstring opacity;
-		//std::wstring emissive;
-		//std::wstring ao;
+	template struct Resource<RawMesh>;
+
+	struct RawMeshBuilder : public IBuilder<RawMesh>
+	{
+		RawMeshBuilder(const std::wstring& filePath, const std::wstring& name) : IBuilder<RawMesh>(filePath + name) {}
+
+		virtual RawMesh* build() const override;
+
+		std::vector<RawVertex> vertices;
+		std::vector<int> indices;
 	};
 }

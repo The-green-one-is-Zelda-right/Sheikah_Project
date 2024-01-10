@@ -23,21 +23,21 @@ namespace flt
 		std::wstring key;
 	};
 
-	template<typename Derived>
+	template<typename T>
 	struct IBuilder : public IBuilderBase
 	{
-		using type = Derived;
+		using type = T;
 
 		IBuilder() = default;
 		IBuilder(const std::wstring& key) : IBuilderBase(key) {}
 
 		virtual void* operator()(std::wstring* typeName) const final
 		{
-			*typeName = ConvertToWstring(typeid(Derived).name());
+			*typeName = ConvertToWstring(typeid(T).name());
 
 			return build();
 		}
 
-		virtual Derived* build() const = 0;
+		virtual T* build() const = 0;
 	};
 }

@@ -245,7 +245,8 @@ bool flt::FBXLoader::LoadToRawNode(fbxsdk::FbxNode& node, RawNode* outNode)
 	fbxsdk::FbxMesh* pMesh = node.GetMesh();
 	if (pMesh != nullptr)
 	{
-		CreateMesh(*pMesh, &outNode->mesh);
+		outNode->meshes.push_back(Resource<RawMesh>());
+		CreateMesh(*pMesh, &outNode->meshes.back());
 	}
 
 	// animation 세팅
@@ -254,9 +255,9 @@ bool flt::FBXLoader::LoadToRawNode(fbxsdk::FbxNode& node, RawNode* outNode)
 	return true;
 }
 
-bool flt::FBXLoader::CreateMesh(fbxsdk::FbxMesh& mesh, RawMesh** outMesh)
+bool flt::FBXLoader::CreateMesh(fbxsdk::FbxMesh& mesh, Resource<RawMesh>* outMesh)
 {
-	*outMesh = new RawMesh();
+	RawMeshBuilder builder(L"", ConvertToWstring(mesh.GetName()));
 
 	// 아래 레이어들 특히 UV레이어는 여러개 있을 수 있음.
 	std::vector<Vector3f> testPositionVector;
@@ -293,15 +294,15 @@ bool flt::FBXLoader::CreateMesh(fbxsdk::FbxMesh& mesh, RawMesh** outMesh)
 		int index = -1;
 		if (iter == _splitVertexMap.end())
 		{
-			index = (int)((*outMesh)->vertices.size());
+			index = (int)(builder.vertices.size());
 			_splitVertexMap.Insert(vertex, index);
-			(*outMesh)->vertices.push_back(vertex);
+			builder.vertices.push_back(vertex);
 		}
 		else
 		{
 			index = iter->value;
 		}
-		(*outMesh)->indices.push_back(index);
+		builder.indices.push_back(index);
 	}
 
 	_splitVertexMap.Clear();
@@ -310,6 +311,8 @@ bool flt::FBXLoader::CreateMesh(fbxsdk::FbxMesh& mesh, RawMesh** outMesh)
 	auto materialElement = mesh.GetElementMaterial();
 	auto materialMappingMode = materialElement->GetMappingMode();
 	auto materialReferenceMode = materialElement->GetReferenceMode();
+
+	outMesh->Set(builder);
 
 	return true;
 }

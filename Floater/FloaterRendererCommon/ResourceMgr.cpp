@@ -58,3 +58,20 @@ bool flt::ResourceMgr::ReleaseResource(ResourceBase* resource)
 
 	return false;
 }
+
+bool flt::ResourceMgr::AddRefResource(ResourceBase* resource)
+{
+	std::lock_guard<std::recursive_mutex> lock(resourceMutex);
+	if (resources.find(resource->_key) == resources.end())
+	{
+		// 관리하지 않는 데이터일 경우 별다른 작업을 하지 않음.
+		return false;
+	}
+	else
+	{
+		// 관리중일 데이터일 경우 참조 카운트 증가
+		resources[resource->_key].AddRef();
+	}
+
+	return true;
+}

@@ -39,7 +39,7 @@ namespace flt
 
 		bool LoadToTransform(fbxsdk::FbxAMatrix& fbxMatrix, Transform* outTransform);
 		bool LoadToRawNode(fbxsdk::FbxNode& node, RawNode* outNode);
-		bool CreateMesh(fbxsdk::FbxMesh& mesh, RawMesh** outMesh);
+		bool CreateMesh(fbxsdk::FbxMesh& mesh, Resource<RawMesh>* outMesh);
 		bool CreateAnimation(fbxsdk::FbxNode& node, RawAnimation** outNode);
 
 

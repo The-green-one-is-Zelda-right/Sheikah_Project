@@ -20,7 +20,7 @@ namespace flt
 
 		std::wstring name;
 		Transform transform;
-		RawMesh* mesh;
+		std::vector<Resource<RawMesh>> meshes;
 		RawSkin* skin;
 		RawAnimation* animation;
 		Camera* camera;

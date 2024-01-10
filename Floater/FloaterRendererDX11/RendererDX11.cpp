@@ -241,9 +241,9 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 	for (auto& node : _renderableObjects)
 	{
-		DX11Mesh* mesh = static_cast<DX11Mesh*>(*node->mesh);
+		DX11Mesh* mesh = node->mesh.Get();
 
-		if (!node->mesh)
+		if (!node->mesh.Get())
 		{
 			continue;
 		}
@@ -255,8 +255,8 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 		DirectX::XMMATRIX worldViewProj = world;
 
-		DX11VertexShader* vertexShader = static_cast<DX11VertexShader*>(mesh->vertexShader);
-		DX11PixelShader* pixelShader = static_cast<DX11PixelShader*>(mesh->pixelShader);
+		DX11VertexShader* vertexShader = mesh->vertexShader.Get();
+		DX11PixelShader* pixelShader = mesh->pixelShader.Get();
 
 		_immediateContext->IASetInputLayout(vertexShader->pInputLayout);
 		_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -310,8 +310,13 @@ flt::HOBJECT flt::RendererDX11::RegisterObject(RendererObject& renderable)
 		return false;
 	}
 
-	node->mesh = CreateBox();
-	if (!node->mesh)
+	DX11CubeBuilder cubeBuilder;
+	cubeBuilder.pDevice = _device.Get();
+	cubeBuilder.pImmediateContext = _immediateContext.Get();
+
+	node->mesh.Set(cubeBuilder);
+
+	if (!node->mesh.Get())
 	{
 		return false;
 	}
@@ -555,7 +560,7 @@ void flt::RendererDX11::RenderSingleNodeRecursive(DX11Node* node, const Matrix4f
 		RenderSingleNodeRecursive(child, worldMatrix);
 	}
 
-	if (!node->mesh)
+	if (!node->mesh.Get())
 	{
 		return;
 	}

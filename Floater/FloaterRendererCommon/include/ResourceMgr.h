@@ -30,6 +30,8 @@ namespace flt
 		void* GetResource(ResourceBase* resource, const IBuilderBase& builder);
 		bool ReleaseResource(ResourceBase* resource);
 
+		bool AddRefResource(ResourceBase* resource);
+
 	private:
 		void CheckManagedData()
 		{
@@ -48,6 +50,12 @@ namespace flt
 			void* data;
 			int refCount;
 			std::wstring typeName;
+
+			bool AddRef()
+			{
+				refCount++;
+				return true;
+			}
 
 			void* GetData()
 			{

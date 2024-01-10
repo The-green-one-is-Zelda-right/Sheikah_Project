@@ -134,5 +134,8 @@
     <ClCompile Include="RawScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="RawMesh.cpp">
+      <Filter>RawData</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

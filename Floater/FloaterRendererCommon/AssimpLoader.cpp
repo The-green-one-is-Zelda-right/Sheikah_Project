@@ -40,20 +40,20 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	std::vector<RawMaterial*>& rawMaterials = outRawScene->materials;
 	unsigned int materialCount = scene->mNumMaterials;
 	rawMaterials.resize(materialCount);
-	for (int i = 0; i < materialCount; ++i)
+	for (unsigned int i = 0; i < materialCount; ++i)
 	{
 		rawMaterials[i] = new RawMaterial();
 	}
 
 	// 메쉬
 	unsigned int meshCount = scene->mNumMeshes;
-	std::vector<RawMesh*>& rawMeshes = outRawScene->meshes;
+	std::vector<Resource<RawMesh>>& rawMeshes = outRawScene->meshes;
 	rawMeshes.resize(meshCount);
-	for (int i = 0; i < meshCount; ++i)
+	for (unsigned int i = 0; i < meshCount; ++i)
 	{
-		rawMeshes[i] = new RawMesh();
+		//rawMeshes[i] = new RawMesh();
 	}
-	
+
 	// 먼저 머티리얼 로드
 	if (scene->HasMaterials())
 	{
@@ -77,7 +77,6 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 				rawMaterials[i]->baseColor[1] = diffuse.g;
 				rawMaterials[i]->baseColor[2] = diffuse.b;
 			}
-
 
 			aiColor3D ambient;
 			ret = material->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
@@ -103,7 +102,6 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 			{
 				rawMaterials[i]->roughness = shininess;
 			}
-
 
 			float opacity;
 			ret = material->Get(AI_MATKEY_OPACITY, opacity);
@@ -164,28 +162,27 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 				rawMaterials[i]->textures[RawMaterial::UNKNOWN]->path = ConvertToWstring(outStr.C_Str());
 			}
 
-			//ASSERT(!(material->GetTextureCount(aiTextureType_DIFFUSE)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_SPECULAR)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_AMBIENT)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_EMISSIVE)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_HEIGHT)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_NORMALS)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_SHININESS)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_OPACITY)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_DISPLACEMENT)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_LIGHTMAP)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_REFLECTION)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_BASE_COLOR)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_NORMAL_CAMERA)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_EMISSION_COLOR)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_METALNESS)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_AMBIENT_OCCLUSION)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_SHEEN)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_CLEARCOAT)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_TRANSMISSION)), "has Texture");
-			//ASSERT(!(material->GetTextureCount(aiTextureType_UNKNOWN)), "has Texture");
-
+			/*ASSERT(!(material->GetTextureCount(aiTextureType_DIFFUSE)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_SPECULAR)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_AMBIENT)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_EMISSIVE)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_HEIGHT)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_NORMALS)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_SHININESS)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_OPACITY)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_DISPLACEMENT)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_LIGHTMAP)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_REFLECTION)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_BASE_COLOR)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_NORMAL_CAMERA)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_EMISSION_COLOR)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_METALNESS)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_DIFFUSE_ROUGHNESS)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_AMBIENT_OCCLUSION)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_SHEEN)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_CLEARCOAT)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_TRANSMISSION)), "has Texture");
+			ASSERT(!(material->GetTextureCount(aiTextureType_UNKNOWN)), "has Texture");*/
 
 			ret = material->GetTexture(aiTextureType_BASE_COLOR, 0, &outStr);
 			ret = material->GetTexture(aiTextureType_NORMAL_CAMERA, 0, &outStr);
@@ -193,40 +190,6 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 			ret = material->GetTexture(aiTextureType_METALNESS, 0, &outStr);
 			ret = material->GetTexture(aiTextureType_DIFFUSE_ROUGHNESS, 0, &outStr);
 			ret = material->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &outStr);
-
-			//// PBR용
-			//bool isPBR = false;
-			//material->Get(AI_MATKEY_USE_COLOR_MAP, isPBR);
-
-			//if (isPBR)
-			//{
-			//	aiColor3D albedo;
-			//	material->Get(AI_MATKEY_BASE_COLOR, albedo);
-
-			//	float metalic;
-			//	material->Get(AI_MATKEY_METALLIC_FACTOR, metalic);
-
-			//	float roughness;
-			//	material->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughness);
-
-			//	material->GetTexture(aiTextureType_BASE_COLOR, 0, &outStr);
-			//	std::wstring albedoTexturePath = ConvertToWstring(outStr.C_Str());
-
-			//	material->GetTexture(aiTextureType_NORMAL_CAMERA, 0, &outStr);
-			//	std::wstring normalCameraTexturePath = ConvertToWstring(outStr.C_Str());
-
-			//	material->GetTexture(aiTextureType_EMISSION_COLOR, 0, &outStr);
-			//	std::wstring emissionColorTexturePath = ConvertToWstring(outStr.C_Str());
-
-			//	material->GetTexture(aiTextureType_METALNESS, 0, &outStr);
-			//	std::wstring metalnessTexturePath = ConvertToWstring(outStr.C_Str());
-
-			//	material->GetTexture(aiTextureType_DIFFUSE_ROUGHNESS, 0, &outStr);
-			//	std::wstring diffuseRoughnessTexturePath = ConvertToWstring(outStr.C_Str());
-
-			//	material->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &outStr);
-			//	std::wstring ambientOcclusionTexturePath = ConvertToWstring(outStr.C_Str());
-			//}
 		}
 	}
 
@@ -244,7 +207,7 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	for (int i = 0; i < nodeCount; ++i)
 	{
 		outRawScene->nodes.push_back(new RawNode());
-		GetNodeRecursive(scene->mRootNode->mChildren[i], outRawScene->nodes.back());
+		GetNodeRecursive(scene->mRootNode->mChildren[i], outRawScene->nodes.back(), outRawScene);
 	}
 
 	// 메쉬 로드
@@ -336,9 +299,40 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 					aiBone* bone = mesh->mBones[boneIndex];
 
 					std::wstring boneName = ConvertToWstring(bone->mName.C_Str());
+					auto boneOffsetMatrix = bone->mOffsetMatrix;
+					aiVector3D bonePosition;
+					aiQuaternion boneRotation;
+					aiVector3D boneScale;
+
+					boneOffsetMatrix.Decompose(boneScale, boneRotation, bonePosition);
+
 					auto iter = _nodeMap.find(boneName);
 					ASSERT(iter != _nodeMap.end(), "boneName is not found");
 					iter->second->boneIndex = boneIndex;
+
+					/*{
+						// 해당 노드의 로컬 트랜스폰 값과 본의 오프셋 매트릭스가 같은지 확인
+						// 현재 다른경우가 있는데 좌표 변환이 노드에만 적용되고 본에서는 적용이 되지 않아 그럴 수 있을거라 생각됨.
+						auto pos = iter->second->transform.GetPosition();
+						float epsilon = 0.0001f;
+						float subX = pos.x - bonePosition.x;
+						float subY = pos.y - bonePosition.y;
+						float subZ = pos.z - bonePosition.z;
+						ASSERT(subX < epsilon && subX > -epsilon && subY < epsilon && subY > -epsilon && subZ < epsilon && subZ > -epsilon, "diff");
+
+						auto rot = iter->second->transform.GetRotation();
+						subX = rot.x - boneRotation.x;
+						subY = rot.y - boneRotation.y;
+						subZ = rot.z - boneRotation.z;
+						float subW = rot.w - boneRotation.w;
+						ASSERT(subX < epsilon && subX > -epsilon && subY < epsilon && subY > -epsilon && subZ < epsilon && subZ > -epsilon && subW < epsilon && subW > -epsilon, "diff");
+
+						auto scale = iter->second->transform.GetScale();
+						subX = scale.x - boneScale.x;
+						subY = scale.y - boneScale.y;
+						subZ = scale.z - boneScale.z;
+						ASSERT(subX < epsilon&& subX > -epsilon && subY < epsilon && subY > -epsilon && subZ < epsilon && subZ > -epsilon, "diff");
+					}*/
 
 					int weightCount = bone->mNumWeights;
 					for (int k = 0; k < weightCount; ++k)
@@ -391,7 +385,7 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	}
 }
 
-void flt::AssimpLoader::GetNodeRecursive(aiNode* pNode, RawNode* pRawNode)
+void flt::AssimpLoader::GetNodeRecursive(aiNode* pNode, RawNode* pRawNode, RawScene* pRawScene)
 {
 	ASSERT(pNode, "pNode is nullptr");
 	ASSERT(pRawNode, "pRawNode is nullptr");
@@ -449,9 +443,14 @@ void flt::AssimpLoader::GetNodeRecursive(aiNode* pNode, RawNode* pRawNode)
 	}
 
 	int meshCount = pNode->mNumMeshes;
-	ASSERT(meshCount == 1, "meshCount is not 1");
-	pRawNode->mesh = pNode->mMeshes[0];
+	//ASSERT(meshCount == 1 || meshCount == 0, "meshCount more then 1");
 
+	pRawNode->meshes.reserve(meshCount);
+	for (int i = 0; i < meshCount; ++i)
+	{
+		pRawNode->meshes.push_back(pRawScene->meshes[pNode->mMeshes[i]]);
+	}
+	
 	int childCount = pNode->mNumChildren;
 	pRawNode->children.reserve(childCount);
 
@@ -463,7 +462,7 @@ void flt::AssimpLoader::GetNodeRecursive(aiNode* pNode, RawNode* pRawNode)
 
 		childNode->transform.SetParent(&pRawNode->transform);
 
-		GetNodeRecursive(pNode->mChildren[i], childNode);
+		GetNodeRecursive(pNode->mChildren[i], childNode, pRawScene);
 	}
 }
 

@@ -57,6 +57,7 @@
     <ClCompile Include="GLTFLoader.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="RawMaterial.cpp" />
+    <ClCompile Include="RawMesh.cpp" />
     <ClCompile Include="RawNode.cpp" />
     <ClCompile Include="RawScene.cpp" />
     <ClCompile Include="RawTexture.cpp" />
