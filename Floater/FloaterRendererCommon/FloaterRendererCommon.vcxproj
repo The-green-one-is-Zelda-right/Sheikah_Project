@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssimpLoader.cpp" />
+    <ClCompile Include="AssimpRawMeshBuilder.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CoordSystem.cpp" />
     <ClCompile Include="FBXLoader.cpp" />

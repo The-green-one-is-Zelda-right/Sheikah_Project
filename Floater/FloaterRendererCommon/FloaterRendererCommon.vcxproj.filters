@@ -143,5 +143,8 @@
     <ClCompile Include="AssimpLoader.cpp">
       <Filter>Loader\impl\Assimp</Filter>
     </ClCompile>
+    <ClCompile Include="AssimpRawMeshBuilder.cpp">
+      <Filter>Loader\impl\Assimp</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

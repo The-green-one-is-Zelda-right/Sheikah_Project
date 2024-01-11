@@ -8,6 +8,7 @@
 #include "./include/RawScene.h"
 #include "./include/RawMesh.h"
 #include "./include/RawMaterial.h"
+#include "AssimpRawMeshBuilder.h"
 
 #include <iostream>
 
@@ -34,7 +35,6 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	//	aiProcess_LimitBoneWeights;
 
 	std::string path = ConvertToString(filePath);
-	path = "C:\\Users\\KOCCA56\\Desktop\\Sheikah_Project\\Floater\\x64\\fbx\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Ganondorf (TotK).fbx";
 	const aiScene* scene = importer.ReadFile(path, flags);
 
 	// 데이터 로드 전 벡터 등 크기 조절
@@ -219,172 +219,9 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	{
 		for (unsigned int i = 0; i < meshCount; ++i)
 		{
-			aiMesh* mesh = scene->mMeshes[i];
-			int vertexCount = mesh->mNumVertices;
+			AssimpRawMeshBuilder meshBuilder(scene->mMeshes[i], _nodeMap);
 
-			rawMeshes[i]->vertices.resize(vertexCount);
-
-			// 버텍스 별 데이터
-			if (mesh->HasPositions())
-			{
-				for (int j = 0; j < vertexCount; ++j)
-				{
-					rawMeshes[i]->vertices[j].pos.x = mesh->mVertices[j].x;
-					rawMeshes[i]->vertices[j].pos.y = mesh->mVertices[j].y;
-					rawMeshes[i]->vertices[j].pos.z = mesh->mVertices[j].z;
-				}
-			}
-
-			if (mesh->HasNormals())
-			{
-				for (int j = 0; j < vertexCount; ++j)
-				{
-					rawMeshes[i]->vertices[j].normal.x = mesh->mNormals[j].x;
-					rawMeshes[i]->vertices[j].normal.y = mesh->mNormals[j].y;
-					rawMeshes[i]->vertices[j].normal.z = mesh->mNormals[j].z;
-				}
-			}
-
-			if (mesh->HasTangentsAndBitangents())
-			{
-				for (int j = 0; j < vertexCount; ++j)
-				{
-					rawMeshes[i]->vertices[j].tangent.x = mesh->mTangents[j].x;
-					rawMeshes[i]->vertices[j].tangent.y = mesh->mTangents[j].y;
-					rawMeshes[i]->vertices[j].tangent.z = mesh->mTangents[j].z;
-
-					rawMeshes[i]->vertices[j].binormal.x = mesh->mBitangents[j].x;
-					rawMeshes[i]->vertices[j].binormal.y = mesh->mBitangents[j].y;
-					rawMeshes[i]->vertices[j].binormal.z = mesh->mBitangents[j].z;
-				}
-			}
-
-			for (int j = 0; j < vertexCount; ++j)
-			{
-				for (int k = 0; k < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++k)
-				{
-					if (!mesh->HasTextureCoords(k))
-					{
-						continue;
-					}
-
-					int texCoordCount = mesh->mNumUVComponents[k];
-					ASSERT(texCoordCount == 2, "텍스쳐 좌표가 2개가 아닙니다.");
-
-					rawMeshes[i]->vertices[j].uvs[k].x = mesh->mTextureCoords[k][j].x;
-					rawMeshes[i]->vertices[j].uvs[k].y = mesh->mTextureCoords[k][j].y;
-				}
-			}
-
-			//for (int j = 0; j < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++j)
-			//{
-			//	if (!mesh->HasTextureCoords(j))
-			//	{
-			//		continue;
-			//	}
-
-			//	int texCount = mesh->mNumUVComponents[j];
-			//	ASSERT(texCount == 2, "텍스쳐 좌표가 2개가 아닙니다.");
-
-			//	for (int k = 0; k < vertexCount; ++k)
-			//	{
-			//		auto test = mesh->mTextureCoords[j][k];
-			//		rawMeshes[i]->vertices[k].uvs[j].x = mesh->mTextureCoords[j][k].x;
-			//		rawMeshes[i]->vertices[k].uvs[j].y = mesh->mTextureCoords[j][k].y;
-			//	}
-			//}
-
-			// 본 데이터
-			if (mesh->HasBones())
-			{
-				int boneCount = mesh->mNumBones;
-				for (int boneIndex = 0; boneIndex < boneCount; ++boneIndex)
-				{
-					aiBone* bone = mesh->mBones[boneIndex];
-
-					std::wstring boneName = ConvertToWstring(bone->mName.C_Str());
-					auto boneOffsetMatrix = bone->mOffsetMatrix;
-					aiVector3D bonePosition;
-					aiQuaternion boneRotation;
-					aiVector3D boneScale;
-
-					boneOffsetMatrix.Decompose(boneScale, boneRotation, bonePosition);
-
-					auto iter = _nodeMap.find(boneName);
-					ASSERT(iter != _nodeMap.end(), "boneName is not found");
-					iter->second->boneIndex = boneIndex;
-
-					/*{
-						// 해당 노드의 로컬 트랜스폰 값과 본의 오프셋 매트릭스가 같은지 확인
-						// 현재 다른경우가 있는데 좌표 변환이 노드에만 적용되고 본에서는 적용이 되지 않아 그럴 수 있을거라 생각됨.
-						auto pos = iter->second->transform.GetPosition();
-						float epsilon = 0.0001f;
-						float subX = pos.x - bonePosition.x;
-						float subY = pos.y - bonePosition.y;
-						float subZ = pos.z - bonePosition.z;
-						ASSERT(subX < epsilon && subX > -epsilon && subY < epsilon && subY > -epsilon && subZ < epsilon && subZ > -epsilon, "diff");
-
-						auto rot = iter->second->transform.GetRotation();
-						subX = rot.x - boneRotation.x;
-						subY = rot.y - boneRotation.y;
-						subZ = rot.z - boneRotation.z;
-						float subW = rot.w - boneRotation.w;
-						ASSERT(subX < epsilon && subX > -epsilon && subY < epsilon && subY > -epsilon && subZ < epsilon && subZ > -epsilon && subW < epsilon && subW > -epsilon, "diff");
-
-						auto scale = iter->second->transform.GetScale();
-						subX = scale.x - boneScale.x;
-						subY = scale.y - boneScale.y;
-						subZ = scale.z - boneScale.z;
-						ASSERT(subX < epsilon&& subX > -epsilon && subY < epsilon && subY > -epsilon && subZ < epsilon && subZ > -epsilon, "diff");
-					}*/
-
-					int weightCount = bone->mNumWeights;
-					for (int k = 0; k < weightCount; ++k)
-					{
-						aiVertexWeight vertexWeight = bone->mWeights[k];
-
-						int vertexId = vertexWeight.mVertexId;
-						float weight = vertexWeight.mWeight;
-
-						rawMeshes[i]->vertices[vertexId].boneIndice.push_back(boneIndex);
-						rawMeshes[i]->vertices[vertexId].boneWeights.push_back(weight);
-					}
-				}
-			}
-			/*aiString outStr;
-			mesh->Get(AI_MATKEY_NAME, outStr);
-			std::wstring testName = ConvertToWstring(outStr.C_Str());
-
-			unsigned int vertexCount = mesh->mNumVertices;
-			aiVector3D* vertices = mesh->mVertices;
-			aiVector3D* normals = mesh->mNormals;
-			aiVector3D* tangents = mesh->mTangents;
-			aiVector3D* bitangents = mesh->mBitangents;
-			aiVector3D* textureCoords = mesh->mTextureCoords[0];
-
-			unsigned int faceCount = mesh->mNumFaces;
-			aiFace* faces = mesh->mFaces;
-
-			unsigned int boneCount = mesh->mNumBones;
-			aiBone** bones = mesh->mBones;
-
-			for (unsigned int j = 0; j < boneCount; ++j)
-			{
-				aiBone* bone = bones[j];
-
-				aiString outStr;
-				bone->Get(AI_MATKEY_NAME, outStr);
-				std::wstring testName = ConvertToWstring(outStr.C_Str());
-
-				aiMatrix4x4 offsetMatrix = bone->mOffsetMatrix;
-				auto position = offsetMatrix.a4;
-				aiVector3D position = bone->mOffsetMatrix.a4;
-				aiQuaternion rotation = bone->mOffsetMatrix.a1;
-				aiVector3D scale = bone->mOffsetMatrix.a3;
-
-				unsigned int weightCount = bone->mNumWeights;
-				aiVertexWeight* weights = bone->mWeights;
-			}*/
+			rawMeshes[i].Set(meshBuilder);
 		}
 	}
 }
