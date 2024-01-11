@@ -23,18 +23,18 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 
 	Assimp::Importer importer;
 
-	//const unsigned int flags = aiProcess_Triangulate |
-	//	aiProcess_ConvertToLeftHanded | aiProcess_JoinIdenticalVertices | aiProcess_GenBoundingBoxes |
-	//	aiProcess_CalcTangentSpace | aiProcess_PopulateArmatureData |
-	//	aiProcess_FlipWindingOrder | aiProcess_GenSmoothNormals | aiProcess_SplitLargeMeshes |
-	//	aiProcess_SortByPType | aiProcess_LimitBoneWeights;
-
 	const unsigned int flags = aiProcess_Triangulate |
-		aiProcess_ConvertToLeftHanded |	aiProcess_CalcTangentSpace | aiProcess_PopulateArmatureData |
-		aiProcess_LimitBoneWeights;
+		aiProcess_ConvertToLeftHanded | aiProcess_JoinIdenticalVertices | aiProcess_GenBoundingBoxes |
+		aiProcess_CalcTangentSpace | aiProcess_PopulateArmatureData |
+		aiProcess_FlipWindingOrder | aiProcess_GenSmoothNormals | aiProcess_SplitLargeMeshes |
+		aiProcess_SortByPType | aiProcess_LimitBoneWeights;
+
+	//const unsigned int flags = aiProcess_Triangulate |
+	//	aiProcess_ConvertToLeftHanded |	aiProcess_CalcTangentSpace | aiProcess_PopulateArmatureData |
+	//	aiProcess_LimitBoneWeights;
 
 	std::string path = ConvertToString(filePath);
-
+	path = "C:\\Users\\KOCCA56\\Desktop\\Sheikah_Project\\Floater\\x64\\fbx\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Ganondorf (TotK).fbx";
 	const aiScene* scene = importer.ReadFile(path, flags);
 
 	// 데이터 로드 전 벡터 등 크기 조절

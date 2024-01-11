@@ -191,7 +191,7 @@
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zo %(AdditionalOptions)</AdditionalOptions>
       <AssemblerOutput>All</AssemblerOutput>
-      <AdditionalIncludeDirectories>..\External\include\fbx\;..\External\include\assimp\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\External\include\fbx\;..\External\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
