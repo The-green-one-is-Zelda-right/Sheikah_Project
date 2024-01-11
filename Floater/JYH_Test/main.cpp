@@ -169,9 +169,9 @@ int main()
 
 		//loader.Load(L"..\\x64\\fbx\\PBR_BasicShader.blend");
 		loader.Load(filePath);
-		loader.Load(zUpYForward);
-		loader.Load(yUpZForward);
-		loader.Load(xUpYForward);
+		//loader.Load(zUpYForward);
+		//loader.Load(yUpZForward);
+		//loader.Load(xUpYForward);
 	}
 #pragma endregion
 

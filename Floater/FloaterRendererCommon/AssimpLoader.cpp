@@ -23,11 +23,15 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 
 	Assimp::Importer importer;
 
+	//const unsigned int flags = aiProcess_Triangulate |
+	//	aiProcess_ConvertToLeftHanded | aiProcess_JoinIdenticalVertices | aiProcess_GenBoundingBoxes |
+	//	aiProcess_CalcTangentSpace | aiProcess_PopulateArmatureData |
+	//	aiProcess_FlipWindingOrder | aiProcess_GenSmoothNormals | aiProcess_SplitLargeMeshes |
+	//	aiProcess_SortByPType | aiProcess_LimitBoneWeights;
+
 	const unsigned int flags = aiProcess_Triangulate |
-		aiProcess_ConvertToLeftHanded | aiProcess_JoinIdenticalVertices | aiProcess_GenBoundingBoxes |
-		aiProcess_CalcTangentSpace | aiProcess_PopulateArmatureData |
-		aiProcess_FlipWindingOrder | aiProcess_GenSmoothNormals | aiProcess_SplitLargeMeshes |
-		aiProcess_SortByPType | aiProcess_LimitBoneWeights;
+		aiProcess_ConvertToLeftHanded |	aiProcess_CalcTangentSpace | aiProcess_PopulateArmatureData |
+		aiProcess_LimitBoneWeights;
 
 	std::string path = ConvertToString(filePath);
 
@@ -49,10 +53,10 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	unsigned int meshCount = scene->mNumMeshes;
 	std::vector<Resource<RawMesh>>& rawMeshes = outRawScene->meshes;
 	rawMeshes.resize(meshCount);
-	for (unsigned int i = 0; i < meshCount; ++i)
-	{
-		//rawMeshes[i] = new RawMesh();
-	}
+	//for (unsigned int i = 0; i < meshCount; ++i)
+	//{
+	//	rawMeshes[i] = new RawMesh();
+	//}
 
 	// 먼저 머티리얼 로드
 	if (scene->HasMaterials())

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include <windows.h>
+//#include <windows.h>
 
 
 /// 다양한 곳에서 사용할 매크로를 정의해 놓은 헤더파일
@@ -27,7 +27,7 @@ while (false)
 
 #ifdef _DEBUG
 
-#include <intrin.h>
+//#include <intrin.h>
 
 #define ASSERT(condition, message) \
 do \

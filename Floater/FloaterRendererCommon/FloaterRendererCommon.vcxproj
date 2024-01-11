@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssimpLoader.h" />
+    <ClInclude Include="AssimpRawMeshBuilder.h" />
     <ClInclude Include="CoordSystem.h" />
     <ClInclude Include="FBXLoader.h" />
     <ClInclude Include="GLTFLoader.h" />

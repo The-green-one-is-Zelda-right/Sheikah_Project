@@ -47,10 +47,6 @@ namespace flt
 			ManagedData() : data(nullptr), refCount(0) {}
 			ManagedData(void* data, const std::wstring& typeName) : data(data), refCount(1), typeName(typeName) {}
 
-			void* data;
-			int refCount;
-			std::wstring typeName;
-
 			bool AddRef()
 			{
 				refCount++;
@@ -74,6 +70,10 @@ namespace flt
 				}
 				return false;
 			}
+
+			void* data;
+			int refCount;
+			std::wstring typeName;
 		};
 
 		std::unordered_map<std::wstring, ManagedData> resources;
