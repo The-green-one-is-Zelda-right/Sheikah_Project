@@ -21,7 +21,7 @@ flt::ModelLoader::~ModelLoader()
 	delete _pAssimpLoader;
 }
 
-bool flt::ModelLoader::Load(std::wstring path)
+bool flt::ModelLoader::Load(std::wstring path, RawScene* outRawScene)
 {
 	if (!std::filesystem::exists(path))
 	{
@@ -36,19 +36,17 @@ bool flt::ModelLoader::Load(std::wstring path)
 		c = towlower(c);
 	}
 
-	RawScene rawScene;
-
-	_pAssimpLoader->Load(path, &rawScene);
+	_pAssimpLoader->Load(path, outRawScene);
 
 	return true;
 
 	if (extension == L"fbx")
 	{
-		_pFBXLoader->Load(path, &rawScene);
+		_pFBXLoader->Load(path, outRawScene);
 	}
 	else if (extension == L"gltf" || extension == L"glb")
 	{
-		_pGLTFLoader->Load(path, &rawScene);
+		_pGLTFLoader->Load(path, outRawScene);
 	}
 	else
 	{

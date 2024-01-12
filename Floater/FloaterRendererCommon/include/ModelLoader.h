@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <string>
+#include "RawScene.h"
 
 namespace flt
 {
@@ -13,7 +14,7 @@ namespace flt
 		ModelLoader();
 		~ModelLoader();
 
-		bool Load(std::wstring path);
+		bool Load(std::wstring path, RawScene* outRawScene);
 
 	private:
 		FBXLoader* _pFBXLoader;

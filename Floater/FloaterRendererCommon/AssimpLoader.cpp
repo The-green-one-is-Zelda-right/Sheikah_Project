@@ -42,21 +42,19 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	// 미리 데이터들을 넣을 공간만 잡아놓기.
 	// 머테리얼
 	std::vector<RawMaterial*>& rawMaterials = outRawScene->materials;
-	unsigned int materialCount = scene->mNumMaterials;
-	rawMaterials.resize(materialCount);
+	const unsigned int materialCount = scene->mNumMaterials;
+	const unsigned int rawMaterialCount = rawMaterials.size();
+	rawMaterials.resize(rawMaterialCount + materialCount);
 	for (unsigned int i = 0; i < materialCount; ++i)
 	{
-		rawMaterials[i] = new RawMaterial();
+		rawMaterials[rawMaterialCount + i] = new RawMaterial();
 	}
 
 	// 메쉬
 	unsigned int meshCount = scene->mNumMeshes;
+	unsigned int rawMeshCount = outRawScene->meshes.size();
 	std::vector<Resource<RawMesh>>& rawMeshes = outRawScene->meshes;
-	rawMeshes.resize(meshCount);
-	//for (unsigned int i = 0; i < meshCount; ++i)
-	//{
-	//	rawMeshes[i] = new RawMesh();
-	//}
+	rawMeshes.resize(rawMeshCount + meshCount);
 
 	// 먼저 머티리얼 로드
 	if (scene->HasMaterials())
@@ -206,12 +204,12 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	}
 
 	// 노드 트리 구조 구축 및 노드 이름 맵핑
-	int nodeCount = scene->mRootNode->mNumChildren;
+	const int nodeCount = scene->mRootNode->mNumChildren;
 	outRawScene->nodes.reserve(nodeCount);
 	for (int i = 0; i < nodeCount; ++i)
 	{
 		outRawScene->nodes.push_back(new RawNode());
-		GetNodeRecursive(scene->mRootNode->mChildren[i], outRawScene->nodes.back(), outRawScene);
+		SetHierarchyRawNodeRecursive(scene->mRootNode->mChildren[i], outRawScene->nodes.back(), outRawScene);
 	}
 
 	// 메쉬 로드
@@ -224,9 +222,14 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 			rawMeshes[i].Set(meshBuilder);
 		}
 	}
+
+	for (int i = 0; i < nodeCount; ++i)
+	{
+		SetRawMeshToRawNodeRecursive(scene->mRootNode->mChildren[i], outRawScene->nodes[i], outRawScene);
+	}
 }
 
-void flt::AssimpLoader::GetNodeRecursive(aiNode* pNode, RawNode* pRawNode, RawScene* pRawScene)
+void flt::AssimpLoader::SetHierarchyRawNodeRecursive(aiNode* pNode, RawNode* pRawNode, RawScene* pRawScene)
 {
 	ASSERT(pNode, "pNode is nullptr");
 	ASSERT(pRawNode, "pRawNode is nullptr");
@@ -283,16 +286,7 @@ void flt::AssimpLoader::GetNodeRecursive(aiNode* pNode, RawNode* pRawNode, RawSc
 		ASSERT(sub < epsilon && sub > -epsilon, "diff");
 	}
 
-	int meshCount = pNode->mNumMeshes;
-	//ASSERT(meshCount == 1 || meshCount == 0, "meshCount more then 1");
-
-	pRawNode->meshes.reserve(meshCount);
-	for (int i = 0; i < meshCount; ++i)
-	{
-		pRawNode->meshes.push_back(pRawScene->meshes[pNode->mMeshes[i]]);
-	}
-	
-	int childCount = pNode->mNumChildren;
+	const int childCount = pNode->mNumChildren;
 	pRawNode->children.reserve(childCount);
 
 	for (int i = 0; i < childCount; ++i)
@@ -303,7 +297,25 @@ void flt::AssimpLoader::GetNodeRecursive(aiNode* pNode, RawNode* pRawNode, RawSc
 
 		childNode->transform.SetParent(&pRawNode->transform);
 
-		GetNodeRecursive(pNode->mChildren[i], childNode, pRawScene);
+		SetHierarchyRawNodeRecursive(pNode->mChildren[i], childNode, pRawScene);
+	}
+}
+
+void flt::AssimpLoader::SetRawMeshToRawNodeRecursive(aiNode* pNode, RawNode* pRawNode, RawScene* pRawScene)
+{
+	int meshCount = pNode->mNumMeshes;
+	//ASSERT(meshCount == 1 || meshCount == 0, "meshCount more then 1");
+
+	pRawNode->meshes.reserve(meshCount);
+	for (int i = 0; i < meshCount; ++i)
+	{
+		pRawNode->meshes.push_back(pRawScene->meshes[pNode->mMeshes[i]]);
+	}
+
+	const int childCount = pNode->mNumChildren;
+	for (int i = 0; i < childCount; ++i)
+	{
+		SetRawMeshToRawNodeRecursive(pNode->mChildren[i], pRawNode->children[i], pRawScene);
 	}
 }
 

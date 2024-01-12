@@ -9,6 +9,12 @@ flt::AssimpRawMeshBuilder::AssimpRawMeshBuilder(std::unordered_map<std::wstring,
 
 }
 
+flt::AssimpRawMeshBuilder::AssimpRawMeshBuilder(aiMesh* mesh, std::unordered_map<std::wstring, RawNode*>& nodeMap) :
+	mesh(mesh), nodeMap(nodeMap)
+{
+	key = ConvertToWstring(mesh->mName.C_Str());
+}
+
 flt::RawMesh* flt::AssimpRawMeshBuilder::build() const
 {
 	RawMesh* pRawMesh = new(std::nothrow) RawMesh();
@@ -132,8 +138,3 @@ flt::RawMesh* flt::AssimpRawMeshBuilder::build() const
 	return pRawMesh;
 }
 
-flt::AssimpRawMeshBuilder::AssimpRawMeshBuilder(aiMesh* mesh, std::unordered_map<std::wstring, RawNode*>& nodeMap) :
-	mesh(mesh), nodeMap(nodeMap)
-{
-
-}
