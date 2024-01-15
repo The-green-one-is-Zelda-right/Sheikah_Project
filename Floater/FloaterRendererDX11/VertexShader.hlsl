@@ -19,7 +19,7 @@ cbuffer ConstantBuffer : register(b0)
 struct VS_INPUT
 {
     float3 Position : POSITION;
-    float2 UV : TEXCOORD;
+    float2 UV0 : TEXCOORD;
     float2 UV1 : TEXCOORD;
     float2 UV2 : TEXCOORD;
     float2 UV3 : TEXCOORD;
