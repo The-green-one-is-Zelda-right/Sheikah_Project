@@ -17,7 +17,7 @@ namespace flt
 
 	private:
 		void SetHierarchyRawNodeRecursive(aiNode* pNode, RawNode* pRawNode, RawScene* pRawScene);
-		void SetRawMeshToRawNodeRecursive(aiNode* pNode, RawNode* pRawNode, RawScene* pRawScene);
+		void SetRawMeshToRawNodeRecursive(aiNode* pNode, RawNode* outRawNode, RawScene* pRawScene);
 		void PrintNodeNameRecursive(aiNode* pNode, int depth = 0);
 
 	private:
