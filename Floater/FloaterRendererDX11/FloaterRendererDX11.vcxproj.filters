@@ -112,5 +112,11 @@
     <FxCompile Include="CubePS.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShader.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

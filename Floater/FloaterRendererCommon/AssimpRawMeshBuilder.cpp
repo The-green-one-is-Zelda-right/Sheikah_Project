@@ -2,17 +2,19 @@
 #include "assimp/mesh.h"
 #include "../FloaterUtil/include/FloaterMacro.h"
 #include "./include/RawNode.h"
+#include "./include/RawScene.h"
+
 
 flt::AssimpRawMeshBuilder::AssimpRawMeshBuilder(std::unordered_map<std::wstring, RawNode*>& nodeMap) :
-	AssimpRawMeshBuilder(nullptr, nodeMap)
+	AssimpRawMeshBuilder(nullptr, L"", 0, nullptr, nodeMap)
 {
 
 }
 
-flt::AssimpRawMeshBuilder::AssimpRawMeshBuilder(aiMesh* mesh, std::unordered_map<std::wstring, RawNode*>& nodeMap) :
-	mesh(mesh), nodeMap(nodeMap)
+flt::AssimpRawMeshBuilder::AssimpRawMeshBuilder(aiMesh* mesh, std::wstring filePath, int index, RawScene* rawScene, std::unordered_map<std::wstring, RawNode*>& nodeMap) :
+	mesh(mesh), pRawScene(rawScene), nodeMap(nodeMap)
 {
-	key = ConvertToWstring(mesh->mName.C_Str());
+	key = filePath + L"-" + ConvertToWstring(mesh->mName.C_Str()) + L"-" + std::to_wstring(index);
 }
 
 flt::RawMesh* flt::AssimpRawMeshBuilder::build() const
@@ -135,6 +137,20 @@ flt::RawMesh* flt::AssimpRawMeshBuilder::build() const
 		}
 	}
 
+	// 인덱스 데이터
+	int faceCount = mesh->mNumFaces;
+	for (int j = 0; j < faceCount; ++j)
+	{
+		aiFace face = mesh->mFaces[j];
+
+		int indexCount = face.mNumIndices;
+		ASSERT(indexCount == 3, "인덱스 개수가 3개가 아닙니다.");
+		for (int k = 0; k < indexCount; ++k)
+		{
+			pRawMesh->indices.push_back(face.mIndices[k]);
+		}
+	}
+
+	pRawMesh->material = *pRawScene->materials[mesh->mMaterialIndex];
 	return pRawMesh;
 }
-

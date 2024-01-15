@@ -36,6 +36,8 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 
 	std::string path = ConvertToString(filePath);
 	const aiScene* scene = importer.ReadFile(path, flags);
+	size_t pos = path.find_last_of('\\');
+	std::wstring directory = ConvertToWstring(path.substr(0, pos + 1));
 
 	// 데이터 로드 전 벡터 등 크기 조절
 	// 노드와 메쉬 등의 데이터가 떨어져있어서 두번 다시 돌면서 로드하지 않기 위해
@@ -49,7 +51,6 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	{
 		rawMaterials[rawMaterialCount + i] = new RawMaterial();
 	}
-
 	// 메쉬
 	unsigned int meshCount = scene->mNumMeshes;
 	unsigned int rawMeshCount = outRawScene->meshes.size();
@@ -115,13 +116,13 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 			ret = material->GetTexture(aiTextureType_DIFFUSE, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i]->textures[RawMaterial::ALBEDO]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::ALBEDO]->path = directory + ConvertToWstring(outStr.C_Str());
 			}
 
 			ret = material->GetTexture(aiTextureType_NORMALS, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i]->textures[RawMaterial::NORMAL]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::NORMAL]->path = directory + ConvertToWstring(outStr.C_Str());
 
 			}
 
@@ -131,37 +132,37 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 			ret = material->GetTexture(aiTextureType_EMISSIVE, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i]->textures[RawMaterial::EMISSIVE]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::EMISSIVE]->path = directory + ConvertToWstring(outStr.C_Str());
 			}
 
 			ret = material->GetTexture(aiTextureType_AMBIENT, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i]->textures[RawMaterial::AO]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::AO]->path = directory + ConvertToWstring(outStr.C_Str());
 			}
 
 			ret = material->GetTexture(aiTextureType_HEIGHT, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i]->textures[RawMaterial::HEIGHT]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::HEIGHT]->path = directory + ConvertToWstring(outStr.C_Str());
 			}
 
 			ret = material->GetTexture(aiTextureType_OPACITY, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i]->textures[RawMaterial::OPACITY]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::OPACITY]->path = directory + ConvertToWstring(outStr.C_Str());
 			}
 
 			ret = material->GetTexture(aiTextureType_SHININESS, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i]->textures[RawMaterial::ROUGHNESS]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::ROUGHNESS]->path = directory + ConvertToWstring(outStr.C_Str());
 			}
 
 			ret = material->GetTexture(aiTextureType_UNKNOWN, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i]->textures[RawMaterial::UNKNOWN]->path = ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::UNKNOWN]->path = directory + ConvertToWstring(outStr.C_Str());
 			}
 
 			/*ASSERT(!(material->GetTextureCount(aiTextureType_DIFFUSE)), "has Texture");
@@ -217,7 +218,7 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	{
 		for (unsigned int i = 0; i < meshCount; ++i)
 		{
-			AssimpRawMeshBuilder meshBuilder(scene->mMeshes[i], _nodeMap);
+			AssimpRawMeshBuilder meshBuilder(scene->mMeshes[i], filePath, i, outRawScene , _nodeMap);
 
 			rawMeshes[i].Set(meshBuilder);
 		}
@@ -301,21 +302,21 @@ void flt::AssimpLoader::SetHierarchyRawNodeRecursive(aiNode* pNode, RawNode* pRa
 	}
 }
 
-void flt::AssimpLoader::SetRawMeshToRawNodeRecursive(aiNode* pNode, RawNode* pRawNode, RawScene* pRawScene)
+void flt::AssimpLoader::SetRawMeshToRawNodeRecursive(aiNode* pNode, RawNode* outRawNode, RawScene* pRawScene)
 {
 	int meshCount = pNode->mNumMeshes;
 	//ASSERT(meshCount == 1 || meshCount == 0, "meshCount more then 1");
 
-	pRawNode->meshes.reserve(meshCount);
+	outRawNode->meshes.reserve(meshCount);
 	for (int i = 0; i < meshCount; ++i)
 	{
-		pRawNode->meshes.push_back(pRawScene->meshes[pNode->mMeshes[i]]);
+		outRawNode->meshes.push_back(pRawScene->meshes[pNode->mMeshes[i]]);
 	}
 
 	const int childCount = pNode->mNumChildren;
 	for (int i = 0; i < childCount; ++i)
 	{
-		SetRawMeshToRawNodeRecursive(pNode->mChildren[i], pRawNode->children[i], pRawScene);
+		SetRawMeshToRawNodeRecursive(pNode->mChildren[i], outRawNode->children[i], pRawScene);
 	}
 }
 

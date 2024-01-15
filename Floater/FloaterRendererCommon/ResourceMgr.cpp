@@ -59,7 +59,7 @@ bool flt::ResourceMgr::ReleaseResource(ResourceBase* resource)
 	return false;
 }
 
-bool flt::ResourceMgr::AddRefResource(ResourceBase* resource)
+bool flt::ResourceMgr::AddRefResource(const ResourceBase* resource)
 {
 	std::lock_guard<std::recursive_mutex> lock(resourceMutex);
 	if (resources.find(resource->_key) == resources.end())

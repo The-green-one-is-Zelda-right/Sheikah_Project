@@ -9,6 +9,7 @@ struct aiMesh;
 namespace flt
 {
 	struct RawNode;
+	struct RawScene;
 
 	template struct flt::IBuilder<flt::RawMesh>;
 
@@ -16,11 +17,12 @@ namespace flt
 	{
 	public:
 		AssimpRawMeshBuilder(std::unordered_map<std::wstring, RawNode*>& nodeMap);
-		AssimpRawMeshBuilder(aiMesh* mesh, std::unordered_map<std::wstring, RawNode*>& nodeMap);
+		AssimpRawMeshBuilder(aiMesh* mesh, std::wstring filePath, int index, RawScene* rawScene, std::unordered_map<std::wstring, RawNode*>& nodeMap);
 
 		virtual RawMesh* build() const override;
 
 		aiMesh* mesh;
+		RawScene* pRawScene;
 		std::unordered_map<std::wstring, RawNode*>& nodeMap;
 	};
 }

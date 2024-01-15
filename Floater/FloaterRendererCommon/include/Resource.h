@@ -71,7 +71,7 @@ namespace flt
 		}
 		Resource(const Resource& other)
 		{
-			global::g_resourceMgr.AddRefResource(this);
+			global::g_resourceMgr.AddRefResource(&other);
 			_pData = other._pData;
 			_key = other._key;
 		}
@@ -85,7 +85,7 @@ namespace flt
 			}
 
 			Release();
-			global::g_resourceMgr.AddRefResource(this);
+			global::g_resourceMgr.AddRefResource(&other);
 			_pData = other._pData;
 			_key = other._key;
 			return *this;

@@ -30,7 +30,7 @@ namespace flt
 		void* GetResource(ResourceBase* resource, const IBuilderBase& builder);
 		bool ReleaseResource(ResourceBase* resource);
 
-		bool AddRefResource(ResourceBase* resource);
+		bool AddRefResource(const ResourceBase* resource);
 
 	private:
 		void CheckManagedData()

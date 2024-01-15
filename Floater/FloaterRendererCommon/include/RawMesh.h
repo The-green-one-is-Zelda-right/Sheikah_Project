@@ -2,6 +2,7 @@
 #include "../../FloaterMath/include/Vector2f.h"
 #include "../../FloaterMath/include/Vector3f.h"
 #include "../../FloaterMath/include/Vector4f.h"
+#include "RawMaterial.h"
 #include "Resource.h"
 #include "IBuilder.h"
 #include <vector>
@@ -56,7 +57,7 @@ namespace flt
 		Vector3f normal;
 		Vector3f binormal;
 		Vector3f tangent;
-		std::vector<int> boneIndice;
+		std::vector<unsigned int> boneIndice;
 		std::vector<float> boneWeights;
 	};
 
@@ -66,6 +67,7 @@ namespace flt
 
 		std::vector<RawVertex> vertices;
 		std::vector<int> indices;
+		RawMaterial material;
 	};
 
 	template struct Resource<RawMesh>;

@@ -314,7 +314,15 @@ flt::HOBJECT flt::RendererDX11::RegisterObject(RendererObject& renderable)
 	cubeBuilder.pDevice = _device.Get();
 	cubeBuilder.pImmediateContext = _immediateContext.Get();
 
-	node->mesh.Set(cubeBuilder);
+	DX11MeshBuilder meshBuilder(renderable.node.name + std::to_wstring(0));
+	meshBuilder.pDevice = _device.Get();
+	meshBuilder.vsBuilder = DX11VertexShaderBuilder(L"flt::CubeVS");
+	meshBuilder.pImmediateContext = _immediateContext.Get();
+	meshBuilder.pRawMesh = renderable.node.meshes[0].Get();
+
+
+	//node->mesh.Set(cubeBuilder);
+	node->mesh.Set(meshBuilder);
 
 	if (!node->mesh.Get())
 	{

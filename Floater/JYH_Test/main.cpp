@@ -81,6 +81,8 @@ int main()
 	setlocale(LC_ALL, ".UTF8");
 	std::cout << std::boolalpha;
 
+	flt::RawScene rawScene;
+
 #pragma region 테스트
 	{
 		using namespace flt;
@@ -168,14 +170,13 @@ int main()
 		//std::filesystem::path currPath = std::filesystem::current_path();
 
 		//loader.Load(L"..\\x64\\fbx\\PBR_BasicShader.blend");
-		RawScene rawScene;
+
 
 		loader.Load(filePath, &rawScene);
 		//loader.Load(zUpYForward);
 		//loader.Load(yUpZForward);
 		//loader.Load(xUpYForward);
 
-		int i = 0;
 	}
 #pragma endregion
 
@@ -192,18 +193,21 @@ int main()
 	node.transform.SetPosition(0.0f, 0.0f, 0.7f);
 	node.transform.SetScale(0.3f, 0.3f, 0.3f);
 
-	flt::RendererObject renderable(node, isDraw, L"testObject");
-	renderable.name = L"test";
-	auto objectID1 = renderer->RegisterObject(renderable);
+	flt::RendererObject rendererObejct1(*rawScene.nodes[1], isDraw, L"test1");
+	auto objectID0 = renderer->RegisterObject(rendererObejct1);
 
-	flt::RawNode childNode(L"testChildNode");
-	childNode.transform.SetPosition(1.0f, 0.0f, 0.0f);
-	childNode.transform.SetScale(0.5f, 0.5f, 0.5f);
-	childNode.transform.SetParent(&node.transform);
+	//flt::RendererObject renderable(node, isDraw, L"testObject");
+	//renderable.name = L"test";
+	//auto objectID1 = renderer->RegisterObject(renderable);
 
-	flt::RendererObject childRenderable(childNode, isDraw, L"testChildObject");
-	renderable.name = L"testChild";
-	auto objectID2 = renderer->RegisterObject(childRenderable);
+	//flt::RawNode childNode(L"testChildNode");
+	//childNode.transform.SetPosition(1.0f, 0.0f, 0.0f);
+	//childNode.transform.SetScale(0.5f, 0.5f, 0.5f);
+	//childNode.transform.SetParent(&node.transform);
+
+	//flt::RendererObject childRenderable(childNode, isDraw, L"testChildObject");
+	//renderable.name = L"testChild";
+	//auto objectID2 = renderer->RegisterObject(childRenderable);
 
 	//ASSERT(renderer, "렌더러 생성 실패");
 
@@ -216,10 +220,10 @@ int main()
 
 		renderer->Render(1.0f);
 		//transform.AddRotation({ 1.0f, 0.0f, 0.0f }, 0.01f);
-		node.transform.AddRotation({ 0.0f, 1.0f, 0.0f }, -0.1f);
-		//transform.AddRotation({ 0.0f, 0.0f, 1.0f }, 0.01f);
+		//node.transform.AddRotation({ 0.0f, 1.0f, 0.0f }, -0.1f);
+		////transform.AddRotation({ 0.0f, 0.0f, 1.0f }, 0.01f);
 
-		childNode.transform.AddRotation({ 0.0f, 1.0f, 0.0f }, 0.80f);
+		//childNode.transform.AddRotation({ 0.0f, 1.0f, 0.0f }, 0.80f);
 
 		//if (!renderer->Render(deltaTime))
 		//{
@@ -293,8 +297,9 @@ int main()
 		Sleep(10);
 	}
 
-	renderer->DeregisterObject(objectID1);
-	renderer->DeregisterObject(objectID2);
+	renderer->DeregisterObject(objectID0);
+	//renderer->DeregisterObject(objectID1);
+	//renderer->DeregisterObject(objectID2);
 	platform.DestroyRenderer(renderer);
 	platform.Finalize();
 }
