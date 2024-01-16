@@ -20,14 +20,13 @@ namespace flt
 	template<typename T>
 	using comptr = Microsoft::WRL::ComPtr<T>;
 
-
 	class RendererDX11 : public IRenderer
 	{
 	public:
 		RendererDX11();
 		~RendererDX11();
 
-		bool Initialize(HWND hwnd);
+		bool Initialize(HWND hwnd, HWND debugHWnd = NULL);
 		bool Finalize();
 
 		virtual bool Render(float deltaTime);
@@ -84,5 +83,10 @@ namespace flt
 		// 그리기 위한 오브젝트
 		std::vector<DX11Node*> _renderableObjects;
 		std::vector<Camera*> _cameras;
+
+		// 디버그용 변수
+		HWND _debugHWnd;
+		bool _isDebugMode;
+		comptr<IDXGISwapChain1> _debugSwapChain;
 	};
 }

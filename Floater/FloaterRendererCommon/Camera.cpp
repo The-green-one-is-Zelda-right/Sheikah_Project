@@ -27,8 +27,8 @@ flt::Matrix4f flt::Camera::GetProjectionMatrix() const noexcept
 
 		return Matrix4f
 		{
-			2.0f / _viewWidth,	0.0f,				0.0f,				0.0f,
-			0.0f,				2.0f / _viewHeight,	0.0f,				0.0f,
+			2.0f / _viewRect.x,	0.0f,				0.0f,				0.0f,
+			0.0f,				2.0f / _viewRect.y,	0.0f,				0.0f,
 			0.0f,				0.0f,				f,					0.0f,
 			0.0f,				0.0f,				-(f * _near),		1.0f
 		};
@@ -36,7 +36,7 @@ flt::Matrix4f flt::Camera::GetProjectionMatrix() const noexcept
 	else
 	{
 		float d = cos(_fieldOfView / 2) / sin(_fieldOfView / 2);
-		float a = _viewWidth / _viewHeight;
+		float a = _viewRect.x / _viewRect.y;
 		float div = _far / (_far - _near);
 
 		return Matrix4f

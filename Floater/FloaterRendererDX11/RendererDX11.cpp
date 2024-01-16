@@ -44,8 +44,9 @@ flt::RendererDX11::RendererDX11() :
 	_depthStencilView(),
 	_rasterizerState(),
 	_renderableObjects(),
-	_cameras()
-
+	_cameras(),
+	_debugHWnd(NULL),
+	_isDebugMode(false)
 {
 
 }
@@ -55,7 +56,7 @@ flt::RendererDX11::~RendererDX11()
 	Finalize();
 }
 
-bool flt::RendererDX11::Initialize(HWND hwnd)
+bool flt::RendererDX11::Initialize(HWND hwnd, HWND debugHWnd /*= NULL*/)
 {
 	_hwnd = hwnd;
 
@@ -181,6 +182,21 @@ bool flt::RendererDX11::Initialize(HWND hwnd)
 
 	_immediateContext->RSSetState(_rasterizerState.Get());
 
+	if (debugHWnd != NULL)
+	{
+		_debugHWnd = debugHWnd;
+
+		result = _dxgiFactory->CreateSwapChainForHwnd(_device.Get(), _debugHWnd, &desc, &fullScreenDesc, NULL, &_debugSwapChain);
+
+		if (result != S_OK)
+		{
+			ASSERT(false, "스왑체인 생성 실패");
+			return false;
+		}
+
+		_isDebugMode = true;
+	}
+
 	_isRunRenderEngine = true;
 	return true;
 }
@@ -210,6 +226,20 @@ bool flt::RendererDX11::Finalize()
 	_outputs.clear();
 
 	_isRunRenderEngine = false;
+
+	if (_debugHWnd != NULL)
+	{
+		BOOL ret = CloseWindow(_debugHWnd);
+		
+		if (ret == FALSE)
+		{
+			ASSERT(false, "디버그 윈도우 닫기 실패");
+			return false;
+		}
+
+		_debugHWnd = NULL;
+		_isDebugMode = false;
+	}
 
 	return true;
 }
@@ -241,53 +271,52 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 	for (auto& node : _renderableObjects)
 	{
-		DX11Mesh* mesh = node->mesh.Get();
+		int meshCount = node->meshes.size();
 
-		if (!node->mesh.Get())
+		for (auto& mesh : node->meshes)
 		{
-			continue;
+			DX11Mesh* pMesh = mesh.Get();
+
+			// 렌더링
+			//Matrix4f worldMatrix = GetWorldMatrixRecursive(&node->transform);
+			Matrix4f worldMatrix = node->transform.GetWorldMatrix4f();
+			DirectX::XMMATRIX world = ConvertXMMatrix(worldMatrix);
+
+			DirectX::XMMATRIX worldViewProj = world;
+
+			DX11VertexShader* vertexShader = pMesh->vertexShader.Get();
+			DX11PixelShader* pixelShader = pMesh->pixelShader.Get();
+
+			_immediateContext->IASetInputLayout(vertexShader->pInputLayout);
+			_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+			_immediateContext->VSSetShader(vertexShader->pVertexShader, nullptr, 0);
+			_immediateContext->PSSetShader(pixelShader->pPixelShader, nullptr, 0);
+
+			_immediateContext->PSSetShaderResources(0, 1, &(pMesh->texture));
+
+			D3D11_MAPPED_SUBRESOURCE mappedResource = { };
+			HRESULT hResult = _immediateContext->Map(vertexShader->pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+			if (hResult != S_OK)
+			{
+				ASSERT(false, "상수 버퍼 맵핑 실패");
+				return false;
+			}
+			DirectX::XMMATRIX* data = (DirectX::XMMATRIX*)mappedResource.pData;
+			*data = worldViewProj;
+			_immediateContext->Unmap(vertexShader->pConstantBuffer, 0);
+
+			_immediateContext->VSSetConstantBuffers(0, 1, &(vertexShader->pConstantBuffer));
+
+			_immediateContext->PSSetSamplers(0, 1, &pMesh->sampler);
+
+			UINT offset = 0;
+			_immediateContext->IASetVertexBuffers(0, 1, &pMesh->vertexBuffer, &pMesh->singleVertexSize, &offset);
+			_immediateContext->IASetIndexBuffer(pMesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+			_immediateContext->DrawIndexed(pMesh->indexCount, 0, 0);
 		}
-
-		// 렌더링
-		//Matrix4f worldMatrix = GetWorldMatrixRecursive(&node->transform);
-		Matrix4f worldMatrix = node->transform.GetWorldMatrix4f();
-		DirectX::XMMATRIX world = ConvertXMMatrix(worldMatrix);
-
-		DirectX::XMMATRIX worldViewProj = world;
-
-		DX11VertexShader* vertexShader = mesh->vertexShader.Get();
-		DX11PixelShader* pixelShader = mesh->pixelShader.Get();
-
-		_immediateContext->IASetInputLayout(vertexShader->pInputLayout);
-		_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		_immediateContext->VSSetShader(vertexShader->pVertexShader, nullptr, 0);
-		_immediateContext->PSSetShader(pixelShader->pPixelShader, nullptr, 0);
-
-		_immediateContext->PSSetShaderResources(0, 1, &(mesh->texture));
-
-		D3D11_MAPPED_SUBRESOURCE mappedResource = { };
-		HRESULT hResult = _immediateContext->Map(vertexShader->pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-		if (hResult != S_OK)
-		{
-			ASSERT(false, "상수 버퍼 맵핑 실패");
-			return false;
-		}
-		DirectX::XMMATRIX* data = (DirectX::XMMATRIX*)mappedResource.pData;
-		*data = worldViewProj;
-		_immediateContext->Unmap(vertexShader->pConstantBuffer, 0);
-
-		_immediateContext->VSSetConstantBuffers(0, 1, &(vertexShader->pConstantBuffer));
-
-		_immediateContext->PSSetSamplers(0, 1, &mesh->sampler);
-
-		UINT offset = 0;
-		_immediateContext->IASetVertexBuffers(0, 1, &mesh->vertexBuffer, &mesh->singleVertexSize, &offset);
-		_immediateContext->IASetIndexBuffer(mesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-		_immediateContext->DrawIndexed(mesh->indexCount, 0, 0);
 	}
-
 
 	// 수직동기화 여부에 따라서 present
 	if (_useVsync)
@@ -314,21 +343,23 @@ flt::HOBJECT flt::RendererDX11::RegisterObject(RendererObject& renderable)
 	cubeBuilder.pDevice = _device.Get();
 	cubeBuilder.pImmediateContext = _immediateContext.Get();
 
-	DX11MeshBuilder meshBuilder(renderable.node.name + std::to_wstring(0));
-	meshBuilder.pDevice = _device.Get();
-	meshBuilder.vsBuilder = DX11VertexShaderBuilder(L"flt::CubeVS");
-	meshBuilder.pImmediateContext = _immediateContext.Get();
-	meshBuilder.pRawMesh = renderable.node.meshes[0].Get();
-
-
-	//node->mesh.Set(cubeBuilder);
-	node->mesh.Set(meshBuilder);
-
-	if (!node->mesh.Get())
+	int rawMeshCount = renderable.node.meshes.size();
+	node->meshes.resize(rawMeshCount);
+	for (int i = 0; i < rawMeshCount; ++i)
 	{
-		return false;
-	}
+		DX11MeshBuilder meshBuilder(renderable.node.name + std::to_wstring(i));
+		meshBuilder.pDevice = _device.Get();
+		meshBuilder.vsBuilder = DX11VertexShaderBuilder(L"flt::CubeVS");
+		meshBuilder.pImmediateContext = _immediateContext.Get();
+		meshBuilder.pRawMesh = renderable.node.meshes[i].Get();
+		node->meshes[i].Set(meshBuilder);
 
+		if (!node->meshes[i].Get())
+		{
+			return false;
+		}
+	}
+	
 	_renderableObjects.push_back(node);
 
 	if (node->camera)
@@ -568,7 +599,7 @@ void flt::RendererDX11::RenderSingleNodeRecursive(DX11Node* node, const Matrix4f
 		RenderSingleNodeRecursive(child, worldMatrix);
 	}
 
-	if (!node->mesh.Get())
+	if (node->meshes.size() == 0)
 	{
 		return;
 	}

@@ -5,6 +5,7 @@
 #include "../FloaterRendererCommon/include/RawNode.h"
 
 #include <string>
+#include <vector>
 #include <map>
 
 namespace flt
@@ -17,7 +18,7 @@ namespace flt
 		std::wstring name;
 		Transform& transform;
 		const bool& isDraw;
-		Resource<DX11Mesh> mesh;
+		std::vector<Resource<DX11Mesh>> meshes;
 		Camera* camera;
 
 		int boneIndex;

@@ -99,6 +99,9 @@
     <ClInclude Include="AssimpRawMeshBuilder.h">
       <Filter>Loader\impl\Assimp</Filter>
     </ClInclude>
+    <ClInclude Include="include\Rect.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">

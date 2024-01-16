@@ -195,6 +195,8 @@ int main()
 
 	flt::RendererObject rendererObejct1(*rawScene.nodes[1], isDraw, L"test1");
 	auto objectID0 = renderer->RegisterObject(rendererObejct1);
+	rawScene.nodes[1]->transform.SetScale(1.f, 1.f, 1.f);
+	rawScene.nodes[1]->transform.SetPosition(0.f, 0.f, -30.f);
 
 	//flt::RendererObject renderable(node, isDraw, L"testObject");
 	//renderable.name = L"test";
@@ -219,6 +221,7 @@ int main()
 		}
 
 		renderer->Render(1.0f);
+		rawScene.nodes[1]->transform.AddRotation({ 0.0f, 1.0f, 0.0f }, 0.01f);
 		//transform.AddRotation({ 1.0f, 0.0f, 0.0f }, 0.01f);
 		//node.transform.AddRotation({ 0.0f, 1.0f, 0.0f }, -0.1f);
 		////transform.AddRotation({ 0.0f, 0.0f, 1.0f }, 0.01f);
