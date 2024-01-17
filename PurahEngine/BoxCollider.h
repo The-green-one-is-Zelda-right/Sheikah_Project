@@ -23,9 +23,9 @@ namespace PurahEngine
 
 	public:
 		bool awake;
-		Eigen::Vector3f size;
-		Eigen::Vector3f positionOffset;
-		Eigen::Quaternionf rotationOffset;
+		Eigen::Vector3f size{ 1.f, 1.f, 1.f };
+		Eigen::Vector3f positionOffset{ Eigen::Vector3f::Zero() };
+		Eigen::Quaternionf rotationOffset{ Eigen::Quaternionf::Identity() };
 	};
 }
 

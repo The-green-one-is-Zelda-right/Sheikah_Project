@@ -1,12 +1,12 @@
 #pragma once
 #include "ZnHingeJoint.h"
+#include "TemplateJoint.h"
 #include "PxPhysicsAPI.h"
 #include <Eigen/Dense>
 
 namespace physx
 {
 	class PxPhysics;
-	class PxFixedJoint;
 }
 
 namespace ZonaiPhysics
@@ -15,10 +15,10 @@ namespace ZonaiPhysics
 	class ZnRigidBody;
 	class RigidBody;
 
-	class HingeJoint : public ZnHingeJoint
+	class HingeJoint : public TemplateJoint<ZnHingeJoint, physx::PxRevoluteJoint>
 	{
 	public:
-		HingeJoint() noexcept;
+		HingeJoint() noexcept = delete;
 		HingeJoint(
 			physx::PxPhysics*& _factory,
 			RigidBody* _object0, const ZnTransform& _transform0,
@@ -26,27 +26,24 @@ namespace ZonaiPhysics
 		~HingeJoint() noexcept override;
 
 	public:
-		void		SetLocalPosition(eOBJECT, const Eigen::Vector3f&) noexcept override;
-		Eigen::Vector3f	GetLocalPosition(eOBJECT) const noexcept override;
+		float GetAngle() const override;
+		float GetVelocity() const override;
 
-		void		SetLocalQuaternion(eOBJECT, const Eigen::Quaternionf&) noexcept override;
-		Eigen::Quaternionf	GetLocalQuaternion(eOBJECT) const noexcept override;
+		void SetLimit(float _upper, float _lower) override;
+		void SetLimit(float _upper, float _lower, float _stiffness, float _damping) override;
 
-		Eigen::Vector3f	GetRelativeLinearVelocity() const noexcept override;
-		Eigen::Vector3f	GetRelativeAngularVelocity() const noexcept override;
+		void SetDriveVelocity(float _velocity) override;
+		float GetDriveVelocity() const override;
 
-		void		SetBreakForce(float _force, float _torque) noexcept override;
-		void		GetBreakForce(float& _force, float& _torque) const noexcept override;
+		void SetDriveForceLimit(float) override;
+		float GetDriveForceLimit() const override;
 
-	public:
-		float GetAngle() const;
-		float GetVelocity() const;
-		void SetLimit(float _upper, float _lower);
-		void SetLimit(float _upper, float _lower, float _stiffness, float _damping);
+		void SetDriveGearRatio(float) override;
+		float GetDriveGearRatio() const override;
 
-	private:
-		RigidBody* object[2];
-		physx::PxRevoluteJoint* joint;
+		void SetLimitEnable(bool) override;
+		void SetDriveEnable(bool) override;
+		void SetDriveFreespin(bool) override;
 	};
 } // namespace ZonaiPhysics
 

@@ -5,14 +5,13 @@
 
 namespace ZonaiPhysics
 {
-
 	DistanceJoint::DistanceJoint(
 		physx::PxPhysics*& _factory, 
 		RigidBody* _object0, const ZnTransform& _transform0, 
 		RigidBody* _object1, const ZnTransform& _transform1) noexcept
 	{
-		object[0] = _object0;
-		object[1] = _object1;
+		rigidbody[0] = _object0;
+		rigidbody[1] = _object1;
 
 		using namespace physx;
 
@@ -54,6 +53,8 @@ namespace ZonaiPhysics
 			rigid1, t1
 		);
 
+		assert(joint != nullptr, "ZonaiPhysicsX :: Distance Joint Initialize Error");
+
 		if (joint)
 		{
 			joint->setConstraintFlag(PxConstraintFlag::eVISUALIZATION, true);
@@ -62,136 +63,108 @@ namespace ZonaiPhysics
 
 	DistanceJoint::~DistanceJoint() noexcept
 	{
+		rigidbody[0] = nullptr;
+		rigidbody[1] = nullptr;
 		joint->release();
-	}
-
-	void DistanceJoint::SetLocalPosition(eOBJECT _index, const Eigen::Vector3f& _localPos) noexcept
-	{
-		using namespace physx;
-		const auto index = static_cast<PxJointActorIndex::Enum>(_index);
-		PxTransform t = joint->getLocalPose(index);
-		t.p = { _localPos.x(), _localPos.y() , _localPos.z() };
-		joint->setLocalPose(index, t);
-	}
-
-	Eigen::Vector3f DistanceJoint::GetLocalPosition(eOBJECT _index) const noexcept
-	{
-		using namespace physx;
-		const auto index = static_cast<PxJointActorIndex::Enum>(_index);
-		PxTransform t = joint->getLocalPose(index);
-		return { t.p.x, t.p.y , t.p.z };
-	}
-
-	void DistanceJoint::SetLocalQuaternion(eOBJECT _index, const Eigen::Quaternionf& _localQuat) noexcept
-	{
-		using namespace physx;
-		const auto index = static_cast<PxJointActorIndex::Enum>(_index);
-		PxTransform t = joint->getLocalPose(index);
-		t.q = { _localQuat.x(), _localQuat.y() , _localQuat.z(), _localQuat.w() };
-		joint->setLocalPose(index, t);
-	}
-
-	Eigen::Quaternionf DistanceJoint::GetLocalQuaternion(eOBJECT _index) const noexcept
-	{
-		using namespace physx;
-		const auto index = static_cast<PxJointActorIndex::Enum>(_index);
-		PxTransform t = joint->getLocalPose(index);
-		return { t.q.x, t.q.y , t.q.z, t.q.w };
-	}
-
-	Eigen::Vector3f DistanceJoint::GetRelativeLinearVelocity() const noexcept
-	{
-		using namespace physx;
-		const auto& velo = joint->getRelativeLinearVelocity();
-		return { velo.x, velo.y ,velo.z };
-	}
-
-	Eigen::Vector3f DistanceJoint::GetRelativeAngularVelocity() const noexcept
-	{
-		using namespace physx;
-		const auto& velo = joint->getRelativeAngularVelocity();
-		return { velo.x, velo.y ,velo.z };
-	}
-
-	void DistanceJoint::SetBreakForce(float _force, float _torque) noexcept
-	{
-		joint->setBreakForce(_force, _torque);
-	}
-
-	void DistanceJoint::GetBreakForce(float& _force, float& _torque) const noexcept
-	{
-		joint->getBreakForce(_force, _torque);
 	}
 
 	float DistanceJoint::GetDistance() const
 	{
+		assert(joint != nullptr);
+
 		return joint->getDistance();
 	}
 
 	void DistanceJoint::SetMinDistance(float _distance)
 	{
+		assert(joint != nullptr);
+
 		joint->setMinDistance(_distance);
 	}
 
 	float DistanceJoint::GetMinDistance() const
 	{
+		assert(joint != nullptr);
+
 		return joint->getMinDistance();
 	}
 
 	void DistanceJoint::SetMaxDistance(float _distance)
 	{
+		assert(joint != nullptr);
+
 		joint->setMaxDistance(_distance);
 	}
 
 	float DistanceJoint::GetMaxDistance() const
 	{
+		assert(joint != nullptr);
+
 		return joint->getMaxDistance();
 	}
 
 	void DistanceJoint::SetTolerance(float _tolerance)
 	{
+		assert(joint != nullptr);
+
 		joint->setTolerance(_tolerance);
 	}
 
 	float DistanceJoint::GetTolerance() const
 	{
+		assert(joint != nullptr);
+
 		return joint->getTolerance();
 	}
 
 	void DistanceJoint::SetStiffness(float _stiffness)
 	{
+		assert(joint != nullptr);
+
 		joint->setStiffness(_stiffness);
 	}
 
 	float DistanceJoint::GetStiffness() const
 	{
+		assert(joint != nullptr);
+
 		return joint->getStiffness();
 	}
 
 	void DistanceJoint::SetDamping(float _damping)
 	{
+		assert(joint != nullptr);
+
 		joint->setDamping(_damping);
 	}
 
 	float DistanceJoint::GetDamping() const
 	{
+		assert(joint != nullptr);
+
 		return joint->getDamping();
 	}
 
 	void DistanceJoint::SetMinDistanceEnable(bool _value)
 	{
+		assert(joint != nullptr);
+
 		using namespace physx;
 		joint->setDistanceJointFlag(PxDistanceJointFlag::eMIN_DISTANCE_ENABLED, _value);
 	}
 
 	void DistanceJoint::SetMaxDistanceEnable(bool _value)
 	{
+		assert(joint != nullptr);
+
 		using namespace physx;
 		joint->setDistanceJointFlag(PxDistanceJointFlag::eMAX_DISTANCE_ENABLED, _value);
 	}
 
 	void DistanceJoint::SetSpringEnable(bool _value)
 	{
+		assert(joint != nullptr);
+
 		using namespace physx;
 		joint->setDistanceJointFlag(PxDistanceJointFlag::eSPRING_ENABLED, _value);
 	}

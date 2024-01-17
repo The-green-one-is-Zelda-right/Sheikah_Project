@@ -3,6 +3,7 @@
 #include <filesystem>
 
 #include <fstream>
+#include <queue>
 
 #include "FBXData.h"
 
@@ -27,10 +28,11 @@ namespace FBXLoader
 			= aiProcess_Triangulate |
 			aiProcess_ConvertToLeftHanded | aiProcess_JoinIdenticalVertices | aiProcess_GenBoundingBoxes |
 			aiProcess_CalcTangentSpace | aiProcess_PopulateArmatureData |
-			aiProcess_FlipWindingOrder | aiProcess_GenSmoothNormals | aiProcess_SplitLargeMeshes |
+			aiProcess_GenSmoothNormals | aiProcess_SplitLargeMeshes |
 			aiProcess_SortByPType | aiProcess_LimitBoneWeights;
 		//*/
 
+		// aiProcess_FlipWindingOrder -> aiProcess_ConvertToLeftHanded에 포함됨
 		// aiProcess_PreTransformVertices
 
 		const aiScene* scene = importer.ReadFile(multibyteFilePath, DEFAULT_LOAD_FLAG);
@@ -285,7 +287,48 @@ namespace FBXLoader
 
 	void FBXLoader::ReleaseModel(Model* model)
 	{
+		// root에서 부터 모든 노드를 타고가며 해제
+		std::queue<Bone*> q;
+		if (model->root != nullptr)
+		{
+			q.push(model->root);
+		}
 
+		while (!q.empty())
+		{
+			Bone* current = q.front();
+			q.pop();
+
+			for (int i = 0; i < current->children.size(); i++)
+			{
+				q.push(current->children[i]);
+			}
+
+			delete current;
+		}
+
+		model->root = nullptr;
+
+		// Mesh
+		for (int i = 0; i < model->meshList.size(); i++)
+		{
+			delete model->meshList[i];
+		}
+		model->meshList.clear();
+
+		// Material
+		for (int i = 0; i < model->materialList.size(); i++)
+		{
+			delete model->materialList[i];
+		}
+		model->materialList.clear();
+
+		// Animation
+		for (int i = 0; i < model->animationList.size(); i++)
+		{
+			delete model->animationList[i];
+		}
+		model->animationList.clear();
 	}
 
 	void FBXLoader::CopyNodeData(Bone* bone, aiNode* ainode, std::map<std::wstring, unsigned int>& boneIndexMap, std::vector<Bone*>& boneList)

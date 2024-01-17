@@ -13,7 +13,7 @@ public:
 	
 	~ZeldaMaterial();
 
-	void SetShaderResource();
+	void SetShaderResource(ID3D11DeviceContext* deviceContext);
 
 private:
 	ZeldaMaterial(ID3D11Device* device, DirectX::XMFLOAT4 baseColor, const std::wstring& diffuseFilePath);

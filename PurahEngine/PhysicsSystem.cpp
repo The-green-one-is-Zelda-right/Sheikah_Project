@@ -63,7 +63,7 @@ namespace PurahEngine
 
 	ZonaiPhysics::ZnCollider* PhysicsSystem::CreateBoxCollider(const std::wstring& _id, float x, float y, float z) noexcept
 	{
-		return physics->CreatBoxCollider(_id, x, y, z);
+		return physics->CreateBoxCollider(_id, x, y, z);
 	}
 
 	PurahEngine::PhysicsSystem& PurahEngine::PhysicsSystem::GetInstance()

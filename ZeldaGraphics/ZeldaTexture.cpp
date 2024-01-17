@@ -68,3 +68,8 @@ bool ZeldaTexture::UseSRGB()
 {
 	return useSRGB;
 }
+
+void ZeldaTexture::SetShaderResource(ID3D11DeviceContext* deviceContext)
+{
+	deviceContext->PSSetShaderResources(0, 1, &textureView);
+}

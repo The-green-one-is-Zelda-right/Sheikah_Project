@@ -13,6 +13,8 @@ public:
 	ID3D11ShaderResourceView* GetTexture();
 	bool UseSRGB();
 
+	void SetShaderResource(ID3D11DeviceContext* deviceContext);
+
 private:
 	ZeldaTexture(ID3D11Device* device, const std::wstring& filePath);
 	ZeldaTexture(const ZeldaTexture& zeldaTexture) = delete;

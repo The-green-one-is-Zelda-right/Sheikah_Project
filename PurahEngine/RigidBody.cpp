@@ -27,16 +27,33 @@ namespace PurahEngine
 		body->SetPosition(trans->GetWorldPosition());
 		body->SetQuaternion(trans->GetWorldRotation());
 		SetKinematic(isKinematic);
+		UseGravity(useGravity);
 	}
 
 	void RigidBody::SetPosition(const Eigen::Vector3f& _pos) noexcept
 	{
-		body->SetPosition(_pos);
+		if (awake)
+		{
+			auto trans = GetGameObject()->GetComponent<Transform>();
+			trans->SetLocalPosition(_pos);
+		}
+		else
+		{
+			body->SetPosition(_pos);
+		}
 	}
 
 	const Eigen::Vector3f& RigidBody::GetPosition() noexcept
 	{
-		return body->GetPosition();
+		if (awake)
+		{
+			auto trans = GetGameObject()->GetComponent<Transform>();
+			return trans->GetLocalPosition();
+		}
+		else
+		{
+			return body->GetPosition();
+		}
 	}
 
 	/// \brief 스크립트에서 호출하지 말아라
@@ -141,22 +158,50 @@ namespace PurahEngine
 
 	Eigen::Vector3f RigidBody::GetLinearVelocity() const noexcept
 	{
-		return body->GetLinearVelocity();
+		if (awake)
+		{
+			return LinearVelocity;
+		}
+		else
+		{
+			return body->GetLinearVelocity();
+		}
 	}
 
 	void RigidBody::SetLinearVelocity(const Eigen::Vector3f& _velocity) noexcept
 	{
-		body->SetLinearVelocity(_velocity);
+		if (awake)
+		{
+			LinearVelocity = _velocity;
+		}
+		else
+		{
+			body->SetLinearVelocity(_velocity);
+		}
 	}
 
 	Eigen::Vector3f RigidBody::GetAngularVelocity() const noexcept
 	{
-		return body->GetAngularVelocity();
+		if (awake)
+		{
+			return angularVelocity;
+		}
+		else
+		{
+			return body->GetAngularVelocity();
+		}
 	}
 
 	void RigidBody::SetAngularVelocity(const Eigen::Vector3f& _velocity) noexcept
 	{
-		body->SetAngularVelocity(_velocity);
+		if (awake)
+		{
+			angularVelocity = _velocity;
+		}
+		else
+		{
+			body->SetAngularVelocity(_velocity);
+		}
 	}
 
 // 	float RigidBody::GetMaxLinearVelocity() const noexcept
@@ -222,6 +267,18 @@ namespace PurahEngine
 		else
 		{
 			body->SetKinematic(value);
+		}
+	}
+
+	void RigidBody::UseGravity(bool _value)
+	{
+		if (awake)
+		{
+			useGravity = _value;
+		}
+		else
+		{
+			body->UseGravity(_value);
 		}
 	}
 

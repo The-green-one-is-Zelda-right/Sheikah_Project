@@ -16,12 +16,11 @@ public:
 	ZeldaShader(const ZeldaShader& zeldaShader) = delete;
 	~ZeldaShader();
 
-	bool Render(ID3D11DeviceContext* deviceContext, int indexCount, ZeldaTexture* texture);
+	bool Render(ID3D11DeviceContext* deviceContext, int indexCount);
 	ID3D11SamplerState* GetSamplerState();
 
 private:
 	bool Initialize(ID3D11Device* device, const std::wstring& vsFileName, const std::wstring& psFileName);
-	bool SetShaderParameters(ID3D11DeviceContext* deviceContext, ID3D11ShaderResourceView* texture);
 	void RenderShader(ID3D11DeviceContext* deviceContext, int indexCount);
 
 private:

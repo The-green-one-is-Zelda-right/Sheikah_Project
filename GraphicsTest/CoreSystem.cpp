@@ -7,6 +7,14 @@
 
 #include "GraphicsResourceID.h"
 
+// 암시적 링크 사용
+#define ZELDA_GRAPHICS_IMPLICIT_LINK
+
+#ifdef ZELDA_GRAPHICS_IMPLICIT_LINK
+#include "ZeldaGraphics.h"
+#pragma comment(lib, "ZeldaGraphics.lib")
+#endif // ZELDA_GRAPHICS_IMPLICIT_LINK
+
 void CoreSystem::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gamename, unsigned int width, unsigned int height, bool screenresizeable, bool notitlebar, bool minimizable, bool maximizable)
 {
 	// 내가 쓸 윈도우를 등록
@@ -51,7 +59,9 @@ void CoreSystem::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gamename, unsigned
 	isFullScreenMode = false;
 	resizable = screenresizeable;
 
-
+#ifdef ZELDA_GRAPHICS_IMPLICIT_LINK
+	renderer = ZeldaGraphics::CreateZeldaRenderer();
+#else
 	zeldaGraphicsDLL = LoadLibrary(L"ZeldaGraphics.dll");
 	if (zeldaGraphicsDLL == nullptr)
 	{
@@ -59,7 +69,7 @@ void CoreSystem::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gamename, unsigned
 		assert(0);
 	}
 
-	auto createZeldaRenderer = reinterpret_cast<IZeldaRenderer*(*)()>(GetProcAddress(zeldaGraphicsDLL, "CreateZeldaRenderer"));
+	auto createZeldaRenderer = reinterpret_cast<IZeldaRenderer * (*)()>(GetProcAddress(zeldaGraphicsDLL, "CreateZeldaRenderer"));
 	if (createZeldaRenderer == nullptr)
 	{
 		// DLL 함수를 찾을 수 없습니다.
@@ -67,16 +77,18 @@ void CoreSystem::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gamename, unsigned
 	}
 
 	renderer = createZeldaRenderer();
+#endif
 
 	renderer->Initialize(1920, 1080, true, hWnd, false, 1000.0f, 1.0f);
-
-	renderer->CreateBasicResources();
 }
 
 void CoreSystem::Finalize()
 {
 	renderer->Finalize();
 
+#ifdef ZELDA_GRAPHICS_IMPLICIT_LINK
+	ZeldaGraphics::ReleaseZeldaRenderer(renderer);
+#else
 	auto releaseZeldaRenderer = reinterpret_cast<void(*)(IZeldaRenderer*)>(GetProcAddress(zeldaGraphicsDLL, "ReleaseZeldaRenderer"));
 	if (releaseZeldaRenderer == nullptr)
 	{
@@ -87,6 +99,7 @@ void CoreSystem::Finalize()
 	releaseZeldaRenderer(renderer);
 
 	FreeLibrary(zeldaGraphicsDLL);
+#endif
 }
 
 void CoreSystem::Run(_In_ int nCmdShow)
@@ -225,7 +238,7 @@ void CoreSystem::run()
 
 		if (currentFPS != lastFPS)
 		{
-			OutputDebugString((std::to_wstring(currentFPS) + L"\n").c_str());
+			//OutputDebugString((std::to_wstring(currentFPS) + L"\n").c_str());
 		}
 	}
 
@@ -237,6 +250,12 @@ void CoreSystem::run()
 	static std::vector<std::wstring> animationList2;
 	static std::vector<float> animationPlayTimeList;
 	static std::vector<float> animationPlayTimeList2;
+	 
+	static float pointLightRange_Max = 200.0f;
+	static float pointLightRange_Min = 10.0f;
+	static float pointLightRange_Speed = 50.0f;
+	static float pointLightRange = 10.0f;
+	static Eigen::Vector3f pointLightPos = { 0.0f, 50.0f, 0.0f };
 
 	static bool firstRun = true;
 	if (firstRun)
@@ -244,23 +263,30 @@ void CoreSystem::run()
 		firstRun = false;
 
 		scdTextureID = renderer->CreateTexture(L"scd.jpg");
+		hnsTextureID = renderer->CreateTexture(L"hns.jpg");
+		msTextureID = renderer->CreateTexture(L"exit_cursor.png");
 		//fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Building\\Building.fbx");
 		//fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Ganondorf (TotK).fbx");
 		fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Dying6.fbx");
+		//fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Sponza\\sponza.fbx");
 		//fbxID = renderer->CreateModel(L"C:\\Users\\BEOMJOON\\Downloads\\Capoeira.fbx");
 		//fbxID = renderer->CreateModel(L"Box2.fbx");
 		//fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Cylinder\\Cylinder.fbx");
 		//fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Timmy_Shooting\\Timmy_Shooting.fbx");
 
 		fbxID2 = renderer->CreateModel(L"D:\\GA4th4Q_Project\\Tree\\5_Project\\ZeldaEngine\\Resources\\FBX\\Boss\\Boss.fbx");
+		//fbxID2 = renderer->CreateModel(L"C:\\Users\\BEOMJOON\\Downloads\\Capoeira.fbx");
 		
+		dirLightID = renderer->CreateDirectionalLight({ 0.2f, 0.2f, 0.2f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f });
+		pointLightID = renderer->CreatePointLight({ 0.2f, 0.2f, 0.2f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f }, pointLightPos, pointLightRange);
+
 		mainCameraID = renderer->CreateCamera();
 
 		renderer->SetMainCamera(mainCameraID);
 
 		cameraMatrix <<
-			1.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
+			1.0f, 0.0f, 0.0f, 3.0f,
+			0.0f, 1.0f, 0.0f, 1.0f,
 			0.0f, 0.0f, 1.0f, -10.0f,
 			0.0f, 0.0f, 0.0f, 1.0f;
 
@@ -300,6 +326,36 @@ void CoreSystem::run()
 			rotateX *= 10;
 			rotateY *= 10;
 		}
+
+		if (GetAsyncKeyState(VK_F1)) renderer->SetDebugMode(DebugMode::Normal);
+		if (GetAsyncKeyState(VK_F2)) renderer->SetDebugMode(DebugMode::DeferredDebugAll);
+		if (GetAsyncKeyState(VK_F3)) renderer->SetDebugMode(DebugMode::DeferredDebug0);
+		if (GetAsyncKeyState(VK_F4)) renderer->SetDebugMode(DebugMode::DeferredDebug1);
+		if (GetAsyncKeyState(VK_F5)) renderer->SetDebugMode(DebugMode::DeferredDebug2);
+		if (GetAsyncKeyState(VK_F6)) renderer->SetDebugMode(DebugMode::DeferredDebug3);
+		if (GetAsyncKeyState(VK_F7)) renderer->SetDebugMode(DebugMode::DeferredDebug4);
+		if (GetAsyncKeyState(VK_F8)) renderer->SetDebugMode(DebugMode::DeferredDebug5);
+		if (GetAsyncKeyState(VK_F11)) renderer->SetRendererMode(RendererMode::OffWireFrameMode);
+		if (GetAsyncKeyState(VK_F12)) renderer->SetRendererMode(RendererMode::OnWireFrameMode);
+	}
+
+	if (GetAsyncKeyState('O'))
+	{
+		pointLightRange += (pointLightRange_Speed * deltaTime);
+		if (pointLightRange > pointLightRange_Max)
+		{
+			pointLightRange = pointLightRange_Max;
+		}
+		renderer->UpdateLight(pointLightID, { 0.2f, 0.2f, 0.2f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f }, {}, pointLightPos, pointLightRange, 0.0f);
+	}
+	if (GetAsyncKeyState('P'))
+	{
+		pointLightRange -= (pointLightRange_Speed * deltaTime);
+		if (pointLightRange < pointLightRange_Min)
+		{
+			pointLightRange = pointLightRange_Min;
+		}
+		renderer->UpdateLight(pointLightID, { 0.2f, 0.2f, 0.2f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f }, {}, pointLightPos, pointLightRange, 0.0f);
 	}
 
 	Eigen::Matrix4f cameraRotateY;
@@ -323,7 +379,7 @@ void CoreSystem::run()
 
 	cameraMatrix = cameraMove * cameraMatrix * cameraRotateX * cameraRotateY;
 
-	renderer->UpdateCamera(mainCameraID, cameraMatrix, 3.141592654f / 4.0f, 1.0f, 10000000.0f);
+	renderer->UpdateCamera(mainCameraID, cameraMatrix, 3.141592654f / 4.0f, 0.1f, 1000.0f);
 
 	renderer->BeginDraw(0.016f);
 
@@ -435,30 +491,48 @@ void CoreSystem::run()
 		}
 	}
 	
-
-	//renderer->DrawModel(worldMatrix, fbxID, false);
-	//renderer->DrawModel(ganonMatrix, fbxID, false);
-
-	for (int i = 0; i < 80; i++)
-	{
-		renderer->DrawAnimation(ganonMatrix, fbxID, animationList[animationNumber], animationTime, false);
-		renderer->DrawAnimation(ganonMatrix, fbxID2, animationList2[animationNumber2], animationTime2, false);
-	}
-
-	renderer->DrawCube(Eigen::Matrix4f::Identity(), scdTextureID, false, 1.0f, 0.0f, 0.0f, 1.0f);
-	//renderer->DrawCube(fallingMatrix * worldMatrix2, ID_NULL, false, 0.0f, 1.0f, 1.0f, 1.0f);
+	Eigen::Matrix4f rightPosMatrix;
+	rightPosMatrix <<
+		0.1, 0, 0, 900,
+		0, 0.1, 0, 0,
+		0, 0, 0.1, 30,
+		0, 0, 0, 1;
 
 	static int scdX = 0;
-	scdX += 12;
+	scdX += 4;
 
 	if (scdX > 1920)
 	{
 		scdX -= 1920;
 	}
 
-	renderer->DrawSprite({ scdX, 0 }, scdTextureID);
-	renderer->DrawSprite({ 1920 - scdX, 540 }, scdTextureID);
-	
+	renderer->DrawLight(dirLightID);
+	renderer->DrawLight(pointLightID);
+
+	renderer->DrawSprite({ scdX, 0 }, msTextureID);
+	renderer->DrawSprite({ 1920 - scdX - 280, 800 }, msTextureID);
+	//renderer->DrawSprite({ 1920 - scdX - 280, 800 }, hnsTextureID);
+
+
+	renderer->DrawModel(rightPosMatrix, fbxID, false);
+	//renderer->DrawModel(ganonMatrix, fbxID, false);
+
+	renderer->DrawAnimation(ganonMatrix, fbxID, animationNumber2 != 0 ? animationList[animationNumber] : L"", animationTime, false);
+	//renderer->DrawAnimation(ganonMatrix, fbxID, animationNumber2 != 0 ? animationList[animationNumber] : L"", 4.0f, false);
+	//renderer->DrawAnimation(ganonMatrix, fbxID2, animationNumber2 != 0 ? animationList2[animationNumber2] : L"", animationTime2, false);
+
+	Eigen::Matrix4f cubeMatrix = Eigen::Matrix4f::Identity();
+	cubeMatrix(0, 0) = 10.0f;
+	cubeMatrix(1, 1) = 10.0f;
+	cubeMatrix(2, 2) = 10.0f;
+
+	cubeMatrix(0, 3) = 3.0f;
+	cubeMatrix(1, 3) = 1.0f;
+	cubeMatrix(2, 3) = 10.0f;
+
+	renderer->DrawCube(cubeMatrix, scdTextureID, false, 1.0f, 0.0f, 0.0f, 1.0f);
+	//renderer->DrawCube(fallingMatrix * worldMatrix2, ID_NULL, false, 0.0f, 1.0f, 1.0f, 1.0f);
+
 	renderer->EndDraw();
 }
 

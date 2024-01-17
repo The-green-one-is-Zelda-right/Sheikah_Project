@@ -59,12 +59,20 @@ bool ZeldaShader::Initialize(ID3D11Device* device, const std::wstring& vsFileNam
 	result = D3DReadFileToBlob(vsFileName.c_str(), &vertexShaderBuffer);
 	if (FAILED(result))
 	{
+		result = D3DReadFileToBlob((L"CompiledShader\\" + vsFileName).c_str(), &vertexShaderBuffer);
+	}
+	if (FAILED(result))
+	{
 		MessageBox(0, L"Failed to load compiled shader file", L"Shader Error", MB_OK);
 		return false;
 	}
 
 	// Compile the pixel shader code.
 	result = D3DReadFileToBlob(psFileName.c_str(), &pixelShaderBuffer);
+	if (FAILED(result))
+	{
+		result = D3DReadFileToBlob((L"CompiledShader\\" + psFileName).c_str(), &pixelShaderBuffer);
+	}
 	if (FAILED(result))
 	{
 		MessageBox(0, L"Failed to load compiled pixel shader file", L"Shader Error", MB_OK);
@@ -118,17 +126,8 @@ bool ZeldaShader::Initialize(ID3D11Device* device, const std::wstring& vsFileNam
 	return true;
 }
 
-bool ZeldaShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, ZeldaTexture* texture)
+bool ZeldaShader::Render(ID3D11DeviceContext* deviceContext, int indexCount)
 {
-	bool result = true;
-
-	// Set the shader parameters that it will use for rendering.
-	if (texture != nullptr)
-	{
-		result = SetShaderParameters(deviceContext, texture->GetTexture());
-	}
-	if (!result) return false;
-	// Now render the prepared buffers with the shader.
 	RenderShader(deviceContext, indexCount);
 
 	return true;
@@ -137,16 +136,6 @@ bool ZeldaShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, Zel
 ID3D11SamplerState* ZeldaShader::GetSamplerState()
 {
 	return samplerState;
-}
-
-bool ZeldaShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, ID3D11ShaderResourceView* texture)
-{
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-
-	// Set shader texture resource in the pixel shader.
-	deviceContext->PSSetShaderResources(0, 1, &texture);
-
-	return true;
 }
 
 void ZeldaShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)

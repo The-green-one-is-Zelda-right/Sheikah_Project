@@ -211,6 +211,7 @@ void stepPhysics()// interactive
 
 #include "ZnDistanceJoint.h"
 #include "ZnFixedJoint.h"
+#include "ZnHingeJoint.h"
 #include "ZnJoint.h"
 #include "ZnSphericalJoint.h"
 #include "ZnTransform.h"
@@ -278,16 +279,24 @@ int snippetMain(int, const char* const*)
 	// // sphericalJjoint->SetLimitCone(ZonaiMath::PI / 20.f, ZonaiMath::PI / 20.f);
 	// sphericalJjoint->LimitEnable(true);
 
-	auto distanceJoint = physicsEngine->CreateDistanceJoint(
-		rigid, ZonaiPhysics::ZnTransform{ {2.f, 0, 0}, q },
-		rigid2, ZonaiPhysics::ZnTransform{ {-2.f, 0.f, 0.f} }
-	);
+	//auto distanceJoint = physicsEngine->CreateDistanceJoint(
+	//	rigid, ZonaiPhysics::ZnTransform{ {2.f, 0, 0}, q },
+	//	rigid2, ZonaiPhysics::ZnTransform{ {-2.f, 0.f, 0.f} }
+	//);
 
-	distanceJoint->SetMinDistance(1.f);
-	distanceJoint->SetMaxDistance(5.f);
-	distanceJoint->SetStiffness(50.f);
-	distanceJoint->SetDamping(10.f);
-	distanceJoint->SetSpringEnable(true);
+	//distanceJoint->SetMinDistance(1.f);
+	//distanceJoint->SetMaxDistance(5.f);
+	//distanceJoint->SetStiffness(50.f);
+	//distanceJoint->SetDamping(10.f);
+	//distanceJoint->SetSpringEnable(true);
+
+	auto hingeJoint = physicsEngine->CreateHingeJoint(
+			rigid, ZonaiPhysics::ZnTransform{ {2.f, 0, 0} },
+			rigid2, ZonaiPhysics::ZnTransform{ {-2.f, 0.f, 0.f} }
+		);
+
+	hingeJoint->SetLimit(-ZonaiMath::PI / 2, ZonaiMath::PI / 2 );
+	hingeJoint->SetLimitEnable(true);
 
 	auto groundCollider = physicsEngine->CreateBoxCollider(L"ground", 1000, 1, 1000);
 	const auto ground = physicsEngine->CreateRigidBody(L"ground");
@@ -300,8 +309,13 @@ int snippetMain(int, const char* const*)
 
 		if (GetAsyncKeyState('F'))
 		{
-			rigid2->AddForce({ 40.f, 40.f, 40.f });
+			// rigid2->AddForce({ 40.f, 40.f, 40.f });
 			rigid2->AddTorque({ 40.f, 40.f, 40.f });
+		}
+		if (GetAsyncKeyState('G'))
+		{
+			// rigid2->AddForce({ 40.f, 40.f, 40.f });
+			rigid2->AddTorque({ -40.f, -40.f, -40.f });
 		}
 
 		bool clickUp = GetAsyncKeyState('I');
@@ -336,7 +350,7 @@ int snippetMain(int, const char* const*)
 		}
 	}
 
-	physicsEngine->Release(distanceJoint);
+	// physicsEngine->Release(distanceJoint);
 
 	//static const PxU32 frameCount = 100;
 

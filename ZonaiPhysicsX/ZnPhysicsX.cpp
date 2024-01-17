@@ -195,7 +195,7 @@ namespace ZonaiPhysics
 		return  joint;
 	}
 
-	ZnHingeJoint* ZnPhysicsX::CreateRevoluteJoint(ZnRigidBody* _object0, const ZnTransform& _transform0, ZnRigidBody* _object1, const ZnTransform& _transform1) noexcept
+	ZnHingeJoint* ZnPhysicsX::CreateHingeJoint(ZnRigidBody* _object0, const ZnTransform& _transform0, ZnRigidBody* _object1, const ZnTransform& _transform1) noexcept
 	{
 		auto ob0 = dynamic_cast<RigidBody*>(_object0);
 		auto ob1 = dynamic_cast<RigidBody*>(_object1);
@@ -209,8 +209,8 @@ namespace ZonaiPhysics
 	{
 		auto ob0 = dynamic_cast<RigidBody*>(_object0);
 		auto ob1 = dynamic_cast<RigidBody*>(_object1);
-
-		auto* joint = new PrismaticJoint(physics, ob0, _transform0, ob1, _transform1);
+ 
+ 		auto* joint = new PrismaticJoint(physics, ob0, _transform0, ob1, _transform1);
 
 		return  joint;
 	}

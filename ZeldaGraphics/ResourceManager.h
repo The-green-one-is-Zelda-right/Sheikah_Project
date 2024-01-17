@@ -13,11 +13,12 @@
 
 #include "GraphicsResourceID.h"
 
+class ZeldaCamera;
+class ZeldaTexture;
 class ZeldaModel;
 class ZeldaMesh;
-class ZeldaTexture;
 class ZeldaShader;
-class ZeldaCamera;
+class ZeldaLight;
 
 struct ZNode;
 struct ZMesh;
@@ -32,91 +33,78 @@ namespace std {
 	};
 }
 
-namespace std {
-	template <>
-	struct hash<CameraID> {
-		std::size_t operator()(const CameraID& key) const {
-			return std::hash<unsigned long long>{}(key.ull1) ^ std::hash<unsigned long long>{}(key.ull2);
-		}
-	};
-}
-
-namespace std {
-	template <>
-	struct hash<TextureID> {
-		std::size_t operator()(const TextureID& key) const {
-			return std::hash<unsigned long long>{}(key.ull1) ^ std::hash<unsigned long long>{}(key.ull2);
-		}
-	};
-}
-
-namespace std {
-	template <>
-	struct hash<ModelID> {
-		std::size_t operator()(const ModelID& key) const {
-			return std::hash<unsigned long long>{}(key.ull1) ^ std::hash<unsigned long long>{}(key.ull2);
-		}
-	};
-}
-
-namespace std {
-	template <>
-	struct hash<MeshID> {
-		std::size_t operator()(const MeshID& key) const {
-			return std::hash<unsigned long long>{}(key.ull1) ^ std::hash<unsigned long long>{}(key.ull2);
-		}
-	};
-}
-
-namespace std {
-	template <>
-	struct hash<ShaderID> {
-		std::size_t operator()(const ShaderID& key) const {
-			return std::hash<unsigned long long>{}(key.ull1) ^ std::hash<unsigned long long>{}(key.ull2);
-		}
-	};
-}
-
 class ResourceManager
 {
 public:
 	void Initialize(ID3D11Device* device);
+	void Finalize();
 
-	ModelID CreateModelFromModelingFile(const std::wstring& filePath);
-
-	bool CreateCubeMesh();
-	
-	TextureID CreateTexture(const std::wstring& filePath);
-
-	bool CreateDefaultShader();
-	ShaderID CreateShader(const std::wstring& vsFilePath, const std::wstring& psFilePath);
-
+	MeshID CreateCubeMesh();
+	MeshID CreateSquareMesh();
+	MeshID CreateCircleMesh(); // 반지름 0.5인 원에 외접하는 정 16각형을 생성함
+	MeshID CreateSphereMesh();
+	MeshID CreateCapsuleMesh();
+	MeshID CreateCylinderMesh();
 	CameraID CreateCamera(unsigned int screenWidth, unsigned int screenHeight);
+	TextureID CreateTexture(const std::wstring& filePath);
+	ModelID CreateModelFromModelingFile(const std::wstring& filePath);
+	ShaderID CreateShader(const std::wstring& vsFilePath, const std::wstring& psFilePath);
+	LightID CreateDirectionalLight();
+	LightID CreatePointLight();
+	LightID CreateSpotLight();
 
-	ZeldaModel* GetModel(ModelID key);
+	void ReleaseCubeMesh();
+	void ReleaseSquareMesh();
+	void ReleaseCircleMesh();
+	void ReleaseSphereMesh();
+	void ReleaseCapsuleMesh();
+	void ReleaseCylinderMesh();
+	void ReleaseCamera(CameraID cameraID);
+	void ReleaseTexture(TextureID textureID);
+	void ReleaseModel(ModelID modelID);
+	void ReleaseMesh(MeshID meshID);
+	void ReleaseShader(ShaderID shaderID);
+	void ReleaseLight(LightID lightID);
+
+	MeshID GetCubeID();
+	MeshID GetSquareID();
+	MeshID GetCircleID();
+	MeshID GetSphereID();
+	MeshID GetCapsuleID();
+	MeshID GetCylinderID();
+
 	ZeldaMesh* GetCubeMesh();
-	ZeldaMesh* GetMesh(MeshID key);
-	ZeldaTexture* GetTexture(TextureID key);
-	ZeldaShader* GetDefaultShader();
-	ZeldaShader* GetShader(ShaderID key);
+	ZeldaMesh* GetSquareMesh();
+	ZeldaMesh* GetCircleMesh();
+	ZeldaMesh* GetSphereMesh();
+	ZeldaMesh* GetCapsuleMesh();
+	ZeldaMesh* GetCylinderMesh();
 	ZeldaCamera* GetCamera(CameraID cameraID);
+	ZeldaTexture* GetTexture(TextureID key);
+	ZeldaModel* GetModel(ModelID key);
+	ZeldaMesh* GetMesh(MeshID key);
+	ZeldaShader* GetShader(ShaderID key);
+	ZeldaLight* GetLight(LightID key);
 
 	bool CheckCameraID(CameraID cameraID);
 
 
-	bool ReleaseCamera(CameraID cameraID);
-
 private:
 	ID3D11Device* device;
+	std::unordered_map<CameraID, ZeldaCamera*> cameraTable;
+	std::unordered_map<TextureID, ZeldaTexture*> textureTable;
 	std::unordered_map<ModelID, ZeldaModel*> modelTable;
 	std::unordered_map<MeshID, ZeldaMesh*> meshTable;
-	std::unordered_map<TextureID, ZeldaTexture*> textureTable;
 	std::unordered_map<ShaderID, ZeldaShader*> shaderTable;
+	std::unordered_map<LightID, ZeldaLight*> lightTable;
 
-	std::unordered_map<CameraID, ZeldaCamera*> cameraTable;
 
-	ZeldaMesh* cubeMesh;
-	ZeldaShader* defaultShader;
+	MeshID cubeID;
+	MeshID squareID;
+	MeshID circleID;
+	MeshID sphereID;
+	MeshID capsuleID;
+	MeshID cylinderID;
 
 	//singleton
 public:

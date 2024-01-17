@@ -55,7 +55,7 @@ namespace physx
 	PxGearJoint*	PxGearJointCreate(PxPhysics& physics, PxRigidActor* actor0, const PxTransform& localFrame0, PxRigidActor* actor1, const PxTransform& localFrame1);
 
 	/**
-	\brief A joint that connects two existing revolute joints and constrains their relative angular velocity and position with respect to each other.
+	\brief 두 개의 기존 회전 조인트를 연결하고 서로에 대한 상대적인 각속도와 위치를 제약하는 조인트입니다.
 
 	@see PxGearJointCreate PxJoint
 	*/
@@ -64,49 +64,52 @@ namespace physx
 	public:
 
 		/**
-		\brief Set the hinge/revolute joints connected by the gear joint.
+		\brief 기어 조인트에 의해 연결된 힌지/회전 조인트를 설정합니다.
 
-		The passed joints can be either PxRevoluteJoint, PxD6Joint or PxArticulationJointReducedCoordinate. 
-		The joints must define degrees of freedom around the twist axis. They cannot be null.
+		전달된 조인트는 PxRevoluteJoint, PxD6Joint
+		또는 PxArticulationJointReducedCoordinate 중하나일 수 있습니다.
+		조인트는 트위스트 축 주위의 자유도를 정의해야 합니다.
+		조인트는 null이 될 수 없습니다.
 
-		Note that these joints are only used to compute the positional error correction term,
-		used to adjust potential drift between jointed actors. The gear joint can run without
-		calling this function, but in that case some visible overlap may develop over time between
-		the teeth of the gear meshes.
+		이 함수를 호출하면 이러한 조인트는 위치 오차 보정 항을 계산하는 데에만 사용되며,
+		조인트된 액터 간의 잠재적인 드리프트를 조정하는 데 사용됩니다.
+		기어 조인트는 이 함수를 호출하지 않고도 실행될 수 있지만,
+		이 경우 기어 메쉬의 치아 사이에 시간이 지남에 따라 일부 시각적인 겹침이 발생할 수 있습니다.
 
-		\note	Calling this function resets the internal positional error correction term.
+		\note	이 함수를 호출하면 내부 위치 오차 보정 항이 재설정됩니다.
 
-		\param[in]	hinge0		The first hinge joint
-		\param[in]	hinge1		The second hinge joint
-		\return		true if success
+		\param[in]	hinge0		첫 번째 힌지 조인트
+		\param[in]	hinge1		두 번째 힌지 조인트
+		\return		성공하면 true
 		*/
 		virtual	bool		setHinges(const PxBase* hinge0, const PxBase* hinge1)	= 0;
 
 		/**
-		\brief Get the hinge/revolute joints connected by the gear joint.
+		\brief 기어 조인트에 의해 연결된 힌지/회전 조인트를 가져옵니다.
 
-		\param[out]	hinge0		The first hinge joint
-		\param[out]	hinge1		The second hinge joint
+		\param[out]	hinge0		첫 번째 힌지 조인트
+		\param[out]	hinge1		두 번째 힌지 조인트
 		*/
 		virtual	void		getHinges(const PxBase*& hinge0, const PxBase*& hinge1)	const	= 0;
 
 		/**
-		\brief Set the desired gear ratio.
+		\brief 원하는 기어 비율을 설정합니다.
 
-		For two gears with n0 and n1 teeth respectively, the gear ratio is n0/n1.
+		두 기어의 이빨 수가 각각 n0 및 n1이면 기어 비율은 n0/n1입니다.
 
-		\note	You may need to use a negative gear ratio if the joint frames of involved actors are not oriented in the same direction.
+		\note	관련된 액터의 조인트 프레임이 동일한 방향으로
+				정렬되어 있지 않은 경우 음수 기어 비율을 사용해야 할 수 있습니다.
 
-		\note	Calling this function resets the internal positional error correction term.
+		\note	이 함수를 호출하면 내부 위치 오차 보정 항이 재설정됩니다.
 
-		\param[in]	ratio	Desired ratio between the two hinges.
+		\param[in]	ratio	두 힌지 간의 원하는 비율
 		*/
 		virtual	void		setGearRatio(float ratio)	= 0;
 
 		/**
-		\brief Get the gear ratio.
+		\brief 기어 비율을 가져옵니다.
 
-		\return		Current ratio
+		\return		현재 비율
 		*/
 		virtual	float		getGearRatio()	const		= 0;
 

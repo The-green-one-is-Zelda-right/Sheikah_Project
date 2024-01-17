@@ -1,12 +1,12 @@
 #pragma once
 #include "ZnPrismaticJoint.h"
+#include "TemplateJoint.h"
 #include "PxPhysicsAPI.h"
 #include <Eigen/Dense>
 
 namespace physx
 {
 	class PxPhysics;
-	class PxFixedJoint;
 }
 
 namespace ZonaiPhysics
@@ -15,7 +15,7 @@ namespace ZonaiPhysics
 	class ZnRigidBody;
 	class RigidBody;
 
-	class PrismaticJoint : public ZnPrismaticJoint
+	class PrismaticJoint : public TemplateJoint<ZnPrismaticJoint, physx::PxPrismaticJoint>
 	{
 	public:
 		PrismaticJoint() noexcept = delete;
@@ -26,21 +26,19 @@ namespace ZonaiPhysics
 		~PrismaticJoint() noexcept override;
 
 	public:
-		void		SetLocalPosition(eOBJECT, const Eigen::Vector3f&) noexcept override;
-		Eigen::Vector3f	GetLocalPosition(eOBJECT) const noexcept override;
+		float GetPosition() const override;
 
-		void		SetLocalQuaternion(eOBJECT, const Eigen::Quaternionf&) noexcept override;
-		Eigen::Quaternionf	GetLocalQuaternion(eOBJECT) const noexcept override;
+		float GetVelocity() const override;
 
-		Eigen::Vector3f	GetRelativeLinearVelocity() const noexcept override;
-		Eigen::Vector3f	GetRelativeAngularVelocity() const noexcept override;
+		void SetLimit(float _lower, float _upper) override;
+		void SetLimit(float _lower, float _upper, float _stiffness, float _damping) override;
 
-		void		SetBreakForce(float _force, float _torque) noexcept override;
-		void		GetBreakForce(float& _force, float& _torque) const noexcept override;
+		void SetLimitEnable(bool) override;
 
-	private:
-		RigidBody* object[2];
-		physx::PxPrismaticJoint* joint;
+		bool IsLimitEnalbed() const override;
+
+	public:
+		physx::PxTolerancesScale const* tolerances;
 	};
 } // namespace ZonaiPhysics
 

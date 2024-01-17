@@ -68,12 +68,9 @@ public:
 		ID3D11DeviceContext* deviceContext,
 		ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
 		ConstantBuffer<BoneBufferType, ShaderType::VertexShader>* boneConstBuffer,
-		ConstantBuffer<LightBufferType, ShaderType::PixelShader>* lightConstBuffer,
-		ConstantBuffer<UseBufferType, ShaderType::PixelShader>* useConstBuffer,
-		ConstantBuffer<ColorBufferType, ShaderType::PixelShader>* colorConstBuffer,
+		ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
 		DirectX::XMMATRIX worldMatrix,
 		ZeldaShader* shader,
-		ZeldaLight* light,
 		const std::wstring& animationName,
 		float animationTime
 	);
@@ -91,12 +88,9 @@ private:
 		ID3D11DeviceContext* deviceContext,
 		ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
 		ConstantBuffer<BoneBufferType, ShaderType::VertexShader>* boneConstBuffer,
-		ConstantBuffer<LightBufferType, ShaderType::PixelShader>* lightConstBuffer,
-		ConstantBuffer<UseBufferType, ShaderType::PixelShader>* useConstBuffer,
-		ConstantBuffer<ColorBufferType, ShaderType::PixelShader>* colorConstBuffer,
+		ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
 		DirectX::XMMATRIX worldMatrix,
 		ZeldaShader* shader,
-		ZeldaLight* light,
 		const std::wstring& animationName,
 		float animationTime
 	);

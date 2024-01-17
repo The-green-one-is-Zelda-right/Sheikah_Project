@@ -19,7 +19,7 @@ namespace ZonaiPhysics
 	class RigidBody : public ZnRigidBody
 	{
 	public:
-							RigidBody() noexcept;
+							RigidBody() noexcept = delete;
 							RigidBody(physx::PxPhysics*&) noexcept;
 							~RigidBody() noexcept override;
 
@@ -87,35 +87,10 @@ namespace ZonaiPhysics
 		void			ClearTorque() noexcept override;
 
 	public:
-		__declspec(property(get = GetLinearDamping, put = SetLinearDamping)) 
-			float linerDamping;
-
-		__declspec(property(get = GetAngularDamping, put = SetAngularDamping)) 
-			float angularDamping;
-
-		__declspec(property(get = GetLinearVelocity, put = SetLinearVelocity))
-			Eigen::Vector3f linerVelocity;
-
-		__declspec(property(get = GetAngularVelocity, put = SetAngularVelocity)) 
-			Eigen::Vector3f angularVelocity;
-
-		__declspec(property(get = GetMaxLinearVelocity, put = SetMaxLinearVelocity))
-			float maxLinearVelocity;
-
-		__declspec(property(get = GetMaxAngularVelocity, put = SetMaxAngularVelocity))
-			float maxAngularVelocity;
-
-		__declspec(property(get = GetPosition, put = SetPosition))
-			Eigen::Vector3f position;
-
-		__declspec(property(get = GetQuaternion, put = SetQuaternion))
-			Eigen::Quaternionf quaternion;
-
-	public:
 		physx::PxRigidDynamic* getRigidDynamic() const noexcept;
 
 	private:
-		physx::PxRigidDynamic* rigidbody_;
+		physx::PxRigidDynamic* pxBody;
 	};
 } // namespace ZonaiPhysics
 

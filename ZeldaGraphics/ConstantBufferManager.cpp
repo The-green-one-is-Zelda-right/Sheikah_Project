@@ -2,14 +2,14 @@
 
 #include "ConstantBuffer.h"
 
-void ConstantBufferManager::RegisterVSBuffer(IConstantBuffer* buffer)
+void ConstantBufferManager::RegisterBuffer(IConstantBuffer* buffer)
 {
-	vsBufferList.push_back(buffer);
+	bufferList.push_back(buffer);
 }
 
-void ConstantBufferManager::RegisterPSBuffer(IConstantBuffer* buffer)
+void ConstantBufferManager::DeRegisterBuffer(IConstantBuffer* buffer)
 {
-	psBufferList.push_back(buffer);
+	bufferList.erase(remove(bufferList.begin(), bufferList.end(), buffer), bufferList.end());
 }
 
 void ConstantBufferManager::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
@@ -20,18 +20,15 @@ void ConstantBufferManager::Initialize(ID3D11Device* device, ID3D11DeviceContext
 
 void ConstantBufferManager::Finalize()
 {
+	this->device = nullptr;
+	this->deviceContext = nullptr;
 }
 
 void ConstantBufferManager::SetBuffer()
 {
-	for (unsigned int i = 0; i < vsBufferList.size(); i++)
+	for (unsigned int i = 0; i < bufferList.size(); i++)
 	{
-		vsBufferList[i]->SetBuffer(deviceContext, i);
-	}
-
-	for (unsigned int i = 0; i < psBufferList.size(); i++)
-	{
-		psBufferList[i]->SetBuffer(deviceContext, i);
+		bufferList[i]->SetBuffer(deviceContext);
 	}
 }
 
@@ -41,7 +38,9 @@ ConstantBufferManager& ConstantBufferManager::GetInstance()
 	return instance;
 }
 
-ConstantBufferManager::ConstantBufferManager()
+ConstantBufferManager::ConstantBufferManager() :
+	device(nullptr),
+	deviceContext(nullptr)
 {
 }
 

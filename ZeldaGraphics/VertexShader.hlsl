@@ -24,8 +24,6 @@ struct PixelInputType
     float4 position : SV_POSITION;
     float3 normal : NORMAL;
     float2 tex : TEXCOORD0;
-    uint4 boneIndices : BLENDINDICES;
-    float4 weight : BLENDWEIGHT;
 };
 
 PixelInputType main(VertexInputType input)

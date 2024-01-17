@@ -13,22 +13,22 @@ namespace ZonaiPhysics
 		Collider(_factory, _body)
 	{
 		using namespace physx;
-		rigid_ = _body;
+		rigidbody = _body;
 
-		shape_ = _factory->createShape(PxSphereGeometry(_offset), *_material);
-		shape_->userData = this;
+		shape = _factory->createShape(PxSphereGeometry(_offset), *_material);
+		shape->userData = this;
 
-		shape_->setFlag(PxShapeFlag::eVISUALIZATION, true);
-		shape_->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+		shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
+		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
 
-		_body->getRigidDynamic()->attachShape(*shape_);
+		_body->getRigidDynamic()->attachShape(*shape);
 	}
 
 	SphereCollider::~SphereCollider() noexcept
 	{
-		shape_->release();
-		rigid_->getRigidDynamic()->detachShape(*shape_);
+		shape->release();
+		rigidbody->getRigidDynamic()->detachShape(*shape);
 
-		rigid_ = nullptr;
+		rigidbody = nullptr;
 	}
 }

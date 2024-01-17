@@ -3,12 +3,17 @@
 #include "IConstantBuffer.h"
 #include "ZeldaGraphicsDefine.h"
 
+#include "ConstantBufferManager.h"
+
 template<typename bufferType, ShaderType shaderType>
+	requires std::is_same_v<decltype(bufferType::registerNum), const unsigned int>
 class ConstantBuffer : public IConstantBuffer
 {
 public:
 	ConstantBuffer(ID3D11Device* device) :
-		dxBuffer(nullptr)
+		dxBuffer(nullptr),
+		data(bufferType()),
+		isChanged(true)
 	{
 		assert((sizeof(bufferType) % 16) == 0);
 
@@ -27,15 +32,32 @@ public:
 		{
 			MessageBox(0, L"Failed to Create Buffer", L"ConstantBuffer Error", MB_OK);
 		}
+
+		ConstantBufferManager::GetInstance().RegisterBuffer(this);
+	}
+
+	~ConstantBuffer()
+	{
+		dxBuffer->Release();
+
+		ConstantBufferManager::GetInstance().DeRegisterBuffer(this);
 	}
 
 	void SetData(const bufferType& data)
 	{
 		this->data = data;
+
+		isChanged = true;
 	}
 
-	void SetBuffer(ID3D11DeviceContext* deviceContext, unsigned int registerNum) override
+protected:
+	void SetBuffer(ID3D11DeviceContext* deviceContext) override
 	{
+		if (isChanged)
+		{
+			isChanged = false;
+		}
+
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
 
 		HRESULT result;
@@ -64,6 +86,13 @@ public:
 				break;
 			}
 
+			case ShaderType::VertexShaderAndPixelShader:
+			{
+				deviceContext->VSSetConstantBuffers(registerNum, 1, &dxBuffer);
+				deviceContext->PSSetConstantBuffers(registerNum, 1, &dxBuffer);
+				break;
+			}
+
 			default:
 			{
 				assert(0);
@@ -76,5 +105,8 @@ private:
 	ID3D11Buffer* dxBuffer;
 	bufferType data;
 
+	bool isChanged;
+
+	static constexpr unsigned int registerNum = bufferType::registerNum;
 };
 

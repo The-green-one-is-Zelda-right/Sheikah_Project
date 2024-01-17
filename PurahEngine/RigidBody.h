@@ -107,6 +107,8 @@ namespace PurahEngine
 
 		void		SetKinematic(bool) noexcept;
 
+		void		UseGravity(bool);
+
 	public:
 		void SimulateResult();
 
@@ -114,9 +116,12 @@ namespace PurahEngine
 		bool awake{ true };
 		bool lock[3]{ false, false, false };
 		bool isKinematic{ false };
+		bool useGravity{ false };
 
 		// float maxLinearVelocity{ 0.f };
 		// float maxAngularVelocity{ 0.f };
+		// Eigen::Vector3f position{ 0.f, 0.f, 0.f };
+		// Eigen::Quaternionf rotation{ Eigen::Quaternionf::Identity() };
 		Eigen::Vector3f LinearVelocity{ 0.f, 0.f, 0.f };
 		Eigen::Vector3f angularVelocity{ 0.f, 0.f, 0.f };
 		float mass;

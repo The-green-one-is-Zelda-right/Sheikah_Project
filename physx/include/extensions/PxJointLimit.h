@@ -192,20 +192,26 @@ class PxJointLinearLimitPair : public PxJointLimitParameters
 {
 public:
 	/**
-	\brief the range of the limit. The upper limit must be no lower than the
-	lower limit, and if they are equal the limited degree of freedom will be treated as locked.
+	\brief 제한의 범위입니다.
+	상한값(upper limit)은 하한값(lower limit)보다 낮을 수 없으며,
+	두 값이 동일한 경우 제한된 자유도는 잠겨진 것으로 처리됩니다.
 
-	<b>Range:</b> See the joint on which the limit is used for details<br>
-	<b>Default:</b> lower = -PX_MAX_F32/3, upper = PX_MAX_F32/3
+	<b>범위:</b> 제한이 사용된 관절에서의 자세한 내용은 참조하십시오.<br>
+	<b>기본값:</b> lower = -PX_MAX_F32/3, upper = PX_MAX_F32/3
 	*/
 	PxReal upper, lower;
 
 	/**
-	\brief Construct a linear hard limit pair. The lower distance value must be less than the upper distance value. 
+	\brief 선형 하드 제한 쌍을 생성합니다. 하한 거리 값은 상한 거리 값보다 작아야 합니다.
 
-	\param[in] scale		A PxTolerancesScale struct. Should be the same as used when creating the PxPhysics object.
-	\param[in] lowerLimit	The lower distance of the limit
-	\param[in] upperLimit	The upper distance of the limit
+	\param[in]	scale
+				PxTolerancesScale 구조체입니다. PxPhysics 객체를 생성할 때 사용한 것과 동일해야 합니다.
+				
+	\param[in]	lowerLimit
+				제한의 하한 거리입니다.
+				
+	\param[in]	upperLimit
+				제한의 상한 거리입니다.
 
 	@see PxJointLimitParameters PxTolerancesScale
 	*/
@@ -213,15 +219,20 @@ public:
 		upper(upperLimit),
 		lower(lowerLimit)
 	{
-		bounceThreshold = 2.0f*scale.length;
+		bounceThreshold = 2.0f * scale.length;
 	}
 
 	/**
-	\brief construct a linear soft limit pair
+	\brief 선형 소프트 제한 쌍을 생성합니다.
 
-	\param[in] lowerLimit	The lower distance of the limit
-	\param[in] upperLimit	The upper distance of the limit
-	\param[in] spring		The stiffness and damping parameters of the limit spring
+	\param[in]	lowerLimit
+				제한의 하한 거리입니다.
+				
+	\param[in]	upperLimit
+				제한의 상한 거리입니다.
+				
+	\param[in]	spring
+				제한 스프링의 강성과 감쇠 매개변수입니다.
 
 	@see PxJointLimitParameters
 	*/

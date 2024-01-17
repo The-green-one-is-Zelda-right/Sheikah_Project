@@ -64,9 +64,9 @@ struct PxRevoluteJointFlag
 {
 	enum Enum
 	{
-		eLIMIT_ENABLED	= 1<<0,	//!< enable the limit
-		eDRIVE_ENABLED	= 1<<1,	//!< enable the drive
-		eDRIVE_FREESPIN	= 1<<2	//!< if the existing velocity is beyond the drive velocity, do not add force
+		eLIMIT_ENABLED = 1 << 0,	//!< 제한 활성화
+		eDRIVE_ENABLED = 1 << 1,	//!< 드라이브 활성화
+		eDRIVE_FREESPIN = 1 << 2	//!< 기존 속도가 드라이브 속도를 초과하는 경우 힘을 추가하지 않음
 	};
 };
 
@@ -74,21 +74,21 @@ typedef PxFlags<PxRevoluteJointFlag::Enum, PxU16> PxRevoluteJointFlags;
 PX_FLAGS_OPERATORS(PxRevoluteJointFlag::Enum, PxU16)
 
 /**
-\brief 힌지 또는 축과 유사한 방식으로 동작하는 관절.
+\brief 힌지 또는 축과 유사한 방식으로 작동하는 조인트입니다.
 
-힌지 관절은 두 객체에서 하나의 회전 자유도만 제거합니다.
+힌지 조인트는 두 객체로부터 회전의 자유도를 제거합니다.
 두 개체가 회전할 수 있는 축은 점과 방향 벡터로 지정됩니다.
 
-힌지의 위치는 각 몸체의 관절 프레임의 원점으로 지정됩니다.
-힌지의 축은 몸체의 관절 프레임의 x-축의 방향으로 지정됩니다.
+힌지의 위치는 각 개체의 조인트 프레임의 원점으로 지정됩니다.
+힌지의 축은 개체의 조인트 프레임에서 x-축의 방향으로 지정됩니다.
 
 \image html revoluteJoint.png
 
-힌지 관절은 회전력을 적용하여 연결된 액터를 회전시킬 수 있습니다.
-또한 제한을 부여하여 힌지 모션을 특정 범위 내로 제한할 수 있습니다.
-또한 거리 또는 각도가 주어진 임계값을 초과하는 경우 몸체를 투영할 수 있습니다.
+회전 가능한 조인트에는 모터를 부착하여 연결된 액터를 회전시키는 힘을 가할 수 있습니다.
+또한 힌지의 움직임을 특정 범위 내로 제한하기 위해 제한을 부여할 수 있습니다.
+두 개체 간의 거리 또는 각도가 주어진 임계값을 초과하는 경우, 개체를 투영(project)할 수도 있습니다.
 
-투영, 드라이브 및 제한은 관절에 해당하는 플래그를 설정하여 활성화됩니다.
+투영, 드라이브 및 제한은 조인트에 해당 플래그를 설정하여 활성화됩니다.
 
 @see PxRevoluteJointCreate() PxJoint
 */
@@ -97,51 +97,49 @@ class PxRevoluteJoint : public PxJoint
 public:
 
 	/**
-	\brief 관절의 각도를 가져옵니다. 범위는 (-2 * Pi, 2 * Pi]입니다.
+	\brief 조인트의 각도를 (-2*Pi, 2*Pi] 범위에서 반환합니다.
 	*/
 	virtual PxReal getAngle()	const	= 0;
 
 	/**
-	\brief 관절의 속도를 가져옵니다.
+	\brief 조인트의 속도를 반환합니다.
 	*/
 	virtual PxReal getVelocity()	const	= 0;
 
 	/**
-	\brief 관절 제한 매개변수를 설정합니다.
+	\brief 조인트 제한 매개변수를 설정합니다.
 
-	한계는 PxRevoluteJointFlag::eLIMIT_ENABLED 플래그를 사용하여 활성화됩니다.
+	제한은 PxRevoluteJointFlag::eLIMIT_ENABLED 플래그를 사용하여 활성화됩니다.
 
-	한계 각도 범위는 (-2 * Pi, 2 * Pi)입니다.
+	제한 각도 범위는 (-2*Pi, 2*Pi)입니다.
 
-	\param[in] limits 관절 제한 매개변수.
+	\param[in] limits 조인트 제한 매개변수.
 
 	@see PxJointAngularLimitPair getLimit()
 	*/
 	virtual void			setLimit(const PxJointAngularLimitPair& limits)	= 0;
 
 	/**
-	\brief 관절 제한 매개변수를 가져옵니다.
+	\brief 조인트 제한 매개변수를 가져옵니다.
 
-	\return 관절 제한 매개변수
+	\return 조인트 제한 매개변수
 
 	@see PxJointAngularLimitPair setLimit()
 	*/
 	virtual PxJointAngularLimitPair getLimit()	const	= 0;
 
 	/**
-	\brief 드라이브 모델의 대상 속도를 설정합니다.
+	\brief 드라이브 모델의 목표 속도를 설정합니다.
 
-	드라이브는 maxForce가 충분히 큰 경우에만 이 속도에 도달할 수 있습니다.
-	관절이 이 속도보다 더 빨리 회전 중이면 드라이브는 실제로 브레이크를 시도합니다
-	(PxRevoluteJointFlag::eDRIVE_FREESPIN 참조).
+	모터는 이 속도에 도달하기 위해 maxForce가 충분히 큰 경우에만 가능합니다.
+	만약 조인트가 이 속도보다 빠르게 회전 중이라면, 모터는 실제로 브레이크를 시도하려고 합니다
+	(참조: PxRevoluteJointFlag::eDRIVE_FREESPIN.)
 
-	이 변수의 부호는 회전 방향을 결정하며, 양수 값은 양수 관절 각도 방향으로 간다.
-	매우 큰 대상 속도를 설정하면 원하지 않는 결과가 발생할 수 있습니다.
+	이 변수의 부호는 회전 방향을 결정하며, 양수 값은 양의 조인트 각도와 동일한 방향으로 갑니다.
+	매우 큰 목표 속도를 설정하는 것은 원하지 않는 결과를 초래할 수 있습니다.
 
-	\param[in]	velocity
-				드라이브 대상 속도
-	\param[in]	autowake
-				관절 라이그드를 깨우는 경우 true
+	\param[in] velocity 드라이브의 목표 속도
+	\param[in] autowake 조인트 리지드가 자세히 있을 경우 깨워야 하는지 여부
 
 	<b>범위:</b> (-PX_MAX_F32, PX_MAX_F32)<br>
 	<b>기본값:</b> 0.0

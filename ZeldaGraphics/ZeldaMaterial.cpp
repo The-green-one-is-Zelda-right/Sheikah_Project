@@ -16,10 +16,17 @@ ZeldaMaterial::ZeldaMaterial(ID3D11Device* device, DirectX::XMFLOAT4 baseColor, 
 
 ZeldaMaterial::~ZeldaMaterial()
 {
-
+	if (diffuseMap != nullptr)
+	{
+		delete diffuseMap;
+		diffuseMap = nullptr;
+	}
 }
 
-void ZeldaMaterial::SetShaderResource()
+void ZeldaMaterial::SetShaderResource(ID3D11DeviceContext* deviceContext)
 {
-
+	if (useDiffuseMap && diffuseMap)
+	{
+		diffuseMap->SetShaderResource(deviceContext);
+	}
 }

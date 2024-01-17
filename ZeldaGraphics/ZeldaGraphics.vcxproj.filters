@@ -42,6 +42,9 @@
     <Filter Include="Core\Resource\Material">
       <UniqueIdentifier>{b3791b9a-a885-4871-8e82-b7edb03650ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Resource\Light">
+      <UniqueIdentifier>{7f1be31d-b230-4257-9519-867df83f700a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\IZeldaRenderer.h">
@@ -51,9 +54,6 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="header\ZeldaGraphicsAPI.h">
-      <Filter>practice</Filter>
-    </ClInclude>
-    <ClInclude Include="ZeldaLight.h">
       <Filter>practice</Filter>
     </ClInclude>
     <ClInclude Include="ZeldaShader.h">
@@ -107,11 +107,11 @@
     <ClInclude Include="ZeldaMaterial.h">
       <Filter>Core\Resource\Material</Filter>
     </ClInclude>
+    <ClInclude Include="ZeldaLight.h">
+      <Filter>Core\Resource\Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ZeldaLight.cpp">
-      <Filter>practice</Filter>
-    </ClCompile>
     <ClCompile Include="ZeldaShader.cpp">
       <Filter>practice</Filter>
     </ClCompile>
@@ -154,6 +154,9 @@
     <ClCompile Include="ZeldaMaterial.cpp">
       <Filter>Core\Resource\Material</Filter>
     </ClCompile>
+    <ClCompile Include="ZeldaLight.cpp">
+      <Filter>Core\Resource\Light</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="TestShader.hlsl">
@@ -165,5 +168,49 @@
     <FxCompile Include="PixelShader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="DeferredObjectVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="DeferredObjectPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="DeferredDirectionalLightVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="DeferredDirectionalLightPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="DeferredFinalVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="DeferredFinalPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="FowardVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="FowardPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="DeferredPointLightVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="DeferredSpotLightVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="DeferredPointLightPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="DeferredSpotLightPS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Buffers.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Light.hlsli">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

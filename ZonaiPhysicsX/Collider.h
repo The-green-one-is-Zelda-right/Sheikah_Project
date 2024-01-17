@@ -50,22 +50,9 @@ namespace ZonaiPhysics
 
 		void				UpdateInertiaTensor() const noexcept;
 
-	public:
-		__declspec(property(get = GetPosition, put = SetPosition))
-			Eigen::Vector3f position;
-
-		__declspec(property(get = GetQuaternion, put = SetQuaternion))
-			Eigen::Quaternionf quaternion;
-
-		__declspec(property(get = GetLocalPosition, put = SetLocalPosition))
-			Eigen::Vector3f localPosition;
-
-		__declspec(property(get = GetLocalQuaternion, put = SetLocalQuaternion))
-			Eigen::Quaternionf localQuaternion;
-
 	protected:
-		RigidBody* rigid_;
-		physx::PxShape* shape_;
+		RigidBody* rigidbody;
+		physx::PxShape* shape;
 	};
 } // namespace ZonaiPhysics
 
