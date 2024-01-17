@@ -246,10 +246,12 @@ bool flt::RendererDX11::Finalize()
 
 bool flt::RendererDX11::Render(float deltaTime)
 {
-	// 렌더링을 시작하기 위해 초기화
-	_immediateContext->ClearRenderTargetView(_renderTargetView.Get(), DirectX::Colors::Black);
+	// 디퍼드 시작 일단 멀티 렌더타겟.
+	ID3D11RenderTargetView* rtvs[] = { _gBufferRenderTargetView.Get() };
+	_immediateContext->ClearRenderTargetView(rtvs[0], DirectX::Colors::Yellow);
 	_immediateContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	_immediateContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), _depthStencilView.Get());
+	_immediateContext->OMSetRenderTargets(1, rtvs, _depthStencilView.Get());
+
 
 	// 각 mesh별로 들어가야하지만 일단 여기서 만들자.
 	D3D11_RASTERIZER_DESC rasterizerDesc = { };
@@ -275,7 +277,7 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 		for (auto& node : _renderableObjects)
 		{
-			int meshCount = node->meshes.size();
+			int meshCount = (int)node->meshes.size();
 
 			Matrix4f worldMatrix = node->transform.GetWorldMatrix4f();
 			Matrix4f worldViewProjMatrix = worldMatrix * viewMatrix * projMatrix;
@@ -321,6 +323,13 @@ bool flt::RendererDX11::Render(float deltaTime)
 		}
 	}
 
+
+
+	_immediateContext->ClearRenderTargetView(_renderTargetView.Get(), DirectX::Colors::Black);
+	_immediateContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	_immediateContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), _depthStencilView.Get());
+
+	_immediateContext->RSSetState(rasterizerState.Get());
 	
 
 	// 수직동기화 여부에 따라서 present
@@ -356,7 +365,7 @@ flt::HOBJECT flt::RendererDX11::RegisterObject(RendererObject& renderable)
 	}
 	else
 	{
-		int rawMeshCount = renderable.node.meshes.size();
+		int rawMeshCount = (int)renderable.node.meshes.size();
 		node->meshes.resize(rawMeshCount);
 		for (int i = 0; i < rawMeshCount; ++i)
 		{
@@ -602,6 +611,48 @@ bool flt::RendererDX11::OnResize()
 	// 테스트를 위한 배경 색상 변경
 	float bgColor[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
 	_immediateContext->ClearRenderTargetView(_renderTargetView.Get(), bgColor);
+
+	//g-buffer또한 다시 만들기
+	D3D11_TEXTURE2D_DESC gBufferTextureDesc{};
+	gBufferTextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	gBufferTextureDesc.Width = backBufferDesc.Width;
+	gBufferTextureDesc.Height = backBufferDesc.Height;
+	gBufferTextureDesc.MipLevels = 1;
+	gBufferTextureDesc.ArraySize = 1;
+	gBufferTextureDesc.SampleDesc.Count = 1;
+	gBufferTextureDesc.SampleDesc.Quality = 0;
+	gBufferTextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	gBufferTextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+
+	result = _device->CreateTexture2D(&gBufferTextureDesc, nullptr, &_gBufferTexture);
+	if (result != S_OK)
+	{
+		ASSERT(false, "G-Buffer 텍스쳐 생성 실패");
+		return false;
+	}
+
+	D3D11_RENDER_TARGET_VIEW_DESC gBufferRenderTargetViewDesc{};
+	gBufferRenderTargetViewDesc.Format = gBufferTextureDesc.Format;
+	gBufferRenderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	result = _device->CreateRenderTargetView(_gBufferTexture.Get(), &gBufferRenderTargetViewDesc, &_gBufferRenderTargetView);
+	if (result != S_OK)
+	{
+		ASSERT(false, "G-Buffer 렌더 타겟 뷰 생성 실패");
+		return false;
+	}
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC gBufferShaderResourceViewDesc{};
+	gBufferShaderResourceViewDesc.Format = gBufferTextureDesc.Format;
+	gBufferShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	gBufferShaderResourceViewDesc.Texture2D.MipLevels = 1;
+	result = _device->CreateShaderResourceView(_gBufferTexture.Get(), &gBufferShaderResourceViewDesc, &_gBufferShaderResourceView);
+	if (result != S_OK)
+	{
+		ASSERT(false, "G-Buffer 쉐이더 리소스 뷰 생성 실패");
+		return false;
+	}
+
+
 
 	return true;
 }

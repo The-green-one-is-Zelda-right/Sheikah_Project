@@ -80,6 +80,10 @@ namespace flt
 		comptr<ID3D11DepthStencilView> _depthStencilView;
 		comptr<ID3D11RasterizerState> _rasterizerState;
 
+		comptr<ID3D11Texture2D> _gBufferTexture;
+		comptr<ID3D11RenderTargetView> _gBufferRenderTargetView;
+		comptr<ID3D11ShaderResourceView> _gBufferShaderResourceView;
+
 		// 그리기 위한 오브젝트
 		std::vector<DX11Node*> _renderableObjects;
 		std::vector<Camera*> _cameras;

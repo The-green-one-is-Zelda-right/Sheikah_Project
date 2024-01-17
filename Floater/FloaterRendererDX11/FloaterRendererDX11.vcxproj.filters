@@ -118,5 +118,11 @@
     <FxCompile Include="PixelShader.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="BackBufferVertexShader.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="BackBufferPixelShader.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
