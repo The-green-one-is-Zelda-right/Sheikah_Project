@@ -189,18 +189,28 @@ int main()
 	auto renderer = platform.CreateRenderer(flt::RendererType::DX11);
 
 	bool isDraw = true;
-	flt::RawNode node(L"testNode");
-	node.transform.SetPosition(0.0f, 0.0f, 0.7f);
-	node.transform.SetScale(0.3f, 0.3f, 0.3f);
+	
+	flt::RawNode cameraNode(L"testCamera");
+	cameraNode.transform.SetPosition(0.0f, 0.0f, 0.0f);
+	cameraNode.transform.SetScale(1.0f, 1.0f, 1.0f);
+	cameraNode.transform.SetRotation(0.0f, 0.0f, 0.0f);
+	cameraNode.camera = new flt::Camera(&cameraNode.transform);
 
-	flt::RendererObject rendererObejct1(*rawScene.nodes[1], isDraw, L"test1");
-	auto objectID0 = renderer->RegisterObject(rendererObejct1);
+	flt::RendererObject cameraObject(cameraNode, isDraw, L"testCamera");
+	auto cameraID = renderer->RegisterObject(cameraObject);
+
+
+	flt::RawNode cubeNode(L"testNode");
+	cubeNode.transform.SetPosition(0.0f, 0.0f, 0.7f);
+	cubeNode.transform.SetScale(0.3f, 0.3f, 0.3f);
+
+	flt::RendererObject fbxObject(*rawScene.nodes[1], isDraw, L"test1");
+	auto objectID0 = renderer->RegisterObject(fbxObject);
 	rawScene.nodes[1]->transform.SetScale(1.f, 1.f, 1.f);
-	rawScene.nodes[1]->transform.SetPosition(0.f, 0.f, -30.f);
+	rawScene.nodes[1]->transform.SetPosition(0.f, 0.f, 30.f);
 
-	//flt::RendererObject renderable(node, isDraw, L"testObject");
-	//renderable.name = L"test";
-	//auto objectID1 = renderer->RegisterObject(renderable);
+	flt::RendererObject renderable(cubeNode, isDraw, L"cube");
+	auto objectID1 = renderer->RegisterObject(renderable);
 
 	//flt::RawNode childNode(L"testChildNode");
 	//childNode.transform.SetPosition(1.0f, 0.0f, 0.0f);
@@ -222,26 +232,27 @@ int main()
 
 		renderer->Render(1.0f);
 		rawScene.nodes[1]->transform.AddRotation({ 0.0f, 1.0f, 0.0f }, 0.01f);
-		//transform.AddRotation({ 1.0f, 0.0f, 0.0f }, 0.01f);
-		//node.transform.AddRotation({ 0.0f, 1.0f, 0.0f }, -0.1f);
-		////transform.AddRotation({ 0.0f, 0.0f, 1.0f }, 0.01f);
-
-		//childNode.transform.AddRotation({ 0.0f, 1.0f, 0.0f }, 0.80f);
-
-		//if (!renderer->Render(deltaTime))
-		//{
-		//	break;
-		//}
+		cubeNode.transform.AddRotation({ 0.0f, 1.0f, 0.0f }, -0.1f);
 		{
-			auto keyData = platform.GetKey(flt::KeyCode::z);
+			auto keyData = platform.GetKey(flt::KeyCode::w);
 			if (keyData)
 			{
-				std::cout << "z" << keyData.keyTime << std::endl;
+				cameraNode.transform.AddPosition(cameraNode.transform.Forward() * 0.01f);
 			}
-			keyData = platform.GetKey(flt::KeyCode::x);
+			keyData = platform.GetKey(flt::KeyCode::a);
 			if (keyData)
 			{
-				std::cout << "x" << keyData.keyTime << std::endl;
+				cameraNode.transform.AddPosition(cameraNode.transform.Right() * -0.01f);
+			}
+			keyData = platform.GetKey(flt::KeyCode::s);
+			if (keyData)
+			{
+				cameraNode.transform.AddPosition(cameraNode.transform.Forward() * -0.01f);
+			}
+			keyData = platform.GetKey(flt::KeyCode::d);
+			if (keyData)
+			{
+				cameraNode.transform.AddPosition(cameraNode.transform.Right() * 0.01f);
 			}
 			keyData = platform.GetKey(flt::KeyCode::mouseLButton);
 			if (keyData)
@@ -257,6 +268,8 @@ int main()
 			keyData = platform.GetKey(flt::KeyCode::mouseRelativePos);
 			if (keyData)
 			{
+				cameraNode.transform.AddRotation({0.0f, 1.0f, 0.0f}, keyData.x * 0.01f);
+				cameraNode.transform.AddRotation(static_cast<flt::Vector3f>(cameraNode.transform.Right()), keyData.y * 0.01f);
 				std::cout << "diff Pos " << keyData.x << " " << keyData.y << std::endl;
 			}
 

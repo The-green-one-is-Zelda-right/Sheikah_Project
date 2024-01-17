@@ -17,7 +17,8 @@ namespace flt
 
 		void SetMatrix(const Matrix4f& worldMatrix);
 
-		Vector4f GetPosition() const noexcept { return _position; }
+		Vector4f GetLocalPosition() const noexcept { return _position; }
+		Vector4f GetWorldPosition() noexcept;
 		void SetPosition(float x, float y, float z);
 		void SetPosition(double x, double y, double z);
 		void SetPosition(const Vector4f& position);
@@ -47,6 +48,10 @@ namespace flt
 		Matrix4f GetWorldMatrix4f() noexcept;
 
 		void LookAt(Vector4f target);
+		Vector4f Forward() noexcept;
+		Vector4f Right() noexcept;
+		Vector4f Up() noexcept;
+
 
 		Transform* GetParent() const noexcept { return _pParent; }
 		bool SetParent(Transform* pParent);

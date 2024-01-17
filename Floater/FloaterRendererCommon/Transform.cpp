@@ -27,6 +27,17 @@ void flt::Transform::SetMatrix(const Matrix4f& worldMatrix)
 	DirectX::XMMatrixDecompose(&_scale.m, &_rotation.m, &_position.m, matrix);
 }
 
+flt::Vector4f flt::Transform::GetWorldPosition() noexcept
+{
+	Vector4f worldPos = _position;
+	if (_pParent)
+	{
+		worldPos = worldPos * _pParent->GetWorldMatrix4f();
+	}
+
+	return worldPos;
+}
+
 void flt::Transform::SetPosition(float x, float y, float z)
 {
 	MakeDirtyRecursive();
@@ -257,6 +268,21 @@ void flt::Transform::LookAt(Vector4f target)
 
 	_rotation = q * _rotation;
 	_rotation.Normalize();
+}
+
+flt::Vector4f flt::Transform::Forward() noexcept
+{
+	return (Vector4f(0.f, 0.f, 1.f, 0.f) * GetWorldMatrix4f()).Normalize();
+}
+
+flt::Vector4f flt::Transform::Right() noexcept
+{
+	return (Vector4f(1.f, 0.f, 0.f, 0.f) * GetWorldMatrix4f()).Normalize();
+}
+
+flt::Vector4f flt::Transform::Up() noexcept
+{
+	return (Vector4f(0.f, 1.f, 0.f, 0.f) * GetWorldMatrix4f()).Normalize();
 }
 
 bool flt::Transform::SetParent(Transform* pParent)

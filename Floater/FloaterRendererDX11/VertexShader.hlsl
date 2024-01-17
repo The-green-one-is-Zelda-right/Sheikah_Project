@@ -39,9 +39,9 @@ struct VS_INPUT
 struct VS_OUTPUT
 {
     float4 Position : SV_Position;
-    float3 PositionW : POSITION;
-    float2 UV : TEXCOORD;
-    float3 Normal : NORMAL;
+    //float3 PositionW : POSITION;
+    //float2 UV : TEXCOORD;
+    //float3 Normal : NORMAL;
 };
 
 VS_OUTPUT main(VS_INPUT Input)
@@ -65,28 +65,28 @@ VS_OUTPUT main(VS_INPUT Input)
     //    );
     //}
     
-    float4x4 bone =
-        float4x4
-        (
-        1.0f, 0, 0, 0,
-        0, 1.0f, 0, 0,
-        0, 0, 1.0f, 0,
-        0, 0, 0, 1.0f
-        );
+    //float4x4 bone =
+    //    float4x4
+    //    (
+    //    1.0f, 0, 0, 0,
+    //    0, 1.0f, 0, 0,
+    //    0, 0, 1.0f, 0,
+    //    0, 0, 0, 1.0f
+    //    );
     
-    float4 PosL = mul(bone, float4(Input.Position.xyz, 1.0f));
-    Output.Position = mul(WorldViewProj, PosL);
+    //float4 PosL = mul(bone, float4(Input.Position.xyz, 1.0f));
+    Output.Position = mul(WorldViewProj, float4(Input.Position.xyz, 1.0f));
     //Output.PositionW = mul(World, PosL);
-    // 아래 임시코드
-    Output.PositionW = PosL;
+    //// 아래 임시코드
+    //Output.PositionW = PosL;
     
-    Output.UV = Input.UV0;
+    //Output.UV = Input.UV0;
     
-    float3 normalL = mul((float3x3) bone, Input.Normal);
-    //Output.Normal = mul((float3x3) WorldInvTransp, normalL);
-    //Output.Normal = normalize(Output.Normal);
-    // 아래 임시코드
-    Output.Normal = normalize(normalL);
+    //float3 normalL = mul((float3x3) bone, Input.Normal);
+    ////Output.Normal = mul((float3x3) WorldInvTransp, normalL);
+    ////Output.Normal = normalize(Output.Normal);
+    //// 아래 임시코드
+    //Output.Normal = normalize(normalL);
 
     return Output;
 }

@@ -3,12 +3,12 @@
 
 flt::Matrix4f flt::Camera::GetViewMatrix() const noexcept
 {
-	Matrix4f worldMatrix = _pTransform->GetLocalMatrix4f();
+	Matrix4f worldMatrix = _pTransform->GetWorldMatrix4f();
 	Vector3f u{ worldMatrix.e[0][0], worldMatrix.e[0][1], worldMatrix.e[0][2] };
 	Vector3f v{ worldMatrix.e[1][0], worldMatrix.e[1][1], worldMatrix.e[1][2] };
 	Vector3f n{ worldMatrix.e[2][0], worldMatrix.e[2][1], worldMatrix.e[2][2] };
 
-	Vector3f eye = (Vector3f)_pTransform->GetPosition();
+	Vector3f eye = (Vector3f)_pTransform->GetWorldPosition();
 
 	return Matrix4f
 	{

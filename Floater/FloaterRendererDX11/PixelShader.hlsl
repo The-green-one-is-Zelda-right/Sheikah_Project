@@ -5,9 +5,9 @@ SamplerState g_Sampler : register(s0);
 struct VS_OUTPUT
 {
     float4 Position : SV_Position;
-    float3 PositionW : POSITION;
-    float2 UV : TEXCOORD;
-    float3 Normal : NORMAL;
+    //float3 PositionW : POSITION;
+    //float2 UV : TEXCOORD;
+    //float3 Normal : NORMAL;
 };
 
 float4 main(VS_OUTPUT input) : SV_Target

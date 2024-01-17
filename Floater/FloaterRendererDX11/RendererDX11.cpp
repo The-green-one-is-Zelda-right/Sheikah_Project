@@ -230,7 +230,7 @@ bool flt::RendererDX11::Finalize()
 	if (_debugHWnd != NULL)
 	{
 		BOOL ret = CloseWindow(_debugHWnd);
-		
+
 		if (ret == FALSE)
 		{
 			ASSERT(false, "디버그 윈도우 닫기 실패");
@@ -268,55 +268,60 @@ bool flt::RendererDX11::Render(float deltaTime)
 	_device->CreateRasterizerState(&rasterizerDesc, rasterizerState.GetAddressOf());
 
 	_immediateContext->RSSetState(rasterizerState.Get());
-
-	for (auto& node : _renderableObjects)
+	for (auto& camera : _cameras)
 	{
-		int meshCount = node->meshes.size();
+		Matrix4f viewMatrix = camera->GetViewMatrix();
+		Matrix4f projMatrix = camera->GetProjectionMatrix(); 
 
-		for (auto& mesh : node->meshes)
+		for (auto& node : _renderableObjects)
 		{
-			DX11Mesh* pMesh = mesh.Get();
+			int meshCount = node->meshes.size();
 
-			// 렌더링
-			//Matrix4f worldMatrix = GetWorldMatrixRecursive(&node->transform);
 			Matrix4f worldMatrix = node->transform.GetWorldMatrix4f();
+			Matrix4f worldViewProjMatrix = worldMatrix * viewMatrix * projMatrix;
 			DirectX::XMMATRIX world = ConvertXMMatrix(worldMatrix);
+			DirectX::XMMATRIX worldViewProj = ConvertXMMatrix(worldViewProjMatrix);
 
-			DirectX::XMMATRIX worldViewProj = world;
-
-			DX11VertexShader* vertexShader = pMesh->vertexShader.Get();
-			DX11PixelShader* pixelShader = pMesh->pixelShader.Get();
-
-			_immediateContext->IASetInputLayout(vertexShader->pInputLayout);
-			_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-			_immediateContext->VSSetShader(vertexShader->pVertexShader, nullptr, 0);
-			_immediateContext->PSSetShader(pixelShader->pPixelShader, nullptr, 0);
-
-			_immediateContext->PSSetShaderResources(0, 1, &(pMesh->texture));
-
-			D3D11_MAPPED_SUBRESOURCE mappedResource = { };
-			HRESULT hResult = _immediateContext->Map(vertexShader->pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-			if (hResult != S_OK)
+			for (auto& mesh : node->meshes)
 			{
-				ASSERT(false, "상수 버퍼 맵핑 실패");
-				return false;
+				DX11Mesh* pMesh = mesh.Get();
+
+				DX11VertexShader* vertexShader = pMesh->vertexShader.Get();
+				DX11PixelShader* pixelShader = pMesh->pixelShader.Get();
+
+				_immediateContext->IASetInputLayout(vertexShader->pInputLayout);
+				_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+				_immediateContext->VSSetShader(vertexShader->pVertexShader, nullptr, 0);
+				_immediateContext->PSSetShader(pixelShader->pPixelShader, nullptr, 0);
+
+				_immediateContext->PSSetShaderResources(0, 1, &(pMesh->texture));
+
+				D3D11_MAPPED_SUBRESOURCE mappedResource = { };
+				HRESULT hResult = _immediateContext->Map(vertexShader->pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+				if (hResult != S_OK)
+				{
+					ASSERT(false, "상수 버퍼 맵핑 실패");
+					return false;
+				}
+				DirectX::XMMATRIX* data = (DirectX::XMMATRIX*)mappedResource.pData;
+				*data = worldViewProj;
+				_immediateContext->Unmap(vertexShader->pConstantBuffer, 0);
+
+				_immediateContext->VSSetConstantBuffers(0, 1, &(vertexShader->pConstantBuffer));
+
+				_immediateContext->PSSetSamplers(0, 1, &pMesh->sampler);
+
+				UINT offset = 0;
+				_immediateContext->IASetVertexBuffers(0, 1, &pMesh->vertexBuffer, &pMesh->singleVertexSize, &offset);
+				_immediateContext->IASetIndexBuffer(pMesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+				_immediateContext->DrawIndexed(pMesh->indexCount, 0, 0);
 			}
-			DirectX::XMMATRIX* data = (DirectX::XMMATRIX*)mappedResource.pData;
-			*data = worldViewProj;
-			_immediateContext->Unmap(vertexShader->pConstantBuffer, 0);
-
-			_immediateContext->VSSetConstantBuffers(0, 1, &(vertexShader->pConstantBuffer));
-
-			_immediateContext->PSSetSamplers(0, 1, &pMesh->sampler);
-
-			UINT offset = 0;
-			_immediateContext->IASetVertexBuffers(0, 1, &pMesh->vertexBuffer, &pMesh->singleVertexSize, &offset);
-			_immediateContext->IASetIndexBuffer(pMesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-			_immediateContext->DrawIndexed(pMesh->indexCount, 0, 0);
 		}
 	}
+
+	
 
 	// 수직동기화 여부에 따라서 present
 	if (_useVsync)
@@ -339,31 +344,43 @@ flt::HOBJECT flt::RendererDX11::RegisterObject(RendererObject& renderable)
 		return false;
 	}
 
-	DX11CubeBuilder cubeBuilder;
-	cubeBuilder.pDevice = _device.Get();
-	cubeBuilder.pImmediateContext = _immediateContext.Get();
-
-	int rawMeshCount = renderable.node.meshes.size();
-	node->meshes.resize(rawMeshCount);
-	for (int i = 0; i < rawMeshCount; ++i)
+	if (renderable.name == L"cube")
 	{
-		DX11MeshBuilder meshBuilder(renderable.node.name + std::to_wstring(i));
-		meshBuilder.pDevice = _device.Get();
-		meshBuilder.vsBuilder = DX11VertexShaderBuilder(L"flt::CubeVS");
-		meshBuilder.pImmediateContext = _immediateContext.Get();
-		meshBuilder.pRawMesh = renderable.node.meshes[i].Get();
-		node->meshes[i].Set(meshBuilder);
+		DX11CubeBuilder cubeBuilder;
+		cubeBuilder.pDevice = _device.Get();
+		cubeBuilder.pImmediateContext = _immediateContext.Get();
 
-		if (!node->meshes[i].Get())
+		node->meshes.resize(1);
+		node->meshes[0].Set(cubeBuilder);
+		ASSERT(node->meshes[0].Get(), "메쉬 생성 실패");
+	}
+	else
+	{
+		int rawMeshCount = renderable.node.meshes.size();
+		node->meshes.resize(rawMeshCount);
+		for (int i = 0; i < rawMeshCount; ++i)
 		{
-			return false;
+			DX11MeshBuilder meshBuilder(renderable.node.name + std::to_wstring(i));
+			meshBuilder.pDevice = _device.Get();
+			meshBuilder.vsBuilder = DX11VertexShaderBuilder(L"flt::CubeVS");
+			meshBuilder.pImmediateContext = _immediateContext.Get();
+			meshBuilder.pRawMesh = renderable.node.meshes[i].Get();
+			node->meshes[i].Set(meshBuilder);
+
+			if (!node->meshes[i].Get())
+			{
+				return false;
+			}
 		}
 	}
-	
+
+
+
 	_renderableObjects.push_back(node);
 
-	if (node->camera)
+	if (renderable.node.camera)
 	{
+		node->camera = renderable.node.camera;
 		_cameras.push_back(node->camera);
 	}
 
