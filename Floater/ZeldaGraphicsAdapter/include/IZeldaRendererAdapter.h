@@ -31,19 +31,16 @@ public:
 
 	virtual void DrawSprite(const Eigen::Vector2f& position, TextureID texture) override;
 
-	virtual void CreateBasicResources() override;
-	virtual void ReleaseBasicResources() override;
-
 	virtual TextureID CreateTexture(const std::wstring& texturePath) override;
-	virtual bool ReleaseTexture(TextureID textureID) override;
+	virtual void ReleaseTexture(TextureID textureID) override;
 
 	virtual ModelID CreateModel(const std::wstring& modelingFilePath) override;
-	virtual bool ReleaseModel(ModelID modelID) override;
+	virtual void ReleaseModel(ModelID modelID) override;
 	virtual std::vector<std::wstring> GetAnimationListByModel(ModelID modelID) override;
 	virtual std::vector<float> GetAnimationPlayTime(ModelID model) override;
 
 	virtual CameraID CreateCamera() override;
-	virtual bool ReleaseCamera(CameraID cameraID) override;
+	virtual void ReleaseCamera(CameraID cameraID) override;
 
 	virtual bool SetMainCamera(CameraID cameraID) override;
 	virtual bool UpdateCamera(CameraID cameraID, const Eigen::Matrix4f& worldMatrix, float fieldOfView, float cameraNear, float cameraFar) override;

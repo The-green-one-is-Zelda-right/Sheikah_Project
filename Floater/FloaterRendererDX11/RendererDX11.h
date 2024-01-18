@@ -22,6 +22,26 @@ namespace flt
 
 	class RendererDX11 : public IRenderer
 	{
+#pragma region Nested
+	private:
+		struct TextureRenderTarget
+		{
+			comptr<ID3D11Texture2D> texture;
+			comptr<ID3D11RenderTargetView> rtv;
+			comptr<ID3D11ShaderResourceView> srv;
+		};
+
+		enum GBufferType
+		{
+			GBUFFER_DEPTH,
+			GBUFFER_NORMAL,
+			GBUFFER_ALBEDO,
+			GBUFFER_SPECULAR,
+			GBUFFER_EMISSIVE,
+			GBUFFER_COUNT
+		};
+
+#pragma endregion
 	public:
 		RendererDX11();
 		~RendererDX11();
@@ -80,9 +100,7 @@ namespace flt
 		comptr<ID3D11DepthStencilView> _depthStencilView;
 		comptr<ID3D11RasterizerState> _rasterizerState;
 
-		comptr<ID3D11Texture2D> _gBufferTexture;
-		comptr<ID3D11RenderTargetView> _gBufferRenderTargetView;
-		comptr<ID3D11ShaderResourceView> _gBufferShaderResourceView;
+		TextureRenderTarget _gBuffer[GBUFFER_COUNT];
 
 		// 그리기 위한 오브젝트
 		std::vector<DX11Node*> _renderableObjects;

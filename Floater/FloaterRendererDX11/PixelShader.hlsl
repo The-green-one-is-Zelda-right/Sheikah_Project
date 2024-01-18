@@ -12,7 +12,11 @@ struct VS_OUTPUT
 
 struct PS_OUTPUT
 {
-    float4 test : SV_Target0;
+    float4 depth : SV_Target0;
+    float4 normal : SV_Target1;
+    float4 albedo : SV_Target2;
+    float4 specular : SV_Target3;
+    float4 emissive : SV_Target4;
 };
 
 PS_OUTPUT main(VS_OUTPUT input) : SV_Target
@@ -22,6 +26,10 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_Target
     //float4 texColor = textureMap.Sample(g_Sampler, input.UV);
     //float4 finalColor = texColor;
     
-    output.test = float4(1, 1, 1, 1);
+    output.depth = float4(input.Position.xxx, 1);
+    output.normal = float4(input.Position.yyy, 1);
+    output.albedo = float4(input.Position.zzz, 1);
+    output.specular = float4(input.Position.www, 1);
+    output.emissive = float4(input.Position.xyz, 1);
     return output;
 }

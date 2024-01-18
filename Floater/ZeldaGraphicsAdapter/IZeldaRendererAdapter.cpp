@@ -92,24 +92,14 @@ void IZeldaRendererAdapter::DrawSprite(const Eigen::Vector2f& position, TextureI
 
 }
 
-void IZeldaRendererAdapter::CreateBasicResources()
-{
-
-}
-
-void IZeldaRendererAdapter::ReleaseBasicResources()
-{
-
-}
-
 TextureID IZeldaRendererAdapter::CreateTexture(const std::wstring& texturePath)
 {
 	return TextureID{};
 }
 
-bool IZeldaRendererAdapter::ReleaseTexture(TextureID textureID)
+void IZeldaRendererAdapter::ReleaseTexture(TextureID textureID)
 {
-	return false;
+	return;
 }
 
 ModelID IZeldaRendererAdapter::CreateModel(const std::wstring& modelingFilePath)
@@ -117,9 +107,9 @@ ModelID IZeldaRendererAdapter::CreateModel(const std::wstring& modelingFilePath)
 	return ModelID{};
 }
 
-bool IZeldaRendererAdapter::ReleaseModel(ModelID modelID)
+void IZeldaRendererAdapter::ReleaseModel(ModelID modelID)
 {
-	return false;
+	return;
 }
 
 std::vector<std::wstring> IZeldaRendererAdapter::GetAnimationListByModel(ModelID modelID)
@@ -137,9 +127,9 @@ CameraID IZeldaRendererAdapter::CreateCamera()
 	return CameraID{};
 }
 
-bool IZeldaRendererAdapter::ReleaseCamera(CameraID cameraID)
+void IZeldaRendererAdapter::ReleaseCamera(CameraID cameraID)
 {
-	return false;
+	return;
 }
 
 bool IZeldaRendererAdapter::SetMainCamera(CameraID cameraID)
