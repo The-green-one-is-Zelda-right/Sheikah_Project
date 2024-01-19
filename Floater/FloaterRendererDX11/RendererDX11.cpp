@@ -43,6 +43,10 @@ flt::RendererDX11::RendererDX11() :
 	_renderTargetView(),
 	_depthStencilView(),
 	_rasterizerState(),
+	_gBuffer{},
+	_screenQuadTransform(),
+	_screenQuadIsDraw(true),
+	_screenQuad(nullptr),
 	_renderableObjects(),
 	_cameras(),
 	_debugHWnd(NULL),
@@ -259,6 +263,14 @@ bool flt::RendererDX11::Finalize()
 
 	delete _screenQuad;
 
+	// 들고 있는 노드들 삭제.
+	for (auto& node : _renderableObjects)
+	{
+		delete node;
+	}
+	_renderableObjects.clear();
+	_cameras.clear();
+
 	return true;
 }
 
@@ -279,8 +291,8 @@ bool flt::RendererDX11::Render(float deltaTime)
 		_immediateContext->ClearRenderTargetView(rtvs[i], DirectX::Colors::Yellow);
 	}
 	_immediateContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	_immediateContext->OMSetRenderTargets(GBUFFER_COUNT, rtvs, _depthStencilView.Get());
 
+	_immediateContext->OMSetRenderTargets(GBUFFER_COUNT, rtvs, _depthStencilView.Get());
 
 	// 각 mesh별로 들어가야하지만 일단 여기서 만들자.
 	// 매번 만들지 않도록 수정해야함.
@@ -298,8 +310,6 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState;
 	_device->CreateRasterizerState(&rasterizerDesc, &rasterizerState);
-
-	
 
 	_immediateContext->RSSetState(rasterizerState.Get());
 	for (auto& camera : _cameras)
@@ -384,9 +394,9 @@ bool flt::RendererDX11::Render(float deltaTime)
 	_immediateContext->OMSetDepthStencilState(depthState.Get(), 0);
 
 	// 빛 연산에 필요한 텍스쳐 픽셀쉐이더에 세팅.
-	_immediateContext->PSSetShaderResources(GBUFFER_DEPTH, 1, _gBuffer[GBUFFER_DEPTH].srv.GetAddressOf());
+	/*_immediateContext->PSSetShaderResources(GBUFFER_DEPTH, 1, _gBuffer[GBUFFER_DEPTH].srv.GetAddressOf());
 	_immediateContext->PSSetShaderResources(GBUFFER_NORMAL, 1, _gBuffer[GBUFFER_NORMAL].srv.GetAddressOf());
-	_immediateContext->PSSetShaderResources(GBUFFER_ALBEDO, 1, _gBuffer[GBUFFER_ALBEDO].srv.GetAddressOf());
+	_immediateContext->PSSetShaderResources(GBUFFER_ALBEDO, 1, _gBuffer[GBUFFER_ALBEDO].srv.GetAddressOf());*/
 
 	// 빛 연산 로직 구현 필요 TODO
 
@@ -419,6 +429,9 @@ bool flt::RendererDX11::Render(float deltaTime)
 		_immediateContext->IASetIndexBuffer(pMesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 		_immediateContext->DrawIndexed(pMesh->indexCount, 0, 0);
+
+		ID3D11ShaderResourceView* nullSRV[GBUFFER_COUNT] = { NULL, };
+		_immediateContext->PSSetShaderResources(0, GBUFFER_COUNT, nullSRV);
 	}
 
 
