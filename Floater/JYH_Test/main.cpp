@@ -234,27 +234,7 @@ int main()
 		rawScene.nodes[1]->transform.AddRotation({ 0.0f, 1.0f, 0.0f }, 0.01f);
 		cubeNode.transform.AddRotation({ 0.0f, 1.0f, 0.0f }, -0.1f);
 		{
-			auto keyData = platform.GetKey(flt::KeyCode::w);
-			if (keyData)
-			{
-				cameraNode.transform.AddPosition(cameraNode.transform.Forward() * 0.01f);
-			}
-			keyData = platform.GetKey(flt::KeyCode::a);
-			if (keyData)
-			{
-				cameraNode.transform.AddPosition(cameraNode.transform.Right() * -0.01f);
-			}
-			keyData = platform.GetKey(flt::KeyCode::s);
-			if (keyData)
-			{
-				cameraNode.transform.AddPosition(cameraNode.transform.Forward() * -0.01f);
-			}
-			keyData = platform.GetKey(flt::KeyCode::d);
-			if (keyData)
-			{
-				cameraNode.transform.AddPosition(cameraNode.transform.Right() * 0.01f);
-			}
-			keyData = platform.GetKey(flt::KeyCode::mouseLButton);
+			auto keyData = platform.GetKey(flt::KeyCode::mouseLButton);
 			if (keyData)
 			{
 				std::cout << "LL " << keyData.keyTime << " " << keyData.x << " " << keyData.y << std::endl;
@@ -262,15 +242,34 @@ int main()
 			keyData = platform.GetKey(flt::KeyCode::mouseRButton);
 			if (keyData)
 			{
-				std::cout << "RR " << keyData.keyTime << std::endl;
-			}
+				keyData = platform.GetKey(flt::KeyCode::w);
+				if (keyData)
+				{
+					cameraNode.transform.AddPosition(cameraNode.transform.Forward() * 0.01f);
+				}
+				keyData = platform.GetKey(flt::KeyCode::a);
+				if (keyData)
+				{
+					cameraNode.transform.AddPosition(cameraNode.transform.Right() * -0.01f);
+				}
+				keyData = platform.GetKey(flt::KeyCode::s);
+				if (keyData)
+				{
+					cameraNode.transform.AddPosition(cameraNode.transform.Forward() * -0.01f);
+				}
+				keyData = platform.GetKey(flt::KeyCode::d);
+				if (keyData)
+				{
+					cameraNode.transform.AddPosition(cameraNode.transform.Right() * 0.01f);
+				}
 
-			keyData = platform.GetKey(flt::KeyCode::mouseRelativePos);
-			if (keyData)
-			{
-				cameraNode.transform.AddRotation({0.0f, 1.0f, 0.0f}, keyData.x * 0.01f);
-				cameraNode.transform.AddRotation(static_cast<flt::Vector3f>(cameraNode.transform.Right()), keyData.y * 0.01f);
-				std::cout << "diff Pos " << keyData.x << " " << keyData.y << std::endl;
+				keyData = platform.GetKey(flt::KeyCode::mouseRelativePos);
+				if (keyData)
+				{
+					cameraNode.transform.AddRotation({ 0.0f, 1.0f, 0.0f }, keyData.x * 0.01f);
+					cameraNode.transform.AddRotation(static_cast<flt::Vector3f>(cameraNode.transform.Right()), keyData.y * 0.01f);
+					//std::cout << "diff Pos " << keyData.x << " " << keyData.y << std::endl;
+				}
 			}
 
 			keyData = platform.GetKey(flt::KeyCode::mouseWheelUp);
@@ -306,7 +305,7 @@ int main()
 			keyData = platform.GetKey(flt::KeyCode::mouseAbsolutePos);
 			if (keyData)
 			{
-				std::cout << "abs Pos " << keyData.x << " " << keyData.y << std::endl;
+				//std::cout << "abs Pos " << keyData.x << " " << keyData.y << std::endl;
 			}
 		}
 
