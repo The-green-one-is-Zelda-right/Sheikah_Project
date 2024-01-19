@@ -19,6 +19,12 @@ namespace flt
 	{
 		IBuilderBase() = default;
 		IBuilderBase(const std::wstring& key) : key(key) {}
+		IBuilderBase(const IBuilderBase& other) : key(other.key) {}
+		IBuilderBase(IBuilderBase&& other) noexcept : key(std::move(other.key)) {}
+
+		IBuilderBase& operator=(const IBuilderBase& other) = delete;
+		IBuilderBase& operator=(IBuilderBase&& other) noexcept = delete;
+
 		virtual void* operator()(std::wstring* typeName) const = 0;
 		std::wstring key;
 	};
@@ -30,6 +36,19 @@ namespace flt
 
 		IBuilder() = default;
 		IBuilder(const std::wstring& key) : IBuilderBase(key) {}
+		IBuilder(const IBuilder& other) : IBuilderBase(other) {}
+		IBuilder(IBuilder&& other) noexcept : IBuilderBase(std::move(other)) {}
+
+		IBuilder& operator=(const IBuilder& other)
+		{
+			key = other.key;
+			return *this;
+		}
+		IBuilder& operator=(IBuilder&& other) noexcept
+		{
+			key = std::move(other.key);
+			return *this;
+		}
 
 		virtual void* operator()(std::wstring* typeName) const final
 		{

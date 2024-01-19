@@ -197,6 +197,22 @@ bool flt::RendererDX11::Initialize(HWND hwnd, HWND debugHWnd /*= NULL*/)
 		_isDebugMode = true;
 	}
 
+	_screenQuad = new(std::nothrow) DX11Node(_screenQuadTransform, _screenQuadIsDraw);
+	if (!_screenQuad)
+	{
+		ASSERT(false, "스크린 쿼드 생성 실패");
+		return false;
+	}
+
+	_screenQuad->name = L"screenQuad";
+	DX11ScreedQuadBuilder screenQuadBuilder;
+	screenQuadBuilder.pDevice = _device.Get();
+	screenQuadBuilder.pImmediateContext = _immediateContext.Get();
+
+	_screenQuad->meshes.resize(1);
+	_screenQuad->meshes[0].Set(screenQuadBuilder);
+	ASSERT(_screenQuad->meshes[0].Get(), "메쉬 생성 실패");
+
 	_isRunRenderEngine = true;
 	return true;
 }
@@ -240,6 +256,8 @@ bool flt::RendererDX11::Finalize()
 		_debugHWnd = NULL;
 		_isDebugMode = false;
 	}
+
+	delete _screenQuad;
 
 	return true;
 }
@@ -311,7 +329,7 @@ bool flt::RendererDX11::Render(float deltaTime)
 				_immediateContext->VSSetShader(vertexShader->pVertexShader, nullptr, 0);
 				_immediateContext->PSSetShader(pixelShader->pPixelShader, nullptr, 0);
 
-				_immediateContext->PSSetShaderResources(0, 1, &(pMesh->texture));
+				_immediateContext->PSSetShaderResources(0, pMesh->srvCount, pMesh->srv);
 
 				D3D11_MAPPED_SUBRESOURCE mappedResource = { };
 				HRESULT hResult = _immediateContext->Map(vertexShader->pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -366,20 +384,42 @@ bool flt::RendererDX11::Render(float deltaTime)
 	_immediateContext->OMSetDepthStencilState(depthState.Get(), 0);
 
 	// 빛 연산에 필요한 텍스쳐 픽셀쉐이더에 세팅.
-	_immediateContext->PSSetShaderResources(GBUFFER_DEPTH, 1, &_gBuffer[GBUFFER_DEPTH].srv);
-	_immediateContext->PSSetShaderResources(GBUFFER_NORMAL, 1, &_gBuffer[GBUFFER_NORMAL].srv);
-	_immediateContext->PSSetShaderResources(GBUFFER_ALBEDO, 1, &_gBuffer[GBUFFER_ALBEDO].srv);
+	_immediateContext->PSSetShaderResources(GBUFFER_DEPTH, 1, _gBuffer[GBUFFER_DEPTH].srv.GetAddressOf());
+	_immediateContext->PSSetShaderResources(GBUFFER_NORMAL, 1, _gBuffer[GBUFFER_NORMAL].srv.GetAddressOf());
+	_immediateContext->PSSetShaderResources(GBUFFER_ALBEDO, 1, _gBuffer[GBUFFER_ALBEDO].srv.GetAddressOf());
 
 	// 빛 연산 로직 구현 필요 TODO
 
 	// 최종 연산 결과 화면에 출력
+	{
+		_immediateContext->ClearRenderTargetView(_renderTargetView.Get(), DirectX::Colors::Black);
+		_immediateContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		_immediateContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), _depthStencilView.Get());
+		_immediateContext->RSSetState(rasterizerState.Get());
 
+		DX11Mesh* pMesh = _screenQuad->meshes[0].Get();
+		DX11VertexShader* vertexShader = pMesh->vertexShader.Get();
+		DX11PixelShader* pixelShader = pMesh->pixelShader.Get();
 
-	_immediateContext->ClearRenderTargetView(_renderTargetView.Get(), DirectX::Colors::Black);
-	_immediateContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	_immediateContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), _depthStencilView.Get());
+		_immediateContext->IASetInputLayout(vertexShader->pInputLayout);
+		_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	_immediateContext->RSSetState(rasterizerState.Get());
+		_immediateContext->VSSetShader(vertexShader->pVertexShader, nullptr, 0);
+		_immediateContext->PSSetShader(pixelShader->pPixelShader, nullptr, 0);
+
+		for (int i = 0; i < GBUFFER_COUNT; ++i)
+		{
+			_immediateContext->PSSetShaderResources(i, 1, _gBuffer[i].srv.GetAddressOf());
+		}
+
+		_immediateContext->PSSetSamplers(0, 1, &pMesh->sampler);
+
+		UINT offset = 0;
+		_immediateContext->IASetVertexBuffers(0, 1, &pMesh->vertexBuffer, &pMesh->singleVertexSize, &offset);
+		_immediateContext->IASetIndexBuffer(pMesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+		_immediateContext->DrawIndexed(pMesh->indexCount, 0, 0);
+	}
 
 
 	_immediateContext->RSSetState(NULL);
@@ -710,14 +750,6 @@ bool flt::RendererDX11::OnResize()
 		}
 	}
 
-
-
-
-
-
-
-
-
 	return true;
 }
 
@@ -771,6 +803,17 @@ flt::Resource<flt::DX11Mesh>* flt::RendererDX11::CreateBox()
 	cubeBuilder.pImmediateContext = _immediateContext.Get();
 
 	Resource<DX11Mesh>* meshResource = new Resource<DX11Mesh>(cubeBuilder);
+
+	return meshResource;
+}
+
+flt::Resource<flt::DX11Mesh>* flt::RendererDX11::CreatescreenQuad()
+{
+	DX11ScreedQuadBuilder screenQuadBuilder;
+	screenQuadBuilder.pDevice = _device.Get();
+	screenQuadBuilder.pImmediateContext = _immediateContext.Get();
+
+	Resource<DX11Mesh>* meshResource = new Resource<DX11Mesh>(screenQuadBuilder);
 
 	return meshResource;
 }

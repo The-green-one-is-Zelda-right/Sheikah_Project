@@ -86,7 +86,8 @@ namespace flt
 			singleVertexSize(0),
 			indexBuffer(nullptr),
 			indexCount(0),
-			texture(nullptr),
+			srv(nullptr),
+			srvCount(0),
 			sampler(nullptr)
 		{}
 
@@ -101,7 +102,8 @@ namespace flt
 		ID3D11Buffer* indexBuffer;
 		UINT indexCount;
 
-		ID3D11ShaderResourceView* texture;
+		ID3D11ShaderResourceView** srv;
+		UINT srvCount;
 		ID3D11SamplerState* sampler;
 	};
 
@@ -123,6 +125,13 @@ namespace flt
 	struct DX11CubeBuilder : public DX11MeshBuilder
 	{
 		DX11CubeBuilder() : DX11MeshBuilder(L"flt::CubeBuilder") {}
+
+		virtual DX11Mesh* build() const override;
+	};
+
+	struct DX11ScreedQuadBuilder : public DX11MeshBuilder
+	{
+		DX11ScreedQuadBuilder() : DX11MeshBuilder(L"flt::ScreedQuadBuilder") {}
 
 		virtual DX11Mesh* build() const override;
 	};

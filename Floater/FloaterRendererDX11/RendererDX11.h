@@ -69,6 +69,7 @@ namespace flt
 		// 테스트 private 함수들
 	private:
 		Resource<DX11Mesh>* CreateBox();
+		Resource<DX11Mesh>* CreatescreenQuad();
 
 	private:
 		HWND _hwnd;
@@ -100,7 +101,11 @@ namespace flt
 		comptr<ID3D11DepthStencilView> _depthStencilView;
 		comptr<ID3D11RasterizerState> _rasterizerState;
 
+		// 디퍼드에 사용할 변수들
 		TextureRenderTarget _gBuffer[GBUFFER_COUNT];
+		Transform _screenQuadTransform;
+		bool _screenQuadIsDraw;
+		DX11Node* _screenQuad;
 
 		// 그리기 위한 오브젝트
 		std::vector<DX11Node*> _renderableObjects;

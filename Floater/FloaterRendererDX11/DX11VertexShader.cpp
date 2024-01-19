@@ -13,6 +13,11 @@
 template<typename T>
 using comptr = Microsoft::WRL::ComPtr<T>;
 
+flt::DX11VertexShaderBuilder::~DX11VertexShaderBuilder()
+{
+
+}
+
 flt::DX11VertexShader* flt::DX11VertexShaderBuilder::build() const 
 {
 	if (pDevice == nullptr)
@@ -43,7 +48,7 @@ flt::DX11VertexShader* flt::DX11VertexShaderBuilder::build() const
 	}
 
 	ID3D11InputLayout* inputLayout = nullptr;
-	hResult = pDevice->CreateInputLayout(pInputLayoutDesc, descElementCount,
+	hResult = pDevice->CreateInputLayout(&(inputLayoutDesc[0]), inputLayoutDesc.size(),
 		vertexShaderBlob->GetBufferPointer(), (UINT)(vertexShaderBlob->GetBufferSize()),
 		&inputLayout);
 	if (hResult != S_OK)
