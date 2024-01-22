@@ -341,18 +341,8 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 				_immediateContext->PSSetShaderResources(0, pMesh->srvCount, pMesh->srv);
 
-				D3D11_MAPPED_SUBRESOURCE mappedResource = { };
-				HRESULT hResult = _immediateContext->Map(vertexShader->pConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-				if (hResult != S_OK)
-				{
-					ASSERT(false, "상수 버퍼 맵핑 실패");
-					return false;
-				}
-				DirectX::XMMATRIX* data = (DirectX::XMMATRIX*)mappedResource.pData;
-				*data = worldViewProj;
-				_immediateContext->Unmap(vertexShader->pConstantBuffer, 0);
-
-				_immediateContext->VSSetConstantBuffers(0, 1, &(vertexShader->pConstantBuffer));
+				void* pData = &worldViewProj;
+				vertexShader->SetConstantBuffer(_immediateContext.Get(), &pData, 1);
 
 				_immediateContext->PSSetSamplers(0, 1, &pMesh->sampler);
 
@@ -422,6 +412,11 @@ bool flt::RendererDX11::Render(float deltaTime)
 			_immediateContext->PSSetShaderResources(i, 1, _gBuffer[i].srv.GetAddressOf());
 		}
 
+		// 이 크기에 맞춰서 가로세로 x y 각각 0~1 사이의 값을 통해 조절
+		VSBackBuffer vsBackBuffer{ 1.f, 1.f, 0.5f, 0.5f };
+		void* pData = &vsBackBuffer;
+		vertexShader->SetConstantBuffer(_immediateContext.Get(), &pData, 1);
+
 		_immediateContext->PSSetSamplers(0, 1, &pMesh->sampler);
 
 		UINT offset = 0;
@@ -432,6 +427,11 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 		ID3D11ShaderResourceView* nullSRV[GBUFFER_COUNT] = { NULL, };
 		_immediateContext->PSSetShaderResources(0, GBUFFER_COUNT, nullSRV);
+
+		// 디버깅 정보를 띄울경우에 출력
+		{
+
+		}
 	}
 
 

@@ -9,7 +9,7 @@ namespace flt
 
 	struct DX11VertexShader
 	{
-		DX11VertexShader() : pVertexShader(nullptr), pInputLayout(nullptr), pConstantBuffer(nullptr), pBoneConstantBuffer(nullptr) {}
+		DX11VertexShader() : pVertexShader(nullptr), pInputLayout(nullptr), pConstantBuffers() {}
 
 		void Release()
 		{
@@ -23,21 +23,19 @@ namespace flt
 				pInputLayout->Release();
 			}
 
-			if (pConstantBuffer)
+			int constantBufferArrSize = (int)pConstantBuffers.size();
+			for (int i = 0; i < constantBufferArrSize; ++i)
 			{
-				pConstantBuffer->Release();
+				pConstantBuffers[i].first->Release();
 			}
-
-			if (pBoneConstantBuffer)
-			{
-				pBoneConstantBuffer->Release();
-			}
+			pConstantBuffers.clear();
 		}
+
+		void SetConstantBuffer(ID3D11DeviceContext* pContext, void** pDataArr, int arrSize);
 
 		ID3D11VertexShader* pVertexShader;
 		ID3D11InputLayout* pInputLayout;
-		ID3D11Buffer* pConstantBuffer;
-		ID3D11Buffer* pBoneConstantBuffer;
+		std::vector<std::pair<ID3D11Buffer*, int>> pConstantBuffers;
 	};
 
 	template struct Resource<DX11VertexShader>;
@@ -68,6 +66,7 @@ namespace flt
 
 		ID3D11Device* pDevice;
 		std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc;
+		std::vector<int> constantBufferSizes;
 	};
 }
 

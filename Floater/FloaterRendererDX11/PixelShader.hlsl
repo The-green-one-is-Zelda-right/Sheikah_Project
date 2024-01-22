@@ -25,11 +25,11 @@ PS_OUTPUT main(VS_OUTPUT input) : SV_Target
 
     //float4 texColor = textureMap.Sample(g_Sampler, input.UV);
     //float4 finalColor = texColor;
-    
-    output.depth = float4(input.Position.xxx, 1);
-    output.normal = float4(input.Position.yyy, 1);
-    output.albedo = float4(input.Position.zzz, 1);
-    output.specular = float4(input.Position.www, 1);
-    output.emissive = float4(input.Position.xyz, 1);
+    float4 color = normalize(input.Position);
+    output.depth = float4(color.xyz, 1);
+    output.normal = float4(color.xxx, 1);
+    output.albedo = float4(color.yyy, 1);
+    output.specular = float4(color.zzz, 1);
+    output.emissive = float4(color.www, 1);
     return output;
 }
