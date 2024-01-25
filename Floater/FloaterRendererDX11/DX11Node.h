@@ -12,6 +12,13 @@ namespace flt
 {
 	struct DX11Node
 	{
+#pragma region Nasted
+		enum BoneIndex
+		{
+			NO_BONE = -1,
+			HAS_BONE = -2
+		};
+#pragma endregion
 		DX11Node(Transform& transform, const bool& isDraw);
 		//DX11Node(RawNode& rawNode, const bool& isDraw);
 

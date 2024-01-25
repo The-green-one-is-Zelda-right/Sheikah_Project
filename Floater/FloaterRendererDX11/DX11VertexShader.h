@@ -9,6 +9,17 @@ namespace flt
 
 	struct DX11VertexShader
 	{
+#pragma region Nasted
+		enum CBufferSlot
+		{
+			PER_SCENE = 0,
+			PER_ENTITY = 1,
+			PER_MATERIAL = 2,
+
+		};
+
+#pragma endregion
+
 		DX11VertexShader() : pVertexShader(nullptr), pInputLayout(nullptr), pConstantBuffers() {}
 
 		void Release()

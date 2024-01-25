@@ -278,7 +278,7 @@ bool flt::RendererDX11::Render(float deltaTime)
 {
 	// 디퍼드 시작 일단 멀티 렌더타겟.
 	ID3D11RenderTargetView* rtvs[GBUFFER_COUNT] =
-	{ 
+	{
 		_gBuffer[GBUFFER_DEPTH].rtv.Get(),
 		_gBuffer[GBUFFER_NORMAL].rtv.Get(),
 		_gBuffer[GBUFFER_ALBEDO].rtv.Get(),
@@ -425,13 +425,42 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 		_immediateContext->DrawIndexed(pMesh->indexCount, 0, 0);
 
-		ID3D11ShaderResourceView* nullSRV[GBUFFER_COUNT] = { NULL, };
-		_immediateContext->PSSetShaderResources(0, GBUFFER_COUNT, nullSRV);
+		/*// 버텍스 버퍼, 인덱스 버퍼를 사용하지 않는 코드.
+		// 화면보다 큰 삼각형 하나를 그리는식으로 구현이 됨.
+		// 이로인해 백버퍼의 상수버퍼에 화면 크기, uv값을 넣어서 다른 크기의 출력화면을 만들 수 없다.
+		DX11Mesh* pMesh = _screenQuad->meshes[0].Get();
+		DX11VertexShader* vertexShader = pMesh->vertexShader.Get();
+		DX11PixelShader* pixelShader = pMesh->pixelShader.Get();
+
+		_immediateContext->IASetInputLayout(vertexShader->pInputLayout);
+		ID3D11Buffer* nothing = 0;
+		UINT stride = 0;
+		UINT offset = 0;
+		_immediateContext->IASetVertexBuffers(0, 1, &nothing, &stride, &offset);
+		_immediateContext->IASetIndexBuffer(0, DXGI_FORMAT_R32_UINT, 0);
+
+		_immediateContext->VSSetShader(vertexShader->pVertexShader, nullptr, 0);
+		_immediateContext->PSSetShader(pixelShader->pPixelShader, nullptr, 0);
+
+		for (int i = 0; i < GBUFFER_COUNT; ++i)
+		{
+			_immediateContext->PSSetShaderResources(i, 1, _gBuffer[i].srv.GetAddressOf());
+		}
+		// 이렇게 하면 전체 삼각형의 모습을 제대로 볼 수 있음.
+		VSBackBuffer vsBackBuffer{ 0.5f, 0.5f, 0.5f, 0.5f };
+		void* pData = &vsBackBuffer;
+		vertexShader->SetConstantBuffer(_immediateContext.Get(), &pData, 1);
+
+		_immediateContext->Draw(3, 0);*/
 
 		// 디버깅 정보를 띄울경우에 출력
 		{
 
 		}
+
+		// 입력에 사용한 텍스쳐 정리
+		ID3D11ShaderResourceView* nullSRV[GBUFFER_COUNT] = { NULL, };
+		_immediateContext->PSSetShaderResources(0, GBUFFER_COUNT, nullSRV);
 	}
 
 

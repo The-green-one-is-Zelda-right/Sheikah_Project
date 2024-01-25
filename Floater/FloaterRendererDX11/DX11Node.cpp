@@ -5,7 +5,7 @@ flt::DX11Node::DX11Node(Transform& transform, const bool& isDraw) :
 	isDraw(isDraw),
 	meshes(),
 	camera(nullptr),
-	boneIndex(-1),
+	boneIndex(NO_BONE),
 	children()
 {
 
