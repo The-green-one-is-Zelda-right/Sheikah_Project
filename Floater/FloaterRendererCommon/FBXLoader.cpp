@@ -336,7 +336,9 @@ bool flt::FBXLoader::CreateAnimation(fbxsdk::FbxNode& node, RawAnimation** outAn
 		{
 			auto animCurve = animCurveNode->GetCurve(j);
 			int animCurveKeyCount = animCurve->KeyGetCount();
-			(*outAnimation)->keyDatas.reserve(animCurveKeyCount);
+			(*outAnimation)->keyPosition.reserve(animCurveKeyCount);
+			(*outAnimation)->keyRotation.reserve(animCurveKeyCount);
+			(*outAnimation)->keyScale.reserve(animCurveKeyCount);
 			for (int k = 0; k < animCurveKeyCount; ++k)
 			{
 				auto animCurveKey = animCurve->KeyGet(k);
@@ -346,7 +348,9 @@ bool flt::FBXLoader::CreateAnimation(fbxsdk::FbxNode& node, RawAnimation** outAn
 
 				Transform transform;
 				LoadToTransform(node.EvaluateLocalTransform(animCurveKeyTime), &transform);
-				(*outAnimation)->keyDatas.emplace_back(animCurveKeyTimeSecond, transform);
+				(*outAnimation)->keyPosition.emplace_back(animCurveKeyTimeSecond, transform.GetLocalPosition());
+				(*outAnimation)->keyRotation.emplace_back(animCurveKeyTimeSecond, transform.GetLocalRotation());
+				(*outAnimation)->keyScale.emplace_back(animCurveKeyTimeSecond, transform.GetLocalScale());
 			}
 		}
 	}

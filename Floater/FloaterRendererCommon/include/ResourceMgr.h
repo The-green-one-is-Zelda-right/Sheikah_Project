@@ -4,6 +4,8 @@
 #include <atomic>
 #include <mutex>
 
+#include <iostream>
+
 /// <summary>
 /// 앞으로 할 일
 /// 같은 KEY값을 가지고 있지만 다른 데이터를 가진 Builder가 들어왔을 경우에 체크할 수 있도록.
@@ -20,17 +22,24 @@ namespace flt
 	class ResourceMgr
 	{
 	public:
-		ResourceMgr() = default;
+		ResourceMgr() : 
+			resources(), 
+			resourceMutex()
+		{
+			std::wcerr << this << std::endl;
+		}
 		~ResourceMgr()
 		{
 			CheckManagedData();
 		}
 
 	public:
-		void* GetResource(ResourceBase* resource, const IBuilderBase& builder);
+		void GetResource(ResourceBase* resource, const IBuilderBase& builder);
 		bool ReleaseResource(ResourceBase* resource);
 
 		bool AddRefResource(const ResourceBase* resource);
+
+		void ReleaseAllResource();
 
 	private:
 		void CheckManagedData()

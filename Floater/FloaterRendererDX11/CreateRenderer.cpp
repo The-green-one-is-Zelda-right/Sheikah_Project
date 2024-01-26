@@ -35,5 +35,6 @@ extern "C" bool flt::DestroyRendererDX11(IRenderer * renderer)
 		return true;
 	}
 
+
 	return false;
 }

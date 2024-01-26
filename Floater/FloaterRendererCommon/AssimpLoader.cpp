@@ -45,7 +45,7 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	// 머테리얼
 	std::vector<RawMaterial*>& rawMaterials = outRawScene->materials;
 	const unsigned int materialCount = scene->mNumMaterials;
-	const unsigned int rawMaterialCount = rawMaterials.size();
+	const unsigned int rawMaterialCount = (unsigned int)rawMaterials.size();
 	rawMaterials.resize(rawMaterialCount + materialCount);
 	for (unsigned int i = 0; i < materialCount; ++i)
 	{
@@ -53,7 +53,7 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	}
 	// 메쉬
 	unsigned int meshCount = scene->mNumMeshes;
-	unsigned int rawMeshCount = outRawScene->meshes.size();
+	unsigned int rawMeshCount = (unsigned int)outRawScene->meshes.size();
 	std::vector<Resource<RawMesh>>& rawMeshes = outRawScene->meshes;
 	rawMeshes.resize(rawMeshCount + meshCount);
 
@@ -227,6 +227,60 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	for (int i = 0; i < nodeCount; ++i)
 	{
 		SetRawMeshToRawNodeRecursive(scene->mRootNode->mChildren[i], outRawScene->nodes[i], outRawScene);
+	}
+
+	// 애니메이션 로드
+	if (scene->HasAnimations())
+	{
+		const int animationCount = scene->mNumAnimations;
+		for (int i = 0; i < animationCount; ++i)
+		{
+			aiAnimation* animation = scene->mAnimations[i];
+
+			aiString animName = animation->mName;
+			double duration = animation->mDuration;
+			double ticksPerSecond = animation->mTicksPerSecond;
+
+
+
+			const int channelCount = animation->mNumChannels;
+			for (int j = 0; j < channelCount; ++j)
+			{
+				RawAnimation* rawAnim = new(std::nothrow) RawAnimation();
+				ASSERT(rawAnim, "rawAnim is nullptr");
+				rawAnim->name = ConvertToWstring(animName.C_Str());
+
+				aiNodeAnim* nodeAnim = animation->mChannels[j];
+				aiString nodeName = nodeAnim->mNodeName;
+
+				std::wstring wNodeName = ConvertToWstring(nodeName.C_Str());
+				auto iter = _nodeMap.find(wNodeName);
+				ASSERT(iter != _nodeMap.end(), "node not found");
+				ASSERT(!iter->second->animation, "node already has animation");
+				iter->second->animation = rawAnim;
+
+				int keyCount = (int)nodeAnim->mNumPositionKeys;
+				for (int k = 0; k < keyCount; ++k)
+				{
+					aiVectorKey key = nodeAnim->mPositionKeys[k];
+					rawAnim->keyPosition.push_back(RawAnimation::KeyPosition((float)key.mTime, { key.mValue.x, key.mValue.y, key.mValue.z, 0.0f }));
+				}
+
+				keyCount = (int)nodeAnim->mNumRotationKeys;
+				for (int k = 0; k < keyCount; ++k)
+				{
+					aiQuatKey key = nodeAnim->mRotationKeys[k];
+					rawAnim->keyRotation.push_back(RawAnimation::KeyRotation((float)key.mTime, { key.mValue.x, key.mValue.y, key.mValue.z, key.mValue.w }));
+				}
+
+				keyCount = (int)nodeAnim->mNumScalingKeys;
+				for (int k = 0; k < keyCount; ++k)
+				{
+					aiVectorKey key = nodeAnim->mScalingKeys[k];
+					rawAnim->keyScale.push_back(RawAnimation::KeyScale((float)key.mTime, { key.mValue.x, key.mValue.y, key.mValue.z, 0.0f }));
+				}
+			}
+		}
 	}
 }
 

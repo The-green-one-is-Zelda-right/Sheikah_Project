@@ -11,34 +11,30 @@ namespace flt
 	}
 }
 
-void* flt::ResourceMgr::GetResource(ResourceBase* resource, const IBuilderBase& builder)
+void flt::ResourceMgr::GetResource(ResourceBase* outResource, const IBuilderBase& builder)
 {
-	void* data = nullptr;
-
 	std::lock_guard<std::recursive_mutex> lock(resourceMutex);
-	resource->_key = builder.key;
+	outResource->_key = builder.key;
 	if (resources.find(builder.key) == resources.end())
 	{
 		// 관리하지 않는 데이터일 경우 생성
-		std::wstring typeName;
-		data = builder(&typeName);
+		std::wstring typeName = builder.GetTypeName();
+		outResource->_pData = builder();
 		// 생성 실패 시 nullptr 반환
-		if (data == nullptr)
+		if (outResource->_pData == nullptr)
 		{
-			return nullptr;
+			return;
 		}
+		resources[builder.key] = { outResource->_pData, typeName };
 
-		resources[builder.key] = { data, typeName };
+		std::wcerr << this << " - " << L"Created : " << typeName << std::endl;
 		//auto[iter, ret] = resources.emplace(builder.key, data, typeName);
 	}
 	else
 	{
 		// 관리중일 데이터일 경우 참조 카운트 증가
-		data = resources[builder.key].GetData();
+		outResource->_pData = resources[builder.key].GetData();
 	}
-
-
-	return data;
 }
 
 bool flt::ResourceMgr::ReleaseResource(ResourceBase* resource)
@@ -48,6 +44,8 @@ bool flt::ResourceMgr::ReleaseResource(ResourceBase* resource)
 	{
 		if (resources[resource->_key].Release())
 		{
+			std::wcerr << this << " - " << L"Released" << resources[resource->_key].typeName << std::endl;
+
 			resources.erase(resource->_key);
 			//delete resource;
 			return true;
@@ -74,4 +72,23 @@ bool flt::ResourceMgr::AddRefResource(const ResourceBase* resource)
 	}
 
 	return true;
+}
+
+void flt::ResourceMgr::ReleaseAllResource()
+{
+	std::lock_guard<std::recursive_mutex> lock(resourceMutex);
+	CheckManagedData();
+
+	for (auto& resource : resources)
+	{
+		std::wstring typeName = resource.second.typeName;
+		while (!resource.second.Release())
+		{
+
+		}
+		std::wcerr << this << " - " << L"Released" << typeName << std::endl;
+	}
+	resources.clear();
+
+	CheckManagedData();
 }

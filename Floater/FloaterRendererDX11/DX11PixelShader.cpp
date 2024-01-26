@@ -29,7 +29,7 @@ flt::DX11PixelShader* flt::DX11PixelShaderBuilder::build() const
 
 	comptr<ID3D10Blob> pixelShaderBlob;
 
-	HRESULT hResult = D3DCompileFromFile(key.c_str(), nullptr, nullptr, "main", "ps_5_0", flags1, 0, &pixelShaderBlob, nullptr);
+	HRESULT hResult = D3DCompileFromFile(filePath.c_str(), nullptr, nullptr, "main", "ps_5_0", flags1, 0, &pixelShaderBlob, nullptr);
 	if (hResult != S_OK)
 	{
 		ASSERT(false, "픽셀 쉐이더 컴파일 실패");
@@ -61,6 +61,8 @@ flt::DX11PixelShader* flt::DX11PixelShaderBuilder::build() const
 		pixelShader->Release();
 		return nullptr;
 	}
+	constantBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"PixelShaderBuffer") - 1, L"PixelShaderBuffer");
+
 
 	DX11PixelShader* pPixelShader = new DX11PixelShader();
 	pPixelShader->pPixelShader = pixelShader;

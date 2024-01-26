@@ -14,6 +14,8 @@ namespace flt
 	class OsWindows
 	{
 	public:
+		static const std::wstring s_name;
+	public:
 		OsWindows(bool useConsole);
 		virtual ~OsWindows();
 		bool Initialize(int windowWidth, int windowHeight, const std::wstring& title, const std::wstring& imgPath);

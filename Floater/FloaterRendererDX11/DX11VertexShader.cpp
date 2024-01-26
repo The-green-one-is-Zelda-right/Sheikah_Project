@@ -32,7 +32,7 @@ flt::DX11VertexShader* flt::DX11VertexShaderBuilder::build() const
 #endif
 
 	comptr<ID3D10Blob> vertexShaderBlob = nullptr;
-	HRESULT hResult = D3DCompileFromFile(key.c_str(), nullptr, nullptr, "main", "vs_5_0", flags1, 0, &vertexShaderBlob, nullptr);
+	HRESULT hResult = D3DCompileFromFile(filePath.c_str(), nullptr, nullptr, "main", "vs_5_0", flags1, 0, &vertexShaderBlob, nullptr);
 	if (hResult != S_OK)
 	{
 		ASSERT(false, "버텍스 쉐이더 컴파일 실패");
@@ -92,6 +92,7 @@ flt::DX11VertexShader* flt::DX11VertexShaderBuilder::build() const
 		hResult = pDevice->CreateBuffer(&constantBufferDesc, nullptr, &dx11VertexShader->pConstantBuffers[i].first);
 		dx11VertexShader->pConstantBuffers[i].second = ConstantBufferReflectionDesc.Size;
 		ASSERT(hResult == S_OK, "상수 버퍼 생성 실패");
+		dx11VertexShader->pConstantBuffers[i].first->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"DX11VertexShaderBuffer") - 1, L"DX11VertexShaderBuffer");
 	}
 
 	pVertexShaderReflection->Release();

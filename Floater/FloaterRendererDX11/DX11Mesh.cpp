@@ -49,11 +49,11 @@ flt::DX11Mesh* flt::DX11MeshBuilder::build() const
 
 	ID3D11Buffer* vertexBuffer;
 	HRESULT hResult = pDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &vertexBuffer);
-
 	if (hResult != S_OK)
 	{
 		return nullptr;
 	}
+	vertexBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"MeshvertexBuffer") - 1, L"MeshvertexBuffer");
 
 	D3D11_BUFFER_DESC indexBufferDesc;
 	indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
@@ -74,6 +74,7 @@ flt::DX11Mesh* flt::DX11MeshBuilder::build() const
 	{
 		return nullptr;
 	}
+	indexBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"MeshIndexBuffer") - 1, L"MeshIndexBuffer");
 
 	ID3D11ShaderResourceView** textureViewArr = new(std::nothrow) ID3D11ShaderResourceView*[10] {nullptr, };
 	int srvCount = 0;
@@ -99,11 +100,10 @@ flt::DX11Mesh* flt::DX11MeshBuilder::build() const
 		{
 			hResult = DirectX::CreateWICTextureFromFile(pDevice, pImmediateContext, texturePath, &texture, &textureViewArr[i]);
 		}
-		texture->Release();
-
-		if (hResult != S_OK)
+		//ASSERT(hResult == S_OK, "텍스처 생성 실패");
+		if (texture)
 		{
-			return nullptr;
+			texture->Release();
 		}
 
 		srvCount++;
@@ -150,7 +150,10 @@ void flt::DX11Mesh::Release()
 	indexBuffer->Release();
 	for (unsigned int i = 0; i < srvCount; ++i)
 	{
-		srv[i]->Release();
+		if (srv[i])
+		{
+			srv[i]->Release();
+		}
 	}
 	delete[] srv;
 	sampler->Release();
@@ -252,11 +255,11 @@ flt::DX11Mesh* flt::DX11CubeBuilder::build() const
 
 	ID3D11Buffer* vertexBuffer;
 	HRESULT hResult = pDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &vertexBuffer);
-
 	if (hResult != S_OK)
 	{
 		return nullptr;
 	}
+	vertexBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"CubeVertexBuffer")-1, L"CubeVertexBuffer");
 
 	D3D11_BUFFER_DESC indexBufferDesc;
 	indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
@@ -277,6 +280,7 @@ flt::DX11Mesh* flt::DX11CubeBuilder::build() const
 	{
 		return nullptr;
 	}
+	indexBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"CubeIndexBuffer")-1, L"CubeIndexBuffer");
 
 	D3D11_BUFFER_DESC cbDesc;
 	cbDesc.ByteWidth = sizeof(DirectX::XMMATRIX);
@@ -292,6 +296,7 @@ flt::DX11Mesh* flt::DX11CubeBuilder::build() const
 	{
 		return nullptr;
 	}
+	constantBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"CubeConstantBuffer")-1, L"CubeConstantBuffer");
 
 	ID3D11Resource* texture;
 	ID3D11ShaderResourceView** textureView = new(std::nothrow) ID3D11ShaderResourceView*[1];
@@ -389,11 +394,12 @@ flt::DX11Mesh* flt::DX11ScreedQuadBuilder::build() const
 
 	ID3D11Buffer* vertexBuffer;
 	HRESULT hResult = pDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &vertexBuffer);
-
 	if (hResult != S_OK)
 	{
 		return nullptr;
 	}
+	vertexBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"ScreenQuadvertexBuffer")-1, L"ScreenQuadvertexBuffer");
+
 
 	D3D11_BUFFER_DESC indexBufferDesc;
 	indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
@@ -414,6 +420,7 @@ flt::DX11Mesh* flt::DX11ScreedQuadBuilder::build() const
 	{
 		return nullptr;
 	}
+	indexBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"ScreenQuadIndexBuffer")-1, L"ScreenQuadIndexBuffer");
 
 	D3D11_BUFFER_DESC cbDesc;
 	cbDesc.ByteWidth = sizeof(DirectX::XMMATRIX);
@@ -429,6 +436,7 @@ flt::DX11Mesh* flt::DX11ScreedQuadBuilder::build() const
 	{
 		return nullptr;
 	}
+	constantBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"ScreenQuadConstantBuffer")-1, L"ScreenQuadConstantBuffer");
 
 	D3D11_SAMPLER_DESC samplerDesc = {};
 	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC; //D3D11_FILTER_ANISOTROPIC;

@@ -8,9 +8,13 @@
 #include "../FloaterRendererDX11/include/CreateRenderer.h"
 #include "../FloaterUtil/include/ConvString.h"
 
+#include "../FloaterRendererCommon/include/ResourceMgr.h"
+
 #include <DbgHelp.h>
 #include <chrono>
 
+
+const std::wstring flt::OsWindows::s_name = L"Windows";
 
 flt::OsWindows::OsWindows(bool useConsole) :
 	_hwnd(NULL),
@@ -253,7 +257,9 @@ flt::IRenderer* flt::OsWindows::CreateRenderer(RendererType type)
 
 void flt::OsWindows::DestroyRenderer(IRenderer* renderer)
 {
-	delete renderer;
+	DestroyRendererDX11(renderer);
+
+	global::g_resourceMgr.ReleaseAllResource();
 }
 
 flt::KeyData flt::OsWindows::GetKey(KeyCode code)
@@ -592,29 +598,29 @@ LRESULT WINAPI flt::OsWindows::WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 
 				switch (rdi.dwType)
 				{
-					case RIM_TYPEMOUSE:
-						std::wcout << L"	Mouse" << std::endl;
-						std::wcout << L"	ID: " << rdi.mouse.dwId << std::endl;
-						std::wcout << L"	Number of Buttons: " << rdi.mouse.dwNumberOfButtons << std::endl;
-						std::wcout << L"	Sample Rate: " << rdi.mouse.dwSampleRate << std::endl;
-						break;
-					case RIM_TYPEKEYBOARD:
-						std::wcout << L"	Keyboard" << std::endl;
-						std::wcout << L"	Type: " << rdi.keyboard.dwType << std::endl;
-						std::wcout << L"	Sub Type: " << rdi.keyboard.dwSubType << std::endl;
-						std::wcout << L"	Keyboard Mode: " << rdi.keyboard.dwKeyboardMode << std::endl;
-						std::wcout << L"	Number of Function Keys: " << rdi.keyboard.dwNumberOfFunctionKeys << std::endl;
-						std::wcout << L"	Number of Indicators: " << rdi.keyboard.dwNumberOfIndicators << std::endl;
-						std::wcout << L"	Number of Keys Total: " << rdi.keyboard.dwNumberOfKeysTotal << std::endl;
-						break;
-					case RIM_TYPEHID:
-						std::wcout << L"	HID" << std::endl;
-						std::wcout << L"	Vendor ID: " << rdi.hid.dwVendorId << std::endl;
-						std::wcout << L"	Product ID: " << rdi.hid.dwProductId << std::endl;
-						std::wcout << L"	Version Number: " << rdi.hid.dwVersionNumber << std::endl;
-						std::wcout << L"	Usage for the top-level collection: " << rdi.hid.usUsage << std::endl;
-						std::wcout << L"	Usage Page for the top-level collection: " << rdi.hid.usUsagePage << std::endl;
-						break;
+					//case RIM_TYPEMOUSE:
+					//	std::wcout << L"	Mouse" << std::endl;
+					//	std::wcout << L"	ID: " << rdi.mouse.dwId << std::endl;
+					//	std::wcout << L"	Number of Buttons: " << rdi.mouse.dwNumberOfButtons << std::endl;
+					//	std::wcout << L"	Sample Rate: " << rdi.mouse.dwSampleRate << std::endl;
+					//	break;
+					//case RIM_TYPEKEYBOARD:
+					//	std::wcout << L"	Keyboard" << std::endl;
+					//	std::wcout << L"	Type: " << rdi.keyboard.dwType << std::endl;
+					//	std::wcout << L"	Sub Type: " << rdi.keyboard.dwSubType << std::endl;
+					//	std::wcout << L"	Keyboard Mode: " << rdi.keyboard.dwKeyboardMode << std::endl;
+					//	std::wcout << L"	Number of Function Keys: " << rdi.keyboard.dwNumberOfFunctionKeys << std::endl;
+					//	std::wcout << L"	Number of Indicators: " << rdi.keyboard.dwNumberOfIndicators << std::endl;
+					//	std::wcout << L"	Number of Keys Total: " << rdi.keyboard.dwNumberOfKeysTotal << std::endl;
+					//	break;
+					//case RIM_TYPEHID:
+					//	std::wcout << L"	HID" << std::endl;
+					//	std::wcout << L"	Vendor ID: " << rdi.hid.dwVendorId << std::endl;
+					//	std::wcout << L"	Product ID: " << rdi.hid.dwProductId << std::endl;
+					//	std::wcout << L"	Version Number: " << rdi.hid.dwVersionNumber << std::endl;
+					//	std::wcout << L"	Usage for the top-level collection: " << rdi.hid.usUsage << std::endl;
+					//	std::wcout << L"	Usage Page for the top-level collection: " << rdi.hid.usUsagePage << std::endl;
+					//	break;
 				}
 			}
 

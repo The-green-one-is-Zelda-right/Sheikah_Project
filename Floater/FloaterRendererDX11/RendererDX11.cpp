@@ -1,19 +1,20 @@
 ﻿#include "RendererDX11.h"
 #include "../FloaterUtil/include/FloaterMacro.h"
+#include "../FloaterRendererCommon/include/ResourceMgr.h"
 #include "DX11VSConstantBuffer.h"
 #include "DX11Mesh.h"
 #include <DirectXColors.h>
-
 #include <new>
 
 #if defined(DEBUG) || defined(_DEBUG)
 #include <dxgidebug.h>
+
+#pragma comment(lib, "dxguid.lib")
 #endif
 
 
 #pragma region testIncludes
 #include "TestBuilder.h"
-
 #pragma endregion
 
 #pragma comment(lib, "DXGI.lib")
@@ -57,7 +58,7 @@ flt::RendererDX11::RendererDX11() :
 
 flt::RendererDX11::~RendererDX11()
 {
-	Finalize();
+	global::g_resourceMgr.ReleaseAllResource();
 }
 
 bool flt::RendererDX11::Initialize(HWND hwnd, HWND debugHWnd /*= NULL*/)
@@ -271,6 +272,12 @@ bool flt::RendererDX11::Finalize()
 	_renderableObjects.clear();
 	_cameras.clear();
 
+//#if defined(DEBUG) || defined(_DEBUG)
+//	IDXGIDebug1* dxgiDebug;
+//	DXGIGetDebugInterface1(0, __uuidof(IDXGIDebug1), (void**)&dxgiDebug);
+//	dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+//	dxgiDebug->Release();
+//#endif
 	return true;
 }
 

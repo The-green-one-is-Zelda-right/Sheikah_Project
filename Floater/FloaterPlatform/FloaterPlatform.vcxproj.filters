@@ -42,4 +42,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="include\FloaterPlatform.natvis" />
+  </ItemGroup>
 </Project>

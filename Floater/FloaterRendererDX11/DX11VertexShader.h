@@ -53,8 +53,8 @@ namespace flt
 
 	struct DX11VertexShaderBuilder : public IBuilder<DX11VertexShader>
 	{
-		DX11VertexShaderBuilder() : pDevice(nullptr), inputLayoutDesc() {}
-		DX11VertexShaderBuilder(const std::wstring filePath) : IBuilder<DX11VertexShader>(filePath), pDevice(nullptr), inputLayoutDesc() {}
+		DX11VertexShaderBuilder() : DX11VertexShaderBuilder(L"") {}
+		DX11VertexShaderBuilder(const std::wstring filePath) : IBuilder<DX11VertexShader>(filePath), filePath(filePath), pDevice(nullptr), inputLayoutDesc() {}
 		DX11VertexShaderBuilder(const DX11VertexShaderBuilder& other) = delete;
 		DX11VertexShaderBuilder(DX11VertexShaderBuilder&& other) noexcept : IBuilder<DX11VertexShader>(std::move(other)), pDevice(other.pDevice), inputLayoutDesc(std::move(other.inputLayoutDesc))
 		{
@@ -75,6 +75,7 @@ namespace flt
 
 		virtual DX11VertexShader* build() const override;
 
+		std::wstring filePath;
 		ID3D11Device* pDevice;
 		std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc;
 		std::vector<int> constantBufferSizes;

@@ -25,17 +25,19 @@ namespace flt
 		IBuilderBase& operator=(const IBuilderBase& other) = delete;
 		IBuilderBase& operator=(IBuilderBase&& other) noexcept = delete;
 
-		virtual void* operator()(std::wstring* typeName) const = 0;
+		virtual void* operator()() const = 0;
+		virtual std::wstring GetTypeName() const = 0;
 		std::wstring key;
 	};
 
+	// 실제 데이터 객체의 타입을 알고 있는 계층.
 	template<typename T>
 	struct IBuilder : public IBuilderBase
 	{
 		using type = T;
 
 		IBuilder() = default;
-		IBuilder(const std::wstring& key) : IBuilderBase(key) {}
+		IBuilder(const std::wstring& key) : IBuilderBase(key + L":" + ConvertToWstring(typeid(T).name())) {}
 		IBuilder(const IBuilder& other) : IBuilderBase(other) {}
 		IBuilder(IBuilder&& other) noexcept : IBuilderBase(std::move(other)) {}
 
@@ -50,11 +52,14 @@ namespace flt
 			return *this;
 		}
 
-		virtual void* operator()(std::wstring* typeName) const final
+		virtual void* operator()() const final
 		{
-			*typeName = ConvertToWstring(typeid(T).name());
-
 			return build();
+		}
+
+		virtual std::wstring GetTypeName() const final
+		{
+			return ConvertToWstring(typeid(T).name());
 		}
 
 		virtual T* build() const = 0;

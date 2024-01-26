@@ -22,6 +22,5 @@ namespace flt
 		ID3D11DeviceContext* _pContext;
 		std::unique_ptr<DirectX::SpriteFont> _pFont;
 		std::unique_ptr<DirectX::SpriteBatch> _pSpriteBatch;
-
 	};
 }

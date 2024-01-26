@@ -111,9 +111,8 @@ namespace flt
 
 		void Set(const IBuilderBase& builder)
 		{
-			auto data = global::g_resourceMgr.GetResource(this, builder);
 			Release();
-			_pData = data;
+			global::g_resourceMgr.GetResource(this, builder);
 		}
 
 		T* Get()

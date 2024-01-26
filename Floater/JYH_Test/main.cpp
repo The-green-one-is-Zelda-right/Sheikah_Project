@@ -29,6 +29,15 @@
 #include "../FloaterMath/include/Vector2f.h"
 #include "../FloaterMath/include/Vector3f.h"
 
+
+#if defined(DEBUG) || defined(_DEBUG)
+#include <dxgidebug.h>
+#include <dxgi1_6.h>
+
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "dxguid.lib")
+#endif
+
 #pragma endregion
 
 #include "../ZeldaGraphicsAdapter/include/IZeldaRendererAdapter.h"
@@ -93,60 +102,12 @@ int main()
 
 		Quaternion q1{ 0.0f, 0.0f, 0.0f, 1.0f };
 		q1.SetEuler(1.f, 2.f, 3.f);
-		//Vector3f up{ 0.0f, 0.0f, 1.0f };
-		//Vector3f right{ 0.0f, 1.0f, 0.0f };
-		//Vector3f forward{ 1.0f, 0.0f, 0.0f };
 
-		//CoordSystem coord = CoordSystem::DX11();
-		//std::cout << "CoordSystem::GetDX11()" << std::endl;
-		//coord.PrintfCoord();
-		////coord.ConvertFrom(CoordSystem::Unreal(), up);
-		////coord.ConvertFrom(CoordSystem::Unreal(), right);
-		////coord.ConvertFrom(CoordSystem::Unreal(), forward);
-		//CoordSystem::Convert(CoordSystem::Unreal(), CoordSystem::DX11(), up);
-		//CoordSystem::Convert(CoordSystem::Unreal(), CoordSystem::DX11(), right);
-		//CoordSystem::Convert(CoordSystem::Unreal(), CoordSystem::DX11(), forward);
-		//TestVectorPrint(up, forward, right);
-
-		//coord = CoordSystem::Unreal();
-		//std::cout << "CoordSystem::GetUnreal()" << std::endl;
-		//coord.PrintfCoord();
-		////coord.ConvertFrom(CoordSystem::DX11(), up);
-		////coord.ConvertFrom(CoordSystem::DX11(), right);
-		////coord.ConvertFrom(CoordSystem::DX11(), forward);
-		//CoordSystem::Convert(CoordSystem::DX11(), CoordSystem::Unreal(), up);
-		//CoordSystem::Convert(CoordSystem::DX11(), CoordSystem::Unreal(), right);
-		//CoordSystem::Convert(CoordSystem::DX11(), CoordSystem::Unreal(), forward);
-		//TestVectorPrint(up, forward, right);
-
-		//coord = CoordSystem::OpenGL();
-		//std::cout << "CoordSystem::GetOpenGL()" << std::endl;
-		//coord.PrintfCoord();
-		//coord.ConvertFrom(CoordSystem::DX11(), up);
-		//coord.ConvertFrom(CoordSystem::DX11(), right);
-		//coord.ConvertFrom(CoordSystem::DX11(), forward);
-		//TestVectorPrint(up, forward, right);
-
-		//coord = CoordSystem::Max3D();
-		//std::cout << "CoordSystem::Get3DsMax()" << std::endl;
-		//coord.PrintfCoord();
-		//coord.ConvertFrom(CoordSystem::OpenGL(), up);
-		//coord.ConvertFrom(CoordSystem::OpenGL(), right);
-		//coord.ConvertFrom(CoordSystem::OpenGL(), forward);
-		//TestVectorPrint(up, forward, right);
-
-		//coord = CoordSystem::Unreal();
-		//std::cout << "CoordSystem::GetUnreal()" << std::endl;
-		//coord.PrintfCoord();
-		//coord.ConvertFrom(CoordSystem::DX11(), up);
-		//coord.ConvertFrom(CoordSystem::DX11(), right);
-		//coord.ConvertFrom(CoordSystem::DX11(), forward);
-		//TestVectorPrint(up, forward, right);
-
-
+		Matrix4f m1;
 
 		ModelLoader loader;
-		std::wstring filePath = L"..\\x64\\fbx\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Ganondorf (TotK).fbx";
+		//std::wstring filePath = L"..\\x64\\fbx\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Ganondorf (TotK).fbx";
+		std::wstring filePath = L"..\\x64\\fbx\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Dying.fbx";
 		std::wstring zUpYForward = L"..\\x64\\fbx\\Test\\ZY.fbx";
 		std::wstring yUpZForward = L"..\\x64\\fbx\\Test\\YZ.fbx";
 		std::wstring xUpYForward = L"..\\x64\\fbx\\Test\\XY.fbx";
@@ -188,41 +149,31 @@ int main()
 
 	auto renderer = platform.CreateRenderer(flt::RendererType::DX11);
 
-	bool isDraw = true;
-	
-	flt::RawNode cameraNode(L"testCamera");
-	cameraNode.transform.SetPosition(0.0f, 0.0f, 0.0f);
-	cameraNode.transform.SetScale(1.0f, 1.0f, 1.0f);
-	cameraNode.transform.SetRotation(0.0f, 0.0f, 0.0f);
-	cameraNode.camera = new flt::Camera(&cameraNode.transform);
+	//bool isDraw = true;
+	//
+	//flt::RawNode cameraNode(L"testCamera");
+	//cameraNode.transform.SetPosition(0.0f, 0.0f, 0.0f);
+	//cameraNode.transform.SetScale(1.0f, 1.0f, 1.0f);
+	//cameraNode.transform.SetRotation(0.0f, 0.0f, 0.0f);
+	//cameraNode.camera = new flt::Camera(&cameraNode.transform);
 
-	flt::RendererObject cameraObject(cameraNode, isDraw, L"testCamera");
-	auto cameraID = renderer->RegisterObject(cameraObject);
+	//flt::RendererObject cameraObject(cameraNode, isDraw, L"testCamera");
+	//auto cameraID = renderer->RegisterObject(cameraObject);
 
 
-	flt::RawNode cubeNode(L"testNode");
-	cubeNode.transform.SetPosition(0.0f, 0.0f, 0.7f);
-	cubeNode.transform.SetScale(0.3f, 0.3f, 0.3f);
+	//flt::RawNode cubeNode(L"testNode");
+	//cubeNode.transform.SetPosition(0.0f, 0.0f, 0.7f);
+	//cubeNode.transform.SetScale(0.3f, 0.3f, 0.3f);
 
-	flt::RendererObject fbxObject(*rawScene.nodes[1], isDraw, L"test1");
-	auto objectID0 = renderer->RegisterObject(fbxObject);
-	rawScene.nodes[1]->transform.SetScale(1.f, 1.f, 1.f);
-	rawScene.nodes[1]->transform.SetPosition(0.f, 0.f, 30.f);
+	//flt::RendererObject fbxObject(*rawScene.nodes[1], isDraw, L"test1");
+	//auto objectID0 = renderer->RegisterObject(fbxObject);
+	//rawScene.nodes[1]->transform.SetScale(1.f, 1.f, 1.f);
+	//rawScene.nodes[1]->transform.SetPosition(0.f, 0.f, 30.f);
 
-	flt::RendererObject renderable(cubeNode, isDraw, L"cube");
-	auto objectID1 = renderer->RegisterObject(renderable);
+	//flt::RendererObject renderable(cubeNode, isDraw, L"cube");
+	//auto objectID1 = renderer->RegisterObject(renderable);
 
-	//flt::RawNode childNode(L"testChildNode");
-	//childNode.transform.SetPosition(1.0f, 0.0f, 0.0f);
-	//childNode.transform.SetScale(0.5f, 0.5f, 0.5f);
-	//childNode.transform.SetParent(&node.transform);
-
-	//flt::RendererObject childRenderable(childNode, isDraw, L"testChildObject");
-	//renderable.name = L"testChild";
-	//auto objectID2 = renderer->RegisterObject(childRenderable);
-
-	//ASSERT(renderer, "렌더러 생성 실패");
-
+	/*
 	while (true)
 	{
 		if (!platform.Update())
@@ -311,10 +262,25 @@ int main()
 
 		Sleep(10);
 	}
+	*/
 
-	renderer->DeregisterObject(objectID0);
+	//renderer->DeregisterObject(objectID0);
+
+	std::wcerr << L"전역 리소스 메니져 정리" << std::endl;
+	flt::global::g_resourceMgr.ReleaseAllResource();
+
 	//renderer->DeregisterObject(objectID1);
 	//renderer->DeregisterObject(objectID2);
 	platform.DestroyRenderer(renderer);
 	platform.Finalize();
+
+#if defined(DEBUG) || defined(_DEBUG)
+	IDXGIDebug1* dxgiDebug;
+	DXGIGetDebugInterface1(0, __uuidof(IDXGIDebug1), (void**)&dxgiDebug);
+	OutputDebugStringW(L"-----------------------디버그 메모리 누수 검사-----------------------\n");
+	dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+	OutputDebugStringW(L"-----------------------디버그 메모리 누수 검사-----------------------\n");
+	dxgiDebug->Release();
+#endif
+	return 0;
 }
