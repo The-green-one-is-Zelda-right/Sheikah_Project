@@ -127,6 +127,7 @@ namespace flt
 				if (global::g_resourceMgr.ReleaseResource(this))
 				{
 					((T*)_pData)->Release();
+					delete (T*)_pData;
 				}
 				_pData = nullptr;
 			}

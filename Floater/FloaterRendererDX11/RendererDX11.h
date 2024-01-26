@@ -88,9 +88,6 @@ namespace flt
 		unsigned __int32 _displayHeight = 0;
 		std::vector<std::vector<DXGI_RATIONAL>> _displayRefreshRates;
 
-		// 테스트용 임시 변수
-		ID3D11Device* _pDevice;
-
 		// d3d11 관련 해제해야하는 변수들
 		comptr<ID3D11Device> _device;
 		comptr<ID3D11DeviceContext> _immediateContext;
@@ -114,9 +111,9 @@ namespace flt
 		std::vector<DX11Node*> _renderableObjects;
 		std::vector<Camera*> _cameras;
 
-		// 디버그용 변수
-		HWND _debugHWnd;
-		bool _isDebugMode;
-		comptr<IDXGISwapChain1> _debugSwapChain;
+		//// 디버그용 변수
+		//HWND _debugHWnd;
+		//bool _isDebugMode;
+		//comptr<IDXGISwapChain1> _debugSwapChain;
 	};
 }

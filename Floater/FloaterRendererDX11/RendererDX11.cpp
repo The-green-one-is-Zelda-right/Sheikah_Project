@@ -49,9 +49,9 @@ flt::RendererDX11::RendererDX11() :
 	_screenQuadIsDraw(true),
 	_screenQuad(nullptr),
 	_renderableObjects(),
-	_cameras(),
-	_debugHWnd(NULL),
-	_isDebugMode(false)
+	_cameras()
+	//_debugHWnd(NULL),
+	//_isDebugMode(false)
 {
 
 }
@@ -186,20 +186,19 @@ bool flt::RendererDX11::Initialize(HWND hwnd, HWND debugHWnd /*= NULL*/)
 
 	_immediateContext->RSSetState(_rasterizerState.Get());
 
-	if (debugHWnd != NULL)
-	{
-		_debugHWnd = debugHWnd;
+	//if (debugHWnd != NULL)
+	//{
+	//	_debugHWnd = debugHWnd;
 
-		result = _dxgiFactory->CreateSwapChainForHwnd(_device.Get(), _debugHWnd, &desc, &fullScreenDesc, NULL, &_debugSwapChain);
+	//	result = _dxgiFactory->CreateSwapChainForHwnd(_device.Get(), _debugHWnd, &desc, &fullScreenDesc, NULL, &_debugSwapChain);
+	//	if (result != S_OK)
+	//	{
+	//		ASSERT(false, "스왑체인 생성 실패");
+	//		return false;
+	//	}
 
-		if (result != S_OK)
-		{
-			ASSERT(false, "스왑체인 생성 실패");
-			return false;
-		}
-
-		_isDebugMode = true;
-	}
+	//	_isDebugMode = true;
+	//}
 
 	_screenQuad = new(std::nothrow) DX11Node(_screenQuadTransform, _screenQuadIsDraw);
 	if (!_screenQuad)
@@ -247,19 +246,19 @@ bool flt::RendererDX11::Finalize()
 
 	_isRunRenderEngine = false;
 
-	if (_debugHWnd != NULL)
-	{
-		BOOL ret = CloseWindow(_debugHWnd);
+	//if (_debugHWnd != NULL)
+	//{
+	//	BOOL ret = CloseWindow(_debugHWnd);
 
-		if (ret == FALSE)
-		{
-			ASSERT(false, "디버그 윈도우 닫기 실패");
-			return false;
-		}
+	//	if (ret == FALSE)
+	//	{
+	//		ASSERT(false, "디버그 윈도우 닫기 실패");
+	//		return false;
+	//	}
 
-		_debugHWnd = NULL;
-		_isDebugMode = false;
-	}
+	//	_debugHWnd = NULL;
+	//	_isDebugMode = false;
+	//}
 
 	delete _screenQuad;
 

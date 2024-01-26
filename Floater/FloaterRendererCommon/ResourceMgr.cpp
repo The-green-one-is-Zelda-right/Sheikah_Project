@@ -47,7 +47,6 @@ bool flt::ResourceMgr::ReleaseResource(ResourceBase* resource)
 			std::wcerr << this << " - " << L"Released" << resources[resource->_key].typeName << std::endl;
 
 			resources.erase(resource->_key);
-			//delete resource;
 			return true;
 			// 빌더의 Release 를 호출해야함.
 			// Resource의 소멸자가 virtual이기 때문에 해당 객체가 소멸할 때 소멸자에서 Release를 호출해줌.
@@ -84,7 +83,6 @@ void flt::ResourceMgr::ReleaseAllResource()
 		std::wstring typeName = resource.second.typeName;
 		while (!resource.second.Release())
 		{
-
 		}
 		std::wcerr << this << " - " << L"Released" << typeName << std::endl;
 	}
