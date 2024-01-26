@@ -152,7 +152,6 @@ bool flt::RendererDX11::Initialize(HWND hwnd, HWND debugHWnd /*= NULL*/)
 	fullScreenDesc.Windowed = true;
 
 	result = _dxgiFactory->CreateSwapChainForHwnd(_device.Get(), _hwnd, &desc, &fullScreenDesc, NULL, &_swapChain);
-
 	if (result != S_OK)
 	{
 		ASSERT(false, "스왑체인 생성 실패");
