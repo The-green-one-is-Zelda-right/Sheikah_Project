@@ -89,10 +89,11 @@ flt::DX11VertexShader* flt::DX11VertexShaderBuilder::build() const
 		constantBufferDesc.MiscFlags = 0;
 		constantBufferDesc.StructureByteStride = 0;
 
-		hResult = pDevice->CreateBuffer(&constantBufferDesc, nullptr, &dx11VertexShader->pConstantBuffers[i].first);
+		ID3D11Buffer*& rpConstantBuffer = dx11VertexShader->pConstantBuffers[i].first;
+		hResult = pDevice->CreateBuffer(&constantBufferDesc, nullptr, &rpConstantBuffer);
 		dx11VertexShader->pConstantBuffers[i].second = ConstantBufferReflectionDesc.Size;
 		ASSERT(hResult == S_OK, "상수 버퍼 생성 실패");
-		dx11VertexShader->pConstantBuffers[i].first->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"DX11VertexShaderBuffer") - 1, L"DX11VertexShaderBuffer");
+		rpConstantBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"DX11VertexShaderBuffer") - 1, L"DX11VertexShaderBuffer");
 	}
 
 	pVertexShaderReflection->Release();

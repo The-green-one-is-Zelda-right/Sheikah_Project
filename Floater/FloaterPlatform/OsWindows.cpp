@@ -583,7 +583,7 @@ LRESULT WINAPI flt::OsWindows::WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 					continue;
 				}
 
-				std::wcout << L"TYPE : " << pDeviceList[i].dwType << L" | " << buffer << std::endl;
+				//std::wcout << L"TYPE : " << pDeviceList[i].dwType << L" | " << buffer << std::endl;
 
 				RID_DEVICE_INFO rdi;
 				rdi.cbSize = sizeof(RID_DEVICE_INFO);
@@ -621,6 +621,9 @@ LRESULT WINAPI flt::OsWindows::WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 					//	std::wcout << L"	Usage for the top-level collection: " << rdi.hid.usUsage << std::endl;
 					//	std::wcout << L"	Usage Page for the top-level collection: " << rdi.hid.usUsagePage << std::endl;
 					//	break;
+					default:
+						//std::wcout << L"	Unknown" << std::endl;
+						break;
 				}
 			}
 

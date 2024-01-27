@@ -422,21 +422,21 @@ flt::DX11Mesh* flt::DX11ScreedQuadBuilder::build() const
 	}
 	indexBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"ScreenQuadIndexBuffer")-1, L"ScreenQuadIndexBuffer");
 
-	D3D11_BUFFER_DESC cbDesc;
-	cbDesc.ByteWidth = sizeof(DirectX::XMMATRIX);
-	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbDesc.MiscFlags = 0;
-	cbDesc.StructureByteStride = 0;
+	//D3D11_BUFFER_DESC cbDesc;
+	//cbDesc.ByteWidth = sizeof(DirectX::XMMATRIX);
+	//cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+	//cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//cbDesc.MiscFlags = 0;
+	//cbDesc.StructureByteStride = 0;
 
-	ID3D11Buffer* constantBuffer;
-	hResult = pDevice->CreateBuffer(&cbDesc, nullptr, &constantBuffer);
-	if (hResult != S_OK)
-	{
-		return nullptr;
-	}
-	constantBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"ScreenQuadConstantBuffer")-1, L"ScreenQuadConstantBuffer");
+	//ID3D11Buffer* constantBuffer;
+	//hResult = pDevice->CreateBuffer(&cbDesc, nullptr, &constantBuffer);
+	//if (hResult != S_OK)
+	//{
+	//	return nullptr;
+	//}
+	//constantBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"ScreenQuadConstantBuffer")-1, L"ScreenQuadConstantBuffer");
 
 	D3D11_SAMPLER_DESC samplerDesc = {};
 	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC; //D3D11_FILTER_ANISOTROPIC;

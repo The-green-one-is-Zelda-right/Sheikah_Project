@@ -173,7 +173,7 @@ int main()
 	//flt::RendererObject renderable(cubeNode, isDraw, L"cube");
 	//auto objectID1 = renderer->RegisterObject(renderable);
 
-	/*
+
 	while (true)
 	{
 		if (!platform.Update())
@@ -219,7 +219,7 @@ int main()
 				{
 					cameraNode.transform.AddRotation({ 0.0f, 1.0f, 0.0f }, keyData.x * 0.01f);
 					cameraNode.transform.AddRotation(static_cast<flt::Vector3f>(cameraNode.transform.Right()), keyData.y * 0.01f);
-					//std::cout << "diff Pos " << keyData.x << " " << keyData.y << std::endl;
+					std::cout << "diff Pos " << keyData.x << " " << keyData.y << std::endl;
 				}
 			}
 
@@ -256,15 +256,14 @@ int main()
 			keyData = platform.GetKey(flt::KeyCode::mouseAbsolutePos);
 			if (keyData)
 			{
-				//std::cout << "abs Pos " << keyData.x << " " << keyData.y << std::endl;
+				std::cout << "abs Pos " << keyData.x << " " << keyData.y << std::endl;
 			}
 		}
 
 		Sleep(10);
 	}
-	*/
 
-	//renderer->DeregisterObject(objectID0);
+	renderer->DeregisterObject(objectID0);
 
 	std::wcerr << L"전역 리소스 메니져 정리" << std::endl;
 	flt::global::g_resourceMgr.ReleaseAllResource();
