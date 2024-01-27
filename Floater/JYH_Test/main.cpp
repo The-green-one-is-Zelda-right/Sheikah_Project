@@ -29,17 +29,6 @@
 #include "../FloaterMath/include/Vector2f.h"
 #include "../FloaterMath/include/Vector3f.h"
 
-
-#if defined(DEBUG) || defined(_DEBUG)
-#include <dxgidebug.h>
-#include <dxgi1_6.h>
-
-#pragma comment(lib, "dxgi.lib")
-#pragma comment(lib, "dxguid.lib")
-#endif
-
-#pragma endregion
-
 #include "../ZeldaGraphicsAdapter/include/IZeldaRendererAdapter.h"
 
 #pragma warning(push)
@@ -149,30 +138,29 @@ int main()
 
 	auto renderer = platform.CreateRenderer(flt::RendererType::DX11);
 
-	//bool isDraw = true;
-	//
-	//flt::RawNode cameraNode(L"testCamera");
-	//cameraNode.transform.SetPosition(0.0f, 0.0f, 0.0f);
-	//cameraNode.transform.SetScale(1.0f, 1.0f, 1.0f);
-	//cameraNode.transform.SetRotation(0.0f, 0.0f, 0.0f);
-	//cameraNode.camera = new flt::Camera(&cameraNode.transform);
+	bool isDraw = true;
 
-	//flt::RendererObject cameraObject(cameraNode, isDraw, L"testCamera");
-	//auto cameraID = renderer->RegisterObject(cameraObject);
+	flt::RawNode cameraNode(L"testCamera");
+	cameraNode.transform.SetPosition(0.0f, 0.0f, 0.0f);
+	cameraNode.transform.SetScale(1.0f, 1.0f, 1.0f);
+	cameraNode.transform.SetRotation(0.0f, 0.0f, 0.0f);
+	cameraNode.camera = new flt::Camera(&cameraNode.transform);
+
+	flt::RendererObject cameraObject(cameraNode, isDraw, L"testCamera");
+	auto cameraID = renderer->RegisterObject(cameraObject);
 
 
-	//flt::RawNode cubeNode(L"testNode");
-	//cubeNode.transform.SetPosition(0.0f, 0.0f, 0.7f);
-	//cubeNode.transform.SetScale(0.3f, 0.3f, 0.3f);
+	flt::RawNode cubeNode(L"testNode");
+	cubeNode.transform.SetPosition(0.0f, 0.0f, 0.7f);
+	cubeNode.transform.SetScale(0.3f, 0.3f, 0.3f);
 
-	//flt::RendererObject fbxObject(*rawScene.nodes[1], isDraw, L"test1");
-	//auto objectID0 = renderer->RegisterObject(fbxObject);
-	//rawScene.nodes[1]->transform.SetScale(1.f, 1.f, 1.f);
-	//rawScene.nodes[1]->transform.SetPosition(0.f, 0.f, 30.f);
+	flt::RendererObject fbxObject(*rawScene.nodes[1], isDraw, L"test1");
+	auto objectID0 = renderer->RegisterObject(fbxObject);
+	rawScene.nodes[1]->transform.SetScale(1.f, 1.f, 1.f);
+	rawScene.nodes[1]->transform.SetPosition(0.f, 0.f, 30.f);
 
-	//flt::RendererObject renderable(cubeNode, isDraw, L"cube");
-	//auto objectID1 = renderer->RegisterObject(renderable);
-
+	flt::RendererObject renderable(cubeNode, isDraw, L"cube");
+	auto objectID1 = renderer->RegisterObject(renderable);
 
 	while (true)
 	{
@@ -265,21 +253,10 @@ int main()
 
 	renderer->DeregisterObject(objectID0);
 
-	std::wcerr << L"전역 리소스 메니져 정리" << std::endl;
-	flt::global::g_resourceMgr.ReleaseAllResource();
-
 	//renderer->DeregisterObject(objectID1);
 	//renderer->DeregisterObject(objectID2);
 	platform.DestroyRenderer(renderer);
 	platform.Finalize();
 
-#if defined(DEBUG) || defined(_DEBUG)
-	IDXGIDebug1* dxgiDebug;
-	DXGIGetDebugInterface1(0, __uuidof(IDXGIDebug1), (void**)&dxgiDebug);
-	OutputDebugStringW(L"-----------------------디버그 메모리 누수 검사-----------------------\n");
-	dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
-	OutputDebugStringW(L"-----------------------디버그 메모리 누수 검사-----------------------\n");
-	dxgiDebug->Release();
-#endif
 	return 0;
 }

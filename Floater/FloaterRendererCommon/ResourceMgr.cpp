@@ -69,24 +69,5 @@ bool flt::ResourceMgr::AddRefResource(const ResourceBase* resource)
 		// 관리중일 데이터일 경우 참조 카운트 증가
 		resources[resource->_key].AddRef();
 	}
-
 	return true;
-}
-
-void flt::ResourceMgr::ReleaseAllResource()
-{
-	std::lock_guard<std::recursive_mutex> lock(resourceMutex);
-	CheckManagedData();
-
-	for (auto& resource : resources)
-	{
-		std::wstring typeName = resource.second.typeName;
-		while (!resource.second.Release())
-		{
-		}
-		std::wcerr << this << " - " << L"Released" << typeName << std::endl;
-	}
-	resources.clear();
-
-	CheckManagedData();
 }

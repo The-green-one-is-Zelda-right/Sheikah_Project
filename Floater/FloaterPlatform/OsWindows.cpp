@@ -13,6 +13,14 @@
 #include <DbgHelp.h>
 #include <chrono>
 
+#if defined(DEBUG) || defined(_DEBUG)
+#include <dxgidebug.h>
+#include <dxgi1_6.h>
+
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "dxguid.lib")
+#endif
+
 
 const std::wstring flt::OsWindows::s_name = L"Windows";
 
@@ -259,7 +267,15 @@ void flt::OsWindows::DestroyRenderer(IRenderer* renderer)
 {
 	DestroyRendererDX11(renderer);
 
-	global::g_resourceMgr.ReleaseAllResource();
+	// 그래픽스 리소스가 해제되는지 체크하기 위한 코드.
+#if defined(DEBUG) || defined(_DEBUG)
+	IDXGIDebug1* dxgiDebug;
+	DXGIGetDebugInterface1(0, __uuidof(IDXGIDebug1), (void**)&dxgiDebug);
+	OutputDebugStringW(L"▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽디버그 메모리 누수 검사▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽\n");
+	dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+	OutputDebugStringW(L"△△△△△△△△△△△△△△△△디버그 메모리 누수 검사△△△△△△△△△△△△△△△△\n");
+	dxgiDebug->Release();
+#endif
 }
 
 flt::KeyData flt::OsWindows::GetKey(KeyCode code)

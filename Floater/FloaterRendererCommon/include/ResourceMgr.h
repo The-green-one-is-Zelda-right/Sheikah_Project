@@ -39,8 +39,6 @@ namespace flt
 
 		bool AddRefResource(const ResourceBase* resource);
 
-		void ReleaseAllResource();
-
 	private:
 		void CheckManagedData()
 		{

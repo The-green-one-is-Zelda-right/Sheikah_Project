@@ -58,7 +58,7 @@ flt::RendererDX11::RendererDX11() :
 
 flt::RendererDX11::~RendererDX11()
 {
-	global::g_resourceMgr.ReleaseAllResource();
+
 }
 
 bool flt::RendererDX11::Initialize(HWND hwnd, HWND debugHWnd /*= NULL*/)
