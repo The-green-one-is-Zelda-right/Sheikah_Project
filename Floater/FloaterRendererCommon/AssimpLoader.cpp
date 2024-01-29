@@ -241,8 +241,6 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 			double duration = animation->mDuration;
 			double ticksPerSecond = animation->mTicksPerSecond;
 
-
-
 			const int channelCount = animation->mNumChannels;
 			for (int j = 0; j < channelCount; ++j)
 			{
@@ -264,7 +262,10 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 				{
 					aiVectorKey key = nodeAnim->mPositionKeys[k];
 					rawAnim->keyPosition.push_back(RawAnimation::KeyPosition((float)key.mTime, { key.mValue.x, key.mValue.y, key.mValue.z, 0.0f }));
+
+					std::cout << key.mTime << ", ";
 				}
+				std::cout << std::endl;
 
 				keyCount = (int)nodeAnim->mNumRotationKeys;
 				for (int k = 0; k < keyCount; ++k)

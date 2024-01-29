@@ -290,13 +290,13 @@ flt::DX11Mesh* flt::DX11CubeBuilder::build() const
 	cbDesc.MiscFlags = 0;
 	cbDesc.StructureByteStride = 0;
 
-	ID3D11Buffer* constantBuffer;
-	hResult = pDevice->CreateBuffer(&cbDesc, nullptr, &constantBuffer);
-	if (hResult != S_OK)
-	{
-		return nullptr;
-	}
-	constantBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"CubeConstantBuffer")-1, L"CubeConstantBuffer");
+	//ID3D11Buffer* constantBuffer;
+	//hResult = pDevice->CreateBuffer(&cbDesc, nullptr, &constantBuffer);
+	//if (hResult != S_OK)
+	//{
+	//	return nullptr;
+	//}
+	//constantBuffer->SetPrivateData(WKPDID_D3DDebugObjectNameW, sizeof(L"CubeConstantBuffer")-1, L"CubeConstantBuffer");
 
 	ID3D11Resource* texture;
 	ID3D11ShaderResourceView** textureView = new(std::nothrow) ID3D11ShaderResourceView*[1];

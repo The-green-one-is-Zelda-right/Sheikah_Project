@@ -505,22 +505,7 @@ flt::HOBJECT flt::RendererDX11::RegisterObject(RendererObject& renderable)
 	}
 	else
 	{
-		int rawMeshCount = (int)renderable.node.meshes.size();
-		node->meshes.resize(rawMeshCount);
-		for (int i = 0; i < rawMeshCount; ++i)
-		{
-			DX11MeshBuilder meshBuilder(renderable.node.name + std::to_wstring(i));
-			meshBuilder.pDevice = _device.Get();
-			meshBuilder.vsBuilder = DX11VertexShaderBuilder(L"flt::CubeVS");
-			meshBuilder.pImmediateContext = _immediateContext.Get();
-			meshBuilder.pRawMesh = renderable.node.meshes[i].Get();
-			node->meshes[i].Set(meshBuilder);
-
-			if (!node->meshes[i].Get())
-			{
-				return false;
-			}
-		}
+		SetDX11NodeRecursive(node, renderable.node);
 	}
 
 
@@ -841,6 +826,32 @@ bool flt::RendererDX11::SetVsConstantBuffer(ID3D11Buffer* vsConstantBuffer, void
 	_immediateContext->VSSetConstantBuffers(slot, 1, &vsConstantBuffer);
 
 	return true;
+}
+
+void flt::RendererDX11::SetDX11NodeRecursive(DX11Node* dxNode, RawNode& node)
+{
+	int rawMeshCount = (int)node.meshes.size();
+	dxNode->meshes.resize(rawMeshCount);
+	for (int i = 0; i < rawMeshCount; ++i)
+	{
+		DX11MeshBuilder meshBuilder(node.name + std::to_wstring(i));
+		meshBuilder.pDevice = _device.Get();
+		meshBuilder.vsBuilder = DX11VertexShaderBuilder(L"flt::CubeVS");
+		meshBuilder.pImmediateContext = _immediateContext.Get();
+		meshBuilder.pRawMesh = node.meshes[i].Get();
+		dxNode->meshes[i].Set(meshBuilder);
+		ASSERT(dxNode->meshes[i].Get(), "Set Mesh fail");
+	}
+
+	//for (auto& child : node.children)
+	//{
+	//	DX11Node* dxChild = new(std::nothrow) DX11Node(node.transform, node.isDraw);
+	//	ASSERT(dxChild, "DX11Node 생성 실패");
+
+	//	dxNode->children.emplace(node.name, dxChild);
+
+	//	SetDX11NodeRecursive(dxChild, *child);
+	//}
 }
 
 flt::Resource<flt::DX11Mesh>* flt::RendererDX11::CreateBox()

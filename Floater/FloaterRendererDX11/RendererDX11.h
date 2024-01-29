@@ -66,6 +66,8 @@ namespace flt
 
 		bool SetVsConstantBuffer(ID3D11Buffer* vsConstantBuffer, void* pData, size_t dataSize, UINT slot);
 
+		void SetDX11NodeRecursive(DX11Node* dxNode, RawNode& node);
+
 		// 테스트 private 함수들
 	private:
 		Resource<DX11Mesh>* CreateBox();
