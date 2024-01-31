@@ -270,12 +270,12 @@ bool flt::RendererDX11::Finalize()
 	_renderableObjects.clear();
 	_cameras.clear();
 
-//#if defined(DEBUG) || defined(_DEBUG)
-//	IDXGIDebug1* dxgiDebug;
-//	DXGIGetDebugInterface1(0, __uuidof(IDXGIDebug1), (void**)&dxgiDebug);
-//	dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
-//	dxgiDebug->Release();
-//#endif
+	//#if defined(DEBUG) || defined(_DEBUG)
+	//	IDXGIDebug1* dxgiDebug;
+	//	DXGIGetDebugInterface1(0, __uuidof(IDXGIDebug1), (void**)&dxgiDebug);
+	//	dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+	//	dxgiDebug->Release();
+	//#endif
 	return true;
 }
 
@@ -322,6 +322,82 @@ bool flt::RendererDX11::Render(float deltaTime)
 		Matrix4f viewMatrix = camera->GetViewMatrix();
 		Matrix4f projMatrix = camera->GetProjectionMatrix();
 
+		//디버그용 그리드 그리기
+		const Transform* cameraTransform = camera->GetTransform();
+		Vector4f cameraPosition = cameraTransform->GetLocalPosition();
+		// 그리드 스케일은 카메라 높이에 따라서 1, 10, 100, 1000, 10000 중 하나.
+		float gridScale = 1.0f;
+		if (cameraPosition.y > 10000.0f)
+		{
+			gridScale = 10000.0f;
+		}
+		else if (cameraPosition.y > 1000.0f)
+		{
+			gridScale = 1000.0f;
+		}
+		else if (cameraPosition.y > 100.0f)
+		{
+			gridScale = 100.0f;
+		}
+		else if (cameraPosition.y > 10.0f)
+		{
+			gridScale = 10.0f;
+		}
+
+		Transform gridTransform;
+		gridTransform.SetScale(gridScale, gridScale, gridScale);
+
+		// 그리드의 위치는 카메라의 위치에서 가장 가까운 정수값위치 * 그리드 스케일
+		gridTransform.SetPosition(
+			(int)(cameraPosition.x / gridScale) * gridScale,
+			0.0f,
+			(int)(cameraPosition.z / gridScale) * gridScale
+		);
+		DirectX::XMMATRIX worldViewProj = ConvertXMMatrix(gridTransform.GetWorldMatrix4f() * viewMatrix * projMatrix);
+
+		D3D11_RASTERIZER_DESC wireFrameRasterizerDesc = {};
+		wireFrameRasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
+		wireFrameRasterizerDesc.CullMode = D3D11_CULL_NONE;
+		wireFrameRasterizerDesc.FrontCounterClockwise = false;
+		wireFrameRasterizerDesc.DepthBias = 0;
+		wireFrameRasterizerDesc.DepthBiasClamp = 0.0f;
+		wireFrameRasterizerDesc.SlopeScaledDepthBias = 0.0f;
+		wireFrameRasterizerDesc.DepthClipEnable = true;
+		wireFrameRasterizerDesc.ScissorEnable = false;
+		wireFrameRasterizerDesc.MultisampleEnable = false;
+		wireFrameRasterizerDesc.AntialiasedLineEnable = false;
+
+		ID3D11RasterizerState* wireFrameRasterizer;
+		_device->CreateRasterizerState(&wireFrameRasterizerDesc, &wireFrameRasterizer);
+		_immediateContext->RSSetState(wireFrameRasterizer);
+		wireFrameRasterizer->Release();
+
+		DX11GridMeshBuilder gridBuilder;
+		gridBuilder.pDevice = _device.Get();
+		gridBuilder.pImmediateContext = _immediateContext.Get();
+		Resource<DX11Mesh> gridMesh(gridBuilder);
+		DX11Mesh* pGridMesh = gridMesh.Get();
+		DX11VertexShader* girdVsShader = pGridMesh->vertexShader.Get();
+		DX11PixelShader* pixelShader = pGridMesh->pixelShader.Get();
+		_immediateContext->IASetInputLayout(girdVsShader->pInputLayout);
+		_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+		_immediateContext->VSSetShader(girdVsShader->pVertexShader, nullptr, 0);
+		_immediateContext->PSSetShader(pixelShader->pPixelShader, nullptr, 0);
+
+		void* pData = &worldViewProj;
+		girdVsShader->SetConstantBuffer(_immediateContext.Get(), &pData, 1);
+
+		_immediateContext->PSSetSamplers(0, 1, &pGridMesh->sampler);
+
+		UINT offset = 0;
+		_immediateContext->IASetVertexBuffers(0, 1, &pGridMesh->vertexBuffer, &pGridMesh->singleVertexSize, &offset);
+		_immediateContext->IASetIndexBuffer(pGridMesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+		_immediateContext->DrawIndexed(pGridMesh->indexCount, 0, 0);
+
+
+		_immediateContext->RSSetState(rasterizerState.Get());
 		for (auto& node : _renderableObjects)
 		{
 			int meshCount = (int)node->meshes.size();
@@ -495,7 +571,7 @@ flt::HOBJECT flt::RendererDX11::RegisterObject(RendererObject& renderable)
 
 	if (renderable.name == L"cube")
 	{
-		DX11CubeBuilder cubeBuilder;
+		DX11CubeMeshBuilder cubeBuilder;
 		cubeBuilder.pDevice = _device.Get();
 		cubeBuilder.pImmediateContext = _immediateContext.Get();
 
@@ -507,8 +583,6 @@ flt::HOBJECT flt::RendererDX11::RegisterObject(RendererObject& renderable)
 	{
 		SetDX11NodeRecursive(node, renderable.node);
 	}
-
-
 
 	_renderableObjects.push_back(node);
 
@@ -856,7 +930,7 @@ void flt::RendererDX11::SetDX11NodeRecursive(DX11Node* dxNode, RawNode& node)
 
 flt::Resource<flt::DX11Mesh>* flt::RendererDX11::CreateBox()
 {
-	DX11CubeBuilder cubeBuilder;
+	DX11CubeMeshBuilder cubeBuilder;
 	cubeBuilder.pDevice = _device.Get();
 	cubeBuilder.pImmediateContext = _immediateContext.Get();
 

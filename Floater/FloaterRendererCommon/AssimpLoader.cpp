@@ -116,7 +116,7 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 			ret = material->GetTexture(aiTextureType_DIFFUSE, 0, &outStr);
 			if (ret == AI_SUCCESS)
 			{
-				rawMaterials[i]->textures[RawMaterial::ALBEDO]->path = directory + ConvertToWstring(outStr.C_Str());
+				rawMaterials[i]->textures[RawMaterial::ALBEDO_OPACITY]->path = directory + ConvertToWstring(outStr.C_Str());
 			}
 
 			ret = material->GetTexture(aiTextureType_NORMALS, 0, &outStr);
@@ -262,10 +262,7 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 				{
 					aiVectorKey key = nodeAnim->mPositionKeys[k];
 					rawAnim->keyPosition.push_back(RawAnimation::KeyPosition((float)key.mTime, { key.mValue.x, key.mValue.y, key.mValue.z, 0.0f }));
-
-					std::cout << key.mTime << ", ";
 				}
-				std::cout << std::endl;
 
 				keyCount = (int)nodeAnim->mNumRotationKeys;
 				for (int k = 0; k < keyCount; ++k)

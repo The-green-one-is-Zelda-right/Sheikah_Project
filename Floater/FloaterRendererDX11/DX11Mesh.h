@@ -19,8 +19,8 @@ namespace flt
 			Vector3f normal;
 			Vector3f binormal;
 			Vector3f tangent;
-			UINT BoneIndices[4];
-			float BoneWeights[4];
+			UINT BoneIndices[4] = {0,};
+			float BoneWeights[4] = {0.0f,};
 		};
 
 		static constexpr unsigned int numElements = 22;
@@ -122,9 +122,9 @@ namespace flt
 		DX11PixelShaderBuilder psBuilder;
 	};
 
-	struct DX11CubeBuilder : public DX11MeshBuilder
+	struct DX11CubeMeshBuilder : public DX11MeshBuilder
 	{
-		DX11CubeBuilder() : DX11MeshBuilder(L"flt::CubeBuilder") {}
+		DX11CubeMeshBuilder() : DX11MeshBuilder(L"flt::CubeBuilder") {}
 
 		virtual DX11Mesh* build() const override;
 	};
@@ -132,6 +132,13 @@ namespace flt
 	struct DX11ScreedQuadBuilder : public DX11MeshBuilder
 	{
 		DX11ScreedQuadBuilder() : DX11MeshBuilder(L"flt::ScreedQuadBuilder") {}
+
+		virtual DX11Mesh* build() const override;
+	};
+
+	struct DX11GridMeshBuilder : public DX11MeshBuilder
+	{
+		DX11GridMeshBuilder() : DX11MeshBuilder(L"flt::GridMeshBuilder") {}
 
 		virtual DX11Mesh* build() const override;
 	};

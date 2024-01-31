@@ -161,6 +161,7 @@ int main()
 
 	flt::RendererObject renderable(cubeNode, isDraw, L"cube");
 	auto objectID1 = renderer->RegisterObject(renderable);
+	cubeNode.transform.SetPosition(0.0f, 0.0f, 0.0f);
 
 	while (true)
 	{
@@ -179,27 +180,28 @@ int main()
 				std::cout << "LL " << keyData.keyTime << " " << keyData.x << " " << keyData.y << std::endl;
 			}
 			keyData = platform.GetKey(flt::KeyCode::mouseRButton);
+			float cameraSpeed = 0.1f;
 			if (keyData)
 			{
 				keyData = platform.GetKey(flt::KeyCode::w);
 				if (keyData)
 				{
-					cameraNode.transform.AddPosition(cameraNode.transform.Forward() * 0.01f);
+					cameraNode.transform.AddPosition(cameraNode.transform.Forward() * cameraSpeed);
 				}
 				keyData = platform.GetKey(flt::KeyCode::a);
 				if (keyData)
 				{
-					cameraNode.transform.AddPosition(cameraNode.transform.Right() * -0.01f);
+					cameraNode.transform.AddPosition(cameraNode.transform.Right() * -cameraSpeed);
 				}
 				keyData = platform.GetKey(flt::KeyCode::s);
 				if (keyData)
 				{
-					cameraNode.transform.AddPosition(cameraNode.transform.Forward() * -0.01f);
+					cameraNode.transform.AddPosition(cameraNode.transform.Forward() * -cameraSpeed);
 				}
 				keyData = platform.GetKey(flt::KeyCode::d);
 				if (keyData)
 				{
-					cameraNode.transform.AddPosition(cameraNode.transform.Right() * 0.01f);
+					cameraNode.transform.AddPosition(cameraNode.transform.Right() * cameraSpeed);
 				}
 
 				keyData = platform.GetKey(flt::KeyCode::mouseRelativePos);
@@ -211,41 +213,41 @@ int main()
 				}
 			}
 
-			keyData = platform.GetKey(flt::KeyCode::mouseWheelUp);
-			if (keyData)
-			{
-				std::cout << "wheel up " << keyData.x << std::endl;
-			}
+			//keyData = platform.GetKey(flt::KeyCode::mouseWheelUp);
+			//if (keyData)
+			//{
+			//	std::cout << "wheel up " << keyData.x << std::endl;
+			//}
 
-			keyData = platform.GetKey(flt::KeyCode::mouseWheelDown);
-			if (keyData)
-			{
-				std::cout << "wheel down " << keyData.x << std::endl;
-			}
+			//keyData = platform.GetKey(flt::KeyCode::mouseWheelDown);
+			//if (keyData)
+			//{
+			//	std::cout << "wheel down " << keyData.x << std::endl;
+			//}
 
-			keyData = platform.GetKey(flt::KeyCode::mouseButton3);
-			if (keyData)
-			{
-				std::cout << "button3 " << keyData.keyTime << std::endl;
-			}
+			//keyData = platform.GetKey(flt::KeyCode::mouseButton3);
+			//if (keyData)
+			//{
+			//	std::cout << "button3 " << keyData.keyTime << std::endl;
+			//}
 
-			keyData = platform.GetKey(flt::KeyCode::mouseButton4);
-			if (keyData)
-			{
-				std::cout << "button4 " << keyData.keyTime << std::endl;
-			}
+			//keyData = platform.GetKey(flt::KeyCode::mouseButton4);
+			//if (keyData)
+			//{
+			//	std::cout << "button4 " << keyData.keyTime << std::endl;
+			//}
 
-			keyData = platform.GetKey(flt::KeyCode::mouseMButton);
-			if (keyData)
-			{
-				std::cout << "WheelDown " << keyData.keyTime << std::endl;
-			}
+			//keyData = platform.GetKey(flt::KeyCode::mouseMButton);
+			//if (keyData)
+			//{
+			//	std::cout << "WheelDown " << keyData.keyTime << std::endl;
+			//}
 
-			keyData = platform.GetKey(flt::KeyCode::mouseAbsolutePos);
-			if (keyData)
-			{
-				std::cout << "abs Pos " << keyData.x << " " << keyData.y << std::endl;
-			}
+			//keyData = platform.GetKey(flt::KeyCode::mouseAbsolutePos);
+			//if (keyData)
+			//{
+			//	std::cout << "abs Pos " << keyData.x << " " << keyData.y << std::endl;
+			//}
 		}
 
 		Sleep(10);

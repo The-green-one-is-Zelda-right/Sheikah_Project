@@ -27,7 +27,7 @@ void flt::ResourceMgr::GetResource(ResourceBase* outResource, const IBuilderBase
 		}
 		resources[builder.key] = { outResource->_pData, typeName };
 
-		std::wcerr << this << " - " << L"Created : " << typeName << std::endl;
+		//std::wcerr << this << " - " << L"Created : " << typeName << std::endl;
 		//auto[iter, ret] = resources.emplace(builder.key, data, typeName);
 	}
 	else
@@ -44,7 +44,7 @@ bool flt::ResourceMgr::ReleaseResource(ResourceBase* resource)
 	{
 		if (resources[resource->_key].Release())
 		{
-			std::wcerr << this << " - " << L"Released" << resources[resource->_key].typeName << std::endl;
+			//std::wcerr << this << " - " << L"Released" << resources[resource->_key].typeName << std::endl;
 
 			resources.erase(resource->_key);
 			return true;

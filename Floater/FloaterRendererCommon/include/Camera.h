@@ -22,6 +22,7 @@ namespace flt
 			_viewPortSize(1.0f, 1.0f) {}
 		Matrix4f GetViewMatrix() const noexcept;
 		Matrix4f GetProjectionMatrix() const noexcept;
+		const Transform* GetTransform() const noexcept { return _pTransform; }
 
 	public:
 		int priority;

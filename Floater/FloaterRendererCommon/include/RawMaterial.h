@@ -11,7 +11,7 @@ namespace flt
 
 		enum TextureType
 		{
-			ALBEDO = 0,
+			ALBEDO_OPACITY = 0,
 			NORMAL,
 			METALLIC,
 			ROUGHNESS,
