@@ -1,10 +1,16 @@
 #pragma once
 
+#include <string>
+
 #include <d3d11.h>
 #include <DirectXMath.h>
 
 constexpr unsigned int LIGHT_COUNT_MAX = 50u;
 constexpr unsigned int BONE_COUNT_MAX = 256u;
+constexpr unsigned int ANIMATION_FRAME_MAX = 1024u;
+constexpr unsigned int INSTANCING_MAX = 1024u;
+
+constexpr unsigned int TEXTURE_SLOT_ANIMATION = 8u;
 
 namespace Deferred
 {
@@ -53,6 +59,30 @@ struct VertexType
 	const static D3D11_INPUT_ELEMENT_DESC layout[];
 };
 
+struct InstancingVertexType
+{
+	DirectX::XMFLOAT4 position;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT2 texture;
+	DirectX::XMUINT4 boneIndices;
+	DirectX::XMFLOAT4 weight;
+	unsigned int instance;
+
+	const static unsigned int size;
+	const static D3D11_INPUT_ELEMENT_DESC layout[];
+
+	InstancingVertexType& operator=(const VertexType& originVertexType)
+	{
+		this->position = originVertexType.position;
+		this->normal = originVertexType.normal;
+		this->texture = originVertexType.texture;
+		this->boneIndices = originVertexType.boneIndices;
+		this->weight = originVertexType.weight;
+
+		return *this;
+	}
+};
+
 #pragma region Constant Buffer
 
 struct MatrixBufferType
@@ -63,15 +93,27 @@ struct MatrixBufferType
 	float cameraFar;
 	float padding[3];
 
-	constexpr static unsigned int registerNum = 0;
+	constexpr static unsigned int registerNumB = 0;
 };
+static_assert(sizeof(MatrixBufferType) % 16 == 0, "Constant Buffer size must be a multiple of 16 bytes");
 
-struct BoneBufferType
+struct AnimationInfo
 {
-	DirectX::XMMATRIX boneTM[BONE_COUNT_MAX];
-
-	constexpr static unsigned int registerNum = 1;
+	float firstAnimationFrame;
+	float secondAnimationFrame;
+	unsigned int firstAnimationID;
+	unsigned int secondAnimationID;
+	float ratio;
+	float padding[3];
 };
+
+struct AnimationBufferType
+{
+	AnimationInfo animationInfo;
+
+	constexpr static unsigned int registerNumB = 1;
+};
+static_assert(sizeof(AnimationBufferType) % 16 == 0, "Constant Buffer size must be a multiple of 16 bytes");
 
 struct LightColor
 {
@@ -95,16 +137,18 @@ struct LightInfoBufferType
 {
 	LightInfo lights[LIGHT_COUNT_MAX];
 
-	constexpr static unsigned int registerNum = 2;
+	constexpr static unsigned int registerNumB = 2;
 };
+static_assert(sizeof(LightInfoBufferType) % 16 == 0, "Constant Buffer size must be a multiple of 16 bytes");
 
 struct LightIndexBufferType
 {
 	unsigned int lightIndex;
 	float padding[3];
 
-	constexpr static unsigned int registerNum = 3;
+	constexpr static unsigned int registerNumB = 3;
 };
+static_assert(sizeof(LightIndexBufferType) % 16 == 0, "Constant Buffer size must be a multiple of 16 bytes");
 
 struct MaterialBufferType
 {
@@ -125,16 +169,34 @@ struct MaterialBufferType
 	unsigned int useTemp3;
 	unsigned int useTemp4;
 
-	constexpr static unsigned int registerNum = 4;
+	constexpr static unsigned int registerNumB = 4;
 };
+static_assert(sizeof(MaterialBufferType) % 16 == 0, "Constant Buffer size must be a multiple of 16 bytes");
 
 struct ScreenBufferType
 {
 	DirectX::XMFLOAT2 screenSize;
 	float padding[2];
 
-	constexpr static unsigned int registerNum = 5;
+	constexpr static unsigned int registerNumB = 5;
 };
+static_assert(sizeof(ScreenBufferType) % 16 == 0, "Constant Buffer size must be a multiple of 16 bytes");
+
+struct InstancingMatrixBufferType
+{
+	DirectX::XMMATRIX instancingWorldMatrix[INSTANCING_MAX];
+
+	constexpr static unsigned int registerNumB = 6;
+};
+static_assert(sizeof(InstancingMatrixBufferType) % 16 == 0, "Constant Buffer size must be a multiple of 16 bytes");
+
+struct InstancingAnimationBufferType
+{
+	AnimationInfo animationInfo[INSTANCING_MAX];
+
+	constexpr static unsigned int registerNumB = 7;
+};
+static_assert(sizeof(InstancingAnimationBufferType) % 16 == 0, "Constant Buffer size must be a multiple of 16 bytes");
 
 #pragma endregion
 
@@ -143,4 +205,24 @@ enum class ShaderType
 	VertexShader,
 	PixelShader,
 	VertexShaderAndPixelShader
+};
+
+struct MeshInstancingInfo
+{
+	DirectX::XMMATRIX worldMatrix;
+};
+
+struct ModelInstancingInfo
+{
+	DirectX::XMMATRIX worldMatrix;
+	std::wstring firstAnimationName;
+	std::wstring secondAnimationName;
+	float firstAnimationTime;
+	float secondAnimationTime;
+	float ratio;
+};
+
+struct SpriteInstancingInfo
+{
+	DirectX::XMFLOAT2 position;
 };

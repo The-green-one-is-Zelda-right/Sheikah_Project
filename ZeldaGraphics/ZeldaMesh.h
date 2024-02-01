@@ -15,10 +15,13 @@ public:
 	~ZeldaMesh();
 
 	void Render(ID3D11DeviceContext* deviceContext);
+	void RenderInstanced(ID3D11DeviceContext* deviceContext);
 	int GetIndexCount();
 
 private:
 	ID3D11Buffer* vertexBuffer;
+	ID3D11Buffer* instancingVertexBuffer;
 	ID3D11Buffer* indexBuffer;
 	int vertexCount, indexCount;
+
 };

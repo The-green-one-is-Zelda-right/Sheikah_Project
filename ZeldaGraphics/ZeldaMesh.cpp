@@ -6,22 +6,30 @@ using namespace DirectX;
 
 ZeldaMesh::ZeldaMesh(ID3D11Device* device, const std::vector<VertexType>& vertexList, const std::vector<unsigned int>& indexList) :
 	vertexBuffer(nullptr),
+	instancingVertexBuffer(nullptr),
 	indexBuffer(nullptr),
 	vertexCount(vertexList.size()),
 	indexCount(indexList.size())
 {
 	VertexType* vertices;
+	InstancingVertexType* instVertices;
 	unsigned long* indices;
-	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData, indexData;
+	D3D11_BUFFER_DESC vertexBufferDesc, instVertexBufferDesc, indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData, instVertexData, indexData;
 	HRESULT result;
 
 	vertices = new VertexType[vertexCount];
+	instVertices = new InstancingVertexType[vertexCount];
 	indices = new unsigned long[indexCount];
 
 	for (int i = 0; i < vertexCount; i++)
 	{
 		vertices[i] = vertexList[i];
+	}
+
+	for (int i = 0; i < vertexCount; i++)
+	{
+		instVertices[i] = vertexList[i];
 	}
 
 	for (int i = 0; i < indexCount; i++)
@@ -47,6 +55,26 @@ ZeldaMesh::ZeldaMesh(ID3D11Device* device, const std::vector<VertexType>& vertex
 		MessageBox(0, L"Failed to Create ZeldaMesh", L"ZeldaMesh Error", MB_OK);
 	}
 
+
+	// Set up the description of the static vertex buffer.
+	instVertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	instVertexBufferDesc.ByteWidth = sizeof(InstancingVertexType) * vertexCount;
+	instVertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	instVertexBufferDesc.CPUAccessFlags = 0;
+	instVertexBufferDesc.MiscFlags = 0;
+	instVertexBufferDesc.StructureByteStride = 0;
+	// Give the subresource structure a pointer to the vertex data.
+	instVertexData.pSysMem = instVertices;
+	instVertexData.SysMemPitch = 0;
+	instVertexData.SysMemSlicePitch = 0;
+	// Now create the vertex buffer.
+	result = device->CreateBuffer(&instVertexBufferDesc, &instVertexData, &instancingVertexBuffer);
+	if (FAILED(result))
+	{
+		MessageBox(0, L"Failed to Create ZeldaMesh", L"ZeldaMesh Error", MB_OK);
+	}
+
+
 	// Set up the description of the static index buffer.
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	indexBufferDesc.ByteWidth = sizeof(unsigned long) * indexCount;
@@ -68,6 +96,8 @@ ZeldaMesh::ZeldaMesh(ID3D11Device* device, const std::vector<VertexType>& vertex
 	// Release the arrays now that the vertex and index buffers have been created and loaded.
 	delete[] vertices;
 	vertices = 0;
+	delete[] instVertices;
+	instVertices = 0;
 	delete[] indices;
 	indices = 0;
 }
@@ -78,6 +108,12 @@ ZeldaMesh::~ZeldaMesh()
 	{
 		vertexBuffer->Release();
 		vertexBuffer = nullptr;
+	}
+
+	if (instancingVertexBuffer != nullptr)
+	{
+		instancingVertexBuffer->Release();
+		instancingVertexBuffer = nullptr;
 	}
 
 	if (indexBuffer != nullptr)
@@ -98,6 +134,25 @@ void ZeldaMesh::Render(ID3D11DeviceContext* deviceContext)
 
 	// Set the vertex buffer to active in the input assembler so it can be rendered.
 	deviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+
+	// Set the index buffer to active in the input assembler so it can be rendered.
+	deviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+void ZeldaMesh::RenderInstanced(ID3D11DeviceContext* deviceContext)
+{
+	unsigned int stride;
+	unsigned int offset;
+
+	// Set vertex buffer stride and offset.
+	stride = sizeof(InstancingVertexType);
+	offset = 0;
+
+	// Set the vertex buffer to active in the input assembler so it can be rendered.
+	deviceContext->IASetVertexBuffers(0, 1, &instancingVertexBuffer, &stride, &offset);
 
 	// Set the index buffer to active in the input assembler so it can be rendered.
 	deviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);

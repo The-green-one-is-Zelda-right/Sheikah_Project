@@ -6,7 +6,7 @@
 #include "ConstantBufferManager.h"
 
 template<typename bufferType, ShaderType shaderType>
-	requires std::is_same_v<decltype(bufferType::registerNum), const unsigned int>
+	requires std::is_same_v<decltype(bufferType::registerNumB), const unsigned int>
 class ConstantBuffer : public IConstantBuffer
 {
 public:
@@ -76,20 +76,20 @@ protected:
 		{
 			case ShaderType::VertexShader:
 			{
-				deviceContext->VSSetConstantBuffers(registerNum, 1, &dxBuffer);
+				deviceContext->VSSetConstantBuffers(registerNumB, 1, &dxBuffer);
 				break;
 			}
 				
 			case ShaderType::PixelShader:
 			{
-				deviceContext->PSSetConstantBuffers(registerNum, 1, &dxBuffer);
+				deviceContext->PSSetConstantBuffers(registerNumB, 1, &dxBuffer);
 				break;
 			}
 
 			case ShaderType::VertexShaderAndPixelShader:
 			{
-				deviceContext->VSSetConstantBuffers(registerNum, 1, &dxBuffer);
-				deviceContext->PSSetConstantBuffers(registerNum, 1, &dxBuffer);
+				deviceContext->VSSetConstantBuffers(registerNumB, 1, &dxBuffer);
+				deviceContext->PSSetConstantBuffers(registerNumB, 1, &dxBuffer);
 				break;
 			}
 
@@ -107,6 +107,6 @@ private:
 
 	bool isChanged;
 
-	static constexpr unsigned int registerNum = bufferType::registerNum;
+	static constexpr unsigned int registerNumB = bufferType::registerNumB;
 };
 

@@ -17,7 +17,7 @@ protected:
 	void RegisterBuffer(IConstantBuffer* buffer);
 	void DeRegisterBuffer(IConstantBuffer* buffer);
 
-	template<typename bufferType, ShaderType shaderType> requires std::is_same_v<decltype(bufferType::registerNum), const unsigned int>
+	template<typename bufferType, ShaderType shaderType> requires std::is_same_v<decltype(bufferType::registerNumB), const unsigned int>
 	friend class ConstantBuffer;
 
 private:

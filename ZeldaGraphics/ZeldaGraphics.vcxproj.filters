@@ -45,6 +45,9 @@
     <Filter Include="Core\Resource\Light">
       <UniqueIdentifier>{7f1be31d-b230-4257-9519-867df83f700a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Header">
+      <UniqueIdentifier>{961e2cde-e460-440d-9049-9db05b295a57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\IZeldaRenderer.h">
@@ -186,10 +189,10 @@
     <FxCompile Include="DeferredFinalPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="FowardVS.hlsl">
+    <FxCompile Include="ForwardVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="FowardPS.hlsl">
+    <FxCompile Include="ForwardPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="DeferredPointLightVS.hlsl">
@@ -204,13 +207,28 @@
     <FxCompile Include="DeferredSpotLightPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="DeferredInstancingObjectVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ForwardInstancingVS.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Buffers.hlsli">
-      <Filter>Shader</Filter>
+      <Filter>Shader\Header</Filter>
     </None>
     <None Include="Light.hlsli">
-      <Filter>Shader</Filter>
+      <Filter>Shader\Header</Filter>
+    </None>
+    <None Include="Matrix.hlsli">
+      <Filter>Shader\Header</Filter>
+    </None>
+    <None Include="Quaternion.hlsli">
+      <Filter>Shader\Header</Filter>
+    </None>
+    <None Include="Utility.hlsli">
+      <Filter>Shader\Header</Filter>
     </None>
   </ItemGroup>
 </Project>

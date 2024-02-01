@@ -12,21 +12,23 @@ class ZeldaTexture;
 class ZeldaShader
 {
 public:
-	ZeldaShader(ID3D11Device* device, const std::wstring& vsFileName, const std::wstring& psFileName);
+	ZeldaShader(ID3D11Device* device, const std::wstring& vsFileName, const std::wstring& psFileName, const std::wstring& instVSFileName = L"");
 	ZeldaShader(const ZeldaShader& zeldaShader) = delete;
 	~ZeldaShader();
 
-	bool Render(ID3D11DeviceContext* deviceContext, int indexCount);
+	void Render(ID3D11DeviceContext* deviceContext, unsigned int indexCount);
+	void RenderInstanced(ID3D11DeviceContext* deviceContext, unsigned int indexCount, unsigned int instanceCount, unsigned int instanceStart);
 	ID3D11SamplerState* GetSamplerState();
 
 private:
-	bool Initialize(ID3D11Device* device, const std::wstring& vsFileName, const std::wstring& psFileName);
-	void RenderShader(ID3D11DeviceContext* deviceContext, int indexCount);
+	bool Initialize(ID3D11Device* device, const std::wstring& vsFileName, const std::wstring& psFileName, const std::wstring& instVSFileName);
 
 private:
 	ID3D11VertexShader* vertexShader;
+	ID3D11VertexShader* instancingVertexShader;
 	ID3D11PixelShader* pixelShader;
 	ID3D11InputLayout* layout;
+	ID3D11InputLayout* instancingLayout;
 	ID3D11SamplerState* samplerState;
 };
 

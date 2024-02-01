@@ -5,13 +5,15 @@
 
 #include "ZeldaGraphicsDefine.h"
 
-ZeldaShader::ZeldaShader(ID3D11Device* device, const std::wstring& vsFileName, const std::wstring& psFileName) :
+ZeldaShader::ZeldaShader(ID3D11Device* device, const std::wstring& vsFileName, const std::wstring& psFileName, const std::wstring& instVSFileName) :
 	vertexShader(nullptr),
+	instancingVertexShader(nullptr),
 	pixelShader(nullptr),
 	layout(nullptr),
+	instancingLayout(nullptr),
 	samplerState(nullptr)
 {
-	Initialize(device, vsFileName, psFileName);
+	Initialize(device, vsFileName, psFileName, instVSFileName);
 }
 
 ZeldaShader::~ZeldaShader()
@@ -28,6 +30,11 @@ ZeldaShader::~ZeldaShader()
 		layout->Release();
 		layout = 0;
 	}
+	if (instancingLayout)
+	{
+		instancingLayout->Release();
+		instancingLayout = 0;
+	}
 	// Release the pixel shader.
 	if (pixelShader)
 	{
@@ -40,9 +47,14 @@ ZeldaShader::~ZeldaShader()
 		vertexShader->Release();
 		vertexShader = 0;
 	}
+	if (instancingVertexShader)
+	{
+		instancingVertexShader->Release();
+		instancingVertexShader = 0;
+	}
 }
 
-bool ZeldaShader::Initialize(ID3D11Device* device, const std::wstring& vsFileName, const std::wstring& psFileName)
+bool ZeldaShader::Initialize(ID3D11Device* device, const std::wstring& vsFileName, const std::wstring& psFileName, const std::wstring& instVSFileName)
 {
 	HRESULT result;
 	ID3DBlob* errorMessage;
@@ -96,6 +108,57 @@ bool ZeldaShader::Initialize(ID3D11Device* device, const std::wstring& vsFileNam
 		vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), &layout);
 	if (FAILED(result)) return false;
 
+	// Use Instancing Shader
+	if (instVSFileName != L"")
+	{
+		ID3DBlob* instVertexShaderBuffer = 0;
+
+		// Compile the instacing vertex shader code.
+		result = D3DReadFileToBlob(instVSFileName.c_str(), &instVertexShaderBuffer);
+		if (FAILED(result))
+		{
+			result = D3DReadFileToBlob((L"CompiledShader\\" + instVSFileName).c_str(), &instVertexShaderBuffer);
+		}
+		if (FAILED(result))
+		{
+			MessageBox(0, L"Failed to load compiled shader file", L"Shader Error", MB_OK);
+			return false;
+		}
+
+		// Create the vertex shader from the buffer.
+		// ID3D11VertexShader 객체 생성
+		result = device->CreateVertexShader(instVertexShaderBuffer->GetBufferPointer(),
+			instVertexShaderBuffer->GetBufferSize(), nullptr, &instancingVertexShader);
+		if (FAILED(result)) return false;
+
+		// Create the instancing vertex input layout.
+		result = device->CreateInputLayout(InstancingVertexType::layout, InstancingVertexType::size,
+			instVertexShaderBuffer->GetBufferPointer(), instVertexShaderBuffer->GetBufferSize(), &instancingLayout);
+		if (FAILED(result)) return false;
+
+		//ID3D11ShaderReflection* shaderReflection = nullptr;
+		//D3DReflect(instVertexShaderBuffer->GetBufferPointer(), instVertexShaderBuffer->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&shaderReflection);
+
+		//// 상수 버퍼 정보 얻기
+		//D3D11_SHADER_DESC shaderDesc;
+		//shaderReflection->GetDesc(&shaderDesc);
+
+		//for (UINT i = 0; i < shaderDesc.ConstantBuffers; ++i)
+		//{
+		//	ID3D11ShaderReflectionConstantBuffer* cb = shaderReflection->GetConstantBufferByIndex(i);
+
+		//	D3D11_SHADER_BUFFER_DESC bufferDesc;
+		//	cb->GetDesc(&bufferDesc);
+
+		//	auto size = bufferDesc.Size;
+
+		//}
+		
+		// 해제
+		instVertexShaderBuffer->Release();
+		instVertexShaderBuffer = nullptr;
+	}
+
 	// Release the vertex shader buffer and pixel shader buffer since they are no longer needed.
 	// ID3D11VertextShader, ID3D11PixelShader객체에 bytecode가 저장되어 있음. 더이상 버퍼는 필요없다.
 	vertexShaderBuffer->Release();
@@ -126,19 +189,7 @@ bool ZeldaShader::Initialize(ID3D11Device* device, const std::wstring& vsFileNam
 	return true;
 }
 
-bool ZeldaShader::Render(ID3D11DeviceContext* deviceContext, int indexCount)
-{
-	RenderShader(deviceContext, indexCount);
-
-	return true;
-}
-
-ID3D11SamplerState* ZeldaShader::GetSamplerState()
-{
-	return samplerState;
-}
-
-void ZeldaShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+void ZeldaShader::Render(ID3D11DeviceContext* deviceContext, unsigned int indexCount)
 {
 	// Set the vertex input layout.
 	deviceContext->IASetInputLayout(layout);
@@ -152,6 +203,27 @@ void ZeldaShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCoun
 
 	// Render the triangle.
 	deviceContext->DrawIndexed(indexCount, 0, 0);
+}
 
-	return;
+void ZeldaShader::RenderInstanced(ID3D11DeviceContext* deviceContext, unsigned int indexCount, unsigned int instanceCount, unsigned int instanceStart)
+{
+	assert(instancingVertexShader != nullptr && instancingLayout != nullptr);
+
+	// Set the vertex input layout.
+	deviceContext->IASetInputLayout(instancingLayout);
+
+	// Set the vertex and pixel shaders that will be used to render this triangle.
+	deviceContext->VSSetShader(instancingVertexShader, nullptr, 0);
+	deviceContext->PSSetShader(pixelShader, nullptr, 0);
+
+	// Set the sampler state in the pixel shader.
+	deviceContext->PSSetSamplers(0, 1, &samplerState);
+
+	// Render the triangle.
+	deviceContext->DrawIndexedInstanced(indexCount, instanceCount, 0, 0, instanceStart);
+}
+
+ID3D11SamplerState* ZeldaShader::GetSamplerState()
+{
+	return samplerState;
 }

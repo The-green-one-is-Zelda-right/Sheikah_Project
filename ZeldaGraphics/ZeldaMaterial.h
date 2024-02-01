@@ -10,10 +10,16 @@ class ZeldaTexture;
 class ZeldaMaterial
 {
 public:
+	enum MAP
+	{
+		DIFFUSE_MAP
+	};
 	
 	~ZeldaMaterial();
 
 	void SetShaderResource(ID3D11DeviceContext* deviceContext);
+	
+	bool UseSRGB(MAP map);
 
 private:
 	ZeldaMaterial(ID3D11Device* device, DirectX::XMFLOAT4 baseColor, const std::wstring& diffuseFilePath);

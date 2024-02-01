@@ -30,3 +30,19 @@ void ZeldaMaterial::SetShaderResource(ID3D11DeviceContext* deviceContext)
 		diffuseMap->SetShaderResource(deviceContext);
 	}
 }
+
+bool ZeldaMaterial::UseSRGB(MAP map)
+{
+	switch (map)
+	{
+		case ZeldaMaterial::DIFFUSE_MAP:
+		{
+			return (diffuseMap == nullptr) ? (false) : (diffuseMap->UseSRGB());
+		}
+		default:
+		{
+			assert(0);
+			break;
+		}
+	}
+}

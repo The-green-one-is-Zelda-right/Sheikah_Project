@@ -67,12 +67,25 @@ public:
 	void Render(
 		ID3D11DeviceContext* deviceContext,
 		ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
-		ConstantBuffer<BoneBufferType, ShaderType::VertexShader>* boneConstBuffer,
+		ConstantBuffer<AnimationBufferType, ShaderType::VertexShader>* animationConstBuffer,
 		ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
 		DirectX::XMMATRIX worldMatrix,
 		ZeldaShader* shader,
-		const std::wstring& animationName,
-		float animationTime
+		const std::wstring& firstAnimationName,
+		const std::wstring& secondAnimationName,
+		float firstAnimationTime,
+		float secondAnimationTime,
+		float ratio
+	);
+
+	void RenderInstanced(
+		ID3D11DeviceContext* deviceContext,
+		ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
+		ConstantBuffer<InstancingMatrixBufferType, ShaderType::VertexShader>* instancingMatrixConstBuffer,
+		ConstantBuffer<InstancingAnimationBufferType, ShaderType::VertexShader>* instancingAnimationConstBuffer,
+		ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
+		const std::vector<ModelInstancingInfo>& instancingInfo,
+		ZeldaShader* shader
 	);
 
 	std::vector<std::wstring> GetAnimationList();
@@ -82,18 +95,10 @@ private:
 	ZeldaModel(ID3D11Device* device, FBXLoader::Model* fbxModel);
 	ZeldaModel(const ZeldaModel& zeldaModel) = delete;
 
-	void CopyNode(Node* node, FBXLoader::Bone* bone, std::map<std::wstring, Node*>& nodeTable);
+	void CreateAnimationResourceView(ID3D11Device* device);
+	void SetAnimationTexture(ID3D11DeviceContext* deviceContext);
 
-	void RenderAnimation(
-		ID3D11DeviceContext* deviceContext,
-		ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
-		ConstantBuffer<BoneBufferType, ShaderType::VertexShader>* boneConstBuffer,
-		ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
-		DirectX::XMMATRIX worldMatrix,
-		ZeldaShader* shader,
-		const std::wstring& animationName,
-		float animationTime
-	);
+	void CopyNode(Node* node, FBXLoader::Bone* bone, std::map<std::wstring, Node*>& nodeTable);
 
 	Node* root;
 	std::vector<Node*> bones;
@@ -101,6 +106,11 @@ private:
 	std::vector<unsigned int> materialIndex; // meshes[0]은 materials[materialIndex[0]]을 가짐
 	std::vector<ZeldaMaterial*> materials;
 	std::unordered_map<std::wstring, Animation*> animationTable;
+
+	// animationTable에서의 순서대로 ID를 1부터 부여한다. (0은 애니메이션이 적용되지 않은 상태)
+	std::unordered_map<std::wstring, unsigned int> animationIDTable;
+
+	ID3D11ShaderResourceView* animationResourceView;
 
 	bool updatedWorldMatrix;
 

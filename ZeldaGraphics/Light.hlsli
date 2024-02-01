@@ -18,14 +18,18 @@ void CalculateLight(int lightIndex, float3 normal, float3 viewPos, out float4 di
         
         float diffuseFactor = dot(-lightVec, normal);
         
-        if (diffuseFactor > 0.f)
-        {
-            float3 reflectDir = normalize(lightVec + 2 * (saturate(dot(-lightVec, normal)) * normal));
-            float specFactor = pow(max(dot(-viewDirection, reflectDir), 0.f), 16.f);
-            
-            diffuse = diffuseFactor * lights[lightIndex].color.diffuse;
-            specular = specFactor * lights[lightIndex].color.specular;
-        }
+        // Original Phong 반사벡터 사용
+        float3 reflectDir = normalize(lightVec + 2.0f * (dot(-lightVec, normal) * normal));
+        float specFactor = pow(max(dot(-viewDirection, reflectDir), 0.0f), 16.0f);
+        diffuse = max(0.0f, diffuseFactor) * lights[lightIndex].color.diffuse;
+        specular = specFactor * lights[lightIndex].color.specular;
+        
+        // Blinn-Phong 하프벡터 사용
+        //float3 halfVec = normalize(-lightVec - viewDirection);
+        //float NdotH = max(0, dot(normal, halfVec));
+        //float specFactor = pow(NdotH, 16.0f);
+        //diffuse = diffuseFactor * lights[lightIndex].color.diffuse;
+        //specular = specFactor * lights[lightIndex].color.specular;
     }
     else if (lights[lightIndex].type == LIGHT_TYPE_POINT)
     {

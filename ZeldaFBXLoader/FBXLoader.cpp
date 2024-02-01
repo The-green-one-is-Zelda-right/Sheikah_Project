@@ -64,8 +64,8 @@ namespace FBXLoader
 					if (assimpMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS)
 					{
 						std::string str = texturePath.C_Str();
-						std::wstring wstr;
-						wstr.assign(str.begin(), str.end());
+						std::wstring wstr(str.begin(), str.end());
+
 						wstr = fileDirectory + L"\\" + wstr;
 
 						materialData->diffuseMap = wstr;
@@ -75,6 +75,18 @@ namespace FBXLoader
 				{
 					materialData->useDiffuseMap = false;
 				}
+
+				aiColor3D baseColor(1.0f, 1.0f, 1.0f);
+
+				if (assimpMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, baseColor) == AI_SUCCESS)
+				{
+					// Base Color를 가진경우
+				}
+
+				materialData->baseColor.r = baseColor.r;
+				materialData->baseColor.g = baseColor.g;
+				materialData->baseColor.b = baseColor.b;
+				materialData->baseColor.a = 1.0f;
 
 				model->materialList.push_back(materialData);
 			}

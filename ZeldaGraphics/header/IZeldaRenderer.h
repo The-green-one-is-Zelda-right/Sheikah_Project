@@ -43,7 +43,8 @@ public:
 	virtual void DrawCube(const Eigen::Matrix4f& worldMatrix, TextureID texture, bool wireFrame, float r, float g, float b, float a) abstract;
 	virtual void DrawModel(const Eigen::Matrix4f& worldMatrix, ModelID model, bool wireFrame) abstract;
 	virtual void DrawAnimation(const Eigen::Matrix4f& worldMatrix, ModelID model, std::wstring animationName, float animationTime, bool wireFrame) abstract;
-	
+	virtual void DrawChangingAnimation(const Eigen::Matrix4f& worldMatrix, ModelID model, std::wstring firstAnimationName, std::wstring secondAnimationName, float firstAnimationTime, float secondAnimationTime, float ratio, bool wireFrame) abstract;
+
 	// Light를 그린다. 같은 프레임에 동일한 라이트를 2개 이상 그린다면 한번만 적용한다.
 	virtual void DrawLight(LightID lightID) abstract;
 

@@ -9,6 +9,8 @@
 
 #define BONE_COUNT_MAX 256u
 
+#define INSTANCING_MAX 1024u
+
 Texture2D DiffuseMap : register(t0);
 Texture2D NormalMap : register(t1);
 Texture2D ARMMap : register(t2);
@@ -17,6 +19,7 @@ Texture2D EmissionMap : register(t4);
 Texture2D Temp0Map : register(t5);
 Texture2D Temp1Map : register(t6);
 Texture2D Temp2Map : register(t7);
+Texture2DArray AnimationMap : register(t8);
 
 SamplerState Sampler : register(s0);
 
@@ -29,9 +32,19 @@ cbuffer MatrixBuffer : register(b0)
     float3 b0padding;
 };
 
-cbuffer BoneBufferType : register(b1)
+struct AnimationInfo
 {
-    matrix boneTM[BONE_COUNT_MAX];
+    float firstAnimationFrame;
+    float secondAnimationFrame;
+    unsigned int firstAnimationID;
+    unsigned int secondAnimationID;
+    float ratio;
+    float3 padding;
+};
+
+cbuffer AnimationBufferType : register(b1)
+{
+    AnimationInfo animationInfo;
 };
 
 struct LightColor
@@ -60,7 +73,7 @@ cbuffer LightInfoBufferType : register(b2)
 cbuffer LightIndexBufferType : register(b3)
 {
     unsigned int lightIndex;
-    float b3padding[3];
+    float3 b3padding;
 };
 
 cbuffer MaterialBufferType : register(b4)
@@ -86,7 +99,17 @@ cbuffer MaterialBufferType : register(b4)
 cbuffer ScreenBufferType : register(b5)
 {
     float2 screenSize;
-    float b5padding[2];
+    float2 b5padding;
+}
+
+cbuffer InstancingMatrixBufferType : register(b6)
+{
+    matrix instancingWorldMatrix[INSTANCING_MAX];
+};
+
+cbuffer InstancingAnimationBufferType : register(b7)
+{
+    AnimationInfo instancingAnimationInfo[INSTANCING_MAX];
 }
 
 #endif

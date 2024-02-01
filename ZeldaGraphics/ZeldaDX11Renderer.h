@@ -26,24 +26,25 @@ class ZeldaTexture;
 class ZeldaMaterial;
 class IRenderable;
 
-struct MeshInstancingInfo
+struct Color
 {
-	DirectX::XMMATRIX worldMatrix;
-	bool wireFrame;
-	DirectX::XMFLOAT4 color;
-};
+	union
+	{
+		struct
+		{
+			float r, g, b, a;
+		};
 
-struct ModelInstancingInfo
-{
-	DirectX::XMMATRIX worldMatrix;
-	std::wstring animationName;
-	float animationTime;
-	bool wireFrame;
-};
+		struct
+		{
+			float x, y, z, w;
+		};
+	};
 
-struct SpriteInstancingInfo
-{
-	DirectX::XMFLOAT2 position;
+	bool operator==(const Color& right) const
+	{
+		return r == right.r && g == right.g && b == right.b && a == right.a;
+	}
 };
 
 struct MeshRenderInfo
@@ -51,12 +52,15 @@ struct MeshRenderInfo
 	std::vector<MeshInstancingInfo> instancingInfo;
 	MeshID meshId;
 	TextureID textureID;
+	bool wireFrame;
+	Color color;
 };
 
 struct ModelRenderInfo
 {
 	std::vector<ModelInstancingInfo> instancingInfo;
 	ModelID modelID;
+	bool wireFrame;
 };
 
 struct SpriteRenderInfo
@@ -64,6 +68,24 @@ struct SpriteRenderInfo
 	std::vector<SpriteInstancingInfo> instancingInfo;
 	TextureID textureID;
 };
+
+namespace std {
+	template <>
+	struct hash<std::pair<std::pair<MeshID, TextureID>, std::pair<bool, Color>>> {
+		size_t operator()(const std::pair<std::pair<MeshID, TextureID>, std::pair<bool, Color>>& obj) const {
+			return std::hash<std::pair<MeshID, TextureID>>{}(obj.first) ^ (std::hash<unsigned int>{}(obj.second.second.r) ^ std::hash<unsigned int>{}(obj.second.second.y) ^ std::hash<unsigned int>{}(obj.second.second.z) ^ std::hash<unsigned int>{}(obj.second.second.w));
+		}
+	};
+}
+
+namespace std {
+	template <>
+	struct hash<std::pair<ModelID, bool>> {
+		size_t operator()(const std::pair<ModelID, bool>& obj) const {
+			return std::hash<ModelID>{}(obj.first) ^ std::hash<bool>{}(obj.second);
+		}
+	};
+}
 
 class ZeldaDX11Renderer : public IZeldaRenderer
 {
@@ -80,6 +102,8 @@ public:
 	virtual void DrawCube(const Eigen::Matrix4f& worldMatrix, TextureID texture, bool wireFrame, float r, float g, float b, float a) override;
 	virtual void DrawModel(const Eigen::Matrix4f& worldMatrix, ModelID model, bool wireFrame) override;
 	virtual void DrawAnimation(const Eigen::Matrix4f& worldMatrix, ModelID model, std::wstring animationName, float animationTime, bool wireFrame) override;
+	virtual void DrawChangingAnimation(const Eigen::Matrix4f& worldMatrix, ModelID model, std::wstring firstAnimationName, std::wstring secondAnimationName, float firstAnimationTime, float secondAnimationTime, float ratio, bool wireFrame) override;
+
 	virtual void DrawLight(LightID lightID) override;
 
 	virtual void DrawSprite(const Eigen::Vector2f& position, TextureID texture) override;
@@ -156,7 +180,7 @@ private:
 	ZeldaShader* deferredPointLightShader;
 	ZeldaShader* deferredSpotLightShader;
 	ZeldaShader* deferredFinalShader;
-	ZeldaShader* fowardShader;
+	ZeldaShader* forwardShader;
 
 	DebugMode debugMode;
 	DebugMode debugModeBuffer;
@@ -176,7 +200,9 @@ private:
 
 	// Constant Buffer
 	ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixVsConstBuffer;
-	ConstantBuffer<BoneBufferType, ShaderType::VertexShader>* boneConstBuffer;
+	ConstantBuffer<AnimationBufferType, ShaderType::VertexShader>* animationConstBuffer;
+	ConstantBuffer<InstancingMatrixBufferType, ShaderType::VertexShader>* instancingMatrixVsConstBuffer;
+	ConstantBuffer<InstancingAnimationBufferType, ShaderType::VertexShader>* instancingAnimationVsConstBuffer;
 
 	ConstantBuffer<MatrixBufferType, ShaderType::PixelShader>* matrixPsConstBuffer;
 	ConstantBuffer<LightInfoBufferType, ShaderType::PixelShader>* lightInfoConstBuffer;
@@ -187,15 +213,15 @@ private:
 
 
 	// Draw함수가 호출되면 채워진다. BeginDraw에서 ClearRenderInfo를 통해 초기화된다.
-	std::unordered_map<std::pair<MeshID, TextureID>, MeshRenderInfo> organizedMeshRenderInfo;
-	std::unordered_map<ModelID, ModelRenderInfo> organizedModelRenderInfo;
+	std::unordered_map<std::pair<std::pair<MeshID, TextureID>, std::pair<bool, Color>>, MeshRenderInfo> organizedMeshRenderInfo;
+	std::unordered_map<std::pair<ModelID, bool>, ModelRenderInfo> organizedModelRenderInfo;
 	std::unordered_map<TextureID, SpriteRenderInfo> organizedSpriteRenderInfo;
 	std::unordered_set<LightID> organizedLightRenderInfo;
 
 	// 오브젝트들을 실제로 그리는 과정에서 WireFrame으로 그리도록 설정된 오브젝트들을 여기에 저장해두고 deferred render 후에 그린다.
 	// 만약 RendererMode가 WireFrameMode라면 사용하지 않는다.
-	std::unordered_map<std::pair<MeshID, TextureID>, MeshRenderInfo> fowardMeshRenderInfo;
-	std::unordered_map<ModelID, ModelRenderInfo> fowardModelRenderInfo;
+	std::unordered_map<std::pair<std::pair<MeshID, TextureID>, std::pair<bool, Color>>, MeshRenderInfo> forwardMeshRenderInfo;
+	std::unordered_map<std::pair<ModelID, bool>, ModelRenderInfo> forwardModelRenderInfo;
 
 #ifdef USE_BEGIN_FLAG
 	bool beginflag = false;
