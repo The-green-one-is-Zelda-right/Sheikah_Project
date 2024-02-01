@@ -12,9 +12,10 @@ namespace flt
 #pragma region Nasted
 		enum CBufferSlot
 		{
-			PER_SCENE = 0,
-			PER_ENTITY = 1,
-			PER_MATERIAL = 2,
+			ENTITY_INIT_DATA = 0,
+			FRAME_PER_CAMERA = 1,
+			FRAME_PER_ENTITY = 2,
+			FRAME_PER_MATERIAL = 3,
 
 		};
 

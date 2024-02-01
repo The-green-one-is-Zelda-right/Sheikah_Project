@@ -600,7 +600,7 @@ flt::DX11Mesh* flt::DX11GridMeshBuilder::build() const
 	ID3D11SamplerState* samplerState = nullptr;
 	pDevice->CreateSamplerState(&samplerDesc, &samplerState);
 
-	DX11VertexShaderBuilder vsBuilder(L"../FloaterRendererDX11/CubeVS.hlsl");
+	DX11VertexShaderBuilder vsBuilder(L"../FloaterRendererDX11/GridVS.hlsl");
 	vsBuilder.pDevice = pDevice;
 	int layoutElementCount = sizeof(vertexElementDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC);
 	for (int i = 0; i < layoutElementCount; ++i)
@@ -608,7 +608,7 @@ flt::DX11Mesh* flt::DX11GridMeshBuilder::build() const
 		vsBuilder.inputLayoutDesc.push_back(vertexElementDesc[i]);
 	}
 
-	DX11PixelShaderBuilder psBuilder(L"../FloaterRendererDX11/CubePS.hlsl");
+	DX11PixelShaderBuilder psBuilder(L"../FloaterRendererDX11/GridPS.hlsl");
 	psBuilder.pDevice = pDevice;
 
 	//D3D11_RASTERIZER_DESC rasterizerDesc = {};
@@ -625,8 +625,6 @@ flt::DX11Mesh* flt::DX11GridMeshBuilder::build() const
 
 	//ID3D11RasterizerState* rasterizerState;
 	//pDevice->CreateRasterizerState(&rasterizerDesc, &rasterizerState);
-
-
 
 	DX11Mesh* pMesh = new DX11Mesh(vsBuilder, psBuilder);
 	pMesh->vertexBuffer = vertexBuffer;

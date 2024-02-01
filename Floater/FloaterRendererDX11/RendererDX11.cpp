@@ -317,14 +317,35 @@ bool flt::RendererDX11::Render(float deltaTime)
 	_device->CreateRasterizerState(&rasterizerDesc, &rasterizerState);
 
 	_immediateContext->RSSetState(rasterizerState.Get());
-	for (auto& camera : _cameras)
+
 	{
+		//디버그용 그리드 그리기
+
+		auto& camera = _cameras[0];
 		Matrix4f viewMatrix = camera->GetViewMatrix();
 		Matrix4f projMatrix = camera->GetProjectionMatrix();
 
-		//디버그용 그리드 그리기
 		const Transform* cameraTransform = camera->GetTransform();
 		Vector4f cameraPosition = cameraTransform->GetLocalPosition();
+
+		// 투명으로 그리기위한 임시 블렌딩 상태 생성
+		D3D11_BLEND_DESC blendDesc = { };
+		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+		ID3D11BlendState* blendState;
+		auto ret = _device->CreateBlendState(&blendDesc, &blendState);
+		ASSERT(ret == S_OK, "블렌드 상태 생성 실패");
+		float blend[4] = { 1.0f,1.0f,1.0f, 1.0f };
+		_immediateContext->OMSetBlendState(blendState, blend, 0xffffffff);
+		blendState->Release();
+
 		// 그리드 스케일은 카메라 높이에 따라서 1, 10, 100, 1000, 10000 중 하나.
 		float gridScale = 1.0f;
 		if (cameraPosition.y > 10000.0f)
@@ -353,7 +374,7 @@ bool flt::RendererDX11::Render(float deltaTime)
 			0.0f,
 			(int)(cameraPosition.z / gridScale) * gridScale
 		);
-		DirectX::XMMATRIX worldViewProj = ConvertXMMatrix(gridTransform.GetWorldMatrix4f() * viewMatrix * projMatrix);
+
 
 		D3D11_RASTERIZER_DESC wireFrameRasterizerDesc = {};
 		wireFrameRasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
@@ -385,8 +406,28 @@ bool flt::RendererDX11::Render(float deltaTime)
 		_immediateContext->VSSetShader(girdVsShader->pVertexShader, nullptr, 0);
 		_immediateContext->PSSetShader(pixelShader->pPixelShader, nullptr, 0);
 
-		void* pData = &worldViewProj;
-		girdVsShader->SetConstantBuffer(_immediateContext.Get(), &pData, 1);
+		// 상수 버퍼 임시 세팅
+
+		struct {
+			unsigned int gridCount;
+		} entityInitData;
+		entityInitData.gridCount = 161;
+
+		struct {
+			DirectX::XMFLOAT3 cameraPos;
+		}framePerCamera;
+		framePerCamera.cameraPos = { cameraPosition.x, cameraPosition.y, cameraPosition.z };
+
+		struct {
+			DirectX::XMMATRIX worldTranslate;
+			DirectX::XMMATRIX worldViewProj;
+		}framePerEntity;
+
+		framePerEntity.worldTranslate = ConvertXMMatrix(gridTransform.GetTranslateMatrix4f());
+		framePerEntity.worldViewProj = ConvertXMMatrix(gridTransform.GetWorldMatrix4f() * viewMatrix * projMatrix);
+
+		void* pData[3] = { &entityInitData , &framePerCamera , &framePerEntity };
+		girdVsShader->SetConstantBuffer(_immediateContext.Get(), pData, 3);
 
 		_immediateContext->PSSetSamplers(0, 1, &pGridMesh->sampler);
 
@@ -396,8 +437,16 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 		_immediateContext->DrawIndexed(pGridMesh->indexCount, 0, 0);
 
+		// 원래 상태로 복구
+		_immediateContext->RSSetState(NULL);
+		_immediateContext->OMSetBlendState(NULL, blend, 0xFFFFFFFF);
+	}
 
-		_immediateContext->RSSetState(rasterizerState.Get());
+	for (auto& camera : _cameras)
+	{
+		Matrix4f viewMatrix = camera->GetViewMatrix();
+		Matrix4f projMatrix = camera->GetProjectionMatrix();
+
 		for (auto& node : _renderableObjects)
 		{
 			int meshCount = (int)node->meshes.size();
@@ -543,7 +592,6 @@ bool flt::RendererDX11::Render(float deltaTime)
 		ID3D11ShaderResourceView* nullSRV[GBUFFER_COUNT] = { NULL, };
 		_immediateContext->PSSetShaderResources(0, GBUFFER_COUNT, nullSRV);
 	}
-
 
 	_immediateContext->RSSetState(NULL);
 	_immediateContext->OMSetBlendState(NULL, blend, 0xFFFFFFFF);
