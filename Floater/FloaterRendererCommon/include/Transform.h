@@ -35,8 +35,10 @@ namespace flt
 		void SetScale(double x, double y, double z);
 		void SetScale(const Vector4f& scale);
 
-		void AddPosition(float x, float y, float z);
-		void AddPosition(const Vector4f& position);
+		void AddLocalPosition(float x, float y, float z);
+		void AddLocalPosition(const Vector4f& position);
+		void AddWorldPosition(float x, float y, float z);
+		void AddWorldPosition(const Vector4f& position);
 		void AddRotation(const Vector3f& axis, float radian);
 		void AddRotation(const Quaternion& q);
 		void AddScale(float x, float y, float z);

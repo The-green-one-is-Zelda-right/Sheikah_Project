@@ -12,6 +12,7 @@ cbuffer FramePerEntity : register(b2)
 {
     matrix gWorldTranslateMatrix;
     matrix gWorldViewProj;
+    float gHightOpacity;
 }
 
 
@@ -32,11 +33,12 @@ VS_OUTPUT main(VS_INPUT Input)
 
 	// 출력을 위한 매트릭스를 만들어서 입력값에 곱해준다.
     float3 worldPosition = mul(gWorldTranslateMatrix, float4(Input.Position.xyz, 1.0f)).xyz;
-    float3 toCamera = gCameraPosition - worldPosition;
+    float2 toCamera = gCameraPosition.xz - worldPosition.xz;
     float distance = length(toCamera);
     float div = (distance) / (gNumRows / 3);
     float clamped = clamp(div, 0.0f, 1.0f);
     output.Opacity = 1.0f - clamped;
+    output.Opacity *= gHightOpacity;
     
     output.Position = mul(gWorldViewProj, float4(Input.Position.xyz, 1.0f));
     return output;

@@ -186,22 +186,32 @@ int main()
 				keyData = platform.GetKey(flt::KeyCode::w);
 				if (keyData)
 				{
-					cameraNode.transform.AddPosition(cameraNode.transform.Forward() * cameraSpeed);
+					cameraNode.transform.AddLocalPosition(cameraNode.transform.Forward() * cameraSpeed);
 				}
 				keyData = platform.GetKey(flt::KeyCode::a);
 				if (keyData)
 				{
-					cameraNode.transform.AddPosition(cameraNode.transform.Right() * -cameraSpeed);
+					cameraNode.transform.AddLocalPosition(cameraNode.transform.Right() * -cameraSpeed);
 				}
 				keyData = platform.GetKey(flt::KeyCode::s);
 				if (keyData)
 				{
-					cameraNode.transform.AddPosition(cameraNode.transform.Forward() * -cameraSpeed);
+					cameraNode.transform.AddLocalPosition(cameraNode.transform.Forward() * -cameraSpeed);
 				}
 				keyData = platform.GetKey(flt::KeyCode::d);
 				if (keyData)
 				{
-					cameraNode.transform.AddPosition(cameraNode.transform.Right() * cameraSpeed);
+					cameraNode.transform.AddLocalPosition(cameraNode.transform.Right() * cameraSpeed);
+				}
+				keyData = platform.GetKey(flt::KeyCode::q);
+				if (keyData)
+				{
+					cameraNode.transform.AddWorldPosition(0.0f, cameraSpeed, 0.0f);
+				}
+				keyData = platform.GetKey(flt::KeyCode::e);
+				if (keyData)
+				{
+					cameraNode.transform.AddWorldPosition(0.0f, -cameraSpeed, 0.0f);
 				}
 
 				keyData = platform.GetKey(flt::KeyCode::mouseRelativePos);

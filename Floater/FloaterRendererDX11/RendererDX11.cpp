@@ -216,6 +216,31 @@ bool flt::RendererDX11::Initialize(HWND hwnd, HWND debugHWnd /*= NULL*/)
 	_screenQuad->meshes[0].Set(screenQuadBuilder);
 	ASSERT(_screenQuad->meshes[0].Get(), "메쉬 생성 실패");
 
+
+	int gridCounts[2] = { 161, 801 };
+	for (int i = 0; i < 2; ++i)
+	{
+		_grids[i] = new(std::nothrow) DX11Node(_gridTransforms[i], _gridIsDraws[i]);
+		if (!_grids[i])
+		{
+			ASSERT(false, "그리드 생성 실패");
+			return false;
+		}
+
+		_grids[i]->name = L"grid";
+
+		_grids[i]->meshes.resize(1);
+		DX11GridMeshBuilder gridBuilder;
+		gridBuilder.pDevice = _device.Get();
+		gridBuilder.pImmediateContext = _immediateContext.Get();
+		gridBuilder.gridCount = gridCounts[i];
+		std::wstring gridName = L"flt::GridMeshBuilder";
+		gridName += std::to_wstring(i);
+		gridBuilder.key = gridName;
+		_grids[i]->meshes[0].Set(gridBuilder);
+		ASSERT(_grids[i]->meshes[0].Get(), "메쉬 생성 실패");
+	}
+
 	_isRunRenderEngine = true;
 	return true;
 }
@@ -348,6 +373,7 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 		// 그리드 스케일은 카메라 높이에 따라서 1, 10, 100, 1000, 10000 중 하나.
 		float gridScale = 1.0f;
+
 		if (cameraPosition.y > 10000.0f)
 		{
 			gridScale = 10000.0f;
@@ -364,15 +390,34 @@ bool flt::RendererDX11::Render(float deltaTime)
 		{
 			gridScale = 10.0f;
 		}
+		float secondGridScale = (float)((int)gridScale / 10);
+		float heightOpacitys[2] = { 1.0f, 0.0f };
 
-		Transform gridTransform;
-		gridTransform.SetScale(gridScale, gridScale, gridScale);
+		if (secondGridScale > 0.0f)
+		{
+			// 0~5 일경우는 0, 5~10일경우 0~1 사이로 변경.
+			heightOpacitys[1] = ((cameraPosition.y / gridScale) - 5.0f) * 2.0f;
+			heightOpacitys[1] < 0.0f ? heightOpacitys[1] = 0.0f : heightOpacitys[1];
+			heightOpacitys[1] /= 10.0f;
+			heightOpacitys[1] = 1.0f - heightOpacitys[1];
+			ASSERT(heightOpacitys[1] >= 0.0f && heightOpacitys[1] <= 1.0f, "높이 투명도 오류");
+		}
+
+
+		_gridTransforms[0].SetScale(gridScale, gridScale, gridScale);
+		_gridTransforms[1].SetScale(secondGridScale, secondGridScale, secondGridScale);
 
 		// 그리드의 위치는 카메라의 위치에서 가장 가까운 정수값위치 * 그리드 스케일
-		gridTransform.SetPosition(
+		_gridTransforms[0].SetPosition(
 			(int)(cameraPosition.x / gridScale) * gridScale,
 			0.0f,
 			(int)(cameraPosition.z / gridScale) * gridScale
+		);
+
+		_gridTransforms[1].SetPosition(
+			(int)(cameraPosition.x / secondGridScale) * secondGridScale,
+			0.0f,
+			(int)(cameraPosition.z / secondGridScale) * secondGridScale
 		);
 
 
@@ -393,50 +438,51 @@ bool flt::RendererDX11::Render(float deltaTime)
 		_immediateContext->RSSetState(wireFrameRasterizer);
 		wireFrameRasterizer->Release();
 
-		DX11GridMeshBuilder gridBuilder;
-		gridBuilder.pDevice = _device.Get();
-		gridBuilder.pImmediateContext = _immediateContext.Get();
-		Resource<DX11Mesh> gridMesh(gridBuilder);
-		DX11Mesh* pGridMesh = gridMesh.Get();
-		DX11VertexShader* girdVsShader = pGridMesh->vertexShader.Get();
-		DX11PixelShader* pixelShader = pGridMesh->pixelShader.Get();
-		_immediateContext->IASetInputLayout(girdVsShader->pInputLayout);
-		_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+		int gridCounts[2] = { 161, 801 };
+		for (int i = 0; i < 2; ++i)
+		{
+			DX11Mesh* pGridMesh = _grids[i]->meshes[0].Get();
+			DX11VertexShader* girdVsShader = pGridMesh->vertexShader.Get();
+			DX11PixelShader* pixelShader = pGridMesh->pixelShader.Get();
+			_immediateContext->IASetInputLayout(girdVsShader->pInputLayout);
+			_immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
-		_immediateContext->VSSetShader(girdVsShader->pVertexShader, nullptr, 0);
-		_immediateContext->PSSetShader(pixelShader->pPixelShader, nullptr, 0);
+			_immediateContext->VSSetShader(girdVsShader->pVertexShader, nullptr, 0);
+			_immediateContext->PSSetShader(pixelShader->pPixelShader, nullptr, 0);
 
-		// 상수 버퍼 임시 세팅
+			// 상수 버퍼 임시 세팅
+			struct {
+				unsigned int gridCount;
+			} entityInitData;
+			entityInitData.gridCount = gridCounts[i];
 
-		struct {
-			unsigned int gridCount;
-		} entityInitData;
-		entityInitData.gridCount = 161;
+			struct {
+				DirectX::XMFLOAT3 cameraPos;
+			}framePerCamera;
+			framePerCamera.cameraPos = { cameraPosition.x, cameraPosition.y, cameraPosition.z };
 
-		struct {
-			DirectX::XMFLOAT3 cameraPos;
-		}framePerCamera;
-		framePerCamera.cameraPos = { cameraPosition.x, cameraPosition.y, cameraPosition.z };
+			struct {
+				DirectX::XMMATRIX worldTranslate;
+				DirectX::XMMATRIX worldViewProj;
+				float heightOpacity;
+			}framePerEntity;
 
-		struct {
-			DirectX::XMMATRIX worldTranslate;
-			DirectX::XMMATRIX worldViewProj;
-		}framePerEntity;
+			framePerEntity.worldTranslate = ConvertXMMatrix(_gridTransforms[i].GetTranslateMatrix4f());
+			framePerEntity.worldViewProj = ConvertXMMatrix(_gridTransforms[i].GetWorldMatrix4f() * viewMatrix * projMatrix);
+			framePerEntity.heightOpacity = heightOpacitys[i];
 
-		framePerEntity.worldTranslate = ConvertXMMatrix(gridTransform.GetTranslateMatrix4f());
-		framePerEntity.worldViewProj = ConvertXMMatrix(gridTransform.GetWorldMatrix4f() * viewMatrix * projMatrix);
+			void* pData[3] = { &entityInitData , &framePerCamera , &framePerEntity };
+			girdVsShader->SetConstantBuffer(_immediateContext.Get(), pData, 3);
 
-		void* pData[3] = { &entityInitData , &framePerCamera , &framePerEntity };
-		girdVsShader->SetConstantBuffer(_immediateContext.Get(), pData, 3);
+			_immediateContext->PSSetSamplers(0, 1, &pGridMesh->sampler);
 
-		_immediateContext->PSSetSamplers(0, 1, &pGridMesh->sampler);
+			UINT offset = 0;
+			_immediateContext->IASetVertexBuffers(0, 1, &pGridMesh->vertexBuffer, &pGridMesh->singleVertexSize, &offset);
+			_immediateContext->IASetIndexBuffer(pGridMesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		UINT offset = 0;
-		_immediateContext->IASetVertexBuffers(0, 1, &pGridMesh->vertexBuffer, &pGridMesh->singleVertexSize, &offset);
-		_immediateContext->IASetIndexBuffer(pGridMesh->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-		_immediateContext->DrawIndexed(pGridMesh->indexCount, 0, 0);
-
+			_immediateContext->DrawIndexed(pGridMesh->indexCount, 0, 0);
+		}
+		
 		// 원래 상태로 복구
 		_immediateContext->RSSetState(NULL);
 		_immediateContext->OMSetBlendState(NULL, blend, 0xFFFFFFFF);

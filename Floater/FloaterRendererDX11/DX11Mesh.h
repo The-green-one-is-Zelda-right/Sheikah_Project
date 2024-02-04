@@ -138,8 +138,9 @@ namespace flt
 
 	struct DX11GridMeshBuilder : public DX11MeshBuilder
 	{
-		DX11GridMeshBuilder() : DX11MeshBuilder(L"flt::GridMeshBuilder") {}
+		DX11GridMeshBuilder() : DX11MeshBuilder(L"flt::GridMeshBuilder"), gridCount(0) {}
 
 		virtual DX11Mesh* build() const override;
+		int gridCount;
 	};
 }

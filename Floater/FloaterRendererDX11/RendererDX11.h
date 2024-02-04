@@ -113,9 +113,12 @@ namespace flt
 		std::vector<DX11Node*> _renderableObjects;
 		std::vector<Camera*> _cameras;
 
-		//// 디버그용 변수
+		// 디버그용 변수
 		//HWND _debugHWnd;
 		//bool _isDebugMode;
 		//comptr<IDXGISwapChain1> _debugSwapChain;
+		Transform _gridTransforms[2];
+		bool _gridIsDraws[2];
+		DX11Node* _grids[2];
 	};
 }

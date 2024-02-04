@@ -481,7 +481,7 @@ flt::DX11Mesh* flt::DX11GridMeshBuilder::build() const
 	};
 
 	std::vector<Vertex> vertices;
-	int gridCount = 161;
+
 	vertices.reserve(gridCount * gridCount);
 
 	for (int i = 0; i < gridCount; ++i)

@@ -110,21 +110,37 @@ void flt::Transform::SetScale(const Vector4f& scale)
 	_scale = scale;
 }
 
-void flt::Transform::AddPosition(float x, float y, float z)
+void flt::Transform::AddLocalPosition(float localX, float localY, float localZ)
 {
 	MakeDirtyRecursive();
 
-	_position.x += x;
-	_position.y += y;
-	_position.z += z;
+	_position.x += localX;
+	_position.y += localY;
+	_position.z += localZ;
 }
 
-void flt::Transform::AddPosition(const Vector4f& position)
+void flt::Transform::AddLocalPosition(const Vector4f& localPos)
 {
 	MakeDirtyRecursive();
 
-	_position += position;
+	_position += localPos;
 	_position.w = 1.0f;
+}
+
+void flt::Transform::AddWorldPosition(const Vector4f& worldPos)
+{
+	Matrix4f worldMatrix = Matrix4f::Identity();
+	if (_pParent)
+	{
+		worldMatrix = _pParent->GetWorldMatrix4f();
+	}
+	Vector4f localPos = worldPos * worldMatrix.Inverse();
+	AddLocalPosition(localPos);
+}
+
+void flt::Transform::AddWorldPosition(float worldX, float worldY, float worldZ)
+{
+	AddWorldPosition(Vector4f{ worldX, worldY, worldZ, 1.0f });
 }
 
 void flt::Transform::AddRotation(const Vector3f& axis, float radian)
