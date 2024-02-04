@@ -28,7 +28,7 @@ flt::OsWindows::OsWindows(bool useConsole) :
 	_hwnd(NULL),
 	_isActivated(false),
 	_keyTimer(),
-	_pKeyStates{ new(std::nothrow) bool[(int)KeyCode::MAX] },
+	_pKeyStates{ new(std::nothrow) bool[(int)KeyCode::MAX] {false, } },
 	_pKeyDatas{ new(std::nothrow) KeyData[(int)KeyCode::MAX] },
 	_keyUp(),
 	_consoleHwnd(NULL)
@@ -217,7 +217,6 @@ bool flt::OsWindows::Finalize()
 
 bool flt::OsWindows::Update()
 {
-
 	// 한 프레임 내에 up, down이 있을 경우에도 한번은 키입력 처리를 위해
 	UpdateKeyState();
 
@@ -297,15 +296,6 @@ flt::KeyData flt::OsWindows::GetGamePad(int playerNum)
 
 void flt::OsWindows::UpdateKeyState()
 {
-	//KeyData data;
-	//data.keyTime = 0;
-	//data.x = 0;
-	//data.y = 0;
-	//SetKeyState(KeyCode::mouseRelativePos, KeyData{}, false, false);
-	//SetKeyState(KeyCode::mouseAbsolutePos, KeyData{}, false, false);
-	//SetKeyState(KeyCode::mouseWheelUp, KeyData{}, false, false);
-	//SetKeyState(KeyCode::mouseWheelDown, KeyData{}, false, false);
-
 	// keyUp 처리
 	for (const auto& index : _keyUp)
 	{

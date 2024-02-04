@@ -12,6 +12,9 @@ namespace flt
 	/// </summary>
 	struct KeyData
 	{
+		KeyData() : keyTime(0x0000'0000'0000'0000), x(0), y(0) {}
+		KeyData(int64 keyTime, int32 x, int32 y) : keyTime(keyTime), x(x), y(y) {}
+
 		operator bool() const noexcept
 		{
 			// 최상위 1비트가 1이면 false, 아니면 true.
