@@ -82,6 +82,22 @@ flt::RawMesh* flt::AssimpRawMeshBuilder::build() const
 	// 본 데이터
 	if (mesh->HasBones())
 	{
+		// 루트 본 찾기
+		std::wstring firstBoneName = ConvertToWstring(mesh->mBones[0]->mName.C_Str());
+		RawNode* rootBoneNode = nodeMap.find(firstBoneName)->second;
+		while (rootBoneNode->parent)
+		{
+			if (rootBoneNode->parent->boneIndex != -1)
+			{
+				rootBoneNode = rootBoneNode->parent;
+			}
+			else
+			{
+				break;
+			}
+		}
+		pRawMesh->pRootBone = &rootBoneNode->transform;
+
 		int boneCount = mesh->mNumBones;
 		for (int boneIndex = 0; boneIndex < boneCount; ++boneIndex)
 		{

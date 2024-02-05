@@ -20,7 +20,6 @@ namespace flt
 		};
 #pragma endregion
 		DX11Node(Transform& transform, const bool& isDraw);
-		//DX11Node(RawNode& rawNode, const bool& isDraw);
 
 		std::wstring name;
 		Transform& transform;

@@ -2,6 +2,7 @@
 #include "../../FloaterMath/include/Vector2f.h"
 #include "../../FloaterMath/include/Vector3f.h"
 #include "../../FloaterMath/include/Vector4f.h"
+#include "Transform.h"
 #include "RawMaterial.h"
 #include "Resource.h"
 #include "IBuilder.h"
@@ -68,17 +69,24 @@ namespace flt
 		std::vector<RawVertex> vertices;
 		std::vector<int> indices;
 		RawMaterial material;
+
+		Transform* pRootBone;
 	};
 
 	template struct Resource<RawMesh>;
 
 	struct RawMeshBuilder : public IBuilder<RawMesh>
 	{
-		RawMeshBuilder(const std::wstring& filePath, const std::wstring& name) : IBuilder<RawMesh>(filePath + name) {}
+		RawMeshBuilder(const std::wstring& filePath, const std::wstring& name) :
+			IBuilder<RawMesh>(filePath + name),
+			vertices(),
+			indices(),
+			pRootBone(nullptr) {}
 
 		virtual RawMesh* build() const override;
 
 		std::vector<RawVertex> vertices;
 		std::vector<int> indices;
+		Transform* pRootBone;
 	};
 }

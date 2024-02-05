@@ -45,11 +45,10 @@ flt::RendererDX11::RendererDX11() :
 	_depthStencilView(),
 	_rasterizerState(),
 	_gBuffer{},
-	_screenQuadTransform(),
-	_screenQuadIsDraw(true),
-	_screenQuad(nullptr),
+	_screenQuad(),
 	_renderableObjects(),
-	_cameras()
+	_cameras(),
+	_grids{}
 	//_debugHWnd(NULL),
 	//_isDebugMode(false)
 {
@@ -200,36 +199,27 @@ bool flt::RendererDX11::Initialize(HWND hwnd, HWND debugHWnd /*= NULL*/)
 	//	_isDebugMode = true;
 	//}
 
-	_screenQuad = new(std::nothrow) DX11Node(_screenQuadTransform, _screenQuadIsDraw);
-	if (!_screenQuad)
-	{
-		ASSERT(false, "스크린 쿼드 생성 실패");
-		return false;
-	}
+	_screenQuad.node = new(std::nothrow) DX11Node(_screenQuad.transform, _screenQuad.isDraw);
+	ASSERT(_screenQuad.node, "스크린 쿼드 노드 생성 실패");
 
-	_screenQuad->name = L"screenQuad";
+	_screenQuad.node->name = L"screenQuad";
 	DX11ScreedQuadBuilder screenQuadBuilder;
 	screenQuadBuilder.pDevice = _device.Get();
 	screenQuadBuilder.pImmediateContext = _immediateContext.Get();
 
-	_screenQuad->meshes.resize(1);
-	_screenQuad->meshes[0].Set(screenQuadBuilder);
-	ASSERT(_screenQuad->meshes[0].Get(), "메쉬 생성 실패");
+	_screenQuad.node->meshes.resize(1);
+	_screenQuad.node->meshes[0].Set(screenQuadBuilder);
+	ASSERT(_screenQuad.node->meshes[0].Get(), "메쉬 생성 실패");
 
 
 	int gridCounts[2] = { 161, 801 };
 	for (int i = 0; i < 2; ++i)
 	{
-		_grids[i] = new(std::nothrow) DX11Node(_gridTransforms[i], _gridIsDraws[i]);
-		if (!_grids[i])
-		{
-			ASSERT(false, "그리드 생성 실패");
-			return false;
-		}
+		_grids[i].node = new(std::nothrow) DX11Node(_grids[i].transform, _grids[i].isDraw);
+		ASSERT(_grids[i].node, "그리드 노드 생성 실패");
 
-		_grids[i]->name = L"grid";
-
-		_grids[i]->meshes.resize(1);
+		_grids[i].node->name = L"grid";
+		_grids[i].node->meshes.resize(1);
 		DX11GridMeshBuilder gridBuilder;
 		gridBuilder.pDevice = _device.Get();
 		gridBuilder.pImmediateContext = _immediateContext.Get();
@@ -237,8 +227,8 @@ bool flt::RendererDX11::Initialize(HWND hwnd, HWND debugHWnd /*= NULL*/)
 		std::wstring gridName = L"flt::GridMeshBuilder";
 		gridName += std::to_wstring(i);
 		gridBuilder.key = gridName;
-		_grids[i]->meshes[0].Set(gridBuilder);
-		ASSERT(_grids[i]->meshes[0].Get(), "메쉬 생성 실패");
+		_grids[i].node->meshes[0].Set(gridBuilder);
+		ASSERT(_grids[i].node->meshes[0].Get(), "메쉬 생성 실패");
 	}
 
 	_isRunRenderEngine = true;
@@ -271,26 +261,18 @@ bool flt::RendererDX11::Finalize()
 
 	_isRunRenderEngine = false;
 
-	//if (_debugHWnd != NULL)
-	//{
-	//	BOOL ret = CloseWindow(_debugHWnd);
-
-	//	if (ret == FALSE)
-	//	{
-	//		ASSERT(false, "디버그 윈도우 닫기 실패");
-	//		return false;
-	//	}
-
-	//	_debugHWnd = NULL;
-	//	_isDebugMode = false;
-	//}
-
-	delete _screenQuad;
+	delete _screenQuad.node;
+	_screenQuad.node = nullptr;
+	delete _grids[0].node;
+	_grids[0].node = nullptr;
+	delete _grids[1].node;
+	_grids[1].node = nullptr;
 
 	// 들고 있는 노드들 삭제.
 	for (auto& node : _renderableObjects)
 	{
 		delete node;
+		node = nullptr;
 	}
 	_renderableObjects.clear();
 	_cameras.clear();
@@ -404,17 +386,17 @@ bool flt::RendererDX11::Render(float deltaTime)
 		}
 
 
-		_gridTransforms[0].SetScale(gridScale, gridScale, gridScale);
-		_gridTransforms[1].SetScale(secondGridScale, secondGridScale, secondGridScale);
+		_grids[0].transform.SetScale(gridScale, gridScale, gridScale);
+		_grids[1].transform.SetScale(secondGridScale, secondGridScale, secondGridScale);
 
 		// 그리드의 위치는 카메라의 위치에서 가장 가까운 정수값위치 * 그리드 스케일
-		_gridTransforms[0].SetPosition(
+		_grids[0].transform.SetPosition(
 			(int)(cameraPosition.x / gridScale) * gridScale,
 			0.0f,
 			(int)(cameraPosition.z / gridScale) * gridScale
 		);
 
-		_gridTransforms[1].SetPosition(
+		_grids[1].transform.SetPosition(
 			(int)(cameraPosition.x / secondGridScale) * secondGridScale,
 			0.0f,
 			(int)(cameraPosition.z / secondGridScale) * secondGridScale
@@ -441,7 +423,7 @@ bool flt::RendererDX11::Render(float deltaTime)
 		int gridCounts[2] = { 161, 801 };
 		for (int i = 0; i < 2; ++i)
 		{
-			DX11Mesh* pGridMesh = _grids[i]->meshes[0].Get();
+			DX11Mesh* pGridMesh = _grids[i].node->meshes[0].Get();
 			DX11VertexShader* girdVsShader = pGridMesh->vertexShader.Get();
 			DX11PixelShader* pixelShader = pGridMesh->pixelShader.Get();
 			_immediateContext->IASetInputLayout(girdVsShader->pInputLayout);
@@ -467,8 +449,8 @@ bool flt::RendererDX11::Render(float deltaTime)
 				float heightOpacity;
 			}framePerEntity;
 
-			framePerEntity.worldTranslate = ConvertXMMatrix(_gridTransforms[i].GetTranslateMatrix4f());
-			framePerEntity.worldViewProj = ConvertXMMatrix(_gridTransforms[i].GetWorldMatrix4f() * viewMatrix * projMatrix);
+			framePerEntity.worldTranslate = ConvertXMMatrix(_grids[i].transform.GetTranslateMatrix4f());
+			framePerEntity.worldViewProj = ConvertXMMatrix(_grids[i].transform.GetWorldMatrix4f() * viewMatrix * projMatrix);
 			framePerEntity.heightOpacity = heightOpacitys[i];
 
 			void* pData[3] = { &entityInitData , &framePerCamera , &framePerEntity };
@@ -482,7 +464,7 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 			_immediateContext->DrawIndexed(pGridMesh->indexCount, 0, 0);
 		}
-		
+
 		// 원래 상태로 복구
 		_immediateContext->RSSetState(NULL);
 		_immediateContext->OMSetBlendState(NULL, blend, 0xFFFFFFFF);
@@ -573,7 +555,7 @@ bool flt::RendererDX11::Render(float deltaTime)
 		_immediateContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), _depthStencilView.Get());
 		_immediateContext->RSSetState(rasterizerState.Get());
 
-		DX11Mesh* pMesh = _screenQuad->meshes[0].Get();
+		DX11Mesh* pMesh = _screenQuad.node->meshes[0].Get();
 		DX11VertexShader* vertexShader = pMesh->vertexShader.Get();
 		DX11PixelShader* pixelShader = pMesh->pixelShader.Get();
 

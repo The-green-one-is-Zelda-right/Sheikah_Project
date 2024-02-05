@@ -133,10 +133,6 @@ namespace flt
 			}
 		}
 
-		//operator T* () const
-		//{
-		//	return (T*)_pData;
-		//}
 		T& operator*() const
 		{
 			ASSERT(_pData, "Not Setting Data");

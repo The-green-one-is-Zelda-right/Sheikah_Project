@@ -9,10 +9,15 @@
 
 namespace flt
 {
+	struct TransformOwner;
+
 	class Transform
 	{
+		friend struct TransformOwner;
 	public:
-		Transform() : _position(), _scale(1.0f, 1.0f, 1.0f, 0.0f), _rotation(), _pParent(nullptr), _children(), _worldMatrix(), _isDirty(true) {}
+		//Transform() : Transform(nullptr) {}
+		//Transform(TransformOwner* pOwner) : _position(), _scale(1.0f, 1.0f, 1.0f, 0.0f), _rotation(), _pParent(nullptr), _children(), _worldMatrix(), _isDirty(true), _pOwner(pOwner) {}
+		Transform() : _position(), _scale(1.0f, 1.0f, 1.0f, 0.0f), _rotation(), _pParent(nullptr), _children(), _worldMatrix(), _isDirty(true), _pOwner(nullptr) {}
 		~Transform();
 
 		void SetMatrix(const Matrix4f& worldMatrix);
@@ -63,6 +68,8 @@ namespace flt
 		Transform* GetChild(size_t index) const noexcept { return _children[index]; }
 		const std::vector<Transform*>& GetChildren() const noexcept { return _children; }
 
+		TransformOwner* GetOwner() const noexcept { return _pOwner; }
+
 	private:
 		void MakeDirtyRecursive() noexcept;
 		void CalcWorldMatrixRecursive() noexcept;
@@ -78,5 +85,7 @@ namespace flt
 
 		Matrix4f _worldMatrix;
 		bool _isDirty;
+
+		TransformOwner* _pOwner;
 	};
 }

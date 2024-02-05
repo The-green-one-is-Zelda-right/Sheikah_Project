@@ -305,6 +305,8 @@ bool flt::FBXLoader::CreateMesh(fbxsdk::FbxMesh& mesh, Resource<RawMesh>* outMes
 		builder.indices.push_back(index);
 	}
 
+	builder.pRootBone = nullptr;
+
 	_splitVertexMap.Clear();
 
 	auto materialCount = mesh.GetElementMaterialCount();

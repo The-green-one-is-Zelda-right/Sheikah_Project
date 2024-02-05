@@ -40,6 +40,7 @@
     <ClInclude Include="include\RawShader.h" />
     <ClInclude Include="include\RawTexture.h" />
     <ClInclude Include="include\RawScene.h" />
+    <ClInclude Include="include\TransformOwner.h" />
     <ClInclude Include="VertedDataLayer.h" />
     <ClInclude Include="VertexNormalData.h" />
   </ItemGroup>

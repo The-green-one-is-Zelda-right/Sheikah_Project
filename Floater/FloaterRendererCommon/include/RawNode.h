@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Transform.h"
+#include "TransformOwner.h"
 #include "RawMesh.h"
 #include "RawSkin.h"
 #include "RawAnimation.h"
@@ -12,14 +12,13 @@
 
 namespace flt
 {
-	struct RawNode
+	struct RawNode : public TransformOwner
 	{
 		RawNode() : RawNode(L"") {}
 		RawNode(const std::wstring& name);
 		~RawNode();
 
 		std::wstring name;
-		Transform transform;
 		std::vector<Resource<RawMesh>> meshes;
 		RawSkin* skin;
 		RawAnimation* animation;

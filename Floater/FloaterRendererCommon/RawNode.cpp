@@ -2,7 +2,6 @@
 
 flt::RawNode::RawNode(const std::wstring& name) :
 	name(name),
-	transform(),
 	meshes(),
 	skin(nullptr),
 	animation(nullptr),
@@ -25,4 +24,3 @@ flt::RawNode::~RawNode()
 		delete child;
 	}
 }
-

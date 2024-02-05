@@ -104,6 +104,9 @@
     <ClInclude Include="Font.h">
       <Filter>Font</Filter>
     </ClInclude>
+    <ClInclude Include="DX11Entity.h">
+      <Filter>RendererResource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CubeVS.hlsl">

@@ -3,6 +3,7 @@
 #include "../FloaterRendererCommon/include/ResourceMgr.h"
 #include "CommonMath.h"
 #include "DX11Node.h"
+#include "DX11Entity.h"
 #include "../FloaterUtil/include/RBTree.h"
 
 #include <windows.h>
@@ -105,9 +106,7 @@ namespace flt
 
 		// 디퍼드에 사용할 변수들
 		TextureRenderTarget _gBuffer[GBUFFER_COUNT];
-		Transform _screenQuadTransform;
-		bool _screenQuadIsDraw;
-		DX11Node* _screenQuad;
+		DX11Entity _screenQuad;
 
 		// 그리기 위한 오브젝트
 		std::vector<DX11Node*> _renderableObjects;
@@ -117,8 +116,8 @@ namespace flt
 		//HWND _debugHWnd;
 		//bool _isDebugMode;
 		//comptr<IDXGISwapChain1> _debugSwapChain;
-		Transform _gridTransforms[2];
-		bool _gridIsDraws[2];
-		DX11Node* _grids[2];
+		DX11Entity _grids[2];
 	};
 }
+
+
