@@ -138,6 +138,8 @@ int main()
 
 	auto renderer = platform.CreateRenderer(flt::RendererType::DX11);
 
+	bool isShowCurser = true;
+
 	bool isDraw = true;
 
 	flt::RawNode cameraNode(L"testCamera");
@@ -177,6 +179,8 @@ int main()
 			auto keyData = platform.GetKey(flt::KeyCode::mouseLButton);
 			if (keyData)
 			{
+				//isShowCurser = !isShowCurser;
+				//platform.ShowCursor(isShowCurser);
 				std::cout << "LL " << keyData.keyTime << " " << keyData.x << " " << keyData.y << std::endl;
 			}
 			keyData = platform.GetKey(flt::KeyCode::mouseRButton);

@@ -28,6 +28,7 @@ namespace flt
 		KeyData GetKey(KeyCode code);
 		KeyData GetGamePad(int playerNum);
 		//virtual void OnClosed();
+		void ShowCursor(bool isShow);
 
 	private:
 		void UpdateKeyState();
@@ -49,10 +50,11 @@ namespace flt
 		bool* _pKeyStates;
 		KeyData* _pKeyDatas;
 		std::vector<int> _keyUp;
+		bool _isShowCursor;
 
 		HWND _consoleHwnd;
 
 	private:
-		static unsigned char _keyMap[256];
+		static unsigned char _keyCodeMap[256];
 	};
 }

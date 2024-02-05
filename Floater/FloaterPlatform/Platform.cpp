@@ -59,3 +59,8 @@ flt::KeyData flt::Platform::GetGamePad(int playerNum)
 {
 	return _pOsImpl->GetGamePad(playerNum);
 }
+
+void flt::Platform::ShowCursor(bool isShow)
+{
+	_pOsImpl->ShowCursor(isShow);
+}

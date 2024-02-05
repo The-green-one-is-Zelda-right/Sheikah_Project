@@ -28,36 +28,37 @@ flt::OsWindows::OsWindows(bool useConsole) :
 	_hwnd(NULL),
 	_isActivated(false),
 	_keyTimer(),
-	_pKeyStates{ new(std::nothrow) bool[(int)KeyCode::MAX] {false, } },
+	_pKeyStates{ new(std::nothrow) bool[(int)KeyCode::MAX] },
 	_pKeyDatas{ new(std::nothrow) KeyData[(int)KeyCode::MAX] },
 	_keyUp(),
-	_consoleHwnd(NULL)
+	_consoleHwnd(NULL),
+	_isShowCursor(true)
 {
+	ASSERT(_pKeyDatas, "메모리 동적 할당 실패");
+	ASSERT(_pKeyStates, "메모리 동적 할당 실패");
+
+	memset(_pKeyStates, 0, sizeof(*_pKeyStates) * (int)KeyCode::MAX);
+	memset(_pKeyDatas, 0, sizeof(*_pKeyDatas) * (int)KeyCode::MAX);
+
 	_consoleHwnd = GetConsoleWindow();
-	if (_consoleHwnd == NULL)
+	if (useConsole)
 	{
-		if (useConsole)
+		if (_consoleHwnd == NULL)
 		{
-			AllocConsole();
-			_consoleHwnd = GetConsoleWindow();
-			if (_consoleHwnd == NULL)
+			if (useConsole)
 			{
-				ASSERT(false, "콘솔 윈도우 핸들을 가져오지 못했습니다.");
+				AllocConsole();
+				_consoleHwnd = GetConsoleWindow();
+				ASSERT(_consoleHwnd != NULL, "콘솔 윈도우 핸들을 가져오지 못했습니다.");
 			}
 		}
-		else
-		{
-			return;
-		}
-	}
-
-	if (!useConsole)
-	{
-		ShowWindow(_consoleHwnd, SW_HIDE);
 	}
 	else
 	{
-		ShowWindow(_consoleHwnd, SW_SHOW);
+		if (_consoleHwnd != NULL)
+		{
+			ShowWindow(_consoleHwnd, SW_HIDE);
+		}
 	}
 }
 
@@ -294,6 +295,31 @@ flt::KeyData flt::OsWindows::GetGamePad(int playerNum)
 	return KeyData{};
 }
 
+void flt::OsWindows::ShowCursor(bool isShow)
+{
+	if (_isShowCursor == isShow)
+	{
+		return;
+	}
+
+	if (isShow)
+	{
+		while (::ShowCursor(isShow) < 0)
+		{
+
+		}
+	}
+	else
+	{
+		while (::ShowCursor(isShow) > 0)
+		{
+
+		}
+	}
+
+	_isShowCursor = isShow;
+}
+
 void flt::OsWindows::UpdateKeyState()
 {
 	// keyUp 처리
@@ -330,7 +356,7 @@ void flt::OsWindows::UpdateKeyState()
 
 void flt::OsWindows::HandleKeyboardRawData(const RAWKEYBOARD& data)
 {
-	auto code = _keyMap[data.VKey];
+	auto code = _keyCodeMap[data.VKey];
 	KeyData keyData;
 	keyData.keyTime = _keyTimer.GetLabTimeMicroSeconds();
 	keyData.x = 0;
@@ -408,6 +434,7 @@ void flt::OsWindows::HandleMouseRawData(const RAWMOUSE& data)
 	auto mouseFlags = data.usFlags;
 	if (mouseFlags & MOUSE_MOVE_ABSOLUTE)
 	{
+		ASSERT(false, "아직 제대로 구현 안함");
 		RECT rect;
 
 		if (mouseFlags & MOUSE_VIRTUAL_DESKTOP)
@@ -706,7 +733,7 @@ bool flt::OsWindows::GetError(std::wstring* outErrorMsg, unsigned int* outErrorC
 	return true;
 }
 
-unsigned char flt::OsWindows::_keyMap[256] =
+unsigned char flt::OsWindows::_keyCodeMap[256] =
 {
 	NULL,
 	(unsigned char)KeyCode::mouseLButton,	// VK_LBUTTON        0x01

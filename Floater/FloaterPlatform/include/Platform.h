@@ -36,6 +36,8 @@ namespace flt
 		KeyData GetKey(KeyCode code);
 		KeyData GetGamePad(int playerNum);
 
+		void ShowCursor(bool isShow);
+
 		//virtual void OnResize() {};
 		//virtual void OnFullScreen() {};
 		//virtual void OnClosed() {};
