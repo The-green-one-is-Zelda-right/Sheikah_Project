@@ -173,8 +173,8 @@ int main()
 		}
 
 		renderer->Render(1.0f);
-		rawScene.nodes[1]->transform.AddRotation({ 0.0f, 1.0f, 0.0f }, 0.01f);
-		cubeNode.transform.AddRotation({ 0.0f, 1.0f, 0.0f }, -0.1f);
+		rawScene.nodes[1]->transform.AddLocalRotation({ 0.0f, 1.0f, 0.0f }, 0.01f);
+		cubeNode.transform.AddLocalRotation({ 0.0f, 1.0f, 0.0f }, -0.1f);
 		{
 			auto keyData = platform.GetKey(flt::KeyCode::mouseLButton);
 			if (keyData)
@@ -222,9 +222,10 @@ int main()
 				keyData = platform.GetKey(flt::KeyCode::mouseRelativePos);
 				if (keyData)
 				{
-					cameraNode.transform.AddRotation({ 0.0f, 1.0f, 0.0f }, keyData.x * 0.01f);
-					cameraNode.transform.AddRotation(static_cast<flt::Vector3f>(cameraNode.transform.Right()), keyData.y * 0.01f);
-					std::cout << "diff Pos " << keyData.x << " " << keyData.y << std::endl;
+					cameraNode.transform.AddWorldRotation({ 0.0f, 1.0f, 0.0f }, keyData.x * 0.01f);
+					flt::Vector3f euler = cameraNode.transform.GetLocalRotation().GetEuler();
+					euler.x = std::clamp(euler.x + flt::RadToDeg(keyData.y * 0.01f), -89.0f, 89.0f);
+					cameraNode.transform.SetRotation(flt::Quaternion(euler));
 				}
 			}
 

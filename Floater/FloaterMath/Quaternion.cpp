@@ -5,6 +5,13 @@
 
 namespace flt
 {
+
+	Quaternion::Quaternion(const Vector3f& euler, AxisOrder order /*= AxisOrder::YXZ*/)
+		: Vector4f(0.0f, 0.0f, 0.0f, 1.0f)
+	{
+		SetEuler(euler, order);
+	}
+
 	void Quaternion::SetEuler(float degreeX, float degreeY, float degreeZ, AxisOrder order) noexcept
 	{
 		float radX = DegToRad(degreeX * 0.5f);
@@ -117,6 +124,16 @@ namespace flt
 		SetEuler(euler.x, euler.y, euler.z, order);
 	}
 
+	void Quaternion::SetAxisAngle(const Vector3f& axis, float radian) noexcept
+	{
+		Vector3f normalizedAxis = axis.Normalized();
+		float sinHalfAngle = sinf(radian * 0.5f);
+		x = normalizedAxis.x * sinHalfAngle;
+		y = normalizedAxis.y * sinHalfAngle;
+		z = normalizedAxis.z * sinHalfAngle;
+		w = cosf(radian * 0.5f);
+	}
+
 	Vector3f Quaternion::GetEuler() const noexcept
 	{
 		// 일단 YXZ 순서로 구현
@@ -147,4 +164,19 @@ namespace flt
 
 		return Vector3f(RadToDeg(pitch), RadToDeg(yaw), RadToDeg(roll));
 	}
+
+	flt::Vector4f Quaternion::GetAxisAngle() const noexcept
+	{
+		float angle = 2.0f * acosf(w);
+		float s = sqrtf(1.0f - w * w);
+		if (s < 0.001f)
+		{
+			return Vector4f(1.0f, 0.0f, 0.0f, 0.0f);
+		}
+		else
+		{
+			return Vector4f(x / s, y / s, z / s, angle);
+		}
+	}
+
 }

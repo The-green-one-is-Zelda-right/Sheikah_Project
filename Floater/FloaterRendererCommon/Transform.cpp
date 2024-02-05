@@ -143,17 +143,28 @@ void flt::Transform::AddWorldPosition(float worldX, float worldY, float worldZ)
 	AddWorldPosition(Vector4f{ worldX, worldY, worldZ, 1.0f });
 }
 
-void flt::Transform::AddRotation(const Vector3f& axis, float radian)
+void flt::Transform::AddLocalRotation(const Vector3f& axis, float radian)
 {
-	MakeDirtyRecursive();
-
 	//Quaternion q0{ DirectX::XMQuaternionRotationAxis(Vector4f{ axis, 0.0f }, radian) };
 	Quaternion q(axis, radian);
 	//q.SetEuler(degreeX, degreeY, degree);
-	AddRotation(q);
+	AddLocalRotation(q);
 }
 
-void flt::Transform::AddRotation(const Quaternion& q)
+void flt::Transform::AddWorldRotation(const Vector3f& axis, float radian)
+{
+	Matrix4f worldMatrix = Matrix4f::Identity();
+	if (_pParent)
+	{
+		worldMatrix = _pParent->GetWorldMatrix4f();
+	}
+	Vector4f worldAxis = { axis, 0.0f };
+	Vector4f localAxis = worldAxis * worldMatrix.Inverse();
+
+	AddLocalRotation({localAxis.x, localAxis.y, localAxis.z}, radian);
+}
+
+void flt::Transform::AddLocalRotation(const Quaternion& q)
 {
 	MakeDirtyRecursive();
 

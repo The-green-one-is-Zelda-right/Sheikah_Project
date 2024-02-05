@@ -21,6 +21,7 @@ namespace flt
 
 		constexpr Quaternion() noexcept : Vector4f(0.0f, 0.0f, 0.0f, 1.0f) {}
 		Quaternion(float x, float y, float z, float w) noexcept : Vector4f(Vector4f{ x, y, z, w }.Normalize()) {}
+		Quaternion(const Vector3f& euler, AxisOrder order = AxisOrder::YXZ);
 		constexpr Quaternion(const Vector4f& v) noexcept : Vector4f(v) {}
 		Quaternion(const Vector3f& axis, float radian) noexcept : Vector4f(axis.Normalized()* sin(radian * 0.5f), cos(radian * 0.5f)) {}
 		Quaternion(const Vector4f& axis, float radian) noexcept : Quaternion((Vector3f)axis, radian) {}
@@ -34,8 +35,10 @@ namespace flt
 
 		void SetEuler(float degreeX, float degreeY, float defreeZ, AxisOrder order = AxisOrder::YXZ) noexcept;
 		void SetEuler(const Vector3f& euler, AxisOrder order = AxisOrder::YXZ) noexcept;
+		void SetAxisAngle(const Vector3f& axis, float radian) noexcept;
 
 		Vector3f GetEuler() const noexcept;
+		Vector4f GetAxisAngle() const noexcept;
 
 		static Quaternion Slerp(Quaternion q1, Quaternion q2, float t) noexcept
 		{

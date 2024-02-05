@@ -39,8 +39,10 @@ namespace flt
 		void AddLocalPosition(const Vector4f& position);
 		void AddWorldPosition(float x, float y, float z);
 		void AddWorldPosition(const Vector4f& position);
-		void AddRotation(const Vector3f& axis, float radian);
-		void AddRotation(const Quaternion& q);
+		void AddLocalRotation(const Vector3f& axis, float radian);
+		void AddLocalRotation(const Quaternion& q);
+		void AddWorldRotation(const Vector3f& axis, float radian);
+
 		void AddScale(float x, float y, float z);
 
 		Matrix4f GetTranslateMatrix4f() const noexcept;
