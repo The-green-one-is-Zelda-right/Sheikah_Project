@@ -28,5 +28,7 @@ namespace flt
 
 		RawNode* parent;
 		std::vector<RawNode*> children;
+
+		bool isDraw;
 	};
 }

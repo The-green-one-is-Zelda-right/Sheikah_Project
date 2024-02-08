@@ -103,7 +103,7 @@ int main()
 
 		char buffer[1024];
 		auto str = ConvertToString(L"..\\x64\\fbx\\Test\\*.*");
-		
+
 		WIN32_FIND_DATAA findData;
 		HANDLE handle = FindFirstFileA(str.c_str(), &findData);
 
@@ -112,9 +112,9 @@ int main()
 			do
 			{
 				std::cout << findData.cFileName << std::endl;
-			} while(FindNextFileA(handle, &findData));
+			} while (FindNextFileA(handle, &findData));
 		}
-		
+
 		GetFullPathNameA(str.c_str(), 1024, buffer, NULL);
 
 		//std::filesystem::path currPath = std::filesystem::current_path();
@@ -228,42 +228,6 @@ int main()
 					cameraNode.transform.SetRotation(flt::Quaternion(euler));
 				}
 			}
-
-			//keyData = platform.GetKey(flt::KeyCode::mouseWheelUp);
-			//if (keyData)
-			//{
-			//	std::cout << "wheel up " << keyData.x << std::endl;
-			//}
-
-			//keyData = platform.GetKey(flt::KeyCode::mouseWheelDown);
-			//if (keyData)
-			//{
-			//	std::cout << "wheel down " << keyData.x << std::endl;
-			//}
-
-			//keyData = platform.GetKey(flt::KeyCode::mouseButton3);
-			//if (keyData)
-			//{
-			//	std::cout << "button3 " << keyData.keyTime << std::endl;
-			//}
-
-			//keyData = platform.GetKey(flt::KeyCode::mouseButton4);
-			//if (keyData)
-			//{
-			//	std::cout << "button4 " << keyData.keyTime << std::endl;
-			//}
-
-			//keyData = platform.GetKey(flt::KeyCode::mouseMButton);
-			//if (keyData)
-			//{
-			//	std::cout << "WheelDown " << keyData.keyTime << std::endl;
-			//}
-
-			//keyData = platform.GetKey(flt::KeyCode::mouseAbsolutePos);
-			//if (keyData)
-			//{
-			//	std::cout << "abs Pos " << keyData.x << " " << keyData.y << std::endl;
-			//}
 		}
 
 		Sleep(10);

@@ -29,11 +29,13 @@ namespace flt
 			{
 				pVertexShader->Release();
 			}
+			pVertexShader = nullptr;
 
 			if (pInputLayout)
 			{
 				pInputLayout->Release();
 			}
+			pInputLayout = nullptr;
 
 			int constantBufferArrSize = (int)pConstantBuffers.size();
 			for (int i = 0; i < constantBufferArrSize; ++i)

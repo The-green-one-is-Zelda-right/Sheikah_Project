@@ -28,7 +28,9 @@
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\ModelLoader.h" />
     <ClInclude Include="include\IRenderer.h" />
+    <ClInclude Include="include\RawAnimationClip.h" />
     <ClInclude Include="include\RawNode.h" />
+    <ClInclude Include="include\RawSkeleton.h" />
     <ClInclude Include="include\Rect.h" />
     <ClInclude Include="include\Resource.h" />
     <ClInclude Include="include\ResourceMgr.h" />

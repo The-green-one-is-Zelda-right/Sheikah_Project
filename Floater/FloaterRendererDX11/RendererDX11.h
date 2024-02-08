@@ -63,11 +63,9 @@ namespace flt
 		bool InitGPUInfo();
 		bool OnResize();
 
-		void RenderSingleNodeRecursive(DX11Node* node, const Matrix4f& parentMatrix);
-
 		bool SetVsConstantBuffer(ID3D11Buffer* vsConstantBuffer, void* pData, size_t dataSize, UINT slot);
 
-		void SetDX11NodeRecursive(DX11Node* dxNode, RawNode& node);
+		void SetDX11Node(DX11Node* dxNode, RawNode& node);
 
 		// 테스트 private 함수들
 	private:

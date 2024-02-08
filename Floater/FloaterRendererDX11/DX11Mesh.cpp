@@ -140,14 +140,29 @@ flt::DX11Mesh* flt::DX11MeshBuilder::build() const
 	pMesh->srv = textureViewArr;
 	pMesh->srvCount = srvCount;
 	pMesh->sampler = samplerState;
+	if (!pRawMesh->pRootBone)
+	{
+		pMesh->pAnimation = new(std::nothrow) DX11Animation();
+		pMesh->pAnimation->pRootBoneTransform = pRawMesh->pRootBone;
+	}
 
 	return pMesh;
 }
 
 void flt::DX11Mesh::Release()
 {
-	vertexBuffer->Release();
-	indexBuffer->Release();
+	if (vertexBuffer)
+	{
+		vertexBuffer->Release();
+		vertexBuffer = nullptr;
+	}
+
+	if (indexBuffer)
+	{
+		indexBuffer->Release();
+		indexBuffer = nullptr;
+	}
+
 	for (unsigned int i = 0; i < srvCount; ++i)
 	{
 		if (srv[i])
@@ -156,7 +171,14 @@ void flt::DX11Mesh::Release()
 		}
 	}
 	delete[] srv;
-	sampler->Release();
+	srv = nullptr;
+	srvCount = 0;
+
+	if (sampler)
+	{
+		sampler->Release();
+		sampler = nullptr;
+	}
 }
 
 flt::DX11Mesh* flt::DX11CubeMeshBuilder::build() const

@@ -64,13 +64,15 @@ namespace flt
 
 	struct RawMesh
 	{
+		RawMesh() : vertices(), indices(), material(), pRootBone(nullptr) {}
 		void Release() {}
 
 		std::vector<RawVertex> vertices;
 		std::vector<int> indices;
 		RawMaterial material;
 
-		Transform* pRootBone;
+		//Transform* pRootBone;
+		RawAnimation* pAnimation;
 	};
 
 	template struct Resource<RawMesh>;

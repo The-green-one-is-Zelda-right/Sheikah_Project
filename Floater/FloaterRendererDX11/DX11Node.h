@@ -28,7 +28,5 @@ namespace flt
 		Camera* camera;
 
 		int boneIndex;
-
-		std::multimap<std::wstring, DX11Node*> children;
 	};
 }

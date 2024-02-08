@@ -107,6 +107,9 @@
     <ClInclude Include="DX11Entity.h">
       <Filter>RendererResource</Filter>
     </ClInclude>
+    <ClInclude Include="DX11Animation.h">
+      <Filter>RendererResource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CubeVS.hlsl">

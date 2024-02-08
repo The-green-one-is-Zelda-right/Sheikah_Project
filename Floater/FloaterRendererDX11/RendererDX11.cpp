@@ -486,6 +486,11 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 			for (auto& mesh : node->meshes)
 			{
+				if (mesh->pRootBoneTransform)
+				{
+
+				}
+
 				DX11Mesh* pMesh = mesh.Get();
 
 				DX11VertexShader* vertexShader = pMesh->vertexShader.Get();
@@ -583,34 +588,6 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 		_immediateContext->DrawIndexed(pMesh->indexCount, 0, 0);
 
-		/*// 버텍스 버퍼, 인덱스 버퍼를 사용하지 않는 코드.
-		// 화면보다 큰 삼각형 하나를 그리는식으로 구현이 됨.
-		// 이로인해 백버퍼의 상수버퍼에 화면 크기, uv값을 넣어서 다른 크기의 출력화면을 만들 수 없다.
-		DX11Mesh* pMesh = _screenQuad->meshes[0].Get();
-		DX11VertexShader* vertexShader = pMesh->vertexShader.Get();
-		DX11PixelShader* pixelShader = pMesh->pixelShader.Get();
-
-		_immediateContext->IASetInputLayout(vertexShader->pInputLayout);
-		ID3D11Buffer* nothing = 0;
-		UINT stride = 0;
-		UINT offset = 0;
-		_immediateContext->IASetVertexBuffers(0, 1, &nothing, &stride, &offset);
-		_immediateContext->IASetIndexBuffer(0, DXGI_FORMAT_R32_UINT, 0);
-
-		_immediateContext->VSSetShader(vertexShader->pVertexShader, nullptr, 0);
-		_immediateContext->PSSetShader(pixelShader->pPixelShader, nullptr, 0);
-
-		for (int i = 0; i < GBUFFER_COUNT; ++i)
-		{
-			_immediateContext->PSSetShaderResources(i, 1, _gBuffer[i].srv.GetAddressOf());
-		}
-		// 이렇게 하면 전체 삼각형의 모습을 제대로 볼 수 있음.
-		VSBackBuffer vsBackBuffer{ 0.5f, 0.5f, 0.5f, 0.5f };
-		void* pData = &vsBackBuffer;
-		vertexShader->SetConstantBuffer(_immediateContext.Get(), &pData, 1);
-
-		_immediateContext->Draw(3, 0);*/
-
 		// 디버깅 정보를 띄울경우에 출력
 		{
 
@@ -657,7 +634,7 @@ flt::HOBJECT flt::RendererDX11::RegisterObject(RendererObject& renderable)
 	}
 	else
 	{
-		SetDX11NodeRecursive(node, renderable.node);
+		SetDX11Node(node, renderable.node);
 	}
 
 	_renderableObjects.push_back(node);
@@ -935,31 +912,6 @@ bool flt::RendererDX11::OnResize()
 	return true;
 }
 
-void flt::RendererDX11::RenderSingleNodeRecursive(DX11Node* node, const Matrix4f& parentMatrix)
-{
-	Matrix4f worldMatrix = node->transform.GetLocalMatrix4f() * parentMatrix;
-	Matrix4f viewProjMatrix = Matrix4f::Identity();
-
-	for (auto& [name, child] : node->children)
-	{
-		RenderSingleNodeRecursive(child, worldMatrix);
-	}
-
-	if (node->meshes.size() == 0)
-	{
-		return;
-	}
-
-	// 렌더링
-	VSConstantBuffer vsConstantBuffer
-	{
-		ConvertXMMatrix(worldMatrix),
-		ConvertXMMatrix(worldMatrix.Inverse().Transpose()),
-		ConvertXMMatrix(viewProjMatrix),
-		ConvertXMMatrix(worldMatrix * viewProjMatrix)
-	};
-}
-
 bool flt::RendererDX11::SetVsConstantBuffer(ID3D11Buffer* vsConstantBuffer, void* pData, size_t dataSize, UINT slot)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -978,7 +930,7 @@ bool flt::RendererDX11::SetVsConstantBuffer(ID3D11Buffer* vsConstantBuffer, void
 	return true;
 }
 
-void flt::RendererDX11::SetDX11NodeRecursive(DX11Node* dxNode, RawNode& node)
+void flt::RendererDX11::SetDX11Node(DX11Node* dxNode, RawNode& node)
 {
 	int rawMeshCount = (int)node.meshes.size();
 	dxNode->meshes.resize(rawMeshCount);
@@ -989,19 +941,10 @@ void flt::RendererDX11::SetDX11NodeRecursive(DX11Node* dxNode, RawNode& node)
 		meshBuilder.vsBuilder = DX11VertexShaderBuilder(L"flt::CubeVS");
 		meshBuilder.pImmediateContext = _immediateContext.Get();
 		meshBuilder.pRawMesh = node.meshes[i].Get();
+
 		dxNode->meshes[i].Set(meshBuilder);
 		ASSERT(dxNode->meshes[i].Get(), "Set Mesh fail");
 	}
-
-	//for (auto& child : node.children)
-	//{
-	//	DX11Node* dxChild = new(std::nothrow) DX11Node(node.transform, node.isDraw);
-	//	ASSERT(dxChild, "DX11Node 생성 실패");
-
-	//	dxNode->children.emplace(node.name, dxChild);
-
-	//	SetDX11NodeRecursive(dxChild, *child);
-	//}
 }
 
 flt::Resource<flt::DX11Mesh>* flt::RendererDX11::CreateBox()

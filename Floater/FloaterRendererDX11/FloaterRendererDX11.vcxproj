@@ -30,6 +30,7 @@
     <ClCompile Include="TestBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DX11Animation.h" />
     <ClInclude Include="DX11Entity.h" />
     <ClInclude Include="DX11PixelShader.h" />
     <ClInclude Include="DX11PSConstantBuffer.h" />
