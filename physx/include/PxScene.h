@@ -389,18 +389,18 @@ class PxScene : public PxSceneSQSystem
 	virtual	bool				addActors(const PxPruningStructure& pruningStructure) = 0;
 
 	/**
-	\brief Removes an actor from this scene.
+	\brief 이 장면에서 액터를 제거합니다.
 
-	\note If the actor is not part of this scene (see #PxActor::getScene), the call is ignored and an error is issued.
+	\note 만약 액터가 이 장면의 일부가 아닌 경우 (참조: #PxActor::getScene), 호출은 무시되고 오류가 발생합니다.
 
-	\note You can not remove individual articulation links (see #PxArticulationLink) from the scene. Use #removeArticulation() instead.
+	\note 개별 관절 링크 (참조: #PxArticulationLink)를 장면에서 제거할 수 없습니다. 대신 #removeArticulation()을 사용하세요.
 
-	\note If the actor is a PxRigidActor then all assigned PxConstraint objects will get removed from the scene automatically.
+	\note 만약 액터가 PxRigidActor인 경우 모든 할당된 PxConstraint 객체가 자동으로 장면에서 제거됩니다.
 
-	\note If the actor is in an aggregate it will be removed from the aggregate.
+	\note 액터가 어그리게이트에 속해 있다면 어그리게이트에서 제거됩니다.
 
-	\param[in] actor Actor to remove from scene.
-	\param[in] wakeOnLostTouch Specifies whether touching objects from the previous frame should get woken up in the next frame. Only applies to PxArticulationReducedCoordinate and PxRigidActor types.
+	\param[in] actor 장면에서 제거할 액터입니다.
+	\param[in] wakeOnLostTouch 지난 프레임에서의 접촉이 끊긴 객체를 다음 프레임에 깨울 지 여부를 지정합니다. PxArticulationReducedCoordinate 및 PxRigidActor 유형에만 적용됩니다.
 
 	@see PxActor, PxAggregate
 	*/
@@ -777,20 +777,20 @@ class PxScene : public PxSceneSQSystem
 	//@{
 
 	/**
-	\brief Sets a user notify object which receives special simulation events when they occur.
+	\brief 시뮬레이션 중에 특정한 이벤트가 발생할 때 이를 수신하는 사용자 알림 객체를 설정합니다.
 
-	\note Do not set the callback while the simulation is running. Calls to this method while the simulation is running will be ignored.
+	\note 시뮬레이션이 실행 중일 때는 콜백을 설정하지 마세요. 시뮬레이션이 실행 중일 때 이 메서드를 호출하면 무시됩니다.
 
-	\param[in] callback User notification callback. See #PxSimulationEventCallback.
+	\param[in] callback 사용자 알림 콜백. #PxSimulationEventCallback 참조.
 
 	@see PxSimulationEventCallback getSimulationEventCallback
 	*/
 	virtual void				setSimulationEventCallback(PxSimulationEventCallback* callback) = 0;
 
 	/**
-	\brief Retrieves the simulationEventCallback pointer set with setSimulationEventCallback().
+	\brief setSimulationEventCallback()로 설정된 simulationEventCallback 포인터를 검색합니다.
 
-	\return The current user notify pointer. See #PxSimulationEventCallback.
+	\return 현재 사용자 알림 포인터입니다. #PxSimulationEventCallback 참조.
 
 	@see PxSimulationEventCallback setSimulationEventCallback()
 	*/
@@ -986,41 +986,52 @@ class PxScene : public PxSceneSQSystem
 	//@}
 	/************************************************************************************************/
 
-	/** @name Simulation
+	/** @name 시뮬레이션
 	*/
 	//@{
 	/**
- 	\brief Advances the simulation by an elapsedTime time.
+	\brief elapsedTime 시간만큼 시뮬레이션을 진행합니다.
+
+	\note	큰 elapsedTime 값은 불안정성을 초래할 수 있습니다.
+			이러한 경우 elapsedTime을 더 작은 시간 간격으로 나누고 simulate()를 각 간격마다 여러 번 호출해야 합니다.
+
+	simulate() 호출은 fetchResults() 호출과 짝을 이루어야 합니다:
+	각 fetchResults() 호출은 정확히 하나의 simulate() 호출에 해당하며,
+	simulate() 호출 사이에 fetchResults()를 거치지 않고 두 번 simulate()를 호출하거나
+	fetchResults()를 거치지 않고 두 번 호출하면 오류 상태가 발생합니다.
+
+	scene->simulate();
+	... 물리 계산이 완료될 때까지 처리 수행 ...
+	scene->fetchResults();
+	... 이제 실행 결과를 가져올 수 있습니다.
+
+	\param[in]	elapsedTime 
+				시뮬레이션을 진행할 시간 양입니다.
+				매개변수는 0보다 커야 하며, 그렇지 않으면 결과 동작이 정의되지 않습니다.
+				<b>범위:</b> (0, PX_MAX_F32)
 	
-	\note Large elapsedTime values can lead to instabilities. In such cases elapsedTime
-	should be subdivided into smaller time intervals and simulate() should be called
-	multiple times for each interval.
-
-	Calls to simulate() should pair with calls to fetchResults():
- 	Each fetchResults() invocation corresponds to exactly one simulate()
- 	invocation; calling simulate() twice without an intervening fetchResults()
- 	or fetchResults() twice without an intervening simulate() causes an error
- 	condition.
- 
- 	scene->simulate();
- 	...do some processing until physics is computed...
- 	scene->fetchResults();
- 	...now results of run may be retrieved.
-
-
-	\param[in] elapsedTime Amount of time to advance simulation by. The parameter has to be larger than 0, else the resulting behavior will be undefined. <b>Range:</b> (0, PX_MAX_F32)
-	\param[in] completionTask if non-NULL, this task will have its refcount incremented in simulate(), then
-	decremented when the scene is ready to have fetchResults called. So the task will not run until the
-	application also calls removeReference().
-	\param[in] scratchMemBlock a memory region for physx to use for temporary data during simulation. This block may be reused by the application
-	after fetchResults returns. Must be aligned on a 16-byte boundary
-	\param[in] scratchMemBlockSize the size of the scratch memory block. Must be a multiple of 16K.
-	\param[in] controlSimulation if true, the scene controls its PxTaskManager simulation state. Leave
-    true unless the application is calling the PxTaskManager start/stopSimulation() methods itself.
-	\return True if success
+	\param[in]	completionTask
+				만약 NULL이 아니면, 이 작업은 simulate()에서 참조 카운트가 증가하고,
+				scene이 fetchResults를 호출할 준비가 되면 감소합니다.
+				따라서 작업은 응용 프로그램이 removeReference()를 호출할 때까지 실행되지 않습니다.
+	
+	\param[in]	scratchMemBlock 
+				시뮬레이션 중에 PhysX가 임시 데이터에 사용할 메모리 영역입니다.
+				fetchResults가 반환된 후에 응용 프로그램에서 이 블록을 재사용할 수 있습니다.
+				16바이트 경계에 정렬되어야 합니다.
+	
+	\param[in]	scratchMemBlockSize 
+				스크래치 메모리 블록의 크기입니다.
+				16K의 배수여야 합니다.
+	
+	\param[in]	controlSimulation 
+				true이면 scene이 PxTaskManager 시뮬레이션 상태를 제어합니다.
+				응용 프로그램이 PxTaskManager의 start/stopSimulation() 메서드를 직접 호출하는 경우를 제외하고는 true 상태로 둬야 합니다.
+	
+	\return		성공하면 True
 
 	@see fetchResults() checkResults()
-	*/
+*/
 	virtual	bool				simulate(PxReal elapsedTime, physx::PxBaseTask* completionTask = NULL,
 									void* scratchMemBlock = 0, PxU32 scratchMemBlockSize = 0, bool controlSimulation = true) = 0;
 
@@ -1037,21 +1048,33 @@ class PxScene : public PxSceneSQSystem
 	virtual	bool				advance(physx::PxBaseTask* completionTask = 0) = 0;
 
 	/**
-	\brief Performs collision detection for the scene over elapsedTime
+	\brief elapsedTime 동안 씬의 충돌 감지를 수행합니다.
+
+	\note collide() 호출은 프레임을 시뮬레이트하기 위해 처음 호출되어야 하는 메서드입니다.
+
+	\param[in]	elapsedTime 
+				시뮬레이션을 진행할 시간 양입니다. 매개변수는 0보다 커야 하며, 그렇지 않으면 결과 동작이 정의되지 않습니다. <b>범위:</b> (0, PX_MAX_F32)
 	
-	\note Calls to collide() should be the first method called to simulate a frame.
-
-
-	\param[in] elapsedTime Amount of time to advance simulation by. The parameter has to be larger than 0, else the resulting behavior will be undefined. <b>Range:</b> (0, PX_MAX_F32)
-	\param[in] completionTask if non-NULL, this task will have its refcount incremented in collide(), then
-	decremented when the scene is ready to have fetchResults called. So the task will not run until the
-	application also calls removeReference().
-	\param[in] scratchMemBlock a memory region for physx to use for temporary data during simulation. This block may be reused by the application
-	after fetchResults returns. Must be aligned on a 16-byte boundary
-	\param[in] scratchMemBlockSize the size of the scratch memory block. Must be a multiple of 16K.
-	\param[in] controlSimulation if true, the scene controls its PxTaskManager simulation state. Leave
-    true unless the application is calling the PxTaskManager start/stopSimulation() methods itself.
-	\return True if success
+	\param[in]	completionTask
+				NULL이 아니라면, collide()에서 이 작업의 참조 카운트가 증가하고,
+				scene이 fetchResults를 호출할 준비가 되면 감소합니다
+				따라서 작업은 응용 프로그램이 removeReference()를 호출할 때까지 실행되지 않습니다.
+	
+	\param[in]	scratchMemBlock 
+				시뮬레이션 중에 PhysX가 임시 데이터에 사용할 메모리 영역입니다. 
+				fetchResults가 반환된 후에 응용 프로그램에서 이 블록을 재사용할 수 있습니다. 
+				16바이트 경계에 정렬되어야 합니다.
+	
+	\param[in]	scratchMemBlockSize 
+				스크래치 메모리 블록의 크기입니다. 
+				16K의 배수여야 합니다.
+	
+	\param[in]	controlSimulation 
+				true이면 scene이 PxTaskManager 시뮬레이션 상태를 제어합니다. 
+				응용 프로그램이 PxTaskManager의 start/stopSimulation() 메서드를 
+				직접 호출하는 경우를 제외하고는 true 상태로 두어야 합니다.
+	
+	\return		성공하면 True
 	*/
 	virtual	bool				collide(PxReal elapsedTime, physx::PxBaseTask* completionTask = 0, void* scratchMemBlock = 0,
 									PxU32 scratchMemBlockSize = 0, bool controlSimulation = true) = 0;  
@@ -1070,10 +1093,12 @@ class PxScene : public PxSceneSQSystem
 	virtual	bool				checkResults(bool block = false) = 0;
 
 	/**
-	This method must be called after collide() and before advance(). It will wait for the collision phase to finish. If the user makes an illegal simulation call, the SDK will issue an error
-	message.
+	이 메서드는 collide() 호출 후 advance() 호출 전에 반드시 호출되어야 합니다. 
+	충돌 단계가 완료될 때까지 기다립니다. 
+	사용자가 잘못된 시뮬레이션 호출을 하는 경우 SDK는 오류 메시지를 발행할 것입니다.
 
-	\param[in] block When set to true will block until the condition is met, which is collision must finish running.
+	\param[in]	block이 true로 설정되면 조건 충족까지 차단됩니다. 
+				조건은 충돌이 완료되어야 합니다.
 	*/
 	virtual	bool				fetchCollision(bool block = false)	= 0;			
 

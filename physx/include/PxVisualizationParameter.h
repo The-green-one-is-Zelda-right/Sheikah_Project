@@ -158,7 +158,7 @@ struct PxVisualizationParameter
 		eACTOR_AXES,
 
 		/**
-		\brief Visualize bounds (AABBs in world space)
+		\brief 경계를 시각화합니다 (월드 공간에서의 AABB).
 		*/
 		eCOLLISION_AABBS,
 		

@@ -488,7 +488,7 @@ struct PxFilterObjectFlag
 
 
 /**
-\brief Structure which gets passed into the collision filtering shader and/or callback providing additional information on objects of a collision pair
+\brief 충돌 필터링 셰이더 및/또는 콜백에 전달되는 구조체로, 충돌 쌍의 객체에 대한 추가 정보를 제공합니다.
 
 @see PxSimulationFilterShader PxSimulationFilterCallback getActorType() PxFilterObjectIsKinematic() PxFilterObjectIsTrigger()
 */
@@ -496,10 +496,10 @@ typedef PxU32 PxFilterObjectAttributes;
 
 
 /**
-\brief Extract filter object type from the filter attributes of a collision pair object
+\brief 충돌 쌍 객체의 필터 속성에서 필터 객체 유형을 추출합니다.
 
-\param[in] attr The filter attribute of a collision pair object
-\return The type of the collision pair object.
+\param[in]	attr 충돌 쌍 객체의 필터 속성
+\return		충돌 쌍 객체의 유형.
 
 @see PxFilterObjectType
 */
@@ -510,10 +510,10 @@ PX_INLINE PxFilterObjectType::Enum PxGetFilterObjectType(PxFilterObjectAttribute
 
 
 /**
-\brief Specifies whether the collision object belongs to a kinematic rigid body
+\brief 충돌 쌍 객체가 키네마틱 강체에 속하는지 여부를 지정합니다.
 
-\param[in] attr The filter attribute of a collision pair object
-\return True if the object belongs to a kinematic rigid body, else false
+\param[in]	attr 충돌 쌍 객체의 필터 속성
+\return		객체가 키네마틱 강체에 속하는 경우 true, 그렇지 않으면 false
 
 @see PxRigidBodyFlag::eKINEMATIC
 */
@@ -524,10 +524,10 @@ PX_INLINE bool PxFilterObjectIsKinematic(PxFilterObjectAttributes attr)
 
 
 /**
-\brief Specifies whether the collision object is a trigger shape
+\brief 충돌 쌍 객체가 트리거 모양인지 여부를 지정합니다.
 
-\param[in] attr The filter attribute of a collision pair object
-\return True if the object is a trigger shape, else false
+\param[in]	attr 충돌 쌍 객체의 필터 속성
+\return		객체가 트리거 모양인 경우 true, 그렇지 않으면 false
 
 @see PxShapeFlag::eTRIGGER_SHAPE
 */
@@ -546,7 +546,7 @@ PX_INLINE bool PxFilterObjectIsTrigger(PxFilterObjectAttributes attr)
 예를 들어, 접촉을 해결해야 하는지, 어떤 콜백을 호출해야 하는지 또는 어떤 보고서를 보내야 하는지 등입니다.
 이 함수는 충돌 쌍에 대해 시뮬레이션이 수행해야 할 작업을 정의하는 PxFilterFlag 플래그를 반환하고 PxPairFlag 플래그를 설정합니다.
 
-\note 필터 셰이더의 기본 구현은 PhysX 확장 라이브러리에 제공되며
+\note	필터 셰이더의 기본 구현은 PhysX 확장 라이브러리에 제공되며
 #PxDefaultSimulationFilterShader를 참조하십시오.
 
 이 메서드는 다음 경우에 호출됩니다.
@@ -555,31 +555,31 @@ PX_INLINE bool PxFilterObjectIsTrigger(PxFilterObjectAttributes attr)
 \li resetFiltering()을 통해 다시 필터링을 강제로 요청한 경우(참조: #PxScene::resetFiltering())
 \li 장면 쿼리에서 필터링이 요청된 경우
 
-\note 특정 객체 쌍은 항상 무시되며 이 메서드가 호출되지 않습니다. 이는 다음과 같은 경우입니다.
+\note	특정 객체 쌍은 항상 무시되며 이 메서드가 호출되지 않습니다. 이는 다음과 같은 경우입니다.
 \li 두 정적 강체 액터의 쌍
 \li 정적 강체 액터와 운동 강체 액터의 쌍(하나가 트리거가 아닌 한 또는
-명시적으로 PxPairFilteringMode::eKEEP을 통해 활성화되지 않은 경우)
+	명시적으로 PxPairFilteringMode::eKEEP을 통해 활성화되지 않은 경우)
 
 \li 두 운동 강체 액터의 쌍(하나가 트리거가 아닌 한 또는
-명시적으로 PxPairFilteringMode::eKEEP을 통해 활성화되지 않은 경우)
+	명시적으로 PxPairFilteringMode::eKEEP을 통해 활성화되지 않은 경우)
 
 \li 두 조인트된 강체 몸체가 충돌을 비활성화하도록 정의된 경우
 \li 두 관절된 강체 몸체의 쌍이 관절을 통해 연결된 경우
 
-\note 이는 성능에 중요한 메서드이며 상태를 갖춰서는 안 됩니다.
-이 메서드에서 외부 객체에 액세스하거나 인라인되지 않은 외부 메서드를 호출해서는 안 됩니다.
-충돌 쌍을 필터링하는 더 복잡한 논리가 필요한 경우이 쌍에 대한 필터 콜백 메커니즘을 사용하십시오
-(참조: #PxSimulationFilterCallback, #PxFilterFlag::eCALLBACK, #PxFilterFlag::eNOTIFY).
+\note	이는 성능에 중요한 메서드이며 상태를 갖춰서는 안 됩니다.
+		이 메서드에서 외부 객체에 액세스하거나 인라인되지 않은 외부 메서드를 호출해서는 안 됩니다.
+		충돌 쌍을 필터링하는 더 복잡한 논리가 필요한 경우이 쌍에 대한 필터 콜백 메커니즘을 사용하십시오
+		(참조: #PxSimulationFilterCallback, #PxFilterFlag::eCALLBACK, #PxFilterFlag::eNOTIFY).
 
-\param[in] attributes0 첫 번째 객체의 필터 속성
-\param[in] filterData0 첫 번째 객체의 사용자 정의 필터 데이터
-\param[in] attributes1 두 번째 객체의 필터 속성
-\param[in] filterData1 두 번째 객체의 사용자 정의 필터 데이터
+\param[in]	attributes0 첫 번째 객체의 필터 속성
+\param[in]	filterData0 첫 번째 객체의 사용자 정의 필터 데이터
+\param[in]	attributes1 두 번째 객체의 필터 속성
+\param[in]	filterData1 두 번째 객체의 사용자 정의 필터 데이터
 \param[out] pairFlags 허용된 쌍을 처리하는 방법에 대한 추가 정보를 제공하는 플래그
-\param[in] constantBlock 상수 전역 필터 데이터(참조: #PxSceneDesc.filterShaderData)
-\param[in] constantBlockSize 전역 필터 데이터의 크기(참조: #PxSceneDesc.filterShaderDataSize)
-\return 쌍을 버리거나 일시적으로 무시하거나 처리해야 하는지 여부 및
-이 쌍에 대한 필터 콜백을 호출해야 하는지 여부를 정의하는 필터 플래그입니다.
+\param[in]	constantBlock 상수 전역 필터 데이터(참조: #PxSceneDesc.filterShaderData)
+\param[in]	constantBlockSize 전역 필터 데이터의 크기(참조: #PxSceneDesc.filterShaderDataSize)
+\return		쌍을 버리거나 일시적으로 무시하거나 처리해야 하는지 여부 및
+			이 쌍에 대한 필터 콜백을 호출해야 하는지 여부를 정의하는 필터 플래그입니다.
 
 @see PxSimulationFilterCallback PxFilterData PxFilterObjectAttributes PxFilterFlag PxFilterFlags PxPairFlag PxPairFlags PxSceneDesc.filterShader
 */
@@ -591,24 +591,21 @@ typedef PxFilterFlags (*PxSimulationFilterShader)
 
 
 /**
-\brief Filter callback to specify handling of collision pairs.
+\brief 충돌 쌍의 처리를 지정하는 필터 콜백입니다.
 
-This class is provided to implement more complex and flexible collision pair filtering logic, for instance, taking
-the state of the user application into account. Filter callbacks also give the user the opportunity to track collision
-pairs and update their filter state.
+이 클래스는 더 복잡하고 유연한 충돌 쌍 필터링 로직을 구현하기 위해 제공되며 예를 들어 사용자 응용 프로그램의 상태를 고려할 수 있습니다.
+필터 콜백은 또한 사용자에게 충돌 쌍을 추적하고 필터 상태를 업데이트할 기회를 제공합니다.
 
-You might want to check the documentation on #PxSimulationFilterShader as well since it includes more general information
-on filtering.
+더 일반적인 정보를 포함하고 있는 #PxSimulationFilterShader에 대한 문서도 확인하는 것이 좋습니다.
 
-\note SDK state should not be modified from within the callbacks. In particular objects should not
-be created or destroyed. If state modification is needed then the changes should be stored to a buffer
-and performed after the simulation step.
+\note	콜백 내에서 SDK 상태를 수정해서는 안 됩니다. 특히 객체를 생성하거나 파괴해서는 안 됩니다.
+		상태를 수정해야 하는 경우 변경 사항을 버퍼에 저장하고 시뮬레이션 단계 이후에 수행해야 합니다.
 
-\note The callbacks may execute in user threads or simulation threads, possibly simultaneously. The corresponding objects 
-may have been deleted by the application earlier in the frame. It is the application's responsibility to prevent race conditions
-arising from using the SDK API in the callback while an application thread is making write calls to the scene, and to ensure that
-the callbacks are thread-safe. Return values which depend on when the callback is called during the frame will introduce nondeterminism 
-into the simulation.
+\note	콜백은 사용자 스레드 또는 시뮬레이션 스레드에서 실행될 수 있으며, 이들은 동시에 실행될 수 있습니다.
+		해당 객체는 이미 프레임 중에 응용 프로그램에 의해 삭제될 수 있습니다. 
+		SDK API를 콜백에서 사용하는 동안 응용 프로그램 스레드이 시뮬레이션 씬에 쓰기 호출을 하면 경쟁 조건이 발생하지 않도록 주의해야 합니다.
+		또한 콜백이 스레드로부터 안전하도록 하는 것이 응용 프로그램의 책임이며, 
+		콜백이 프레임 중에 언제 호출되는지에 따라 달라질 수 있는 반환 값은 시뮬레이션에 비결정성을 가져올 것입니다.
 
 @see PxSceneDesc.filterCallback PxSimulationFilterShader
 */
@@ -617,25 +614,24 @@ class PxSimulationFilterCallback
 public:
 
 	/**
-	\brief Filter method to specify how a pair of potentially colliding objects should be processed.
+	\brief 잠재적으로 충돌할 수 있는 두 객체의 쌍이 어떻게 처리되어야 하는지를 지정하는 필터 메서드입니다.
 
-	This method gets called when the filter flags returned by the filter shader (see #PxSimulationFilterShader)
-	indicate that the filter callback should be invoked (#PxFilterFlag::eCALLBACK or #PxFilterFlag::eNOTIFY set).
-	Return the PxFilterFlag flags and set the PxPairFlag flags to define what the simulation should do with the given 
-	collision pair.
+	이 메서드는 필터 셰이더에서 반환된 필터 플래그(#PxSimulationFilterShader 참조)가
+	필터 콜백을 호출해야 한다는 것을 나타낼 때 호출됩니다 (#PxFilterFlag::eCALLBACK 또는 #PxFilterFlag::eNOTIFY가 설정됨).
+	주어진 충돌 쌍에 대해 시뮬레이션이 어떻게 동작해야 하는지 정의하기 위해 PxFilterFlag 플래그를 반환하고 PxPairFlag 플래그를 설정합니다.
 
-	\param[in] pairID			Unique ID of the collision pair used to issue filter status changes for the pair (see #statusChange())
-	\param[in] attributes0		The filter attribute of the first object
-	\param[in] filterData0		The custom filter data of the first object
-	\param[in] a0				Actor pointer of the first object
-	\param[in] s0				Shape pointer of the first object (NULL if the object has no shapes)
-	\param[in] attributes1		The filter attribute of the second object
-	\param[in] filterData1		The custom filter data of the second object
-	\param[in] a1				Actor pointer of the second object
-	\param[in] s1				Shape pointer of the second object (NULL if the object has no shapes)
-	\param[in,out] pairFlags	In: Pair flags returned by the filter shader. Out: Additional information on how an accepted pair should get processed
-	\return Filter flags defining whether the pair should be discarded, temporarily ignored or processed and whether the pair
-	should be tracked and send a report on pair deletion through the filter callback
+	\param[in] pairID			쌍의 충돌에 대한 필터 상태 변경을 지시하는 충돌 쌍의 고유 ID (참조: #statusChange())
+	\param[in] attributes0		첫 번째 객체의 필터 속성
+	\param[in] filterData0		첫 번째 객체의 사용자 정의 필터 데이터
+	\param[in] a0				첫 번째 객체의 액터 포인터
+	\param[in] s0				첫 번째 객체의 모양 포인터 (객체에 모양이 없으면 NULL)
+	\param[in] attributes1		두 번째 객체의 필터 속성
+	\param[in] filterData1		두 번째 객체의 사용자 정의 필터 데이터
+	\param[in] a1				두 번째 객체의 액터 포인터
+	\param[in] s1				두 번째 객체의 모양 포인터 (객체에 모양이 없으면 NULL)
+	\param[in,out] pairFlags	In: 필터 셰이더에서 반환된 페어 플래그. Out: 허용된 페어를 어떻게 처리해야 하는지에 대한 추가 정보
+	\return						쌍이 버려져야 하는지, 일시적으로 무시되어야 하는지 또는 처리되어야 하는지 및 쌍을 추적하고
+								필터 콜백을 통해 쌍 삭제에 대한 보고서를 보낼지를 정의하는 필터 플래그
 
 	@see PxSimulationFilterShader PxFilterData PxFilterObjectAttributes PxFilterFlag PxPairFlag
 	*/
@@ -645,17 +641,17 @@ public:
 											PxPairFlags& pairFlags) = 0;
 
 	/**
-	\brief Callback to inform that a tracked collision pair is gone.
+	\brief 추적 중인 충돌 페어가 사라졌음을 알리는 콜백입니다.
 
-	This method gets called when a collision pair disappears or gets re-filtered. Only applies to
-	collision pairs which have been marked as filter callback pairs (#PxFilterFlag::eNOTIFY set in #pairFound()).
+	이 메서드는 충돌 페어가 사라지거나 다시 필터링 될 때 호출됩니다.
+	이는 pairFound()에서 (#PxFilterFlag::eNOTIFY로 설정된) 필터 콜백 페어로 지정된 충돌 페어에만 적용됩니다.
 
-	\param[in] pairID			Unique ID of the collision pair that disappeared
-	\param[in] attributes0		The filter attribute of the first object
-	\param[in] filterData0		The custom filter data of the first object
-	\param[in] attributes1		The filter attribute of the second object
-	\param[in] filterData1		The custom filter data of the second object
-	\param[in] objectRemoved	True if the pair was lost because one of the objects got removed from the scene
+	\param[in]					pairID 충돌 페어의 고유 ID
+	\param[in]					attributes0 첫 번째 객체의 필터 속성
+	\param[in]					filterData0 첫 번째 객체의 사용자 지정 필터 데이터
+	\param[in]					attributes1 두 번째 객체의 필터 속성
+	\param[in]					filterData1 두 번째 객체의 사용자 지정 필터 데이터
+	\param[in]					objectRemoved 객체 중 하나가 씬에서 제거되어 페어가 손실된 경우 true
 
 	@see pairFound() PxSimulationFilterShader PxFilterData PxFilterObjectAttributes
 	*/

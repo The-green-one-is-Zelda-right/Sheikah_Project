@@ -2,33 +2,20 @@
 #include "RigidBody.h"
 #include "SphereCollider.h"
 
+#include "ColliderHelper.h"
+
 namespace ZonaiPhysics
 {
-	SphereCollider::SphereCollider(
-		physx::PxPhysics*& _factory,
-		RigidBody*& _body,
-		const float& _offset,
-		physx::PxMaterial*& _material
-	) noexcept:
-		Collider(_factory, _body)
+	SphereCollider::SphereCollider(physx::PxShape* _pxShape, RigidBody* _znBody) :
+		Collider(_pxShape, _znBody)
 	{
-		using namespace physx;
-		rigidbody = _body;
-
-		shape = _factory->createShape(PxSphereGeometry(_offset), *_material);
-		shape->userData = this;
-
-		shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
-		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
-
-		_body->getRigidDynamic()->attachShape(*shape);
+		pxShape->userData = this;
 	}
 
-	SphereCollider::~SphereCollider() noexcept
+	SphereCollider::~SphereCollider()
 	{
-		shape->release();
-		rigidbody->getRigidDynamic()->detachShape(*shape);
-
-		rigidbody = nullptr;
+		ColliderHelper::Release(pxShape);
+		pxShape = nullptr;
+		znBody = nullptr;
 	}
 }

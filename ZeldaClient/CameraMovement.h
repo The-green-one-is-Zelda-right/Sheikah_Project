@@ -5,7 +5,7 @@ namespace PurahEngine
 {
 	class GameObject;
 
-	class CameraMovement : public PurahEngine::Component
+	class CameraMovement : public Component
 	{
 	public:
 		CameraMovement();

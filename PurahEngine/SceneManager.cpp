@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "Camera.h"
 #include "PhysicsSystem.h"
+#include "TimeController.h"
 
 PurahEngine::SceneManager::SceneManager()
 	: mainCamera(nullptr), cameraPosition(Eigen::Vector3f(0.0f, 0.0f, -10.0f))
@@ -40,15 +41,48 @@ void PurahEngine::SceneManager::SetName(std::wstring name)
 
 void PurahEngine::SceneManager::Update()
 {
+	PurahEngine::TimeController::GetInstance().Update("Simulate");
+	float SdeltaTime = PurahEngine::TimeController::GetInstance().GetDeltaTime("Simulate");
+	static float SimuleTime = 0;
+	SimuleTime += SdeltaTime;
+
 	PhysicsSystem::GetInstance().SimulateResult();
+
+	PurahEngine::TimeController::GetInstance().Update("physics");
+	float deltaTime = PurahEngine::TimeController::GetInstance().GetDeltaTime("physics");
+	physicsTime += deltaTime;
 
 	for (PurahEngine::GameObject* object : objectList)
 	{
-		for (auto component : object->componentList)
+		if (object->isRun != true)
 		{
-			component->Update();
+			object->Awake();
+			object->Start();
 		}
+		if (physicsTime >= 0.02f)
+		{
+			object->FixedUpdate();
+
+			object->OnCollisionEnter();
+			object->OnCollisionStay();
+			object->OnCollisionExit();
+
+			object->OnTriggerEnter();
+			object->OnTriggerStay();
+			object->OnTriggerExit();
+		}
+		if (object->isRun == true)
+		{
+			object->Update();
+			object->LateUpdate();
+		}
+		object->isRun = true;
 	}
+	if (physicsTime >= 0.02f)
+	{
+		physicsTime = 0.0f;
+	}
+
 }
 
 void PurahEngine::SceneManager::Initialize()
@@ -59,6 +93,7 @@ void PurahEngine::SceneManager::Initialize()
 		GameObject* object = CreateGameObject(L"MainCamera");
 		Camera* tmp = object->AddComponent<Camera>();
 		mainCamera = tmp;
+		physicsTime = 0.0f;
 	}
 }
 

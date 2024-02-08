@@ -7,16 +7,22 @@ namespace ZonaiPhysics
 	class ZnCollider : public ZnObject
 	{
 	public:
-							ZnCollider() noexcept = default;
-		virtual				~ZnCollider() noexcept = default;
+							ZnCollider() = default;
+		virtual				~ZnCollider() = default;
 
 	public:
-		virtual void		SetTrigger(bool) noexcept = 0;
+		// 트리거 설정
+		virtual void		SetTrigger(bool) = 0;
 
-		virtual Eigen::Vector3f GetLocalPosition() const noexcept = 0;
-		virtual void SetLocalPosition(const Eigen::Vector3f&) noexcept = 0;
+		// 레이어 설정
+		virtual void		SetLayerData(const uint32_t&) = 0;
 
-		virtual Eigen::Quaternionf GetLocalQuaternion() const noexcept = 0;
-		virtual void SetLocalQuaternion(const Eigen::Quaternionf&) noexcept = 0;
+		// 콜라이더 위치 오프셋
+		virtual Eigen::Vector3f GetLocalPosition() const = 0;
+		virtual void SetLocalPosition(const Eigen::Vector3f&) = 0;
+
+		// 콜라이더 회전 오프셋
+		virtual Eigen::Quaternionf GetLocalQuaternion() const = 0;
+		virtual void SetLocalQuaternion(const Eigen::Quaternionf&) = 0;
 	};
 }

@@ -2,52 +2,52 @@
 
 namespace ZonaiPhysics
 {
-	Eigen::Vector3f RigidBody::GetPosition() const noexcept
+	Eigen::Vector3f RigidBody::GetPosition() const
 	{
 		return position;
 	}
 
-	void RigidBody::SetPosition(const Eigen::Vector3f& _position) noexcept
+	void RigidBody::SetPosition(const Eigen::Vector3f& _position)
 	{
 		position = _position;
 	}
 
-	Eigen::Quaternionf RigidBody::GetQuaternion() const noexcept
+	Eigen::Quaternionf RigidBody::GetQuaternion() const
 	{
 		return rotation;
 	}
 
-	void RigidBody::SetQuaternion(const Eigen::Quaternionf& _quaternion) noexcept
+	void RigidBody::SetQuaternion(const Eigen::Quaternionf& _quaternion)
 	{
 		rotation = _quaternion;
 	}
 
-	void* RigidBody::GetUserData() const noexcept
+	void* RigidBody::GetUserData() const
 	{
 		return userData;
 	}
 
-	void RigidBody::SetUserData(void* _userData) noexcept
+	void RigidBody::SetUserData(void* _userData)
 	{
 		userData = _userData;
 	}
 
-	void RigidBody::WakeUp() noexcept
+	void RigidBody::WakeUp()
 	{
 		active = true;
 	}
 
-	bool RigidBody::IsSleeping() const noexcept
+	bool RigidBody::IsSleeping() const
 	{
 		return !active;
 	}
 
-	DynamicLocks RigidBody::GetDynamicLockFlags() const noexcept
+	DynamicLocks RigidBody::GetDynamicLockFlags() const
 	{
 		return lockFlags;
 	}
 
-	void RigidBody::SetDynamicLockFlag(DynamicLock _flag, bool _value) noexcept
+	void RigidBody::SetDynamicLockFlag(DynamicLock _flag, bool _value)
 	{
 		const auto flag = static_cast<uint32_t>(_flag);
 
@@ -61,97 +61,97 @@ namespace ZonaiPhysics
 		}
 	}
 
-	void RigidBody::SetDynamicLockFlags(DynamicLocks _flags) noexcept
+	void RigidBody::SetDynamicLockFlags(DynamicLocks _flags)
 	{
 		lockFlags = _flags;
 	}
 
-	float RigidBody::GetMass() const noexcept
+	float RigidBody::GetMass() const
 	{
 		return massData.mass;
 	}
 
-	void RigidBody::SetMass(float _mass) noexcept
+	void RigidBody::SetMass(float _mass)
 	{
 		massData.mass = _mass;
 	}
 
-	float RigidBody::GetInvMass() const noexcept
+	float RigidBody::GetInvMass() const
 	{
 		return massData.invMass;
 	}
 
-	Eigen::Vector3f RigidBody::GetInertiaTensor() const noexcept
+	Eigen::Vector3f RigidBody::GetInertiaTensor() const
 	{
 		return massData.inerita;
 	}
 
-	void RigidBody::SetInertiaTensor(const Eigen::Vector3f& _inertia) noexcept
+	void RigidBody::SetInertiaTensor(const Eigen::Vector3f& _inertia)
 	{
 		massData.inerita = _inertia;
 	}
 
-	float RigidBody::GetLinearDamping() const noexcept
+	float RigidBody::GetLinearDamping() const
 	{
 		return material.linearDamping;
 	}
 
-	void RigidBody::SetLinearDamping(float _damping) noexcept
+	void RigidBody::SetLinearDamping(float _damping)
 	{
 		material.linearDamping = _damping;
 	}
 
-	float RigidBody::GetAngularDamping() const noexcept
+	float RigidBody::GetAngularDamping() const
 	{
 		return material.angularDamping;
 	}
 
-	void RigidBody::SetAngularDamping(float _damping) noexcept
+	void RigidBody::SetAngularDamping(float _damping)
 	{
 		material.angularDamping = _damping;
 	}
 
-	Vector3f RigidBody::GetLinearVelocity() const noexcept
+	Vector3f RigidBody::GetLinearVelocity() const
 	{
 		return linearVelocity;
 	}
 
-	void RigidBody::SetLinearVelocity(const Eigen::Vector3f& _velocity) noexcept
+	void RigidBody::SetLinearVelocity(const Eigen::Vector3f& _velocity)
 	{
 		linearVelocity = _velocity;
 	}
 
-	Vector3f RigidBody::GetAngularVelocity() const noexcept
+	Vector3f RigidBody::GetAngularVelocity() const
 	{
 		return angularVelocity;
 	}
 
-	void RigidBody::SetAngularVelocity(const Eigen::Vector3f& _velocity) noexcept
+	void RigidBody::SetAngularVelocity(const Eigen::Vector3f& _velocity)
 	{
 		angularVelocity = _velocity;
 	}
 
-	float RigidBody::GetMaxLinearVelocity() const noexcept
+	float RigidBody::GetMaxLinearVelocity() const
 	{
 		return limitLinearVelocity;
 	}
 
-	void RigidBody::SetMaxLinearVelocity(const float& _limit) noexcept
+	void RigidBody::SetMaxLinearVelocity(const float& _limit)
 	{
 		limitLinearVelocity = _limit;
 	}
 
-	float RigidBody::GetMaxAngularVelocity() const noexcept
+	float RigidBody::GetMaxAngularVelocity() const
 	{
 		return limitAngularVelocity;
 	}
 
-	void RigidBody::SetMaxAngularVelocity(const float& _limit) noexcept
+	void RigidBody::SetMaxAngularVelocity(const float& _limit)
 	{
 		limitAngularVelocity = _limit;
 	}
 
-	void RigidBody::SetForceAndTorque(const Eigen::Vector3f& _force, const Eigen::Vector3f& _torque, ForceType _type) noexcept
+	void RigidBody::SetForceAndTorque(const Eigen::Vector3f& _force, const Eigen::Vector3f& _torque, ForceType _type)
 	{
 		switch (_type)
 		{
@@ -191,7 +191,7 @@ namespace ZonaiPhysics
 		}
 	}
 
-	void RigidBody::AddForce(const Eigen::Vector3f& _force, ForceType _type) noexcept
+	void RigidBody::AddForce(const Eigen::Vector3f& _force, ForceType _type)
 	{
 		switch (_type)
 		{
@@ -227,12 +227,12 @@ namespace ZonaiPhysics
 		}
 	}
 
-	void RigidBody::ClearForce() noexcept
+	void RigidBody::ClearForce()
 	{
 		linearAcceleration = Eigen::Vector3f::Zero();
 	}
 
-	void RigidBody::AddTorque(const Eigen::Vector3f& _torque, ForceType _type) noexcept
+	void RigidBody::AddTorque(const Eigen::Vector3f& _torque, ForceType _type)
 	{
 		switch (_type)
 		{
@@ -268,7 +268,7 @@ namespace ZonaiPhysics
 		}
 	}
 
-	void RigidBody::ClearTorque() noexcept
+	void RigidBody::ClearTorque()
 	{
 		angularAcceleration = Eigen::Vector3f::Zero();
 	}

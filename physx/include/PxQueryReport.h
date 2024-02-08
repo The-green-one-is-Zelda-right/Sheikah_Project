@@ -171,20 +171,21 @@ template<typename HitType>
 struct PxHitBuffer : public PxHitCallback<HitType>
 {
 	/**
-	\brief	Initializes the buffer with user memory.
+	\brief 사용자 메모리로 버퍼를 초기화합니다.
 
-	The buffer is initialized with 0 touch hits by default => query will only report a single closest blocking hit.
-	Use PxQueryFlag::eANY_HIT to tell the query to abort and return any first hit encoutered as blocking.
+	버퍼는 기본적으로 0개의 터치 히트로 초기화됩니다. => 쿼리는 단일 가장 가까운 막힌 힘만 보고합니다.
+	PxQueryFlag::eANY_HIT을 사용하여 쿼리에게 중단하고 발견된 첫 번째 히트를 차단으로 반환하도록 지시할 수 있습니다.
 
-	\param[in] aTouches			Optional buffer for recording PxQueryHitType::eTOUCH type hits.
-	\param[in] aMaxNbTouches	Size of touch buffer.
+	\param[in] aTouches			PxQueryHitType::eTOUCH 타입 히트를 기록하는 데 사용되는 선택적 버퍼입니다.
+	\param[in] aMaxNbTouches	터치 버퍼의 크기입니다.
 
-	@see PxHitCallback */
+	@see PxHitCallback
+	*/
 	PxHitBuffer(HitType* aTouches = NULL, PxU32 aMaxNbTouches = 0) : PxHitCallback<HitType>(aTouches, aMaxNbTouches) {}
 
-	/** \brief Computes the number of any hits in this result, blocking or touching. */
+	/** \brief 이 결과에서의 어떤 히트의 수를 계산합니다. 차단 또는 터치 모두 포함합니다. */
 	PX_INLINE PxU32				getNbAnyHits() const				{ return getNbTouches() + PxU32(this->hasBlock); }
-	/** \brief Convenience iterator used to access any hits in this result, blocking or touching. */
+	/** \brief 차단 또는 터치된 이 결과에서 어떤 히트에 접근하는 데 사용되는 편의성 있는 이터레이터입니다. */
 	PX_INLINE const HitType&	getAnyHit(const PxU32 index) const	{ PX_ASSERT(index < getNbTouches() + PxU32(this->hasBlock));
 																		return index < getNbTouches() ? getTouches()[index] : this->block; }
 

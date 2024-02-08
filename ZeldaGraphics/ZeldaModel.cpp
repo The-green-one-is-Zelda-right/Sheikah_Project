@@ -81,6 +81,7 @@ ZeldaModel::~ZeldaModel()
 void ZeldaModel::Render(
 	ID3D11DeviceContext* deviceContext,
 	ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
+	ConstantBuffer<AnimationHierarchyBufferType, ShaderType::VertexShader>* animationHierarchyVsConstBuffer,
 	ConstantBuffer<AnimationBufferType, ShaderType::VertexShader>* animationConstBuffer,
 	ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
 	DirectX::XMMATRIX worldMatrix,
@@ -95,6 +96,8 @@ void ZeldaModel::Render(
 	assert(secondAnimationTime >= 0.0f);
 
 	SetAnimationTexture(deviceContext);
+
+	animationHierarchyVsConstBuffer->SetData(boneHierarchyData);
 
 	AnimationBufferType animationData;
 
@@ -157,12 +160,15 @@ void ZeldaModel::RenderInstanced(
 	ID3D11DeviceContext* deviceContext,
 	ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
 	ConstantBuffer<InstancingMatrixBufferType, ShaderType::VertexShader>* instancingMatrixConstBuffer,
+	ConstantBuffer<AnimationHierarchyBufferType, ShaderType::VertexShader>* animationHierarchyVsConstBuffer,
 	ConstantBuffer<InstancingAnimationBufferType, ShaderType::VertexShader>* instancingAnimationConstBuffer,
 	ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
 	const std::vector<ModelInstancingInfo>& instancingInfo,
 	ZeldaShader* shader)
 {
 	SetAnimationTexture(deviceContext);
+
+	animationHierarchyVsConstBuffer->SetData(boneHierarchyData);
 
 	ZeldaCamera* currentcamera = ResourceManager::GetInstance().GetCamera(ZeldaCamera::GetMainCamera());
 
@@ -405,25 +411,109 @@ ZeldaModel::ZeldaModel(ID3D11Device* device, FBXLoader::Model* fbxModel) :
 
 void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 {
-	// 애니메이션 데이터 미리 계산하기
-
-	// float4가 아닌 float이기 때문에 추가로 4배의 크기로 생성
-	unsigned long long animationSize = static_cast<unsigned long long>(animationTable.size()) + 1;
-
-	float** textureData = new float*[animationSize];
-	ZeroMemory(textureData, sizeof(float*) * animationSize);
-	for (int i = 0; i < animationSize; i++)
+	struct AnimationData
 	{
-		textureData[i] = new float[4 * 4 * BONE_COUNT_MAX * ANIMATION_FRAME_MAX];
+		XMMATRIX matrix;
+	};
+
+	// 기본상태를 추가하여 애니메이션 종류 + 1
+	// 0번 애니메이션에는 Animation Node의 Transform과 Offset을 저장한다.
+	unsigned long long animationSize = static_cast<unsigned long long>(animationTable.size()) + 1;
+	
+	// (애니메이션 종류) x (애니메이션 데이터 크기)
+	AnimationData identityData;
+	identityData.matrix = XMMatrixIdentity();
+	std::vector<std::vector<AnimationData>> textureData(animationSize, std::vector<AnimationData>(BONE_COUNT_MAX* ANIMATION_FRAME_MAX, identityData));
+
+	std::unordered_map<std::wstring, unsigned int> boneIDMap;
+
+	for (int i = 0; i < bones.size(); i++)
+	{
+		if (bones[i] == nullptr) continue;
+
+		boneIDMap[bones[i]->name] = i;
 	}
+
+	for (int i = 0; i < bones.size(); i++)
+	{
+		if (bones[i] == nullptr) continue;
+
+		textureData[0][BONE_COUNT_MAX * 0 + i].matrix = bones[i]->transformMatrix;
+		textureData[0][BONE_COUNT_MAX * 1 + i].matrix = bones[i]->offsetMatrix;
+
+		// 부모가 없을 때 사용하기 위한 자기 자신의 ID
+		unsigned int parentID = i;
+
+		if (bones[i]->parent != nullptr)
+		{
+			// boneIDMap에서 부모를 찾지 못했다면 찾거나 root를 만날 때까지 올라간다.
+			if (boneIDMap.count(bones[i]->parent->name) == 0)
+			{
+				Node* tmpNode = bones[i]->parent;
+
+				XMMATRIX parentTM = XMMatrixIdentity();
+
+				while (true)
+				{
+					parentTM = parentTM * tmpNode->transformMatrix;
+
+					if (tmpNode == root)
+					{
+						break;
+					}
+
+					if (boneIDMap.count(tmpNode->name) != 0)
+					{
+						break;
+					}
+
+					tmpNode = tmpNode->parent;
+				}
+
+				// root가 부모
+				if (tmpNode == root)
+				{
+					// 부모를 자기 자신으로 설정
+					parentID = i;
+
+					// 자기 자신의 모든 프레임에 parentTM을 미리 곱해둔다.
+					int animationCount = 0;
+					for (auto animIter = animationTable.begin(); animIter != animationTable.end(); animIter++)
+					{
+						for (int currentFrame = 0; currentFrame < ANIMATION_FRAME_MAX - 1; currentFrame++)
+						{
+							textureData[animationCount + 1][BONE_COUNT_MAX * currentFrame + i].matrix = textureData[animationCount + 1][BONE_COUNT_MAX * currentFrame + i].matrix * parentTM;
+						}
+						animationCount += 1;
+					}
+
+					// transformMatrix에도 곱해둔다
+					textureData[0][BONE_COUNT_MAX * 0 + i].matrix = textureData[0][BONE_COUNT_MAX * 0 + i].matrix * parentTM;
+				}
+				else if (boneIDMap.count(tmpNode->name) != 0)
+				{
+					// 일단 boneIDMap에서 부모를 다시 찾는 경우는 없다고 생각하겠음
+					// 현재까지는 그런 데이터가 없음
+					assert(0);
+				}
+			}
+			else
+			{
+				parentID = boneIDMap[bones[i]->parent->name];
+			}
+		}
+
+		boneHierarchyData.parentBone[i] = parentID;
+	}
+
+	animationIDTable.clear();
 
 	int animationCount = 0;
 	for (auto animIter = animationTable.begin(); animIter != animationTable.end(); animIter++)
 	{
-		// animationIDTable을 채운다.
+		// animationIDTable을 채운다. TransformMatrix와 Offset와 계층정보에 사용하기 위해 0번은 사용하지 않음, 순서대로 frame 0, 1, 2 사용
 		animationIDTable[animIter->first] = animationCount + 1;
-		
-		// 애니메이션의 행렬을 계산
+
 		Animation* currentAnimation = animIter->second;
 
 		double currentDuration = currentAnimation->duration;
@@ -435,163 +525,68 @@ void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 		// assert에 걸린다면 단순히 static_cast가 아니라 반올림 후 캐스팅하는것으로 수정할 것
 		assert(abs(currentDuration - intDuration) < 0.1);
 
-		// 모든 애니메이션의 각 프레임의 행렬을 미리 계산한다.
-		for (int currentFrame = 0; currentFrame < ANIMATION_FRAME_MAX; currentFrame++)
+		// 모든 애니메이션의 각 프레임
+		for (int currentFrame = 0; currentFrame < ANIMATION_FRAME_MAX - 1; currentFrame++)
 		{
 			// 애니메이션 데이터가 존재하는 부분 (Duration까지 애니메이션이 존재하여 등호 포함)
 			if (currentFrame <= intDuration)
 			{
 				double frameTime = static_cast<double>(currentFrame);
 
-				// 각 노드의 finalTM에 frameTime의 행렬을 계산하여 넣는다.
-				std::queue<std::pair<Node*, DirectX::XMMATRIX>> nodeQueue;
-
-				nodeQueue.push({ root, root->transformMatrix });
-
-				while (!nodeQueue.empty())
-				{
-					auto current = nodeQueue.front();
-					nodeQueue.pop();
-					Node* currentNode = current.first;
-					DirectX::XMMATRIX currentMatrix = current.second;
-
-					currentNode->finalTM = currentNode->offsetMatrix * currentMatrix;
-
-					for (int i = 0; i < currentNode->children.size(); i++)
-					{
-						Node* nextNode = currentNode->children[i];
-						DirectX::XMMATRIX nextMatrix = nextNode->transformMatrix * currentMatrix;
-
-						if (currentAnimation->animationKey.count(nextNode->name) != 0)
-						{
-							auto rightIter = currentAnimation->animationKey[nextNode->name].lower_bound(frameTime);
-							auto endIter = currentAnimation->animationKey[nextNode->name].end();
-
-							if (rightIter == endIter)
-							{
-								rightIter--;
-							}
-
-							XMMATRIX animationMatrix;
-
-							AnimationKeyInfo keyinfo = rightIter->second;
-
-							DirectX::XMMATRIX scaleMatrix = XMMatrixScalingFromVector(keyinfo.scale);
-							DirectX::XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(keyinfo.rotation);
-							DirectX::XMMATRIX translationMatrix = XMMatrixTranslationFromVector(keyinfo.position);
-							animationMatrix = scaleMatrix * rotationMatrix * translationMatrix;
-
-							nextMatrix = animationMatrix * currentMatrix;
-						}
-
-						nodeQueue.push({ nextNode, nextMatrix });
-					}
-				}
-
 				// 계산된 finalTM을 Texture에 넣는다.
 				for (int i = 0; i < bones.size(); i++)
 				{
 					if (bones[i] == nullptr) continue;
 
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x0] = bones[i]->finalTM.r[0].m128_f32[0];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x1] = bones[i]->finalTM.r[0].m128_f32[1];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x2] = bones[i]->finalTM.r[0].m128_f32[2];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x3] = bones[i]->finalTM.r[0].m128_f32[3];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x4] = bones[i]->finalTM.r[1].m128_f32[0];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x5] = bones[i]->finalTM.r[1].m128_f32[1];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x6] = bones[i]->finalTM.r[1].m128_f32[2];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x7] = bones[i]->finalTM.r[1].m128_f32[3];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x8] = bones[i]->finalTM.r[2].m128_f32[0];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x9] = bones[i]->finalTM.r[2].m128_f32[1];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0xa] = bones[i]->finalTM.r[2].m128_f32[2];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0xb] = bones[i]->finalTM.r[2].m128_f32[3];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0xc] = bones[i]->finalTM.r[3].m128_f32[0];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0xd] = bones[i]->finalTM.r[3].m128_f32[1];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0xe] = bones[i]->finalTM.r[3].m128_f32[2];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0xf] = bones[i]->finalTM.r[3].m128_f32[3];
+					DirectX::XMMATRIX data = bones[i]->transformMatrix;
+
+					if (currentAnimation->animationKey.count(bones[i]->name) != 0)
+					{
+						auto rightIter = currentAnimation->animationKey[bones[i]->name].lower_bound(frameTime);
+						auto endIter = currentAnimation->animationKey[bones[i]->name].end();
+
+						if (rightIter == endIter)
+						{
+							rightIter--;
+						}
+
+						XMMATRIX animationMatrix;
+
+						AnimationKeyInfo keyinfo = rightIter->second;
+						DirectX::XMMATRIX scaleMatrix = XMMatrixScalingFromVector(keyinfo.scale);
+						DirectX::XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(keyinfo.rotation);
+						DirectX::XMMATRIX translationMatrix = XMMatrixTranslationFromVector(keyinfo.position);
+						animationMatrix = scaleMatrix * rotationMatrix * translationMatrix;
+
+						data = animationMatrix;
+					}
+
+					// identity로 초기화 해놨기 때문에 추가로 곱하는 방식으로 연산한다.
+					// parentTM이 미리 곱해진 본들이 존재할 수 있기 때문
+					textureData[animationCount + 1][BONE_COUNT_MAX * currentFrame + i].matrix = data * textureData[animationCount + 1][BONE_COUNT_MAX * currentFrame + i].matrix;
 				}
 			}
 			// Duration이후의 프레임은 마지막 프레임으로 전부 채운다.
 			else
 			{
 				// 잘못된 데이터를 가져와서 넣음, 데이터가 없는 애니메이션
-				assert(currentFrame - 1 > 0);
+				assert(currentFrame > 0);
 
 				// 이전 프레임의 finalTM을 Texture에 넣는다.
 				for (int i = 0; i < bones.size(); i++)
 				{
 					if (bones[i] == nullptr) continue;
 
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x0] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0x0];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x1] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0x1];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x2] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0x2];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x3] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0x3];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x4] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0x4];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x5] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0x5];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x6] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0x6];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x7] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0x7];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x8] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0x8];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0x9] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0x9];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0xa] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0xa];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0xb] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0xb];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0xc] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0xc];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0xd] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0xd];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0xe] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0xe];
-					textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * currentFrame + 16 * i + 0xf] = textureData[animationCount + 1][(4 * 4 * BONE_COUNT_MAX) * (currentFrame - 1) + 16 * i + 0xf];
+					textureData[animationCount + 1][BONE_COUNT_MAX * currentFrame + i] = textureData[animationCount + 1][BONE_COUNT_MAX * (currentFrame - 1) + i];
 				}
 			}
 		}
 
 		animationCount += 1;
 	}
-
-	// 애니메이션이 없을 때 사용하기 위해 첫번째 텍스처를 사용
-	std::queue<std::pair<Node*, DirectX::XMMATRIX>> nodeQueue;
-
-	nodeQueue.push({ root, root->transformMatrix });
-
-	while (!nodeQueue.empty())
-	{
-		auto current = nodeQueue.front();
-		nodeQueue.pop();
-		Node* currentNode = current.first;
-		DirectX::XMMATRIX currentMatrix = current.second;
-
-		currentNode->worldMatrix = currentNode->offsetMatrix * currentMatrix;
-
-		for (int i = 0; i < currentNode->children.size(); i++)
-		{
-			Node* nextNode = currentNode->children[i];
-			DirectX::XMMATRIX nextMatrix = nextNode->transformMatrix * currentMatrix;
-
-			nodeQueue.push({ nextNode, nextMatrix });
-		}
-	}
-
-	for (int i = 0; i < bones.size(); i++)
-	{
-		if (bones[i] == nullptr) continue;
-
-		textureData[0][16 * i + 0x0] = bones[i]->worldMatrix.r[0].m128_f32[0];
-		textureData[0][16 * i + 0x1] = bones[i]->worldMatrix.r[0].m128_f32[1];
-		textureData[0][16 * i + 0x2] = bones[i]->worldMatrix.r[0].m128_f32[2];
-		textureData[0][16 * i + 0x3] = bones[i]->worldMatrix.r[0].m128_f32[3];
-		textureData[0][16 * i + 0x4] = bones[i]->worldMatrix.r[1].m128_f32[0];
-		textureData[0][16 * i + 0x5] = bones[i]->worldMatrix.r[1].m128_f32[1];
-		textureData[0][16 * i + 0x6] = bones[i]->worldMatrix.r[1].m128_f32[2];
-		textureData[0][16 * i + 0x7] = bones[i]->worldMatrix.r[1].m128_f32[3];
-		textureData[0][16 * i + 0x8] = bones[i]->worldMatrix.r[2].m128_f32[0];
-		textureData[0][16 * i + 0x9] = bones[i]->worldMatrix.r[2].m128_f32[1];
-		textureData[0][16 * i + 0xa] = bones[i]->worldMatrix.r[2].m128_f32[2];
-		textureData[0][16 * i + 0xb] = bones[i]->worldMatrix.r[2].m128_f32[3];
-		textureData[0][16 * i + 0xc] = bones[i]->worldMatrix.r[3].m128_f32[0];
-		textureData[0][16 * i + 0xd] = bones[i]->worldMatrix.r[3].m128_f32[1];
-		textureData[0][16 * i + 0xe] = bones[i]->worldMatrix.r[3].m128_f32[2];
-		textureData[0][16 * i + 0xf] = bones[i]->worldMatrix.r[3].m128_f32[3];
-	}
+	
 
 	// 계산된 애니메이션 데이터로 텍스쳐 생성하여 셰이더 리소스 뷰 생성
-
 	ID3D11Texture2D* tex2d = nullptr;
 
 	// 텍스처 생성
@@ -609,7 +604,7 @@ void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 	std::vector<D3D11_SUBRESOURCE_DATA> initData(animationSize);
 	for (int i = 0; i < animationSize; i++)
 	{
-		initData[i].pSysMem = textureData[i];
+		initData[i].pSysMem = textureData[i].data();
 		initData[i].SysMemPitch = 16 * 4 * BONE_COUNT_MAX; // 바이트 단위인거 같다...
 		initData[i].SysMemSlicePitch = 16 * 4 * BONE_COUNT_MAX * ANIMATION_FRAME_MAX;
 	}
@@ -634,15 +629,6 @@ void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 		MessageBox(0, L"Failed to Create Animation Resource View", L"Model Error", MB_OK);
 		assert(0);
 	}
-
-
-	for (int i = 0; i < animationSize; i++)
-	{
-		delete[] textureData[i];
-	}
-
-	tex2d->Release();
-	delete[] textureData;
 }
 
 void ZeldaModel::SetAnimationTexture(ID3D11DeviceContext* deviceContext)

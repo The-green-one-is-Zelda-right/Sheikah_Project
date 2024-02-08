@@ -12,22 +12,22 @@ namespace ZonaiMath
 	const Quaternion Quaternion::Zero = { 0.f, 0.f, 0.f, 0.f };
 	const Quaternion Quaternion::Identity = { 1.f, 0.f, 0.f, 0.f };
 
-	Quaternion::operator Vector4D() noexcept
+	Quaternion::operator Vector4D()
 	{
 		return Vector4D{ x, y, z, w };
 	}
 
-	float Quaternion::Length() const noexcept
+	float Quaternion::Length() const
 	{
 		return _mm_cvtss_f32(_mm_sqrt_ps(_mm_dp_ps(m, m, 0xff)));
 	}
 
-	float Quaternion::LengthSquare() const noexcept
+	float Quaternion::LengthSquare() const
 	{
 		return _mm_cvtss_f32(_mm_dp_ps(m, m, 0xff));
 	}
 
-	float Quaternion::FastInvSqrt(float number) const noexcept
+	float Quaternion::FastInvSqrt(float number) const
 	{
 		return _mm_cvtss_f32(_mm_rsqrt_ps(_mm_set_ps1(number)));
 	}
@@ -35,7 +35,7 @@ namespace ZonaiMath
 	/// <summary>
 	/// »ç¿ø¼ö ³»Àû
 	/// </summary>
-	float Quaternion::Dot(const Quaternion& other) const noexcept
+	float Quaternion::Dot(const Quaternion& other) const
 	{
 		return _mm_cvtss_f32(_mm_dp_ps(this->m, other.m, 0xff));
 	}
@@ -43,7 +43,7 @@ namespace ZonaiMath
 	/// <summary>
 	/// »ç¿ø¼ö ÄÓ·¹
 	/// </summary>
-	Quaternion Quaternion::Conjugate() const noexcept
+	Quaternion Quaternion::Conjugate() const
 	{
 		return Quaternion{ w, -x, -y, -z };
 	}
@@ -51,7 +51,7 @@ namespace ZonaiMath
 	/// <summary>
 	/// »ç¿ø¼ö ¿ª¼ö
 	/// </summary>
-	Quaternion Quaternion::Inverse() const noexcept
+	Quaternion Quaternion::Inverse() const
 	{
 		float temp = LengthSquare();
 
@@ -71,7 +71,7 @@ namespace ZonaiMath
 		);
 	}
 
-	Quaternion& Quaternion::Normalize() noexcept
+	Quaternion& Quaternion::Normalize()
 	{
 		float temp = LengthSquare();
 
@@ -90,7 +90,7 @@ namespace ZonaiMath
 		return *this;
 	}
 
-	Quaternion Quaternion::Normalized() const noexcept
+	Quaternion Quaternion::Normalized() const
 	{
 		float temp = LengthSquare();
 
@@ -114,7 +114,7 @@ namespace ZonaiMath
 	/// <summary>
 	/// »ç¿ø¼ö µ¡¼À
 	/// </summary>
-	Quaternion& Quaternion::operator+=(const Quaternion& other) noexcept
+	Quaternion& Quaternion::operator+=(const Quaternion& other)
 	{
 		this->m = _mm_add_ps(this->m, other.m);
 		return *this;
@@ -123,25 +123,25 @@ namespace ZonaiMath
 	/// <summary>
 	/// »ç¿ø¼ö »¬¼À
 	/// </summary>
-	Quaternion& Quaternion::operator-=(const Quaternion& other) noexcept
+	Quaternion& Quaternion::operator-=(const Quaternion& other)
 	{
 		this->m = _mm_sub_ps(this->m, other.m);
 		return *this;
 	}
 
-	Quaternion Quaternion::operator+(const Quaternion& other) const noexcept
+	Quaternion Quaternion::operator+(const Quaternion& other) const
 	{
 		Quaternion temp(*this);
 		return temp += other;
 	}
 
-	Quaternion Quaternion::operator-(const Quaternion& other) const noexcept
+	Quaternion Quaternion::operator-(const Quaternion& other) const
 	{
 		Quaternion temp(*this);
 		return temp -= other;
 	}
 
-	Quaternion Quaternion::operator-() const noexcept
+	Quaternion Quaternion::operator-() const
 	{
 		return Quaternion
 		(
@@ -155,7 +155,7 @@ namespace ZonaiMath
 	/// <summary>
 	/// »ç¿ø¼ö °ö¼À
 	/// </summary>
-	Quaternion& Quaternion::operator*=(const Quaternion& other) noexcept
+	Quaternion& Quaternion::operator*=(const Quaternion& other)
 	{
 		// ÇØ¹ÐÅÏ °ö
 		float newW =
@@ -193,7 +193,7 @@ namespace ZonaiMath
 	/// <summary>
 	/// »ç¿ø¼ö ³ª´°¼À
 	/// </summary>
-	Quaternion& Quaternion::operator/=(const Quaternion& other) noexcept
+	Quaternion& Quaternion::operator/=(const Quaternion& other)
 	{
 		Quaternion conjugate = other.Conjugate();
 		float temp = other.Length();
@@ -207,14 +207,14 @@ namespace ZonaiMath
 		return *this;
 	}
 
-	Quaternion Quaternion::operator*(const Quaternion& other) const noexcept
+	Quaternion Quaternion::operator*(const Quaternion& other) const
 	{
 		Quaternion result = *this;
 		result *= other;
 		return result;
 	}
 
-	Quaternion Quaternion::operator/(const Quaternion& other) const noexcept
+	Quaternion Quaternion::operator/(const Quaternion& other) const
 	{
 		Quaternion result = *this;
 		result /= other;
@@ -224,7 +224,7 @@ namespace ZonaiMath
 	/// <summary>
 	/// »ç¿ø¼ö ½ºÄ®¶ó °ö¼À
 	/// </summary>
-	Quaternion& Quaternion::operator*=(const float n) noexcept
+	Quaternion& Quaternion::operator*=(const float n)
 	{
 		this->m = _mm_mul_ps(this->m, _mm_set_ps1(n));
 		return *this;
@@ -233,50 +233,50 @@ namespace ZonaiMath
 	/// <summary>
 	/// »ç¿ø¼ö ½ºÄ®¶ó ³ª´°¼À
 	/// </summary>
-	Quaternion& Quaternion::operator/=(const float n) noexcept
+	Quaternion& Quaternion::operator/=(const float n)
 	{
 		this->m = _mm_div_ps(this->m, _mm_set_ps1(n));
 		return *this;
 	}
 
-	Quaternion Quaternion::operator*(const float n) const noexcept
+	Quaternion Quaternion::operator*(const float n) const
 	{
 		Quaternion result(*this);
 
 		return result *= n;
 	}
 
-	Quaternion Quaternion::operator/(const float n) const noexcept
+	Quaternion Quaternion::operator/(const float n) const
 	{
 		Quaternion result(*this);
 
 		return result /= n;
 	}
 
-	bool Quaternion::operator==(const Quaternion& other) const noexcept
+	bool Quaternion::operator==(const Quaternion& other) const
 	{
 		return (this->w == other.w && this->x == other.x && this->y == other.y && this->z == other.z);
 	}
 
 
-	Quaternion operator*=(const float n, Quaternion& other) noexcept
+	Quaternion operator*=(const float n, Quaternion& other)
 	{
 		return other *= n;
 	}
 
-	Quaternion operator/=(const float n, Quaternion& other) noexcept
+	Quaternion operator/=(const float n, Quaternion& other)
 	{
 		return other /= n;
 	}
 
-	Quaternion operator*(const float n, const Quaternion& other) noexcept
+	Quaternion operator*(const float n, const Quaternion& other)
 	{
 		Quaternion result(other);
 
 		return result *= n;
 	}
 
-	Quaternion operator/(const float n, const Quaternion& other) noexcept
+	Quaternion operator/(const float n, const Quaternion& other)
 	{
 		Quaternion result(other);
 

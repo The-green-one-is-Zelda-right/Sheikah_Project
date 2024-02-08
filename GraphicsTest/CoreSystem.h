@@ -77,6 +77,7 @@ private:
 	TextureID scdTextureID;
 	TextureID hnsTextureID;
 	TextureID msTextureID;
+	TextureID cubeMapID;
 	ModelID fbxID;
 	ModelID fbxID2;
 	LightID dirLightID;

@@ -11,20 +11,20 @@ namespace ZonaiMath
 		/// <summary>
 		/// 특수 멤버 함수
 		/// </summary>
-		constexpr Quaternion() noexcept :
+		constexpr Quaternion() :
 			m{}
 		{}
-		constexpr Quaternion(float _w, float _x, float _y, float _z) noexcept :
+		constexpr Quaternion(float _w, float _x, float _y, float _z) :
 			x(_x), y(_y), z(_z), w(_w)
 		{}
-		constexpr Quaternion(const Quaternion&) noexcept = default;
-		constexpr Quaternion(Quaternion&&) noexcept = default;
-		~Quaternion() noexcept = default;
+		constexpr Quaternion(const Quaternion&) = default;
+		constexpr Quaternion(Quaternion&&) = default;
+		~Quaternion() = default;
 
-		constexpr Quaternion& operator= (const Quaternion&) noexcept = default;
-		constexpr Quaternion& operator= (Quaternion&&) noexcept = default;
+		constexpr Quaternion& operator= (const Quaternion&) = default;
+		constexpr Quaternion& operator= (Quaternion&&) = default;
 
-		explicit operator Vector4D() noexcept;
+		explicit operator Vector4D();
 
 		/// <summary>
 		/// 멤버 변수
@@ -45,49 +45,49 @@ namespace ZonaiMath
 		/// <summary>
 		/// 쿼터니언 함수
 		/// </summary>
-		float Length() const noexcept;
-		float LengthSquare() const noexcept;
-		float FastInvSqrt(float) const noexcept;
-		float Dot(const Quaternion&) const noexcept;
+		float Length() const;
+		float LengthSquare() const;
+		float FastInvSqrt(float) const;
+		float Dot(const Quaternion&) const;
 
-		Quaternion Conjugate() const noexcept;
-		Quaternion Inverse() const noexcept;
-		Quaternion& Normalize() noexcept;
-		Quaternion Normalized() const noexcept;
+		Quaternion Conjugate() const;
+		Quaternion Inverse() const;
+		Quaternion& Normalize();
+		Quaternion Normalized() const;
 
 		/// <summary>
 		/// 연산자 오버로딩
 		/// </summary>
-		Quaternion& operator += (const Quaternion&) noexcept;
-		Quaternion& operator -= (const Quaternion&) noexcept;
+		Quaternion& operator += (const Quaternion&);
+		Quaternion& operator -= (const Quaternion&);
 
-		Quaternion operator + (const Quaternion&) const noexcept;
-		Quaternion operator - (const Quaternion&) const noexcept;
-		Quaternion operator - () const noexcept;
+		Quaternion operator + (const Quaternion&) const;
+		Quaternion operator - (const Quaternion&) const;
+		Quaternion operator - () const;
 
-		Quaternion& operator *= (const Quaternion&) noexcept;
-		Quaternion& operator /= (const Quaternion&) noexcept;
+		Quaternion& operator *= (const Quaternion&);
+		Quaternion& operator /= (const Quaternion&);
 
-		Quaternion operator * (const Quaternion&) const noexcept;
-		Quaternion operator / (const Quaternion&) const noexcept;
+		Quaternion operator * (const Quaternion&) const;
+		Quaternion operator / (const Quaternion&) const;
 
-		Quaternion& operator *= (const float) noexcept;
-		Quaternion& operator /= (const float) noexcept;
+		Quaternion& operator *= (const float);
+		Quaternion& operator /= (const float);
 
-		Quaternion operator * (const float) const noexcept;
-		Quaternion operator / (const float) const noexcept;
+		Quaternion operator * (const float) const;
+		Quaternion operator / (const float) const;
 
-		friend Quaternion operator *= (const float, const Quaternion&) noexcept;
-		friend Quaternion operator /= (const float, const Quaternion&) noexcept;
+		friend Quaternion operator *= (const float, const Quaternion&);
+		friend Quaternion operator /= (const float, const Quaternion&);
 
-		friend Quaternion operator * (const float, const Quaternion&) noexcept;
-		friend Quaternion operator / (const float, const Quaternion&) noexcept;
+		friend Quaternion operator * (const float, const Quaternion&);
+		friend Quaternion operator / (const float, const Quaternion&);
 
-		bool operator == (const Quaternion&) const noexcept;
+		bool operator == (const Quaternion&) const;
 	};
 
-	Quaternion operator *= (const float, const Quaternion&) noexcept;
-	Quaternion operator /= (const float, const Quaternion&) noexcept;
-	Quaternion operator * (const float, const Quaternion&) noexcept;
-	Quaternion operator / (const float, const Quaternion&) noexcept;
+	Quaternion operator *= (const float, const Quaternion&);
+	Quaternion operator /= (const float, const Quaternion&);
+	Quaternion operator * (const float, const Quaternion&);
+	Quaternion operator / (const float, const Quaternion&);
 }

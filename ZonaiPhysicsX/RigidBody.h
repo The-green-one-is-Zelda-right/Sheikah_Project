@@ -7,9 +7,7 @@
 
 namespace physx
 {
-	class PxPhysics;
 	class PxRigidDynamic;
-	class PxRigidActor;
 }
 
 namespace ZonaiPhysics
@@ -19,78 +17,70 @@ namespace ZonaiPhysics
 	class RigidBody : public ZnRigidBody
 	{
 	public:
-							RigidBody() noexcept = delete;
-							RigidBody(physx::PxPhysics*&) noexcept;
-							~RigidBody() noexcept override;
+							RigidBody() = delete;
+							RigidBody(physx::PxRigidDynamic* _pxBody, void* _userData = nullptr);
+							~RigidBody() override;
 
 	public:
-		void			WakeUp() noexcept override;
-		bool			IsSleeping() const noexcept override;
+		void				WakeUp() override;
+		bool				IsSleeping() const override;
 
-		void			UseGravity(bool) noexcept override;
+		void				UseGravity(bool) override;
+		void				SetKinematic(bool) override;
 
-		void			SetKinematic(bool) noexcept override;
+		void				Disable(bool) const;
 
-		void			UpdateInertiaTensor() noexcept;
-
-		void			CanSimulate(bool) const noexcept;
-
-		DynamicLocks	GetDynamicLockFlags() const noexcept override;
-		void			SetDynamicLockFlag(DynamicLock flag, bool) noexcept override;
-		void			SetDynamicLockFlags(DynamicLocks flags) noexcept override;
+		uint8_t				GetDynamicLockFlags() const override;
+		void				SetDynamicLockFlag(FreezeFlag flag, bool) override;
+		void				SetDynamicLockFlags(uint8_t flags) override;
 		
-		void*			GetUserData() const noexcept override;
-		void			SetUserData(void*) noexcept override;
+		void*				GetUserData() const override;
+		void				SetUserData(void*) override;
 
 	public:
 		// Áú·®
-		float			GetMass() const noexcept override;
-		void			SetMass(float) noexcept override;
-		float			GetInvMass() const noexcept override;
+		float				GetMass() const override;
+		void				SetMass(float) override;
+		float				GetInvMass() const override;
 
-		Eigen::Vector3f	GetInertiaTensor() const noexcept override;
-		void			SetInertiaTensor(const Eigen::Vector3f&) noexcept override;
+		Eigen::Vector3f		GetInertiaTensor() const override;
 
-		float			GetLinearDamping() const noexcept override;
-		void			SetLinearDamping(float) noexcept override;
+		float				GetLinearDamping() const override;
+		void				SetLinearDamping(float) override;
 
-		float			GetAngularDamping() const noexcept override;
-		void			SetAngularDamping(float) noexcept override;
+		float				GetAngularDamping() const override;
+		void				SetAngularDamping(float) override;
 		
 	public:
 		// ¼Óµµ
-		Eigen::Vector3f	GetLinearVelocity() const noexcept override;
-		void			SetLinearVelocity(const Eigen::Vector3f&) noexcept override;
+		Eigen::Vector3f		GetLinearVelocity() const override;
+		void				SetLinearVelocity(const Eigen::Vector3f&) override;
 
-		Eigen::Vector3f	GetAngularVelocity() const noexcept override;
-		void			SetAngularVelocity(const Eigen::Vector3f&) noexcept override;
+		Eigen::Vector3f		GetAngularVelocity() const override;
+		void				SetAngularVelocity(const Eigen::Vector3f&) override;
 		
-		float			GetMaxLinearVelocity() const noexcept override;
-		void			SetMaxLinearVelocity(const float&) noexcept override;
+		float				GetMaxLinearVelocity() const override;
+		void				SetMaxLinearVelocity(const float&) override;
 
-		float			GetMaxAngularVelocity() const noexcept override;
-		void			SetMaxAngularVelocity(const float&) noexcept override;
+		float				GetMaxAngularVelocity() const override;
+		void				SetMaxAngularVelocity(const float&) override;
 
-		Eigen::Vector3f	GetPosition() const noexcept override;
-		void			SetPosition(const Eigen::Vector3f&) noexcept override;
+		Eigen::Vector3f		GetPosition() const override;
+		void				SetPosition(const Eigen::Vector3f&) override;
 
-		Eigen::Quaternionf	GetQuaternion() const noexcept override;
-		void			SetQuaternion(const Eigen::Quaternionf&) noexcept override;
+		Eigen::Quaternionf	GetQuaternion() const override;
+		void				SetQuaternion(const Eigen::Quaternionf&) override;
 
-		// Èû
-		void			SetForceAndTorque(const Eigen::Vector3f& _force, const Eigen::Vector3f& _torque, ForceType _type) noexcept override;
-
-		void			AddForce(const Eigen::Vector3f&, ForceType) noexcept override;
-		void			ClearForce() noexcept override;
+		void				AddForce(const Eigen::Vector3f&, ForceType) override;
+		void				ClearForce() override;
 	
-		void			AddTorque(const Eigen::Vector3f&, ForceType) noexcept override;
-		void			ClearTorque() noexcept override;
+		void				AddTorque(const Eigen::Vector3f&, ForceType) override;
+		void				ClearTorque() override;
 
 	public:
-		physx::PxRigidDynamic* getRigidDynamic() const noexcept;
-
-	private:
+		void* userData;
 		physx::PxRigidDynamic* pxBody;
+		std::list<Collider*> colliders;
 	};
 } // namespace ZonaiPhysics
 

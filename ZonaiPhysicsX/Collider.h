@@ -17,42 +17,44 @@ namespace ZonaiPhysics
 	class Collider : public ZnCollider
 	{
 	public:
-							Collider() noexcept = delete;
-							Collider(physx::PxPhysics*&, RigidBody*) noexcept;
-		virtual				~Collider() noexcept = default;
+							Collider() = delete;
+							Collider(physx::PxShape*, RigidBody*);
+							//Collider(physx::PxPhysics*&, RigidBody*);
+		virtual				~Collider() = default;
 
 	public:
-		void				SetTrigger(bool) noexcept final;
+		void				SetTrigger(bool) final;
+		void				SetLayerData(const uint32_t&) final;
 
 		/**
 		위치
 		*/
-		Eigen::Vector3f		GetPosition() const noexcept final;
-		void				SetPosition(const Eigen::Vector3f& _position) noexcept final;
-		virtual  Eigen::Vector3f	GetLocalPosition() const noexcept final;
-		virtual	 void		SetLocalPosition(const Eigen::Vector3f& _position) noexcept final;
+		Eigen::Vector3f		GetPosition() const final;
+		void				SetPosition(const Eigen::Vector3f& _position) final;
+		virtual  Eigen::Vector3f	GetLocalPosition() const final;
+		virtual	 void		SetLocalPosition(const Eigen::Vector3f& _position) final;
 
 		/**
 		회전
 		*/
-		Eigen::Quaternionf	GetQuaternion() const noexcept final;
-		void				SetQuaternion(const Eigen::Quaternionf& _quaternion) noexcept final;
-		virtual Eigen::Quaternionf	GetLocalQuaternion() const noexcept final;
-		virtual void		SetLocalQuaternion(const Eigen::Quaternionf& _quaternion) noexcept final;
+		Eigen::Quaternionf	GetQuaternion() const final;
+		void				SetQuaternion(const Eigen::Quaternionf& _quaternion) final;
+		virtual Eigen::Quaternionf	GetLocalQuaternion() const final;
+		virtual void		SetLocalQuaternion(const Eigen::Quaternionf& _quaternion) final;
 
 		/**
 		유저 데이터
 		*/
-		void*				GetUserData() const noexcept final;
-		void				SetUserData(void* _userData) noexcept final;
+		void*				GetUserData() const final;
+		void				SetUserData(void* _userData) final;
 
 	public:
 
-		void				UpdateInertiaTensor() const noexcept;
+		void				UpdateInertiaTensor() const;
 
 	protected:
-		RigidBody* rigidbody;
-		physx::PxShape* shape;
+		RigidBody* znBody;
+		physx::PxShape* pxShape;
 	};
 } // namespace ZonaiPhysics
 

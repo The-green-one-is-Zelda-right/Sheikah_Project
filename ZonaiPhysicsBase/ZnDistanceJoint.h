@@ -6,8 +6,8 @@ namespace ZonaiPhysics
 	class ZnDistanceJoint : public ZnJoint
 	{
 	public:
-		ZnDistanceJoint() noexcept = default;
-		~ZnDistanceJoint() noexcept override = default;
+		ZnDistanceJoint() = default;
+		~ZnDistanceJoint() override = default;
 
 
 	public:

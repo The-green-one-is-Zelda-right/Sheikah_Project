@@ -67,6 +67,7 @@ public:
 	void Render(
 		ID3D11DeviceContext* deviceContext,
 		ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
+		ConstantBuffer<AnimationHierarchyBufferType, ShaderType::VertexShader>* animationHierarchyVsConstBuffer,
 		ConstantBuffer<AnimationBufferType, ShaderType::VertexShader>* animationConstBuffer,
 		ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
 		DirectX::XMMATRIX worldMatrix,
@@ -82,6 +83,7 @@ public:
 		ID3D11DeviceContext* deviceContext,
 		ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
 		ConstantBuffer<InstancingMatrixBufferType, ShaderType::VertexShader>* instancingMatrixConstBuffer,
+		ConstantBuffer<AnimationHierarchyBufferType, ShaderType::VertexShader>* animationHierarchyVsConstBuffer,
 		ConstantBuffer<InstancingAnimationBufferType, ShaderType::VertexShader>* instancingAnimationConstBuffer,
 		ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
 		const std::vector<ModelInstancingInfo>& instancingInfo,
@@ -111,6 +113,7 @@ private:
 	std::unordered_map<std::wstring, unsigned int> animationIDTable;
 
 	ID3D11ShaderResourceView* animationResourceView;
+	AnimationHierarchyBufferType boneHierarchyData;
 
 	bool updatedWorldMatrix;
 

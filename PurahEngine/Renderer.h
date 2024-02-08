@@ -15,9 +15,10 @@ namespace PurahEngine
 		virtual void Render(IZeldaRenderer* renderer) override;
 
 		void AddTexture(TextureID textureID);
+		void AddLight(LightID lightID);
 	private:
 		TextureID texture;
-
+		LightID light = LightID::ID_NULL;
 	};
 }
 

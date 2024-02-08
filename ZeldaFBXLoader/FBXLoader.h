@@ -20,7 +20,7 @@ namespace FBXLoader
 		void ReleaseModel(Model* model);
 
 	private:
-		void CopyNodeData(Bone* bone, aiNode* ainode, std::map<std::wstring, unsigned int>& boneIndexMap, std::vector<Bone*>& boneList);
+		void CopyNodeData(Bone* bone, aiNode* ainode, std::map<std::wstring, unsigned int>& boneIndexMap, std::vector<Bone*>& boneList, int& boneCount);
 
 		static const unsigned int BONE_MAX;
 

@@ -5,8 +5,9 @@ namespace ZonaiPhysics
 {
 	struct ZnRaycastInfo
 	{
-		std::wstring name;			// 충돌한 오브젝트의 이름
-		void* data;					// 오브젝트의 포인터
-		Eigen::Vector3f position;	// 충돌한 위치
+		void* bodyData;					// 오브젝트 포인터
+		void* colliderData;				// 콜라이더 포인터
+		Eigen::Vector3f position;	// 충돌 위치
+		float distance;				// 충돌 거리
 	};
 }

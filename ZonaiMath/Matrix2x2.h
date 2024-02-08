@@ -12,12 +12,12 @@ namespace ZonaiMath
 		/// <summary>
 		/// 특수 멤버 함수
 		/// </summary>
-		constexpr Matrix2x2() noexcept :
+		constexpr Matrix2x2() :
 			e{}
 		{}
 		constexpr Matrix2x2(
 			float _e00, float _e01,
-			float _e10, float _e11) noexcept :
+			float _e10, float _e11) :
 			e
 			{
 				_e00, _e01,
@@ -26,15 +26,15 @@ namespace ZonaiMath
 		{}
 		constexpr Matrix2x2(
 			const Matrix1x2& _m1,
-			const Matrix1x2& _m2) noexcept :
+			const Matrix1x2& _m2) :
 			r{ _m1, _m2 }
 		{}
-		constexpr Matrix2x2(const Matrix2x2&) noexcept = default;
-		constexpr Matrix2x2(Matrix2x2&&) noexcept = default;
-		~Matrix2x2() noexcept = default;
+		constexpr Matrix2x2(const Matrix2x2&) = default;
+		constexpr Matrix2x2(Matrix2x2&&) = default;
+		~Matrix2x2() = default;
 
-		constexpr Matrix2x2& operator = (const Matrix2x2&) noexcept = default;
-		constexpr Matrix2x2& operator = (Matrix2x2&&) noexcept = default;
+		constexpr Matrix2x2& operator = (const Matrix2x2&) = default;
+		constexpr Matrix2x2& operator = (Matrix2x2&&) = default;
 
 		union
 		{
@@ -57,21 +57,21 @@ namespace ZonaiMath
 		/// <summary>
 		/// 멤버 함수
 		/// </summary>
-		static float Determinant() noexcept;
-		Matrix2x2 Transpose() const noexcept;
-		Matrix2x2 Inverse() const noexcept;
+		static float Determinant();
+		Matrix2x2 Transpose() const;
+		Matrix2x2 Inverse() const;
 
 		/// <summary>
 		/// 연산자 오버로딩
 		/// </summary>
-		Matrix2x2 operator+ (const Matrix2x2&) const noexcept;
-		Matrix2x2& operator+= (const Matrix2x2&) noexcept;
-		Matrix2x2 operator- (const Matrix2x2&) const noexcept;
-		Matrix2x2& operator-= (const Matrix2x2&) noexcept;
-		Matrix2x2 operator* (const Matrix2x2&) const noexcept;
-		Matrix2x2& operator*= (const Matrix2x2&) noexcept;
+		Matrix2x2 operator+ (const Matrix2x2&) const;
+		Matrix2x2& operator+= (const Matrix2x2&);
+		Matrix2x2 operator- (const Matrix2x2&) const;
+		Matrix2x2& operator-= (const Matrix2x2&);
+		Matrix2x2 operator* (const Matrix2x2&) const;
+		Matrix2x2& operator*= (const Matrix2x2&);
 
-		bool operator == (const Matrix2x2&) const noexcept;
+		bool operator == (const Matrix2x2&) const;
 	};
 
 	//constexpr Matrix2x2 Matrix2x2::Zero = {};

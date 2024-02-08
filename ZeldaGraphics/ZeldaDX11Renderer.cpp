@@ -20,7 +20,7 @@
 
 using namespace DirectX;
 
-bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screenHeight, bool vsync, HWND hwnd, bool fullScreen, float screenDepth, float cameraNear)
+bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screenHeight, bool vsync, HWND hwnd, bool fullScreen)
 {
 	hWnd = hwnd;
 	this->screenWidth = screenWidth;
@@ -46,6 +46,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 	D3D11_RASTERIZER_DESC defaultRasterDesc;
 	D3D11_RASTERIZER_DESC wireFrameRasterDesc;
 	D3D11_RASTERIZER_DESC lightRasterDesc;
+	D3D11_RASTERIZER_DESC cubeMapRasterDesc;
 	D3D11_VIEWPORT viewport;
 	float fieldOfView, screenAspect;
 
@@ -283,6 +284,20 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 	result = mDevice->CreateRasterizerState(&lightRasterDesc, &pointLightRasterState);
 	if (FAILED(result)) return false;
 
+	// Setup the raster description which will determine how and what polygons will be drawn.
+	cubeMapRasterDesc.AntialiasedLineEnable = false;
+	cubeMapRasterDesc.CullMode = D3D11_CULL_FRONT;
+	cubeMapRasterDesc.DepthBias = 0;
+	cubeMapRasterDesc.DepthBiasClamp = 0.0f;
+	cubeMapRasterDesc.DepthClipEnable = false;
+	cubeMapRasterDesc.FillMode = D3D11_FILL_SOLID;
+	cubeMapRasterDesc.FrontCounterClockwise = false;
+	cubeMapRasterDesc.MultisampleEnable = false;
+	cubeMapRasterDesc.ScissorEnable = false;
+	cubeMapRasterDesc.SlopeScaledDepthBias = 0.0f;
+	// Create the rasterizer state from the description we just filled out.
+	result = mDevice->CreateRasterizerState(&cubeMapRasterDesc, &cubeMapRasterState);
+	if (FAILED(result)) return false;
 
 	// Set up the viewport for rendering.
 	viewport.Width = (float)screenWidth;
@@ -307,6 +322,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 	animationConstBuffer = new ConstantBuffer<AnimationBufferType, ShaderType::VertexShader>(mDevice);
 	instancingMatrixVsConstBuffer = new ConstantBuffer<InstancingMatrixBufferType, ShaderType::VertexShader>(mDevice);
 	instancingAnimationVsConstBuffer = new ConstantBuffer<InstancingAnimationBufferType, ShaderType::VertexShader>(mDevice);
+	animationHierarchyVsConstBuffer = new ConstantBuffer<AnimationHierarchyBufferType, ShaderType::VertexShader>(mDevice);
 
 	matrixPsConstBuffer = new ConstantBuffer<MatrixBufferType, ShaderType::PixelShader>(mDevice);
 	lightInfoConstBuffer = new ConstantBuffer<LightInfoBufferType, ShaderType::PixelShader>(mDevice);
@@ -383,8 +399,19 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 	deferredSpotLightShader = new ZeldaShader(mDevice, L"DeferredSpotLightVS.cso", L"DeferredSpotLightPS.cso");
 	deferredFinalShader = new ZeldaShader(mDevice, L"DeferredFinalVS.cso", L"DeferredFinalPS.cso");
 	forwardShader = new ZeldaShader(mDevice, L"ForwardVS.cso", L"ForwardPS.cso", L"ForwardInstancingVS.cso");
+	cubeMapShader = new ZeldaShader(mDevice, L"CubeMapVS.cso", L"CubeMapPS.cso", L"");
 
 #pragma endregion Deferred Rendering
+
+	// 깊이 스텐실 스테이트 생성
+	D3D11_DEPTH_STENCIL_DESC cubeMapDepthStencilDesc = {};
+	cubeMapDepthStencilDesc.DepthEnable = TRUE; // 깊이 테스트를 활성화합니다.
+	cubeMapDepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL; // 깊이 버퍼에 쓰기를 허용합니다.
+	cubeMapDepthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL; // 깊이 테스트 함수를 설정합니다. 여기서는 깊이가 작은 값일 때만 통과하도록 설정했습니다.
+	cubeMapDepthStencilDesc.StencilEnable = FALSE; // 스텐실 테스트를 비활성화합니다.
+
+	mDevice->CreateDepthStencilState(&cubeMapDepthStencilDesc, &cubeMapDepthStencilState);
+
 
 	// 블렌드 상태 정의
 	D3D11_BLEND_DESC blendDesc;
@@ -460,6 +487,11 @@ void ZeldaDX11Renderer::Finalize()
 	{
 		delete instancingAnimationVsConstBuffer;
 		instancingAnimationVsConstBuffer = nullptr;
+	}
+	if (animationHierarchyVsConstBuffer)
+	{
+		delete animationHierarchyVsConstBuffer;
+		animationHierarchyVsConstBuffer = nullptr;
 	}
 	if (matrixPsConstBuffer)
 	{
@@ -566,6 +598,11 @@ void ZeldaDX11Renderer::Finalize()
 		delete forwardShader;
 		forwardShader = nullptr;
 	}
+	if (cubeMapShader)
+	{
+		delete cubeMapShader;
+		cubeMapShader = nullptr;
+	}
 	if (defaultRasterState)
 	{
 		defaultRasterState->Release();
@@ -637,10 +674,11 @@ void ZeldaDX11Renderer::EndDraw()
 	// Clear the depth buffer.
 	mDeviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	
 	DrawDeferred();
 
 	DrawForward();
+
+	DrawCubeMapRenderInfo();
 
 	BeginDrawSprite();
 	DrawSprite();
@@ -815,6 +853,11 @@ void ZeldaDX11Renderer::DrawSprite(const Eigen::Vector2f& position, TextureID te
 
 		organizedSpriteRenderInfo[texture] = renderInfo;
 	}
+}
+
+void ZeldaDX11Renderer::DrawCubeMap(TextureID texture)
+{
+	cubeMapRenderInfo = texture;
 }
 
 void ZeldaDX11Renderer::CreateBasicResources()
@@ -1286,7 +1329,7 @@ void ZeldaDX11Renderer::DrawModelRenderInfo(ModelRenderInfo renderInfo, ZeldaSha
 		UseWireFrameRasterState(renderInfo.wireFrame);
 		mDeviceContext->RSSetState(currentRasterState);
 
-		modelData->RenderInstanced(mDeviceContext, matrixVsConstBuffer, instancingMatrixVsConstBuffer, instancingAnimationVsConstBuffer, materialConstBuffer, renderInfo.instancingInfo, shader);
+		modelData->RenderInstanced(mDeviceContext, matrixVsConstBuffer, instancingMatrixVsConstBuffer, animationHierarchyVsConstBuffer, instancingAnimationVsConstBuffer, materialConstBuffer, renderInfo.instancingInfo, shader);
 	}
 	else
 	{
@@ -1297,7 +1340,7 @@ void ZeldaDX11Renderer::DrawModelRenderInfo(ModelRenderInfo renderInfo, ZeldaSha
 			UseWireFrameRasterState(renderInfo.wireFrame);
 			mDeviceContext->RSSetState(currentRasterState);
 
-			modelData->Render(mDeviceContext, matrixVsConstBuffer, animationConstBuffer, materialConstBuffer, instancingInfo.worldMatrix, shader, instancingInfo.firstAnimationName, instancingInfo.secondAnimationName, instancingInfo.firstAnimationTime, instancingInfo.secondAnimationTime, instancingInfo.ratio);
+			modelData->Render(mDeviceContext, matrixVsConstBuffer, animationHierarchyVsConstBuffer, animationConstBuffer, materialConstBuffer, instancingInfo.worldMatrix, shader, instancingInfo.firstAnimationName, instancingInfo.secondAnimationName, instancingInfo.firstAnimationTime, instancingInfo.secondAnimationTime, instancingInfo.ratio);
 		}
 	}
 }
@@ -1312,6 +1355,44 @@ void ZeldaDX11Renderer::DrawSpriteRenderInfo(SpriteRenderInfo renderInfo)
 	}
 }
 
+void ZeldaDX11Renderer::DrawCubeMapRenderInfo()
+{
+	if (cubeMapRenderInfo == TextureID::ID_NULL)
+	{
+		// CubeMap을 그리지 않음
+		return;
+	}
+
+	mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
+	mDeviceContext->OMSetDepthStencilState(cubeMapDepthStencilState, 0);
+	mDeviceContext->RSSetState(cubeMapRasterState);
+
+
+	ZeldaCamera* currentcamera = ResourceManager::GetInstance().GetCamera(ZeldaCamera::GetMainCamera());
+
+	ZeldaMesh* mesh = ResourceManager::GetInstance().GetSphereMesh();
+	mesh->Render(mDeviceContext);
+
+	ZeldaTexture* texture = ResourceManager::GetInstance().GetTexture(cubeMapRenderInfo);
+	texture->SetCubeMapShaderResource(mDeviceContext);
+	
+	// 전치해야한다.
+	MatrixBufferType matrixBuffer;
+	matrixBuffer.world = XMMatrixTranspose(currentcamera->GetTransformMatrix());
+	matrixBuffer.view = XMMatrixTranspose(currentcamera->GetViewMatrix());
+	matrixBuffer.projection = XMMatrixTranspose(currentcamera->GetProjMatrix());
+
+	matrixVsConstBuffer->SetData(matrixBuffer);
+	matrixPsConstBuffer->SetData(matrixBuffer);
+
+	ConstantBufferManager::GetInstance().SetBuffer();
+
+	cubeMapShader->Render(mDeviceContext, mesh->GetIndexCount());
+
+	mDeviceContext->RSSetState(defaultRasterState);
+	mDeviceContext->OMSetDepthStencilState(nullptr, 0);
+}
+
 void ZeldaDX11Renderer::ClearRenderInfo()
 {
 	organizedMeshRenderInfo.clear();
@@ -1321,6 +1402,8 @@ void ZeldaDX11Renderer::ClearRenderInfo()
 
 	forwardMeshRenderInfo.clear();
 	forwardModelRenderInfo.clear();
+
+	cubeMapRenderInfo = TextureID::ID_NULL;
 }
 
 void ZeldaDX11Renderer::UpdateMode()

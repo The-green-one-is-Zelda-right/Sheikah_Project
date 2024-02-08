@@ -34,9 +34,6 @@
     <ClInclude Include="ZnRigidBody.h">
       <Filter>00. Base\rigidbody</Filter>
     </ClInclude>
-    <ClInclude Include="ZnShape.h">
-      <Filter>00. Base\collider</Filter>
-    </ClInclude>
     <ClInclude Include="ZnCollider.h">
       <Filter>00. Base\collider</Filter>
     </ClInclude>
@@ -51,6 +48,15 @@
     </ClInclude>
     <ClInclude Include="ZnPrismaticJoint.h">
       <Filter>00. Base\joint</Filter>
+    </ClInclude>
+    <ClInclude Include="ZnBase.h">
+      <Filter>00. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="FreezeFlag.h">
+      <Filter>02. Enum</Filter>
+    </ClInclude>
+    <ClInclude Include="ZnBoxcastInfo.h">
+      <Filter>01. Struct</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

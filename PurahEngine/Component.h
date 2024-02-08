@@ -18,10 +18,10 @@ namespace PurahEngine
 		virtual void Start();
 
 		/// Update
-		// 기존 업데이트
-		virtual void Update();
 		// 물리 관련 업데이트
 		virtual void FixedUpdate();
+		// 기존 업데이트
+		virtual void Update();
 
 		// 물리 관련 업데이트 2종 추가예정
 

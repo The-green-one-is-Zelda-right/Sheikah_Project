@@ -9,6 +9,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZonaiPhysicsX", "ZonaiPhysi
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZonaiDemo", "ZonaiDemo\ZonaiDemo.vcxproj", "{B4025E7B-2256-444F-BD5A-CC5C378B9584}"
+	ProjectSection(ProjectDependencies) = postProject
+		{26D6405A-AC06-4F74-BB18-8FFDD4BE4AE6} = {26D6405A-AC06-4F74-BB18-8FFDD4BE4AE6}
+		{47AF42E8-E0AA-46A6-A30F-43A4FBFBADE8} = {47AF42E8-E0AA-46A6-A30F-43A4FBFBADE8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZonaiPhysics", "ZonaiPhysics\ZonaiPhysics.vcxproj", "{B0F3B838-99DD-4BA4-B728-BD8958FBDACD}"
 	ProjectSection(ProjectDependencies) = postProject

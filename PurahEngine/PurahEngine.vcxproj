@@ -35,6 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AudioListener.h" />
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collider.h" />
@@ -53,10 +54,12 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="TimeController.h" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AudioListener.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collider.cpp" />
@@ -73,6 +76,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="TimeController.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
@@ -154,12 +158,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\DLL\</OutDir>
+    <IncludePath>$(SolutionDir)fmod\inc;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)fmod\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='YH_DEBUG|x64'">
     <OutDir>$(SolutionDir)$(Platform)\Debug\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\DLL\</OutDir>
+    <IncludePath>$(SolutionDir)fmod\inc;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)fmod\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='YH_RELEASE|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$Realse\</OutDir>
@@ -238,6 +246,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /R /Y "$(TargetPath)" "$(SolutionDir)$(IntDir)$(ProjectName).*"
@@ -288,6 +297,7 @@ xcopy /R /Y "$(TargetDir)*.cso" "$(SolutionDir)\PurahEngine\CompiledShader\"</Co
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /R /Y "$(TargetPath)" "$(SolutionDir)$(IntDir)$(ProjectName).*"</Command>

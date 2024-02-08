@@ -138,9 +138,9 @@ float4x4 quaternion_to_matrix(float4 quat)
 float4x4 m_translate(float4x4 m, float3 v)
 {
     float x = v.x, y = v.y, z = v.z;
-    m[0][3] = x;
-    m[1][3] = y;
-    m[2][3] = z;
+    m[3][0] = x;
+    m[3][1] = y;
+    m[3][2] = z;
     return m;
 }
 

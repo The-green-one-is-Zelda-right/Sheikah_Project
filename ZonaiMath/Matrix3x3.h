@@ -12,13 +12,13 @@ namespace ZonaiMath
 		/// <summary>
 	/// 특수 멤버 함수
 	/// </summary>
-		constexpr Matrix3x3() noexcept :
+		constexpr Matrix3x3() :
 			e{}
 		{}
 		constexpr Matrix3x3(
 			float _e00, float _e01, float _e02,
 			float _e10, float _e11, float _e12,
-			float _e20, float _e21, float _e22) noexcept :
+			float _e20, float _e21, float _e22) :
 			e
 			{
 				_e00, _e01, _e02,
@@ -29,7 +29,7 @@ namespace ZonaiMath
 		constexpr Matrix3x3(
 			const Matrix1x3& _m1,
 			const Matrix1x3& _m2,
-			const Matrix1x3& _m3) noexcept :
+			const Matrix1x3& _m3) :
 			e
 			{
 				_m1.e00, _m1.e01, _m1.e02,
@@ -37,12 +37,12 @@ namespace ZonaiMath
 				_m3.e00, _m3.e01, _m3.e02,
 			}
 		{}
-		constexpr Matrix3x3(const Matrix3x3&) noexcept = default;
-		constexpr Matrix3x3(Matrix3x3&&) noexcept = default;
-		~Matrix3x3() noexcept = default;
+		constexpr Matrix3x3(const Matrix3x3&) = default;
+		constexpr Matrix3x3(Matrix3x3&&) = default;
+		~Matrix3x3() = default;
 
-		constexpr Matrix3x3& operator= (const Matrix3x3&) noexcept = default;
-		constexpr Matrix3x3& operator= (Matrix3x3&&) noexcept = default;
+		constexpr Matrix3x3& operator= (const Matrix3x3&) = default;
+		constexpr Matrix3x3& operator= (Matrix3x3&&) = default;
 
 		/// <summary>
 		/// 멤버 변수
@@ -76,21 +76,21 @@ namespace ZonaiMath
 		/// <summary>
 		/// 멤버 함수
 		/// </summary>
-		float Determinant() const noexcept;
-		Matrix3x3 Transpose() const noexcept;
-		Matrix3x3 Inverse() const noexcept;
+		float Determinant() const;
+		Matrix3x3 Transpose() const;
+		Matrix3x3 Inverse() const;
 
 		/// <summary>
 		/// 연산자 오버로딩
 		/// </summary>
-		Matrix3x3 operator+ (const Matrix3x3&) const noexcept;
-		Matrix3x3& operator+= (const Matrix3x3&) noexcept;
-		Matrix3x3 operator- (const Matrix3x3&) const noexcept;
-		Matrix3x3& operator-= (const Matrix3x3&) noexcept;
-		Matrix3x3 operator* (const Matrix3x3&) const noexcept;
-		Matrix3x3& operator*= (const Matrix3x3&) noexcept;
+		Matrix3x3 operator+ (const Matrix3x3&) const;
+		Matrix3x3& operator+= (const Matrix3x3&);
+		Matrix3x3 operator- (const Matrix3x3&) const;
+		Matrix3x3& operator-= (const Matrix3x3&);
+		Matrix3x3 operator* (const Matrix3x3&) const;
+		Matrix3x3& operator*= (const Matrix3x3&);
 
-		bool operator== (const Matrix3x3&) const noexcept;
+		bool operator== (const Matrix3x3&) const;
 	};
 
 	//constexpr Matrix3x3 Matrix3x3::Zero = {};

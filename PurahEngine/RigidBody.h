@@ -21,9 +21,13 @@ namespace PurahEngine
 	public:
 		void		Awake() override;
 
-	public:
+	private:
 		void		SetPosition(const Eigen::Vector3f& _pos) noexcept;
 		const Eigen::Vector3f& GetPosition() noexcept;
+
+	private:
+		void		SetRotation(const Eigen::Quaternionf& _rot) noexcept;
+		const Eigen::Quaternionf& GetRotation() noexcept;
 
 	public:
 		/**
@@ -130,5 +134,7 @@ namespace PurahEngine
 		Eigen::Vector3f force{};
 		Eigen::Vector3f torque{};
 		ZonaiPhysics::ZnRigidBody* body{};
+
+		friend class Transform;
 	};
 }

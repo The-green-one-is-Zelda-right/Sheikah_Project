@@ -1,120 +1,112 @@
 #include "RigidBody.h"
 #include "PxPhysicsAPI.h"
+#include "ZnLayer.h"
+
+#include "ZnUtil.h"
+#include "ColliderHelper.h"
+#include "RigidBodyHelper.h"
 
 #include "Collider.h"
 
 namespace ZonaiPhysics
 {
-	Collider::Collider(physx::PxPhysics*& _factory, RigidBody* _rigid) noexcept :
-		rigidbody(_rigid), shape()
+	Collider::Collider(physx::PxShape* _pxShape, RigidBody* _znBody) :
+		znBody(_znBody), pxShape(_pxShape)
 	{
-
+		ColliderHelper::SetLayer(pxShape, 0);
 	}
 
-	void Collider::SetTrigger(bool _flag) noexcept
+	void Collider::SetTrigger(bool _flag)
 	{
-		assert(shape != nullptr);
+		RigidBodyHelper::Detach(znBody->pxBody, pxShape);
+		ColliderHelper::SetTrigger(pxShape, _flag);
+		RigidBodyHelper::Attach(znBody->pxBody, pxShape);
+	}
 
-		using namespace physx;
-		shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, _flag);
+	void Collider::SetLayerData(const uint32_t& _id)
+	{
+		RigidBodyHelper::Detach(znBody->pxBody, pxShape);
+		ColliderHelper::SetLayer(pxShape, _id);
+		RigidBodyHelper::Attach(znBody->pxBody, pxShape);
 	}
 
 	/// <summary>
 	/// 이건 강체의 위치를 바꾸는건데...
 	/// 이게 맞을까?
 	/// </summary>
-	Eigen::Vector3f Collider::GetPosition() const noexcept
+	Eigen::Vector3f Collider::GetPosition() const
 	{
-		assert(rigidbody != nullptr);
+		assert(znBody != nullptr);
 
-		using namespace physx;
-		return rigidbody->GetPosition();
+		return znBody->GetPosition();
 	}
 
-	void Collider::SetPosition(const Eigen::Vector3f& _position) noexcept
+	void Collider::SetPosition(const Eigen::Vector3f& _position)
 	{
-		assert(rigidbody != nullptr);
+		assert(znBody != nullptr);
 
-		using namespace physx;
-		rigidbody->SetPosition(_position);
+		znBody->SetPosition(_position);
 	}
 
-	Eigen::Vector3f Collider::GetLocalPosition() const noexcept
+	Eigen::Vector3f Collider::GetLocalPosition() const
 	{
-		assert(shape != nullptr);
+		assert(pxShape != nullptr);
 
-		using namespace physx;
-		PxVec3 v = shape->getLocalPose().p;
-		return { v.x, v.y, v.z };
+		return ColliderHelper::GetLocalPosition(pxShape);
 	}
 
-	void Collider::SetLocalPosition(const Eigen::Vector3f& _position) noexcept
+	void Collider::SetLocalPosition(const Eigen::Vector3f& _position)
 	{
-		assert(rigidbody != nullptr);
+		assert(pxShape != nullptr);
 
-		using namespace physx;
-		PxTransform t = shape->getLocalPose();
-		t.p.x = _position.x();
-		t.p.y = _position.y();
-		t.p.z = _position.z();
-		rigidbody->getRigidDynamic()->detachShape(*shape);
-		shape->setLocalPose(t);
-		rigidbody->getRigidDynamic()->attachShape(*shape);
+		RigidBodyHelper::Detach(znBody->pxBody, pxShape);
+		ColliderHelper::SetLocalPosition(pxShape, _position);
+		RigidBodyHelper::Attach(znBody->pxBody, pxShape);
+
 		UpdateInertiaTensor();
 	}
 
-	Eigen::Quaternionf Collider::GetQuaternion() const noexcept
+	Eigen::Quaternionf Collider::GetQuaternion() const
 	{
-		using namespace physx;
-		return rigidbody->GetQuaternion();
+		return znBody->GetQuaternion();
 	}
 
-	void Collider::SetQuaternion(const Eigen::Quaternionf& _quaternion) noexcept
+	void Collider::SetQuaternion(const Eigen::Quaternionf& _quaternion)
 	{
-		using namespace physx;
-		rigidbody->SetQuaternion(_quaternion);
+		znBody->SetQuaternion(_quaternion);
 	}
 
-	Eigen::Quaternionf Collider::GetLocalQuaternion() const noexcept
+	Eigen::Quaternionf Collider::GetLocalQuaternion() const
 	{
-		assert(shape != nullptr);
-
-		using namespace physx;
-		PxQuat q = shape->getLocalPose().q;
-		return { q.w, q.x, q.y, q.z};
+		return ColliderHelper::GetLocalQuaternion(pxShape);
 	}
 
-	void Collider::SetLocalQuaternion(const Eigen::Quaternionf& _quaternion) noexcept
+	void Collider::SetLocalQuaternion(const Eigen::Quaternionf& _quaternion)
 	{
-		assert(shape != nullptr);
+		assert(pxShape != nullptr);
 
-		using namespace physx;
-		PxTransform t = shape->getLocalPose();
-		t.q.w = _quaternion.w();
-		t.q.x = _quaternion.x();
-		t.q.y = _quaternion.y();
-		t.q.z = _quaternion.z();
-		rigidbody->getRigidDynamic()->detachShape(*shape);
-		shape->setLocalPose(t);
-		rigidbody->getRigidDynamic()->attachShape(*shape);
+		RigidBodyHelper::Detach(znBody->pxBody, pxShape);
+		ColliderHelper::SetLocalQuaternion(pxShape, _quaternion);
+		RigidBodyHelper::Attach(znBody->pxBody, pxShape);
+
 		UpdateInertiaTensor();
 	}
 
-	void* Collider::GetUserData() const noexcept
+	void* Collider::GetUserData() const
 	{
 		return  userData;
 	}
 
-	void Collider::SetUserData(void* _userData) noexcept
+	void Collider::SetUserData(void* _userData)
 	{
 		userData = _userData;
 	}
 
-	void Collider::UpdateInertiaTensor() const noexcept
+	void Collider::UpdateInertiaTensor() const
 	{
-		assert(shape != nullptr && rigidbody != nullptr);
+		assert(pxShape != nullptr && znBody != nullptr);
 
-		auto pos = shape->getLocalPose().p;
-		rigidbody->getRigidDynamic()->setCMassLocalPose(shape->getLocalPose());
+		// auto pos = pxShape->getLocalPose().p;
+		// znBody->pxBody->setCMassLocalPose(pxShape->getLocalPose());
 	}
 } // namespace ZonaiPhysics

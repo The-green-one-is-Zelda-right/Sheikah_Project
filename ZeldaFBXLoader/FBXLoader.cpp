@@ -119,7 +119,7 @@ namespace FBXLoader
 		}
 
 		model->root = new Bone();
-		CopyNodeData(model->root, scene->mRootNode, boneIndexMap, model->boneList);
+		CopyNodeData(model->root, scene->mRootNode, boneIndexMap, model->boneList, boneCount);
 
 		if (scene->HasMeshes())
 		{
@@ -343,7 +343,7 @@ namespace FBXLoader
 		model->animationList.clear();
 	}
 
-	void FBXLoader::CopyNodeData(Bone* bone, aiNode* ainode, std::map<std::wstring, unsigned int>& boneIndexMap, std::vector<Bone*>& boneList)
+	void FBXLoader::CopyNodeData(Bone* bone, aiNode* ainode, std::map<std::wstring, unsigned int>& boneIndexMap, std::vector<Bone*>& boneList, int& boneCount)
 	{
 		std::string str = ainode->mName.C_Str();
 		std::wstring wstr;
@@ -369,6 +369,13 @@ namespace FBXLoader
 		{
 			boneList[boneIndexMap[wstr]] = bone;
 		}
+		else
+		{
+			assert(boneCount < BONE_MAX);
+			boneList[boneCount] = bone;
+			boneIndexMap[wstr] = boneCount;
+			boneCount++;
+		}
 
 		for (int i = 0; i < ainode->mNumChildren; i++)
 		{
@@ -376,7 +383,7 @@ namespace FBXLoader
 			Bone* childBone = new Bone();
 			childBone->parent = bone;
 			bone->children.push_back(childBone);
-			CopyNodeData(childBone, aichild, boneIndexMap, boneList);
+			CopyNodeData(childBone, aichild, boneIndexMap, boneList, boneCount);
 		}
 	}
 }

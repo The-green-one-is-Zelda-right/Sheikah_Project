@@ -9,7 +9,7 @@ namespace ZonaiPhysics
 	class ZnFixedJoint : public ZnJoint
 	{
 	public:
-					ZnFixedJoint() noexcept = default;
-					~ZnFixedJoint() noexcept override = default;
+					ZnFixedJoint() = default;
+					~ZnFixedJoint() override = default;
 	};
 }

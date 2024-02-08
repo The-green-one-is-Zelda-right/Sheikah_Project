@@ -12,33 +12,33 @@ namespace ZonaiMath
 {
 	const Vector4D Vector4D::Zero = {};
 
-	Vector4D::Vector4D(const Vector3D& _other, const float _w) noexcept
+	Vector4D::Vector4D(const Vector3D& _other, const float _w)
 		: x{ _other.x }, y{ _other.y }, z{ _other.z }, w{ _w }
 	{
 
 	}
 
-	Vector4D::operator Matrix1x4() noexcept
+	Vector4D::operator Matrix1x4()
 	{
 		return Matrix1x4{ e[0], e[1] , e[2] , e[3] };
 	}
 
-	Vector4D::operator Quaternion() noexcept
+	Vector4D::operator Quaternion()
 	{
 		return Quaternion{ w, x, y, z };
 	}
 
-	float Vector4D::Length() const noexcept
+	float Vector4D::Length() const
 	{
 		return _mm_cvtss_f32(_mm_sqrt_ps(_mm_dp_ps(m, m, 0xff)));
 	}
 
-	float Vector4D::LengthSquare() const noexcept
+	float Vector4D::LengthSquare() const
 	{
 		return _mm_cvtss_f32(_mm_dp_ps(m, m, 0xff));
 	}
 
-	Vector4D Vector4D::Cross(const Vector4D& other) const noexcept
+	Vector4D Vector4D::Cross(const Vector4D& other) const
 	{
 		__m128 m1 = _mm_shuffle_ps(
 			this->m,
@@ -62,19 +62,19 @@ namespace ZonaiMath
 		return temp;
 	}
 
-	float Vector4D::Dot(const Vector4D& other) const noexcept
+	float Vector4D::Dot(const Vector4D& other) const
 	{
 		// _mm_dp_ps는 각 요소를 곱해서 더해주는 기능
 		// _mm_cvtss_f32는 스칼라만 뽑아주는 것.
 		return _mm_cvtss_f32(_mm_dp_ps(this->m, other.m, 0xFF));
 	}
 
-	float Vector4D::FastInvSqrt(float number) const noexcept
+	float Vector4D::FastInvSqrt(float number) const
 	{
 		return _mm_cvtss_f32(_mm_rsqrt_ps(_mm_set_ps1(number)));
 	}
 
-	Vector4D& Vector4D::Normalize() noexcept
+	Vector4D& Vector4D::Normalize()
 	{
 		float temp = LengthSquare();
 
@@ -93,7 +93,7 @@ namespace ZonaiMath
 		return *this;
 	}
 
-	Vector4D Vector4D::Normalized() const noexcept
+	Vector4D Vector4D::Normalized() const
 	{
 		float temp = LengthSquare();
 
@@ -117,7 +117,7 @@ namespace ZonaiMath
 		return vec;
 	}
 
-	float Vector4D::Dot3(const Vector4D& other) const noexcept
+	float Vector4D::Dot3(const Vector4D& other) const
 	{
 		Vector4D temp(*this);
 		temp.w = 0.f;
@@ -126,7 +126,7 @@ namespace ZonaiMath
 		return temp.m.m128_f32[0];
 	}
 
-	Vector4D& Vector4D::Normalize3() noexcept
+	Vector4D& Vector4D::Normalize3()
 	{
 		float temp = LengthSquare();
 
@@ -142,7 +142,7 @@ namespace ZonaiMath
 		return *this;
 	}
 
-	Vector4D Vector4D::Normalized3() const noexcept
+	Vector4D Vector4D::Normalized3() const
 	{
 		float temp = LengthSquare();
 
@@ -166,7 +166,7 @@ namespace ZonaiMath
 		return vec;
 	}
 
-	Vector4D& Vector4D::operator*=(const Matrix4x4& _mat) noexcept
+	Vector4D& Vector4D::operator*=(const Matrix4x4& _mat)
 	{
 		Matrix4x4 temp{ _mat.Transpose() };
 		__m128 m128 = m;
@@ -179,40 +179,40 @@ namespace ZonaiMath
 		return *this;
 	}
 
-	Vector4D Vector4D::operator*(const Matrix4x4& _mat) const noexcept
+	Vector4D Vector4D::operator*(const Matrix4x4& _mat) const
 	{
 		Vector4D temp(*this);
 
 		return temp *= _mat;
 	}
 
-	Vector4D& Vector4D::operator+=(const Vector4D& other) noexcept
+	Vector4D& Vector4D::operator+=(const Vector4D& other)
 	{
 		this->m = _mm_add_ps(this->m, other.m);
 
 		return *this;
 	}
 
-	Vector4D& Vector4D::operator-=(const Vector4D& other) noexcept
+	Vector4D& Vector4D::operator-=(const Vector4D& other)
 	{
 		this->m = _mm_sub_ps(this->m, other.m);
 
 		return *this;
 	}
 
-	Vector4D Vector4D::operator+(const Vector4D& other) const noexcept
+	Vector4D Vector4D::operator+(const Vector4D& other) const
 	{
 		Vector4D temp(*this);
 		return temp += other;
 	}
 
-	Vector4D Vector4D::operator-(const Vector4D& other) const noexcept
+	Vector4D Vector4D::operator-(const Vector4D& other) const
 	{
 		Vector4D temp(*this);
 		return temp -= other;
 	}
 
-	Vector4D Vector4D::operator-() const noexcept
+	Vector4D Vector4D::operator-() const
 	{
 		return Vector4D
 		(
@@ -223,31 +223,31 @@ namespace ZonaiMath
 		);
 	}
 
-	Vector4D& Vector4D::operator*=(const float n) noexcept
+	Vector4D& Vector4D::operator*=(const float n)
 	{
 		this->m = _mm_mul_ps(this->m, _mm_set_ps1(n));
 		return *this;
 	}
 
-	Vector4D& Vector4D::operator/=(const float n) noexcept
+	Vector4D& Vector4D::operator/=(const float n)
 	{
 		this->m = _mm_div_ps(this->m, _mm_set_ps1(n));
 		return *this;
 	}
 
-	Vector4D Vector4D::operator*(const float n) const noexcept
+	Vector4D Vector4D::operator*(const float n) const
 	{
 		Vector4D temp(*this);
 		return temp *= n;
 	}
 
-	Vector4D Vector4D::operator/(const float n) const noexcept
+	Vector4D Vector4D::operator/(const float n) const
 	{
 		Vector4D temp(*this);
 		return temp /= n;
 	}
 
-	bool Vector4D::operator==(const Vector4D& other) const noexcept
+	bool Vector4D::operator==(const Vector4D& other) const
 	{
 		return (this->x == other.x && this->y == other.y && this->z == other.z && this->w == other.w);
 	}

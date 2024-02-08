@@ -12,6 +12,7 @@
 #include "Renderer.h"
 #include "RigidBody.h"
 #include "BoxCollider.h"
+#include "SoundManager.h"
 
 namespace PurahEngine
 {

@@ -38,7 +38,6 @@ void PurahEngine::GraphicsManager::Initialize(HWND hWnd)
 	renderer = createZeldaRenderer();
 #endif
 	renderer->Initialize(1920, 1080, true, hWnd, false, 1000.0f, 1.0f);
-	renderer->CreateBasicResources();
 
 
 }
@@ -56,7 +55,6 @@ void PurahEngine::GraphicsManager::Run()
 	{
 		render->Render(renderer);
 	}
-
 
 	renderer->EndDraw();
 }

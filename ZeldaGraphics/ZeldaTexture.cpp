@@ -1,5 +1,7 @@
 #include "ZeldaTexture.h"
 
+#include "ZeldaGraphicsDefine.h"
+
 using namespace DirectX;
 
 ZeldaTexture::ZeldaTexture(ID3D11Device* device, const std::wstring& filePath) :
@@ -72,4 +74,9 @@ bool ZeldaTexture::UseSRGB()
 void ZeldaTexture::SetShaderResource(ID3D11DeviceContext* deviceContext)
 {
 	deviceContext->PSSetShaderResources(0, 1, &textureView);
+}
+
+void ZeldaTexture::SetCubeMapShaderResource(ID3D11DeviceContext* deviceContext)
+{
+	deviceContext->PSSetShaderResources(TEXTURE_SLOT_CUBEMAP, 1, &textureView);
 }

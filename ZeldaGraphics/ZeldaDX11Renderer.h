@@ -90,7 +90,7 @@ namespace std {
 class ZeldaDX11Renderer : public IZeldaRenderer
 {
 public:
-	virtual bool Initialize(unsigned int screenWidth, unsigned int screenHeight, bool vsync, HWND hwnd, bool fullScreen, float screenDepth, float screenNear) override;
+	virtual bool Initialize(unsigned int screenWidth, unsigned int screenHeight, bool vsync, HWND hwnd, bool fullScreen) override;
 	virtual void Finalize() override;
 
 	virtual void SetDebugMode(DebugMode mode) override;
@@ -107,6 +107,8 @@ public:
 	virtual void DrawLight(LightID lightID) override;
 
 	virtual void DrawSprite(const Eigen::Vector2f& position, TextureID texture) override;
+
+	virtual void DrawCubeMap(TextureID texture) override;
 
 	virtual TextureID CreateTexture(const std::wstring& texturePath) override;
 	virtual void ReleaseTexture(TextureID textureID) override;
@@ -142,6 +144,7 @@ private:
 	void DrawMeshRenderInfo(MeshRenderInfo renderInfo, ZeldaShader* shader);
 	void DrawModelRenderInfo(ModelRenderInfo renderInfo, ZeldaShader* shader);
 	void DrawSpriteRenderInfo(SpriteRenderInfo renderInfo);
+	void DrawCubeMapRenderInfo();
 
 	void ClearRenderInfo();
 
@@ -167,9 +170,12 @@ private:
 	ID3D11RasterizerState* defaultRasterState;
 	ID3D11RasterizerState* wireFrameRasterState;
 	ID3D11RasterizerState* pointLightRasterState;
+	ID3D11RasterizerState* cubeMapRasterState;
 	ID3D11RasterizerState* currentRasterState;
 
 	ID3D11BlendState* alphaBlendState;
+
+	ID3D11DepthStencilState* cubeMapDepthStencilState;
 
 	// Deferred Rendering
 	ID3D11RenderTargetView* deferredRenderTargets[Deferred::bufferCount];
@@ -181,6 +187,7 @@ private:
 	ZeldaShader* deferredSpotLightShader;
 	ZeldaShader* deferredFinalShader;
 	ZeldaShader* forwardShader;
+	ZeldaShader* cubeMapShader;
 
 	DebugMode debugMode;
 	DebugMode debugModeBuffer;
@@ -203,6 +210,7 @@ private:
 	ConstantBuffer<AnimationBufferType, ShaderType::VertexShader>* animationConstBuffer;
 	ConstantBuffer<InstancingMatrixBufferType, ShaderType::VertexShader>* instancingMatrixVsConstBuffer;
 	ConstantBuffer<InstancingAnimationBufferType, ShaderType::VertexShader>* instancingAnimationVsConstBuffer;
+	ConstantBuffer<AnimationHierarchyBufferType, ShaderType::VertexShader>* animationHierarchyVsConstBuffer;
 
 	ConstantBuffer<MatrixBufferType, ShaderType::PixelShader>* matrixPsConstBuffer;
 	ConstantBuffer<LightInfoBufferType, ShaderType::PixelShader>* lightInfoConstBuffer;
@@ -222,6 +230,8 @@ private:
 	// 만약 RendererMode가 WireFrameMode라면 사용하지 않는다.
 	std::unordered_map<std::pair<std::pair<MeshID, TextureID>, std::pair<bool, Color>>, MeshRenderInfo> forwardMeshRenderInfo;
 	std::unordered_map<std::pair<ModelID, bool>, ModelRenderInfo> forwardModelRenderInfo;
+
+	TextureID cubeMapRenderInfo;
 
 #ifdef USE_BEGIN_FLAG
 	bool beginflag = false;

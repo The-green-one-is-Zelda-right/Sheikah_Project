@@ -52,6 +52,12 @@
     <Filter Include="Physics\Component\Joint">
       <UniqueIdentifier>{6731ae7b-2c71-4b93-8193-77819af87f22}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SoundManager">
+      <UniqueIdentifier>{4db416fc-8637-40c4-8896-de7558706be2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{0505cefc-87c2-4209-ae57-1b47cad691ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Component.cpp">
@@ -104,6 +110,10 @@
     <ClCompile Include="FixedJoint.cpp">
       <Filter>Physics\Component\Joint</Filter>
     </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>SoundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioListener.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component.h">
@@ -160,5 +170,9 @@
     <ClInclude Include="FixedJoint.h">
       <Filter>Physics\Component\Joint</Filter>
     </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>SoundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioListener.h" />
   </ItemGroup>
 </Project>

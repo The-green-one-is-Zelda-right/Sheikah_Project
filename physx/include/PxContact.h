@@ -210,7 +210,7 @@ struct PxModifiableContact : public PxExtendedContact
 PX_ALIGN_SUFFIX(16);
 
 /**
-\brief A class to iterate over a compressed contact stream. This supports read-only access to the various contact formats.
+\brief 압축된 contact 스트림을 반복하는 데 사용되는 클래스입니다. 이는 다양한 contact 형식에 대한 읽기 전용 액세스를 지원합니다.
 */
 struct PxContactStreamIterator
 {
@@ -221,77 +221,80 @@ struct PxContactStreamIterator
 		eCOMPRESSED_MODIFIABLE_STREAM
 	};
 	/**
-	\brief Utility zero vector to optimize functions returning zero vectors when a certain flag isn't set.
-	\note This allows us to return by reference instead of having to return by value. Returning by value will go via memory (registers -> stack -> registers), which can 
-	cause performance issues on certain platforms.
+	\brief	특정 플래그가 설정되지 않았을 때 zero 벡터를 반환하는 함수의 최적화를 위한 유틸리티 zero 벡터입니다.
+	\note	이를 통해 값으로 반환하는 대신에 참조로 반환할 수 있습니다.
+			값으로 반환하면 메모리를 통과하게 되는데 (레지스터 -> 스택 -> 레지스터),
+			이는 특정 플랫폼에서 성능 문제를 일으킬 수 있습니다.
 	*/
 	PxVec3 zero;
 
 	/**
-	\brief The patch headers.
+	\brief	패치 헤더입니다.
 	*/
 	const PxContactPatch* patch;
 
 	/**
-	\brief The contacts
+	\brief	contacts
 	*/
 	const PxContact* contact;
 
 	/**
-	\brief The contact triangle face index
+	\brief	contact 삼각형 페이스 인덱스
 	*/
 	const PxU32* faceIndice;
 
 	/**
-	\brief The total number of patches in this contact stream
+	\brief	이 contact 스트림에서 전체 패치 수
 	*/
 	PxU32 totalPatches;
 	
 	/**
-	\brief The total number of contact points in this stream
+	\brief	이 스트림에서 전체 contact 포인트 수
 	*/
 	PxU32 totalContacts;
 
 	/**
-	\brief The current contact index
+	\brief	현재 contact 인덱스
+	\brief	The current contact index
 	*/
 	PxU32 nextContactIndex;
 	
 	/**
-	\brief The current patch Index
+	\brief	현재 패치 인덱스
+	\brief	The current patch Index
 	*/
 	PxU32 nextPatchIndex;
 
 	/**
-	\brief Size of contact patch header 
-	\note This varies whether the patch is modifiable or not.
+	\brief	contact 패치 헤더의 크기
+	\note	패치가 수정 가능한지 여부에 따라 다릅니다.
 	*/
 	PxU32 contactPatchHeaderSize;
 
 	/**
-	\brief Contact point size
-	\note This varies whether the patch has feature indices or is modifiable.
+	\brief	contact 포인트의 크기
+	\note	패치에 feature 인덱스가 있는지 또는 수정 가능한지 여부에 따라 다릅니다.
 	*/
 	PxU32 contactPointSize;
 
 	/**
-	\brief The stream format
+	\brief	스트림 형식
 	*/
 	StreamFormat mStreamFormat;
 
 	/**
-	\brief Indicates whether this stream is notify-only or not.
+	\brief	이 스트림이 알림 전용인지 여부를 나타냅니다.
 	*/
 	PxU32 forceNoResponse;
 
 	/**
-	\brief Internal helper for stepping the contact stream iterator
+	\brief	contact 스트림 iterator를 진행시키는 데 사용되는 내부 헬퍼
 	*/
 	bool pointStepped;
 
 	/**
-	\brief Specifies if this contactPatch has face indices (handled as bool)
-	@see faceIndice
+	\brief	이 contactPatch에 face 인덱스가 있는지 여부를 지정합니다 (bool로 처리됨).
+	@see faceIndices
 	*/
 	PxU32 hasFaceIndices;
 
@@ -344,8 +347,8 @@ struct PxContactStreamIterator
 	}
 
 	/**
-	\brief Returns whether there are more patches in this stream.
-	\return Whether there are more patches in this stream.
+	\brief	이 스트림에 더 많은 패치가 있는지 여부를 반환합니다.
+	\return	이 스트림에 더 많은 패치가 있는지 여부.
 	*/
 	PX_CUDA_CALLABLE PX_FORCE_INLINE bool hasNextPatch() const
 	{

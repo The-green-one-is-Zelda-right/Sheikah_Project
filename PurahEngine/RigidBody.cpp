@@ -8,12 +8,12 @@ namespace PurahEngine
 {
 	RigidBody::RigidBody()
 	{
-
+		
 	}
 
 	RigidBody::~RigidBody()
 	{
-
+		GetGameObject()->GetComponent<PurahEngine::Transform>()->SetRigidBody(nullptr);
 	}
 
 	void RigidBody::Awake()
@@ -28,6 +28,7 @@ namespace PurahEngine
 		body->SetQuaternion(trans->GetWorldRotation());
 		SetKinematic(isKinematic);
 		UseGravity(useGravity);
+		GetGameObject()->GetComponent<PurahEngine::Transform>()->SetRigidBody(this);
 	}
 
 	void RigidBody::SetPosition(const Eigen::Vector3f& _pos) noexcept
@@ -53,6 +54,32 @@ namespace PurahEngine
 		else
 		{
 			return body->GetPosition();
+		}
+	}
+
+	void RigidBody::SetRotation(const Eigen::Quaternionf& _rot) noexcept
+	{
+		if (awake)
+		{
+			auto trans = GetGameObject()->GetComponent<Transform>();
+			trans->SetLocalRotation(_rot);
+		}
+		else
+		{
+			body->SetQuaternion(_rot);
+		}
+	}
+
+	const Eigen::Quaternionf& RigidBody::GetRotation() noexcept
+	{
+		if (awake)
+		{
+			auto trans = GetGameObject()->GetComponent<Transform>();
+			return trans->GetLocalRotation();
+		}
+		else
+		{
+			return body->GetQuaternion();
 		}
 	}
 
@@ -286,9 +313,18 @@ namespace PurahEngine
 	{
 		auto pos = body->GetPosition();
 		auto rot = body->GetQuaternion();
+		auto y = pos.y();
 
 		auto transform = GetGameObject()->GetComponent<Transform>();
-		transform->SetLocalPosition(pos);
-		transform->SetLocalRotation(rot);
+		// matrix4f로 만들어서 보내는걸로 하자
+
+		//transform->GetLocalScale();
+		//transform->GetWorldScale();
+		//Eigen::Matrix4f inverseW = transform->GetWorldMatrix().inverse();
+
+
+
+		transform->SetWorldPosition(pos);
+		transform->SetWorldRotation(rot);
 	}
 }

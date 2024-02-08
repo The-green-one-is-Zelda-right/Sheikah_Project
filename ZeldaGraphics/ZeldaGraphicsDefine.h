@@ -11,6 +11,7 @@ constexpr unsigned int ANIMATION_FRAME_MAX = 1024u;
 constexpr unsigned int INSTANCING_MAX = 1024u;
 
 constexpr unsigned int TEXTURE_SLOT_ANIMATION = 8u;
+constexpr unsigned int TEXTURE_SLOT_CUBEMAP = 9u;
 
 namespace Deferred
 {
@@ -197,6 +198,14 @@ struct InstancingAnimationBufferType
 	constexpr static unsigned int registerNumB = 7;
 };
 static_assert(sizeof(InstancingAnimationBufferType) % 16 == 0, "Constant Buffer size must be a multiple of 16 bytes");
+
+struct AnimationHierarchyBufferType
+{
+	unsigned int parentBone[BONE_COUNT_MAX];
+
+	constexpr static unsigned int registerNumB = 8;
+};
+static_assert(sizeof(AnimationHierarchyBufferType) % 16 == 0, "Constant Buffer size must be a multiple of 16 bytes");
 
 #pragma endregion
 

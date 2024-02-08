@@ -630,7 +630,7 @@ PX_INLINE bool PxControllerDesc::isValid() const
 
 
 /**
-\brief Base class for character controllers.
+\brief 캐릭터 컨트롤러의 기본 클래스입니다.
 
 @see PxCapsuleController PxBoxController
 */
@@ -650,15 +650,15 @@ public:
 	virtual		void					release() = 0;
 
 	/**
-	\brief Moves the character using a "collide-and-slide" algorithm.
+	\brief "충돌하고 슬라이드" 알고리즘을 사용하여 캐릭터를 이동시킵니다.
 
-	\param[in] disp	Displacement vector
-	\param[in] minDist The minimum travelled distance to consider. If travelled distance is smaller, the character doesn't move.
-	This is used to stop the recursive motion algorithm when remaining distance to travel is small.
-	\param[in] elapsedTime Time elapsed since last call
-	\param[in] filters User-defined filters for this move
-	\param[in] obstacles Potential additional obstacles the CCT should collide with.
-	\return Collision flags, collection of ::PxControllerCollisionFlags
+	\param[in]	disp		이동 벡터
+	\param[in]	minDist		고려할 최소 이동 거리. 이동 거리가 더 작으면 캐릭터는 이동하지 않습니다.
+							이는 잔여 이동 거리가 작을 때 재귀적인 이동 알고리즘을 중지하는 데 사용됩니다.
+	\param[in]	elapsedTime 마지막 호출 이후 경과한 시간
+	\param[in]	filters		이동에 대한 사용자 정의 필터
+	\param[in]	obstacles	CCT가 충돌해야 할 가능한 추가 장애물
+	\return		충돌 플래그, ::PxControllerCollisionFlags의 집합
 	*/
 	virtual		PxControllerCollisionFlags	move(const PxVec3& disp, PxF32 minDist, PxF32 elapsedTime, const PxControllerFilters& filters, const PxObstacleContext* obstacles=NULL) = 0;
 

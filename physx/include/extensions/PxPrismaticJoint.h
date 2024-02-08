@@ -98,38 +98,37 @@ public:
 	virtual PxReal			getVelocity()	const	= 0;
 
 	/**
-	\brief sets the joint limit  parameters.
+	\brief 조인트 리미트 매개변수를 설정합니다.
 
-	The limit range is [-PX_MAX_F32, PX_MAX_F32], but note that the width of the limit (upper-lower) must also be
-	a valid float.
+	리미트 범위는 [-PX_MAX_F32, PX_MAX_F32]이지만 제한의 폭 (상한 - 하한)도 유효한 부동 소수점이어야 합니다.
 
 	@see PxJointLinearLimitPair getLimit()
 	*/
 	virtual void			setLimit(const PxJointLinearLimitPair&)		= 0;
 
 	/**
-	\brief gets the joint limit  parameters.
+	\brief 조인트 리미트 매개변수를 가져옵니다.
 
 	@see PxJointLinearLimit getLimit()
 	*/
 	virtual PxJointLinearLimitPair getLimit()	const	= 0;
 
 	/**
-	\brief Set the flags specific to the Prismatic Joint.
+	\brief 프리즘 조인트에 특화된 플래그를 설정합니다.
 
-	<b>Default</b> PxPrismaticJointFlags(0)
+	<b>기본값</b> PxPrismaticJointFlags(0)
 
-	\param[in] flags The joint flags.
+	\param[in] flags 조인트 플래그.
 
 	@see PxPrismaticJointFlag setFlag() getFlags()
 	*/
 	virtual void					setPrismaticJointFlags(PxPrismaticJointFlags flags) = 0;
 
 	/**
-	\brief Set a single flag specific to a Prismatic Joint to true or false.
+	\brief 프리즘 조인트에 특화된 단일 플래그를 true 또는 false로 설정합니다.
 
-	\param[in] flag		The flag to set or clear.
-	\param[in] value	The value to which to set the flag
+	\param[in] flag		설정 또는 해제할 플래그입니다.
+	\param[in] value	플래그를 설정할 값입니다.
 
 	@see PxPrismaticJointFlag, getFlags() setFlags()
 	*/

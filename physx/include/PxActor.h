@@ -84,20 +84,19 @@ struct PxActorFlag
 		eSEND_SLEEP_NOTIFIES			= (1<<2),
 
 		/**
-		\brief Disables simulation for the actor.
-		
-		\note This is only supported by PxRigidStatic and PxRigidDynamic actors and can be used to reduce the memory footprint when rigid actors are
-		used for scene queries only.
+		\brief 액터의 시뮬레이션을 비활성화합니다.
 
-		\note Setting this flag will remove all constraints attached to the actor from the scene.
+		\note 이 기능은 PxRigidStatic 및 PxRigidDynamic 액터에서만 지원되며, 강체 액터를
+		씬 쿼리 전용으로 사용할 때 메모리 풋프린트를 줄이는 데에 사용할 수 있습니다.
 
-		\note If this flag is set, the following calls are forbidden:
+		\note 이 플래그를 설정하면 액터에 연결된 모든 제약 조건이 씬에서 제거됩니다.
+
+		\note 이 플래그가 설정된 경우 다음의 호출이 금지됩니다:
 		\li PxRigidBody: setLinearVelocity(), setAngularVelocity(), addForce(), addTorque(), clearForce(), clearTorque(), setForceAndTorque()
 		\li PxRigidDynamic: setKinematicTarget(), setWakeCounter(), wakeUp(), putToSleep()
 
-		\par <b>Sleeping:</b>
-		Raising this flag will set all velocities and the wake counter to 0, clear all forces, clear the kinematic target, put the actor
-		to sleep and wake up all touching actors from the previous frame.
+		\par <b>슬리핑:</b>
+		이 플래그를 설정하면 모든 속도 및 웨이크 카운터를 0으로 설정하고, 모든 힘을 지우며, 키네마틱 타겟을 지우고, 액터를 슬립 상태로 변경하며, 이전 프레임에서 접촉한 모든 액터를 깨웁니다.
 		*/
 		eDISABLE_SIMULATION				= (1<<3)
 	};

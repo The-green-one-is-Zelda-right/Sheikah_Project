@@ -80,7 +80,7 @@ void CoreSystem::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gamename, unsigned
 	renderer = createZeldaRenderer();
 #endif
 
-	renderer->Initialize(1920, 1080, true, hWnd, false, 1000.0f, 1.0f);
+	renderer->Initialize(1920, 1080, true, hWnd, false);
 }
 
 void CoreSystem::Finalize()
@@ -258,6 +258,8 @@ void CoreSystem::run()
 	static float pointLightRange = 10.0f;
 	static Eigen::Vector3f pointLightPos = { 0.0f, 50.0f, 0.0f };
 
+	const static float cameraFarInit = 10000.0f;
+
 	static bool firstRun = true;
 	if (firstRun)
 	{
@@ -266,6 +268,7 @@ void CoreSystem::run()
 		scdTextureID = renderer->CreateTexture(L"scd.jpg");
 		hnsTextureID = renderer->CreateTexture(L"hns.jpg");
 		msTextureID = renderer->CreateTexture(L"exit_cursor.png");
+		cubeMapID = renderer->CreateTexture(L"cubeMapTest.dds");
 		//fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Building\\Building.fbx");
 		//fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Ganondorf (TotK).fbx");
 		fbxID = renderer->CreateModel(L"C:\\Users\\KOCCA62\\Desktop\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Dying6.fbx");
@@ -381,7 +384,7 @@ void CoreSystem::run()
 
 	cameraMatrix = cameraMove * cameraMatrix * cameraRotateX * cameraRotateY;
 
-	renderer->UpdateCamera(mainCameraID, cameraMatrix, 3.141592654f / 4.0f, 0.1f, 1000.0f);
+	renderer->UpdateCamera(mainCameraID, cameraMatrix, 3.141592654f / 4.0f, 0.1f, cameraFarInit);
 
 	renderer->BeginDraw(0.016f);
 
@@ -443,7 +446,7 @@ void CoreSystem::run()
 	// 애니메이션 테스트 코드
 	const static int repeatPlay = 5;
 	const static float cutTime = 0.0f; // cutTime에서 애니메이션을 중지하고 다시 시작합니다. 0보다 작거나 같은 값이라면 원래시간까지 전부 재생합니다.
-	const static float resetTime = 1.0f; // 처음 상태로 돌아가는데 걸리는 시간을 설정합니다. 0보다 작거나 같다면 즉시 되돌아갑니다.
+	const static float resetTime = 2.0f; // 처음 상태로 돌아가는데 걸리는 시간을 설정합니다. 0보다 작거나 같다면 즉시 되돌아갑니다.
 
 	static float animationTime = 0.0f;
 	static int animationNumber = 0;
@@ -521,39 +524,38 @@ void CoreSystem::run()
 	renderer->DrawLight(dirLightID);
 	renderer->DrawLight(pointLightID);
 
-	renderer->DrawSprite({ scdX, 0 }, msTextureID);
-	renderer->DrawSprite({ 1920 - scdX - 280, 800 }, msTextureID);
+	//renderer->DrawSprite({ scdX, 0 }, msTextureID);
+	//renderer->DrawSprite({ 1920 - scdX - 280, 800 }, msTextureID);
 
-	Eigen::Matrix4f cubeMatrix = Eigen::Matrix4f::Identity();
-	cubeMatrix(0, 0) = 10.0f;
-	cubeMatrix(1, 1) = 10.0f;
-	cubeMatrix(2, 2) = 10.0f;
+	//Eigen::Matrix4f cubeMatrix = Eigen::Matrix4f::Identity();
+	//cubeMatrix(0, 0) = 50.0f;
+	//cubeMatrix(1, 1) = 50.0f;
+	//cubeMatrix(2, 2) = 50.0f;
 
-	cubeMatrix(0, 3) = 0.0f;
-	cubeMatrix(1, 3) = 0.0f;
-	cubeMatrix(2, 3) = 250.0f;
+	//cubeMatrix(0, 3) = 0.0f;
+	//cubeMatrix(1, 3) = 0.0f;
+	//cubeMatrix(2, 3) = 250.0f;
+	//for (int i = 0; i < 10000; i++)
+	//{
+	//	static std::vector<int> cubeInfo(10000, -1);
 
-	for (int i = 0; i < 10000; i++)
-	{
-		static std::vector<int> cubeInfo(10000, -1);
+	//	if (cubeInfo[i] == -1)
+	//	{
+	//		cubeInfo[i] = rand() % 4;
+	//	}
 
-		if (cubeInfo[i] == -1)
-		{
-			cubeInfo[i] = rand() % 4;
-		}
+	//	bool wire = (cubeInfo[i] == 0);
+	//	float R = (cubeInfo[i] == 1);
+	//	float G = (cubeInfo[i] == 2);
+	//	float B = (cubeInfo[i] == 3);
 
-		bool wire = (cubeInfo[i] == 0);
-		float R = (cubeInfo[i] == 1);
-		float G = (cubeInfo[i] == 2);
-		float B = (cubeInfo[i] == 3);
-
-		cubeMatrix(0, 3) = 15 * (i % 100);
-		cubeMatrix(1, 3) = 15 * (i / 100);
-		//renderer->DrawCube(cubeMatrix, scdTextureID, false, R, G, B, 1.0f);
-		//auto finalMatrix = cubeMatrix;
-		//if (i % 2 == 0) finalMatrix = cubeMatrix * worldMatrix2;
-		renderer->DrawCube(cubeMatrix, TextureID::ID_NULL, wire, R, G, B, 1.0f);
-	}
+	//	cubeMatrix(0, 3) = 75 * (i % 100);
+	//	cubeMatrix(1, 3) = 75 * (i / 100);
+	//	//renderer->DrawCube(cubeMatrix, scdTextureID, false, R, G, B, 1.0f);
+	//	//auto finalMatrix = cubeMatrix;
+	//	//if (i % 2 == 0) finalMatrix = cubeMatrix * worldMatrix2;
+	//	renderer->DrawCube(cubeMatrix, TextureID::ID_NULL, wire, R, G, B, 1.0f);
+	//}
 
 
 	Eigen::Matrix4f instMatrix = Eigen::Matrix4f::Identity();
@@ -562,7 +564,7 @@ void CoreSystem::run()
 	instMatrix(2, 2) = 0.1f;
 
 	instMatrix(0, 3) = 0.0f;
-	instMatrix(1, 3) = 0.0f;
+	instMatrix(1, 3) = 1.0f;
 	instMatrix(2, 3) = 0.0f;
 	//for (int i = 0; i < 1000; i++)
 	//{
@@ -615,9 +617,10 @@ void CoreSystem::run()
 		instMatrix(0, 3) = 200.0f;
 		renderer->DrawAnimation(instMatrix, fbxID, animationList[animationNumber], animationTime, false);
 	}
-	
 
-	//renderer->DrawCube(fallingMatrix * worldMatrix2, ID_NULL, false, 0.0f, 1.0f, 1.0f, 1.0f);
+	//renderer->DrawCube(fallingMatrix * worldMatrix2, scdTextureID, false, 0.0f, 1.0f, 1.0f, 1.0f);
+
+	renderer->DrawCubeMap(cubeMapID);
 
 	renderer->EndDraw();
 }

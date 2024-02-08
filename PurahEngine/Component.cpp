@@ -20,12 +20,12 @@ void PurahEngine::Component::Start()
 
 }
 
-void PurahEngine::Component::Update()
+void PurahEngine::Component::FixedUpdate()
 {
 
 }
 
-void PurahEngine::Component::FixedUpdate()
+void PurahEngine::Component::Update()
 {
 
 }

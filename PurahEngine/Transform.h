@@ -7,6 +7,8 @@
 
 namespace PurahEngine
 {
+	class RigidBody;
+
 	class PURAHENGINE_API Transform : public Component
 	{
 	public:
@@ -25,6 +27,10 @@ namespace PurahEngine
 		// 오브젝트의 스케일을 가져온다.
 		Eigen::Vector3f GetLocalScale() const;
 
+		Eigen::Matrix4f GetLocalMatrix() const;
+
+		//Eigen::Vector3f GetFront() const;
+
 		// World
 		// 오브젝트의 월드 포지션을 가져온다.
 		Eigen::Vector3f GetWorldPosition() const;
@@ -33,17 +39,25 @@ namespace PurahEngine
 		// 오브젝트의 월드 스케일을 가져온다.
 		Eigen::Vector3f GetWorldScale() const;
 
-		Eigen::Matrix4f GetLocalMatrix() const;
-
 		Eigen::Matrix4f GetWorldMatrix() const;
 
 		/// set
+		// Local
 		// 포지션 세팅
 		void SetLocalPosition(Eigen::Vector3f setPosition);
 		// 로테이션 세팅
 		void SetLocalRotation(Eigen::Quaternionf setRotation);
 		// 스케일 세팅
 		void SetLocalScale(Eigen::Vector3f setScale);
+
+		// World
+		void SetWorldPosition(Eigen::Vector3f setPosition);
+
+		void SetWorldRotation(Eigen::Quaternionf setRotation);
+		
+		void SetParent(PurahEngine::Transform* parentObject);
+
+		void SetWorldMatrix(Eigen::Matrix4f matrix);
 
 		Eigen::Vector3f up = Eigen::Vector3f::UnitY();
 		Eigen::Vector3f right = Eigen::Vector3f::UnitX();
@@ -60,9 +74,12 @@ namespace PurahEngine
 		/// 행벡터는 벡터 * SRT, 열벡터는 TRS * 벡터
 		/// Eigen은 열벡터다.
 
-
+		RigidBody* rigidbody;
+		void SetRigidBody(RigidBody* rigid);
 		// 부모 Transform
 		Transform* parentTransform;
 		std::vector<Transform*> children;
+
+		friend class RigidBody;
 	};
 }

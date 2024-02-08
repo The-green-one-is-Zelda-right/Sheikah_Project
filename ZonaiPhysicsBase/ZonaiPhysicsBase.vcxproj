@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FreezeFlag.h" />
+    <ClInclude Include="ZnBase.h" />
+    <ClInclude Include="ZnBoxcastInfo.h" />
     <ClInclude Include="ZnPrismaticJoint.h" />
     <ClInclude Include="ZnHingeJoint.h" />
     <ClInclude Include="ZnDistanceJoint.h" />
@@ -33,7 +36,6 @@
     <ClInclude Include="ZnPhysicsBase.h" />
     <ClInclude Include="ZnRaycastInfo.h" />
     <ClInclude Include="ZnRigidBody.h" />
-    <ClInclude Include="ZnShape.h" />
     <ClInclude Include="ZnSimulationCallback.h" />
     <ClInclude Include="ZnTransform.h" />
   </ItemGroup>

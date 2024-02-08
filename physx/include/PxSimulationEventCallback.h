@@ -186,21 +186,21 @@ struct PxContactPairExtraDataIterator
 	}
 
 	/**
-	\brief Advances the iterator to next set of extra data items.
-	
-	The contact pair extra data stream contains sets of items as requested by the corresponding #PxPairFlag flags
-	#PxPairFlag::ePRE_SOLVER_VELOCITY, #PxPairFlag::ePOST_SOLVER_VELOCITY, #PxPairFlag::eCONTACT_EVENT_POSE. A set can contain one
-	item of each plus the PxContactPairIndex item. This method parses the stream and points the iterator
-	member variables to the corresponding items of the current set, if they are available. If CCD is not enabled,
-	you should only get one set of items. If CCD with multiple passes is enabled, you might get more than one item
-	set.
+	\brief 이터레이터를 다음 일련의 추가 데이터 항목으로 이동시킵니다.
 
-	\note Even though contact pair extra data is requested per shape pair, you will not get an item set per shape pair
-	but one per actor pair. If, for example, an actor has two shapes and both collide with another actor, then
-	there will only be one item set (since it applies to both shape pairs).
-	
-	\return True if there was another set of extra data items in the stream, else false.
-	
+	contact pair extra data 스트림에는 해당 #PxPairFlag 플래그에 따라 요청된 항목 세트가 포함되어 있습니다.
+	#PxPairFlag::ePRE_SOLVER_VELOCITY, #PxPairFlag::ePOST_SOLVER_VELOCITY, #PxPairFlag::eCONTACT_EVENT_POSE.
+	한 세트에는 각각 하나의 항목과 PxContactPairIndex 항목이 포함될 수 있습니다. 이 메서드는 스트림을 파싱하고 이터레이터의 멤버 변수를 현재 세트의 해당 항목으로 설정합니다 (항목이 사용 가능한 경우).
+	CCD가 비활성화된 경우에는 하나의 항목 세트만 얻어야 합니다. CCD가 여러 패스로 활성화된 경우에는 하나 이상의 항목 세트를 얻을 수 있습니다.
+
+	\note	비록 contact pair extra data가 모양 쌍 당으로 요청되지만,
+			모양 쌍 당 항목 세트를 얻지 못하고 대신에 액터 쌍 당으로 한 번만 얻게 됩니다.
+			예를 들어, 
+			액터에 두 개의 모양이 있고 둘 다 다른 액터와 충돌하는 경우, 
+			항목 세트는 하나만 있을 것입니다 (두 모양 쌍에 모두 적용되기 때문).
+
+	\return 스트림에 더 많은 추가 데이터 항목 세트가 있는 경우 true, 그렇지 않으면 false.
+
 	@see PxContactPairVelocity PxContactPairPose PxContactPairIndex
 	*/
 	PX_INLINE bool nextItemSet()
@@ -788,15 +788,16 @@ struct PxConstraintInfo
 /**
 \brief 시뮬레이션 이벤트를 수신하려면 사용자가 구현할 수 있는 인터페이스 클래스입니다.
 
-onAdvance()를 제외한 이 이벤트들은 #PxScene::fetchResults() 또는 #PxScene::flushSimulation() 중 하나를 호출할 때 sendPendingReports=true로 전송됩니다.
+onAdvance()를 제외한 이 이벤트들은 #PxScene::fetchResults() 또는 #PxScene::flushSimulation() 중 하나를 호출할 때
+sendPendingReports=true로 전송됩니다.
 onAdvance()는 시뮬레이션이 실행되는 동안(PxScene::simulate() 또는 PxScene::advance()와 PxScene::fetchResults() 사이) 호출됩니다.
 
-\note SDK 상태는 콜백 내에서 수정되어서는 안 됩니다.
-특히 객체를 생성하거나 파괴해서는 안 됩니다.
-상태 수정이 필요한 경우 변경 사항을 버퍼에 저장하고 시뮬레이션 단계 이후에 수행해야 합니다.
+\note	SDK 상태는 콜백 내에서 수정되어서는 안 됩니다.
+		특히 객체를 생성하거나 파괴해서는 안 됩니다.
+		상태 수정이 필요한 경우 변경 사항을 버퍼에 저장하고 시뮬레이션 단계 이후에 수행해야 합니다.
 
-<b>쓰레딩:</b> onAdvance()를 제외하고는 이러한 콜백을 스레드 안전하게 만들 필요가 없습니다.
-왜냐하면 이러한 콜백은 사용자 스레드의 맥락에서만 호출되기 때문입니다.
+<b>쓰레딩:</b>		onAdvance()를 제외하고는 이러한 콜백을 스레드 안전하게 만들 필요가 없습니다.
+					왜냐하면 이러한 콜백은 사용자 스레드의 맥락에서만 호출되기 때문입니다.
 
 @see PxScene.setSimulationEventCallback() PxScene.getSimulationEventCallback()
 */

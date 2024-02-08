@@ -5,6 +5,8 @@
 #include "GameObject.h"
 #include "InputManager.h"
 #include "PhysicsSystem.h"
+#include "TimeController.h"
+#include "SoundManager.h"
 #include <cassert>
 
 
@@ -18,6 +20,7 @@
 ZonaiPhysics::ZnCollider* collider;
 ZonaiPhysics::ZnRigidBody* rigidBody;
 
+static std::string timeInit = "Init";
 
 PurahEngine::GameLoop::GameLoop()
 {
@@ -55,14 +58,24 @@ void PurahEngine::GameLoop::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gameNam
 
 	SetMenu(hWnd, NULL);
 
+	// 시간관리자 초기화
+	PurahEngine::TimeController::GetInstance().Initialize(timeInit);
+
 	// Graphics dll 초기화(변경 가능성 농후)
 	PurahEngine::GraphicsManager::GetInstance().Initialize(hWnd);
+
+	// InputManager 초기화
+	PurahEngine::InputManager::Getinstance().Initialize();
 
 	// SceneManager 초기화
 	PurahEngine::SceneManager::GetInstance().Initialize();
 
 	// PhysicsSysyem 초기화
-	PurahEngine::PhysicsSystem::GetInstance().Initialize();	
+	PurahEngine::PhysicsSystem::GetInstance().Initialize();
+
+	// SoundManager 초기화
+	PurahEngine::SoundManager::GetInstance().Initialize();
+
 }
 
 void PurahEngine::GameLoop::Run(_In_ int nCmdShow)
@@ -101,10 +114,14 @@ void PurahEngine::GameLoop::Finalize()
 
 void PurahEngine::GameLoop::run()
 {
-	PurahEngine::PhysicsSystem::GetInstance().Simulation(1.f / 600.f);
+	PurahEngine::TimeController::GetInstance().Update(timeInit);
+	float deltaTime = PurahEngine::TimeController::GetInstance().GetDeltaTime(timeInit);
+	PurahEngine::PhysicsSystem::GetInstance().Simulation(0.02f);
+
 
 	PurahEngine::InputManager::Getinstance().Update();
 	PurahEngine::SceneManager::GetInstance().Update();
+	PurahEngine::SoundManager::GetInstance().Update();
 
 	PurahEngine::GraphicsManager::GetInstance().Run();
 }

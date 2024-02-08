@@ -99,16 +99,16 @@ struct PxSceneFlag
 	enum Enum
 	{
 		/**
-		\brief Enable Active Actors Notification.
+		\brief 활성 액터 알림을 활성화합니다.
 
-		This flag enables the Active Actor Notification feature for a scene.  This
-		feature defaults to disabled.  When disabled, the function
-		PxScene::getActiveActors() will always return a NULL list.
+		이 플래그는 씬의 활성 액터 알림 기능을 활성화합니다. 이 기능은 기본적으로 비활성화되어 있습니다.
+		비활성화된 경우 PxScene::getActiveActors() 함수는 항상 NULL 목록을 반환합니다.
 
-		\note There may be a performance penalty for enabling the Active Actor Notification, hence this flag should
-		only be enabled if the application intends to use the feature.
+		\note 활성 액터 알림을 사용하려면 이 플래그를 활성화해야 합니다.
 
-		<b>Default:</b> False
+		\note 활성 액터 알림을 활성화하면 성능에 영향을 미칠 수 있으므로 이 플래그는 애플리케이션이 해당 기능을 사용할 경우에만 활성화해야 합니다.
+
+		<b>기본값:</b> False
 		*/
 		eENABLE_ACTIVE_ACTORS	= (1<<0),
 

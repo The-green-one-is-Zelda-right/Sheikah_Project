@@ -20,6 +20,7 @@ Texture2D Temp0Map : register(t5);
 Texture2D Temp1Map : register(t6);
 Texture2D Temp2Map : register(t7);
 Texture2DArray AnimationMap : register(t8);
+TextureCube cubeMap : register(t9);
 
 SamplerState Sampler : register(s0);
 
@@ -110,6 +111,11 @@ cbuffer InstancingMatrixBufferType : register(b6)
 cbuffer InstancingAnimationBufferType : register(b7)
 {
     AnimationInfo instancingAnimationInfo[INSTANCING_MAX];
+}
+
+cbuffer AnimationHierarchyBufferType : register(b8)
+{
+    uint4 parentBone[BONE_COUNT_MAX / 4];
 }
 
 #endif
