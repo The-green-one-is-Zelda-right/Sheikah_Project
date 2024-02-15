@@ -1,6 +1,9 @@
 #pragma once
+#pragma warning(push)
+#pragma warning(disable: 33010 26495 4819)
 #include "PxPhysicsAPI.h"
 #include <Eigen/Dense>
+#pragma warning (pop)
 
 
 namespace ZonaiPhysics

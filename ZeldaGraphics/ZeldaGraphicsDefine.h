@@ -13,6 +13,28 @@ constexpr unsigned int INSTANCING_MAX = 1024u;
 constexpr unsigned int TEXTURE_SLOT_ANIMATION = 8u;
 constexpr unsigned int TEXTURE_SLOT_CUBEMAP = 9u;
 
+namespace Model
+{
+	namespace Animation
+	{
+		namespace Bone
+		{
+			constexpr unsigned int Max = 256u;
+		}
+
+		namespace Tick
+		{
+			// 애니메이션 데이터를 텍스쳐화 할 때, 가능한 최대 duration
+			// assimp로 로드한 데이터에는 0~duration까지의 틱을 쓰지만 여기서는 0~(Max-1)까지로 할 것임에 주의
+			constexpr unsigned int Max = 8192u;
+
+			// 애니메이션 데이터를 텍스쳐화 할 때, 생성하는 데이터의 목표 tickPerSecond
+			// 여기에 정의된 값을 목표로 하되 애니메이션의 duration이 높다면 작아질 수 있다.
+			constexpr float TargetTickPerSecond = 480u;
+		}
+	}
+}
+
 namespace Deferred
 {
 	namespace Object
@@ -37,8 +59,8 @@ namespace Deferred
 		constexpr unsigned int Count = 2u;
 	}
 
-	constexpr unsigned int bufferCount = 6u;
-	constexpr unsigned int slotBegin = 5u;
+	constexpr unsigned int BufferCount = 6u;
+	constexpr unsigned int SlotBegin = 5u;
 }
 
 enum class LightType : unsigned int
@@ -100,11 +122,7 @@ static_assert(sizeof(MatrixBufferType) % 16 == 0, "Constant Buffer size must be 
 
 struct AnimationInfo
 {
-	float firstAnimationFrame;
-	float secondAnimationFrame;
-	unsigned int firstAnimationID;
-	unsigned int secondAnimationID;
-	float ratio;
+	float animationTime;
 	float padding[3];
 };
 
@@ -224,11 +242,7 @@ struct MeshInstancingInfo
 struct ModelInstancingInfo
 {
 	DirectX::XMMATRIX worldMatrix;
-	std::wstring firstAnimationName;
-	std::wstring secondAnimationName;
-	float firstAnimationTime;
-	float secondAnimationTime;
-	float ratio;
+	float time;
 };
 
 struct SpriteInstancingInfo

@@ -41,6 +41,8 @@ namespace PurahEngine
 
 		Eigen::Matrix4f GetWorldMatrix() const;
 
+		Transform* GetParent();
+
 		/// set
 		// Local
 		// 포지션 세팅

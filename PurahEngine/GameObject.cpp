@@ -1,28 +1,28 @@
 #include "GameObject.h"
 #include "Component.h"
 
-void PurahEngine::GameObject::Awake()
+void PurahEngine::GameObject::AwakeEvent()
 {
 	for (PurahEngine::Component* component : componentList)
 	{
-		if (state == State::CREATE)
+		if (state == ObjectState::CREATE)
 		{
 			component->Awake();
-			if (isActive == true)
-			{
-				Enable();
-			}
-			else
-			{
-				Disable();
-			}
 		}
+	}
+	if (isActive == true)
+	{
+		Enable();
+	}
+	else
+	{
+		Disable();
 	}
 }
 
-void PurahEngine::GameObject::Start()
+void PurahEngine::GameObject::StartEvent()
 {
-	if (state == State::ENABLE)
+	if (state == ObjectState::ENABLE)
 	{
 		for (PurahEngine::Component* component : componentList)
 		{
@@ -31,7 +31,7 @@ void PurahEngine::GameObject::Start()
 	}
 }
 
-void PurahEngine::GameObject::FixedUpdate()
+void PurahEngine::GameObject::FixedUpdateEvent()
 {
 	for (PurahEngine::Component* component : componentList)
 	{
@@ -39,9 +39,9 @@ void PurahEngine::GameObject::FixedUpdate()
 	}
 }
 
-void PurahEngine::GameObject::Update()
+void PurahEngine::GameObject::UpdateEvent()
 {
-	if (state == State::ENABLE)
+	if (state == ObjectState::ENABLE)
 	{
 		for (PurahEngine::Component* component : componentList)
 		{
@@ -50,7 +50,7 @@ void PurahEngine::GameObject::Update()
 	}
 }
 
-void PurahEngine::GameObject::LateUpdate()
+void PurahEngine::GameObject::LateUpdateEvent()
 {
 	for (PurahEngine::Component* component : componentList)
 	{
@@ -60,19 +60,42 @@ void PurahEngine::GameObject::LateUpdate()
 
 void PurahEngine::GameObject::Enable()
 {
-	state = State::ENABLE;
+	state = ObjectState::ENABLE;
 	isEnable = true;
 }
 
 void PurahEngine::GameObject::Disable()
 {
-	state = State::DISABLE;
+	state = ObjectState::DISABLE;
 	isEnable = false;
 }
 
 bool PurahEngine::GameObject::IsEnable()
 {
 	return isEnable;
+}
+
+bool PurahEngine::GameObject::IsRootEnable()
+{
+	bool rootEnable = true;
+
+	if (trans->GetParent() != nullptr)
+	{
+		rootEnable = trans->GetParent()->GetGameObject()->IsRootEnable();
+	}
+	else
+	{
+		rootEnable = IsEnable();
+	}
+
+	bool ownEnable = IsEnable() && rootEnable;
+
+	return ownEnable;
+}
+
+PurahEngine::Transform* PurahEngine::GameObject::GetTransform()
+{
+	return trans;
 }
 
 void PurahEngine::GameObject::OnCollisionEnter()
@@ -159,14 +182,14 @@ std::wstring PurahEngine::GameObject::GetName()
 
 PurahEngine::GameObject::GameObject(std::wstring objectname)
 {
-	state = State::CREATE;
+	state = ObjectState::CREATE;
 	name = objectname;
 	isActive = true;
 }
 
 PurahEngine::GameObject::GameObject(std::wstring objectname, bool isactive)
 {
-	state = State::CREATE;
+	state = ObjectState::CREATE;
 	name = objectname;
 	isActive = isactive;
 }

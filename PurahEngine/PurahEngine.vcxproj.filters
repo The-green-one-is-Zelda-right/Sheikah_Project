@@ -10,47 +10,53 @@
     <Filter Include="GameObject">
       <UniqueIdentifier>{8943e751-dc73-4a19-bc01-0ed57e3b59da}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Transform">
-      <UniqueIdentifier>{40dd3d8c-ed88-4f11-87ab-a835fa5206b9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\dll">
       <UniqueIdentifier>{2615fabf-51e8-4853-b558-ee689eada209}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Rigidbody">
-      <UniqueIdentifier>{2fa25854-fdb6-4c93-a1d5-bf1c6f681791}</UniqueIdentifier>
+    <Filter Include="Core\Manager">
+      <UniqueIdentifier>{bcdda42b-17bd-48e3-965b-17d31b7b121d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Camera">
-      <UniqueIdentifier>{b029a29e-d767-4deb-a584-ef7958d355ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SceneManager">
-      <UniqueIdentifier>{6130b827-11ec-46ba-88b0-d704399f7849}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="InputManager">
+    <Filter Include="Core\Manager\InputManager">
       <UniqueIdentifier>{c76577f9-370f-4a36-b09b-8bb28b636ddc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Component\Manager">
-      <UniqueIdentifier>{4a05d4e7-f813-447e-8d56-990fba752ad4}</UniqueIdentifier>
+    <Filter Include="Core\Manager\SceneManager">
+      <UniqueIdentifier>{6130b827-11ec-46ba-88b0-d704399f7849}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Graphics">
-      <UniqueIdentifier>{f7f037aa-7efc-4e26-9456-6a11daed0781}</UniqueIdentifier>
+    <Filter Include="Core\Manager\GraphicsManager">
+      <UniqueIdentifier>{77ac30f5-a1c2-4658-b8be-6f5f6f76591e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Renderer">
-      <UniqueIdentifier>{1c75baf9-836a-402b-9bf3-7d6e9543ba43}</UniqueIdentifier>
+    <Filter Include="Core\Time">
+      <UniqueIdentifier>{9b8a5132-4fb0-423f-870d-c11e17d58f29}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Physics">
+    <Filter Include="Core\Physics">
       <UniqueIdentifier>{4c2fd85b-b061-4d34-a3a0-a44bd07a3344}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Physics\Component">
-      <UniqueIdentifier>{a5ee2fac-18dc-415c-9ec1-ae489d02ba83}</UniqueIdentifier>
+    <Filter Include="Component\0. Base">
+      <UniqueIdentifier>{f970f90d-7e20-4aea-b700-bc842d7b02d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Physics\System">
-      <UniqueIdentifier>{0ec0ba64-b61e-4d0f-9a22-7626faedf853}</UniqueIdentifier>
+    <Filter Include="Component\1. Manager">
+      <UniqueIdentifier>{4a05d4e7-f813-447e-8d56-990fba752ad4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Collider">
+    <Filter Include="Component\2. Physics">
+      <UniqueIdentifier>{78e1a3ad-3f42-4349-9c1a-0f701d551920}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\2. Physics\Joint">
+      <UniqueIdentifier>{6731ae7b-2c71-4b93-8193-77819af87f22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\2. Physics\Collider">
       <UniqueIdentifier>{e90a2f97-4873-49a2-83ea-e26301fa1877}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Physics\Component\Joint">
-      <UniqueIdentifier>{6731ae7b-2c71-4b93-8193-77819af87f22}</UniqueIdentifier>
+    <Filter Include="Component\2. Physics\Rigidbody">
+      <UniqueIdentifier>{2fa25854-fdb6-4c93-a1d5-bf1c6f681791}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\3. Renderer">
+      <UniqueIdentifier>{8bce0c2c-ac5e-493a-9a3a-954bdc41da10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\3. Renderer\Light">
+      <UniqueIdentifier>{5bf68f49-4bbc-46d8-996c-51ae4583ad70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\3. Renderer\Camera">
+      <UniqueIdentifier>{b029a29e-d767-4deb-a584-ef7958d355ca}</UniqueIdentifier>
     </Filter>
     <Filter Include="SoundManager">
       <UniqueIdentifier>{4db416fc-8637-40c4-8896-de7558706be2}</UniqueIdentifier>
@@ -60,9 +66,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Component.cpp">
-      <Filter>Component</Filter>
-    </ClCompile>
     <ClCompile Include="GameLoop.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -70,55 +73,75 @@
       <Filter>GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Transform.cpp">
-      <Filter>Core\Transform</Filter>
+      <Filter>Component\3. Renderer\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Collider.cpp">
-      <Filter>Collider</Filter>
+      <Filter>Component\2. Physics\Collider</Filter>
     </ClCompile>
     <ClCompile Include="RigidBody.cpp">
-      <Filter>Rigidbody</Filter>
+      <Filter>Component\2. Physics\Rigidbody</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
-      <Filter>SceneManager</Filter>
+      <Filter>Core\Manager\SceneManager</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
-      <Filter>InputManager</Filter>
+      <Filter>Core\Manager\InputManager</Filter>
     </ClCompile>
     <ClCompile Include="PurahEngine.cpp" />
     <ClCompile Include="Componentmanager.cpp">
-      <Filter>Component\Manager</Filter>
+      <Filter>Component\1. Manager</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicsManager.cpp">
-      <Filter>Core\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsSystem.cpp">
-      <Filter>Physics\System</Filter>
-    </ClCompile>
-    <ClCompile Include="TimeController.cpp" />
     <ClCompile Include="BoxCollider.cpp">
-      <Filter>Collider</Filter>
+      <Filter>Component\2. Physics\Collider</Filter>
     </ClCompile>
     <ClCompile Include="Joint.cpp">
-      <Filter>Physics\Component\Joint</Filter>
+      <Filter>Component\2. Physics\Joint</Filter>
     </ClCompile>
     <ClCompile Include="FixedJoint.cpp">
-      <Filter>Physics\Component\Joint</Filter>
+      <Filter>Component\2. Physics\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Component\0. Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Component\3. Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>Component\3. Renderer\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Component\0. Base</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeController.cpp">
+      <Filter>Core\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="EventCallbackSystem.cpp">
+      <Filter>Core\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsSystem.cpp">
+      <Filter>Core\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelRenderer.cpp">
+      <Filter>Component\3. Renderer</Filter>
     </ClCompile>
     <ClCompile Include="SoundManager.cpp">
       <Filter>SoundManager</Filter>
     </ClCompile>
     <ClCompile Include="AudioListener.cpp" />
+    <ClCompile Include="GraphicsManager.cpp">
+      <Filter>Core\Manager\GraphicsManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsResourceManager.cpp">
+      <Filter>Core\Manager\GraphicsManager</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshRenderer.cpp">
+      <Filter>Component\3. Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Component\3. Renderer\Light</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Component.h">
-      <Filter>Component</Filter>
-    </ClInclude>
     <ClInclude Include="GameLoop.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -126,53 +149,76 @@
       <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>Core\Transform</Filter>
+      <Filter>Component\3. Renderer\Camera</Filter>
     </ClInclude>
     <ClInclude Include="PurahEngineAPI.h">
       <Filter>Core\dll</Filter>
     </ClInclude>
     <ClInclude Include="PurahEngine.h" />
     <ClInclude Include="Collider.h">
-      <Filter>Collider</Filter>
+      <Filter>Component\2. Physics\Collider</Filter>
     </ClInclude>
     <ClInclude Include="RigidBody.h">
-      <Filter>Rigidbody</Filter>
+      <Filter>Component\2. Physics\Rigidbody</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
-      <Filter>SceneManager</Filter>
+      <Filter>Core\Manager\SceneManager</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
-      <Filter>InputManager</Filter>
+      <Filter>Core\Manager\InputManager</Filter>
     </ClInclude>
     <ClInclude Include="Componentmanager.h">
-      <Filter>Component\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicsManager.h">
-      <Filter>Core\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsSystem.h">
-      <Filter>Physics\System</Filter>
+      <Filter>Component\1. Manager</Filter>
     </ClInclude>
     <ClInclude Include="IRenderer.h" />
-    <ClInclude Include="TimeController.h" />
     <ClInclude Include="BoxCollider.h">
-      <Filter>Collider</Filter>
+      <Filter>Component\2. Physics\Collider</Filter>
     </ClInclude>
     <ClInclude Include="Joint.h">
-      <Filter>Physics\Component\Joint</Filter>
+      <Filter>Component\2. Physics\Joint</Filter>
     </ClInclude>
     <ClInclude Include="FixedJoint.h">
-      <Filter>Physics\Component\Joint</Filter>
+      <Filter>Component\2. Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Component\0. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Component\3. Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Component\3. Renderer\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Component\0. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsManager.h">
+      <Filter>Core\Manager\GraphicsManager</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeController.h">
+      <Filter>Core\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="EventCallbackSystem.h">
+      <Filter>Core\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsSystem.h">
+      <Filter>Core\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelRenderer.h">
+      <Filter>Component\3. Renderer</Filter>
     </ClInclude>
     <ClInclude Include="SoundManager.h">
       <Filter>SoundManager</Filter>
     </ClInclude>
     <ClInclude Include="AudioListener.h" />
+    <ClInclude Include="GraphicsResourceManager.h">
+      <Filter>Core\Manager\GraphicsManager</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRenderer.h">
+      <Filter>Component\3. Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Component\3. Renderer\Light</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

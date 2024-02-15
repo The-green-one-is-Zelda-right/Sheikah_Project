@@ -1,9 +1,9 @@
-#include "Collider.h"
-
-PurahEngine::Collider::Collider()
-{
-}
-
-PurahEngine::Collider::~Collider()
-{
-}
+//#include "Collider.h"
+//
+//PurahEngine::Collider::Collider()
+//{
+//}
+//
+//PurahEngine::Collider::~Collider()
+//{
+//}

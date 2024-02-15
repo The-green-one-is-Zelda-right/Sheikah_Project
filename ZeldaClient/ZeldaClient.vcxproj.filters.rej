@@ -1,0 +1,9 @@
+diff a/ZeldaClient/ZeldaClient.vcxproj.filters b/ZeldaClient/ZeldaClient.vcxproj.filters	(rejected hunks)
+@@ -63,6 +63,7 @@
+ =======
+     <ClCompile Include="Controller.cpp">
+       <Filter>Component\Controller</Filter>
++>>>>>>> ZonaiPhysics
+     </ClCompile>
+   </ItemGroup>
+   <ItemGroup>

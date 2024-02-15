@@ -13,6 +13,24 @@
     <Filter Include="Component\CameraMovement">
       <UniqueIdentifier>{ee3c4eb7-3b80-4f6a-8109-ea0cc854be8b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. EntryPoint\maker">
+      <UniqueIdentifier>{570166fb-bea4-4fa0-89d9-614aed3a7b34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. EntryPoint\maker\BeomJoon">
+      <UniqueIdentifier>{f49d1358-32ae-4808-8188-161829caef34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. EntryPoint\maker\KiHoon">
+      <UniqueIdentifier>{b579acdc-0a32-4716-a03f-f59a773ab9e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. EntryPoint\maker\NaDong">
+      <UniqueIdentifier>{e7edaee0-2767-4c1b-bab0-740f0424a077}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. EntryPoint\maker\YH">
+      <UniqueIdentifier>{3c513026-206a-410e-a0ff-68cf8fe2c216}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Test">
+      <UniqueIdentifier>{490b49e5-b19e-4add-b4dd-ac03880bc1d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -24,6 +42,28 @@
     <ClCompile Include="CameraMovement.cpp">
       <Filter>Component\CameraMovement</Filter>
     </ClCompile>
+    <ClCompile Include="BeomJoon.cpp">
+      <Filter>00. EntryPoint\maker\BeomJoon</Filter>
+    </ClCompile>
+    <ClCompile Include="KiHoon.cpp">
+      <Filter>00. EntryPoint\maker\KiHoon</Filter>
+    </ClCompile>
+    <ClCompile Include="NaDong.cpp">
+      <Filter>00. EntryPoint\maker\NaDong</Filter>
+    </ClCompile>
+    <ClCompile Include="YongHun.cpp">
+      <Filter>00. EntryPoint\maker\YH</Filter>
+    </ClCompile>
+<<<<<<< HEAD
+    <ClCompile Include="Controller.cpp">
+      <Filter>Component</Filter>
+    </ClCompile>
+=======
+    <ClCompile Include="Test.cpp">
+      <Filter>Component\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="TestSingleton.cpp" />
+>>>>>>> master
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TestMovement.h">
@@ -32,5 +72,30 @@
     <ClInclude Include="CameraMovement.h">
       <Filter>Component\CameraMovement</Filter>
     </ClInclude>
+    <ClInclude Include="BeomJoon.h">
+      <Filter>00. EntryPoint\maker\BeomJoon</Filter>
+    </ClInclude>
+    <ClInclude Include="KiHoon.h">
+      <Filter>00. EntryPoint\maker\KiHoon</Filter>
+    </ClInclude>
+    <ClInclude Include="NaDong.h">
+      <Filter>00. EntryPoint\maker\NaDong</Filter>
+    </ClInclude>
+    <ClInclude Include="YongHun.h">
+      <Filter>00. EntryPoint\maker\YH</Filter>
+    </ClInclude>
+    <ClInclude Include="IMaker.h">
+      <Filter>00. EntryPoint\maker</Filter>
+    </ClInclude>
+<<<<<<< HEAD
+    <ClInclude Include="Controller.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+=======
+    <ClInclude Include="Test.h">
+      <Filter>Component\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="TestSingleton.h" />
+>>>>>>> master
   </ItemGroup>
 </Project>

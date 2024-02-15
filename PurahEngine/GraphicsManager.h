@@ -3,7 +3,6 @@
 #include "PurahEngineAPI.h"
 
 #include <windows.h>
-#include <Eigen/core>
 #include <Eigen/dense>
 
 #include "GraphicsResourceID.h"
@@ -22,35 +21,46 @@ namespace PurahEngine
 {
 	class Camera;
 	class Renderer;
+	class Light;
+	class IRenderer;
+	class GraphicsResourceManager;
 
 	class PURAHENGINE_API GraphicsManager
 	{
 	public:
 		void Initialize(HWND hWnd);
-		void Run();
+		void Finalize();
 
-		IZeldaRenderer* GetRenderer();
+		void Run(float deltaTime);
 
-		void AddRenderer(Renderer* render);
-		void RemoveRenderer();
+	private:
+		void AddRenderer(IRenderer* renderer);
+		void RemoveRenderer(IRenderer* renderer);
+
+		void AddLight(IRenderer* renderer);
+		void RemoveLight(IRenderer* renderer);
 
 	private:
 		HMODULE zeldaGraphicsDLL;
-		IZeldaRenderer* renderer;
+		IZeldaRenderer* graphicsModule;
+		
+		std::vector<IRenderer*> lightList;
+		std::vector<IRenderer*> rendererList;
 
-		std::vector<Renderer*> rendererList;
+		GraphicsResourceManager* resourceManager;
 
 	private:
 		GraphicsManager();
 		~GraphicsManager();
 		GraphicsManager(const GraphicsManager& ref) = delete;
-		// 클래스를 생성하게 될 경우, 기본적으로 = 에 대한 연산자 오버로딩이 생성된다.
-		// 싱글턴은 객체가 하나여야 하므로 그것을 방지하기 위해, 명시적으로 delete를 사용하여 사용을 막는다.
 		GraphicsManager& operator=(const GraphicsManager& ref) = delete;
 
 	public:
 		static GraphicsManager& GetInstance();
-	};
 
+		friend Renderer;
+		friend Light;
+		friend Camera;
+	};
 }
 

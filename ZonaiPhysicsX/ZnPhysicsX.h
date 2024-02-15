@@ -1,7 +1,11 @@
 #pragma once
 #include "ZnPhysicsBase.h"
+
+#pragma warning(push)
+#pragma warning(disable: 33010 26495 4819)
 #include "PxPhysicsAPI.h"
 #include <Eigen/Dense>
+#pragma warning (pop)
 
 #include "ZnLayer.h"
 
@@ -40,7 +44,8 @@ namespace ZonaiPhysics
 		ZnPhysicsX() = default;
 		~ZnPhysicsX() override = default;
 
-		static ZnPhysicsX* Instance();
+		static ZnPhysicsX*&		Instance();
+		static void				Release();
 
 	public:
 		void Initialize(ZnSimulationCallback*) override;
@@ -68,7 +73,7 @@ namespace ZonaiPhysics
 
 		void SetCollisionLayerData(
 			uint32_t _layer, 
-			const std::initializer_list<uint32_t>& _data);
+			const std::initializer_list<uint32_t>& _data) override;
 
 	public:
 		/// <summary>
@@ -95,6 +100,9 @@ namespace ZonaiPhysics
 			void* _userData, float radius, float height, 
 			uint32_t _material,
 			void* userScene = nullptr) override;
+
+		ZnCollider* CreateMeshCollider(void* _userData, const std::wstring& _path, uint32_t _material, void* userScene = nullptr) override;
+		ZnCollider* CreateConvexCollider(void* _userData, const std::wstring& _path, uint32_t _material, void* userScene = nullptr) override;
 
 		/// <summary>
 		/// Create Joint
@@ -127,6 +135,8 @@ namespace ZonaiPhysics
 			float _distance,
 			ZnRaycastInfo& _out) override;
 
+		void FreeObject(void*) override;
+
 		// bool Boxcast(const Eigen::Vector3f&, const Eigen::Vector3f&, float, ZnRaycastInfo&) override;
 
 	private:
@@ -137,7 +147,9 @@ namespace ZonaiPhysics
 	};
 
 
-	extern "C" {
-	__declspec(dllexport) ZnPhysicsBase* CreatePhysics();
+	extern "C"
+	{
+		__declspec(dllexport) ZnPhysicsBase* CreatePhysics();
+		__declspec(dllexport) void ReleasePhysics();
 	}
 } // namespace ZonaiPhysics

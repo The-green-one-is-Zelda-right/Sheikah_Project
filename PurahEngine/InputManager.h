@@ -49,6 +49,7 @@ namespace PurahEngine
 
 		XINPUT_STATE state;
 		DWORD result;
+		HWND hWnd;
 	public:
 		static InputManager& Getinstance();
 	};

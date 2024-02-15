@@ -2,7 +2,11 @@
 #include <map>
 #include <set>
 #include <vector>
+
+#pragma warning(push)
+#pragma warning(disable: 33010 26495 4819)
 #include <Eigen/Dense>
+#pragma warning (pop)
 
 namespace ZonaiPhysics
 {
@@ -53,7 +57,7 @@ namespace ZonaiPhysics
 		static std::unordered_map<void*, physx::PxScene*> sceneList;	// [userScene, pxScene]
 
 		using BodyList = std::map<void*, RigidBody*>;					// [userData, znBody]
-		static std::map<void*, BodyList> bodies;						// [userScene, bodyList]
+		static std::map<void*, BodyList> bodies;						// [pxScene, bodyList]
 		static std::unordered_map<uint32_t, physx::PxMaterial*> materials;	// [id, pxMaterial]
 	};
 }

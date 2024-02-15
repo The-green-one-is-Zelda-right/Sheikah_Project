@@ -60,6 +60,7 @@ struct ModelRenderInfo
 {
 	std::vector<ModelInstancingInfo> instancingInfo;
 	ModelID modelID;
+	std::wstring animationName;
 	bool wireFrame;
 };
 
@@ -80,9 +81,9 @@ namespace std {
 
 namespace std {
 	template <>
-	struct hash<std::pair<ModelID, bool>> {
-		size_t operator()(const std::pair<ModelID, bool>& obj) const {
-			return std::hash<ModelID>{}(obj.first) ^ std::hash<bool>{}(obj.second);
+	struct hash<std::pair<std::pair<ModelID, std::wstring>, bool>> {
+		size_t operator()(const std::pair<std::pair<ModelID, std::wstring>, bool>& obj) const {
+			return std::hash<ModelID>{}(obj.first.first) ^ std::hash<std::wstring>{}(obj.first.second) ^ std::hash<bool>{}(obj.second);
 		}
 	};
 }
@@ -178,8 +179,8 @@ private:
 	ID3D11DepthStencilState* cubeMapDepthStencilState;
 
 	// Deferred Rendering
-	ID3D11RenderTargetView* deferredRenderTargets[Deferred::bufferCount];
-	ID3D11ShaderResourceView* deferredShaderResources[Deferred::bufferCount];
+	ID3D11RenderTargetView* deferredRenderTargets[Deferred::BufferCount];
+	ID3D11ShaderResourceView* deferredShaderResources[Deferred::BufferCount];
 
 	ZeldaShader* deferredObjectShader;
 	ZeldaShader* deferredDirectionalLightShader;
@@ -222,14 +223,14 @@ private:
 
 	// Draw함수가 호출되면 채워진다. BeginDraw에서 ClearRenderInfo를 통해 초기화된다.
 	std::unordered_map<std::pair<std::pair<MeshID, TextureID>, std::pair<bool, Color>>, MeshRenderInfo> organizedMeshRenderInfo;
-	std::unordered_map<std::pair<ModelID, bool>, ModelRenderInfo> organizedModelRenderInfo;
+	std::unordered_map<std::pair<std::pair<ModelID, std::wstring>, bool>, ModelRenderInfo> organizedModelRenderInfo;
 	std::unordered_map<TextureID, SpriteRenderInfo> organizedSpriteRenderInfo;
 	std::unordered_set<LightID> organizedLightRenderInfo;
 
 	// 오브젝트들을 실제로 그리는 과정에서 WireFrame으로 그리도록 설정된 오브젝트들을 여기에 저장해두고 deferred render 후에 그린다.
 	// 만약 RendererMode가 WireFrameMode라면 사용하지 않는다.
 	std::unordered_map<std::pair<std::pair<MeshID, TextureID>, std::pair<bool, Color>>, MeshRenderInfo> forwardMeshRenderInfo;
-	std::unordered_map<std::pair<ModelID, bool>, ModelRenderInfo> forwardModelRenderInfo;
+	std::unordered_map<std::pair<std::pair<ModelID, std::wstring>, bool>, ModelRenderInfo> forwardModelRenderInfo;
 
 	TextureID cubeMapRenderInfo;
 

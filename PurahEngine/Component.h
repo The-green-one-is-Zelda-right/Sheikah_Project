@@ -52,9 +52,13 @@ namespace PurahEngine
 		// 마우스가 오브젝트에서 벗어났을 때 호출
 		virtual void OnMouseExit();
 
+		// 게임오브젝트 생성 후에 초기화를 하기위한 함수.
+		// 걍 생성자 대용이다 라고 생각하자.
+		virtual void Initialize();
+
 		GameObject* GetGameObject() const;
 
-	private:
+	protected:
 		GameObject* gameObject;
 
 		friend GameObject;

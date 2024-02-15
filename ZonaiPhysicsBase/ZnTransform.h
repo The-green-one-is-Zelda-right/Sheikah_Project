@@ -39,7 +39,7 @@ namespace ZonaiPhysics
 			quaternion(_tran.quaternion), position(_tran.position)
 		{}
 
-		ZnTransform(ZnTransform&& _trans) :
+		ZnTransform(ZnTransform&& _trans) noexcept :
 			quaternion(std::move(_trans.quaternion)), position(std::move(_trans.position))
 		{}
 

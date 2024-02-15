@@ -22,27 +22,29 @@ void PurahEngine::InputManager::Initialize()
 
 void PurahEngine::InputManager::Update()
 {
-	for (int i = 0; i < KEY_COUNT; i++)
+	if (hWnd != GetFocus())
 	{
-		PrevKeyState[i] = NowKeyState[i];
-		NowKeyState[i] = GetAsyncKeyState(i);
-	}
-
-	if (result == ERROR_SUCCESS)
-	{
-		XInputGetState(0, &state);
-
-		if (abs(state.Gamepad.sThumbLX) < deadZone)
+		for (int i = 0; i < KEY_COUNT; i++)
 		{
-			state.Gamepad.sThumbLX = 0;
+			PrevKeyState[i] = NowKeyState[i];
+			NowKeyState[i] = GetAsyncKeyState(i);
 		}
 
-		if (abs(state.Gamepad.sThumbLY) < deadZone)
+		if (result == ERROR_SUCCESS)
 		{
-			state.Gamepad.sThumbLY = 0;
+			XInputGetState(0, &state);
+
+			if (abs(state.Gamepad.sThumbLX) < deadZone)
+			{
+				state.Gamepad.sThumbLX = 0;
+			}
+
+			if (abs(state.Gamepad.sThumbLY) < deadZone)
+			{
+				state.Gamepad.sThumbLY = 0;
+			}
 		}
 	}
-
 }
 
 // 키를 방금 눌렀는가

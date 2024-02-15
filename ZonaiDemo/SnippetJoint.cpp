@@ -160,7 +160,11 @@ int snippetMain(int, const char* const*)
 	physicsEngine->AddMaterial(1, 0.7f, 0.7f, 0.2f);
 	physicsEngine->AddMaterial(2, 0.7f, 0.7f, 0.9f);
 
+	physicsEngine->SetCollisionLayerData(1, {0, 1, 4, 6, 7, 31});
+	physicsEngine->SetCollisionLayerData(0, {1, 4, 6, 7, 31});
+
 	auto collider = physicsEngine->CreateBoxCollider(drigid, { 2.f, 0.5f, 6.f }, 0, dscene);
+	collider->SetLayerData(1);
 	const auto rigid = physicsEngine->CreateRigidBody(drigid);
 	rigid->SetMaxLinearVelocity(10.f);
 	rigid->SetPosition({0.f, 15.f, 0.f});

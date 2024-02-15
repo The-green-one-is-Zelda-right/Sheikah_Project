@@ -53,17 +53,25 @@ namespace ZonaiPhysics
 
 	void ZnPhysicsX::Finalize()
 	{
+		ZnLayer::Clear();
 		ZnWorld::Release();
 		ZnFactoryX::Release();
 	}
 
-	ZnPhysicsX* ZnPhysicsX::Instance()
+	ZnPhysicsX*& ZnPhysicsX::Instance()
 	{
 		assert(!instance);
 
 		instance = new ZnPhysicsX();
 
 		return instance;
+	}
+
+	void ZnPhysicsX::Release()
+	{
+		assert(instance);
+
+		delete instance;
 	}
 
 	void ZnPhysicsX::AddMaterial(uint32_t _id, float staticFriction, float dynamicFriction, float _restitution)
@@ -114,7 +122,7 @@ namespace ZonaiPhysics
 
 		if (!znBody)
 		{
-			znBody = ZnFactoryX::CreateRigidBody(_userData);
+			znBody = ZnFactoryX::CreateDynamicRigidBody(_userData);
 			ZnWorld::AddBody(znBody, _userScene);
 		}
 		znBody->UseGravity(true);
@@ -137,7 +145,7 @@ namespace ZonaiPhysics
 
 		if (!znBody)
 		{
-			znBody = ZnFactoryX::CreateRigidBody(_userData);
+			znBody = ZnFactoryX::CreateDynamicRigidBody(_userData);
 			ZnWorld::AddBody(znBody, userScene);
 		}
 
@@ -158,7 +166,7 @@ namespace ZonaiPhysics
 
 		if (!znBody)
 		{
-			znBody = ZnFactoryX::CreateRigidBody(_userData);
+			znBody = ZnFactoryX::CreateDynamicRigidBody(_userData);
 			ZnWorld::AddBody(znBody, userScene);
 		}
 
@@ -179,7 +187,7 @@ namespace ZonaiPhysics
 
 		if (!znBody)
 		{
-			znBody = ZnFactoryX::CreateRigidBody(_userData);
+			znBody = ZnFactoryX::CreateDynamicRigidBody(_userData);
 			ZnWorld::AddBody(znBody, userScene);
 		}
 
@@ -188,6 +196,48 @@ namespace ZonaiPhysics
 		znBody->SetKinematic(true);
 
 		return collider;
+	}
+
+	ZnCollider* ZnPhysicsX::CreateMeshCollider(void* _userData, const std::wstring& _path, uint32_t _material, void* userScene)
+	{
+		auto znBody = ZnWorld::GetBody(_userData, userScene);
+		auto material = ZnWorld::GetMaterial(_material);
+
+		if (!material)
+			material = defaultMaterial;
+
+		if (!znBody)
+		{
+			znBody = ZnFactoryX::CreateDynamicRigidBody(_userData);
+			ZnWorld::AddBody(znBody, userScene);
+		}
+
+		const auto collider = ZnFactoryX::CreateMeshCollider(znBody, material);
+		znBody->UseGravity(false);
+		znBody->SetKinematic(true);
+
+		return nullptr;
+	}
+
+	ZnCollider* ZnPhysicsX::CreateConvexCollider(void* _userData, const std::wstring& _path, uint32_t _material, void* userScene)
+	{
+		auto znBody = ZnWorld::GetBody(_userData, userScene);
+		auto material = ZnWorld::GetMaterial(_material);
+
+		if (!material)
+			material = defaultMaterial;
+
+		if (!znBody)
+		{
+			znBody = ZnFactoryX::CreateDynamicRigidBody(_userData);
+			ZnWorld::AddBody(znBody, userScene);
+		}
+
+		const auto collider = ZnFactoryX::CreateConvexCollider(znBody, material);
+		znBody->UseGravity(false);
+		znBody->SetKinematic(true);
+
+		return nullptr;
 	}
 
 	// 	ZnCollider* ZnPhysicsX::CreateCustomCollider(const std::wstring&)
@@ -250,10 +300,23 @@ namespace ZonaiPhysics
 		return ZnWorld::Raycast(_from, _to, _distance, _out);
 	}
 
-	extern "C" {
-	ZnPhysicsBase* CreatePhysics()
+	void ZnPhysicsX::FreeObject(void* p)
 	{
-		return ZnPhysicsX::Instance();
+		assert(p != nullptr);
+
+		delete static_cast<ZnBase*>(p);
 	}
+
+	extern "C"
+	{
+		ZnPhysicsBase* CreatePhysics()
+		{
+			return ZnPhysicsX::Instance();
+		}
+
+		void ReleasePhysics()
+		{
+			ZnPhysicsX::Release();
+		}
 	}
 } // namespace ZonaiPhysics

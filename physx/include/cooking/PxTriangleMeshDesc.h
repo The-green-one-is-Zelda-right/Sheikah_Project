@@ -43,11 +43,11 @@ namespace physx
 
 
 /**
-\brief Descriptor class for #PxTriangleMesh.
+\brief #PxTriangleMesh에 대한 설명자 클래스입니다.
 
-Note that this class is derived from PxSimpleTriangleMesh which contains the members that describe the basic mesh.
-The mesh data is *copied* when an PxTriangleMesh object is created from this descriptor. After the call the
-user may discard the triangle data.
+이 클래스는 기본 메시를 설명하는 멤버를 포함하는 PxSimpleTriangleMesh에서 파생됩니다. 
+이 설명자로부터 PxTriangleMesh 객체가 생성될 때 메시 데이터가 복사됩니다. 
+호출 후에는 사용자가 삼각형 데이터를 폐기할 수 있습니다.
 
 @see PxTriangleMesh PxTriangleMeshGeometry PxShape
 */
@@ -56,18 +56,21 @@ class PxTriangleMeshDesc : public PxSimpleTriangleMesh
 public:
 
 	/**
-	Optional pointer to first material index, or NULL. There are PxSimpleTriangleMesh::numTriangles indices in total.
-	Caller may add materialIndexStride bytes to the pointer to access the next triangle.
+	옵션으로 첫 번째 재료 인덱스를 가리키는 포인터이며, NULL일 수 있습니다.
+	총 PxSimpleTriangleMesh::numTriangles 개의 인덱스가 있습니다.
+	호출자는 materialIndexStride 바이트를 포인터에 추가하여 다음 삼각형에 액세스할 수 있습니다.
 
-	When a triangle mesh collides with another object, a material is required at the collision point.
-	If materialIndices is NULL, then the material of the PxShape instance is used.
-	Otherwise, if the point of contact is on a triangle with index i, then the material index is determined as: 
-	PxMaterialTableIndex	index = *(PxMaterialTableIndex *)(((PxU8*)materialIndices) + materialIndexStride * i);
+	삼각형 메시가 다른 객체와 충돌할 때 충돌 지점에 재료가 필요합니다.
+	materialIndices가 NULL이면 PxShape 인스턴스의 재료가 사용됩니다.
+	그렇지 않으면, 접촉 지점이 인덱스 i의 삼각형에 있을 때,
+	재료 인덱스는 다음과 같이 결정됩니다:
+	PxMaterialTableIndex index = *(PxMaterialTableIndex )(((PxU8)materialIndices) + materialIndexStride * i);
 
-	If the contact point falls on a vertex or an edge, a triangle adjacent to the vertex or edge is selected, and its index
-	used to look up a material. The selection is arbitrary but consistent over time. 
+	접촉 지점이 버텍스 또는 엣지에 있는 경우,
+	버텍스 또는 엣지에 인접한 삼각형이 선택되고 해당 인덱스를 사용하여 재료를 조회합니다.
+	이 선택은 임의적이지만 시간이 지나도 일관적입니다.
 
-	<b>Default:</b> NULL
+	<b>기본값:</b> NULL
 
 	@see materialIndexStride
 	*/

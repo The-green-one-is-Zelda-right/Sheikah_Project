@@ -1,8 +1,12 @@
 #pragma once
 #include "ZnHingeJoint.h"
 #include "TemplateJoint.h"
-#include "PxPhysicsAPI.h"
+
+#pragma warning(push)
+#pragma warning(disable: 33010 26495 4819)
 #include <Eigen/Dense>
+#include "PxPhysicsAPI.h"
+#pragma warning (pop)
 
 namespace physx
 {

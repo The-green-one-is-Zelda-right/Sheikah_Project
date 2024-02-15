@@ -351,10 +351,10 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 	textureDesc.CPUAccessFlags = 0;
 	textureDesc.MiscFlags = 0;
 
-	ID3D11Texture2D* renderTargetTextures[Deferred::bufferCount];
+	ID3D11Texture2D* renderTargetTextures[Deferred::BufferCount];
 
 	// Texture2D 생성
-	for (int i = 0; i < Deferred::bufferCount; i++)
+	for (int i = 0; i < Deferred::BufferCount; i++)
 	{
 		result = mDevice->CreateTexture2D(&textureDesc, NULL, &renderTargetTextures[i]);
 		if (FAILED(result)) return false;
@@ -367,7 +367,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
 	// RenderTargetView 생성
-	for (int i = 0; i < Deferred::bufferCount; i++)
+	for (int i = 0; i < Deferred::BufferCount; i++)
 	{
 		result = mDevice->CreateRenderTargetView(renderTargetTextures[i], &renderTargetViewDesc, &deferredRenderTargets[i]);
 		if (FAILED(result)) return false;
@@ -381,14 +381,14 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 	shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
 	// Shader Resource View 생성
-	for (int i = 0; i < Deferred::bufferCount; i++)
+	for (int i = 0; i < Deferred::BufferCount; i++)
 	{
 		result = mDevice->CreateShaderResourceView(renderTargetTextures[i], &shaderResourceViewDesc, &deferredShaderResources[i]);
 		if (FAILED(result)) return false;
 	}
 
 	//Release render target texture array
-	for (int i = 0; i < Deferred::bufferCount; i++)
+	for (int i = 0; i < Deferred::BufferCount; i++)
 	{
 		renderTargetTextures[i]->Release();
 	}
@@ -445,7 +445,7 @@ void ZeldaDX11Renderer::Finalize()
 {
 	ReleaseBasicResources();
 
-	for (int i = 0; i < Deferred::bufferCount; i++)
+	for (int i = 0; i < Deferred::BufferCount; i++)
 	{
 		if (deferredRenderTargets[i])
 		{
@@ -454,7 +454,7 @@ void ZeldaDX11Renderer::Finalize()
 		}
 	}
 
-	for (int i = 0; i < Deferred::bufferCount; i++)
+	for (int i = 0; i < Deferred::BufferCount; i++)
 	{
 		if (deferredShaderResources[i])
 		{
@@ -467,6 +467,11 @@ void ZeldaDX11Renderer::Finalize()
 	{
 		alphaBlendState->Release();
 		alphaBlendState = nullptr;
+	}
+	if (cubeMapDepthStencilState)
+	{
+		cubeMapDepthStencilState->Release();
+		cubeMapDepthStencilState = nullptr;
 	}
 	if (matrixVsConstBuffer)
 	{
@@ -618,6 +623,11 @@ void ZeldaDX11Renderer::Finalize()
 		pointLightRasterState->Release();
 		pointLightRasterState = nullptr;
 	}
+	if (cubeMapRasterState)
+	{
+		cubeMapRasterState->Release();
+		cubeMapRasterState = nullptr;
+	}
 	if (currentRasterState)
 	{
 		// 얘는 defaultRasterState, wireFrameRasterState를 받아두기만 하기 때문에 해제 필요없음
@@ -662,7 +672,7 @@ void ZeldaDX11Renderer::EndDraw()
 	float gray[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 	float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-	for (int i = 0; i < Deferred::bufferCount; i++)
+	for (int i = 0; i < Deferred::BufferCount; i++)
 	{
 		mDeviceContext->ClearRenderTargetView(deferredRenderTargets[i], black);
 	}
@@ -732,15 +742,11 @@ void ZeldaDX11Renderer::DrawModel(const Eigen::Matrix4f& worldMatrix, ModelID mo
 {
 	ModelInstancingInfo instancinInfo;
 	instancinInfo.worldMatrix = MathConverter::EigenMatrixToXMMatrix(worldMatrix);
-	instancinInfo.firstAnimationName = L"";
-	instancinInfo.secondAnimationName= L"";
-	instancinInfo.firstAnimationTime = 0.0f;
-	instancinInfo.secondAnimationTime = 0.0f;
-	instancinInfo.ratio = 0.0f;
+	instancinInfo.time = 0.0f;
 
-	std::unordered_map<std::pair<ModelID, bool>, ModelRenderInfo>& renderInfoContainer = (wireFrame || CheckRendererMode(RendererMode::OnWireFrameMode)) ? (forwardModelRenderInfo) : (organizedModelRenderInfo);
+	std::unordered_map<std::pair<std::pair<ModelID, std::wstring>, bool>, ModelRenderInfo>& renderInfoContainer = (wireFrame || CheckRendererMode(RendererMode::OnWireFrameMode)) ? (forwardModelRenderInfo) : (organizedModelRenderInfo);
 
-	auto iter = renderInfoContainer.find({ model, wireFrame });
+	auto iter = renderInfoContainer.find({ { model, L"" }, wireFrame});
 
 	// 이미 동일한 것을 그린적이 있음
 	if (iter != renderInfoContainer.end())
@@ -753,9 +759,10 @@ void ZeldaDX11Renderer::DrawModel(const Eigen::Matrix4f& worldMatrix, ModelID mo
 		ModelRenderInfo renderInfo;
 		renderInfo.instancingInfo.assign(1, instancinInfo);
 		renderInfo.modelID = model;
+		renderInfo.animationName = L"";
 		renderInfo.wireFrame = wireFrame;
 
-		renderInfoContainer[{ model, wireFrame }] = renderInfo;
+		renderInfoContainer[{ { model, L"" }, wireFrame }] = renderInfo;
 	}
 }
 
@@ -763,15 +770,11 @@ void ZeldaDX11Renderer::DrawAnimation(const Eigen::Matrix4f& worldMatrix, ModelI
 {
 	ModelInstancingInfo instancinInfo;
 	instancinInfo.worldMatrix = MathConverter::EigenMatrixToXMMatrix(worldMatrix);
-	instancinInfo.firstAnimationName = animationName;
-	instancinInfo.secondAnimationName = animationName;
-	instancinInfo.firstAnimationTime = animationTime;
-	instancinInfo.secondAnimationTime = animationTime;
-	instancinInfo.ratio = 0.0f;
+	instancinInfo.time = animationTime;
 
-	std::unordered_map<std::pair<ModelID, bool>, ModelRenderInfo>& renderInfoContainer = (wireFrame || CheckRendererMode(RendererMode::OnWireFrameMode)) ? (forwardModelRenderInfo) : (organizedModelRenderInfo);
+	std::unordered_map<std::pair<std::pair<ModelID, std::wstring>, bool>, ModelRenderInfo>& renderInfoContainer = (wireFrame || CheckRendererMode(RendererMode::OnWireFrameMode)) ? (forwardModelRenderInfo) : (organizedModelRenderInfo);
 
-	auto iter = renderInfoContainer.find({ model, wireFrame });
+	auto iter = renderInfoContainer.find({ { model, animationName }, wireFrame });
 
 	// 이미 동일한 것을 그린적이 있음
 	if (iter != renderInfoContainer.end())
@@ -784,41 +787,16 @@ void ZeldaDX11Renderer::DrawAnimation(const Eigen::Matrix4f& worldMatrix, ModelI
 		ModelRenderInfo renderInfo;
 		renderInfo.instancingInfo.assign(1, instancinInfo);
 		renderInfo.modelID = model;
+		renderInfo.animationName = animationName;
 		renderInfo.wireFrame = wireFrame;
 
-		renderInfoContainer[{ model, wireFrame }] = renderInfo;
+		renderInfoContainer[{ { model, animationName }, wireFrame }] = renderInfo;
 	}
 }
 
 void ZeldaDX11Renderer::DrawChangingAnimation(const Eigen::Matrix4f& worldMatrix, ModelID model, std::wstring firstAnimationName, std::wstring secondAnimationName, float firstAnimationTime, float secondAnimationTime, float ratio, bool wireFrame)
 {
-	ModelInstancingInfo instancinInfo;
-	instancinInfo.worldMatrix = MathConverter::EigenMatrixToXMMatrix(worldMatrix);
-	instancinInfo.firstAnimationName = firstAnimationName;
-	instancinInfo.secondAnimationName = secondAnimationName;
-	instancinInfo.firstAnimationTime = firstAnimationTime;
-	instancinInfo.secondAnimationTime = secondAnimationTime;
-	instancinInfo.ratio = ratio;
-
-	std::unordered_map<std::pair<ModelID, bool>, ModelRenderInfo>& renderInfoContainer = (wireFrame || CheckRendererMode(RendererMode::OnWireFrameMode)) ? (forwardModelRenderInfo) : (organizedModelRenderInfo);
-
-	auto iter = renderInfoContainer.find({ model, wireFrame });
-
-	// 이미 동일한 것을 그린적이 있음
-	if (iter != renderInfoContainer.end())
-	{
-		iter->second.instancingInfo.push_back(instancinInfo);
-	}
-	// 처음 그리는 경우
-	else
-	{
-		ModelRenderInfo renderInfo;
-		renderInfo.instancingInfo.assign(1, instancinInfo);
-		renderInfo.modelID = model;
-		renderInfo.wireFrame = wireFrame;
-
-		renderInfoContainer[{ model, wireFrame }] = renderInfo;
-	}
+	assert(0);
 }
 
 void ZeldaDX11Renderer::DrawLight(LightID lightID)
@@ -883,7 +861,7 @@ void ZeldaDX11Renderer::ReleaseBasicResources()
 void ZeldaDX11Renderer::DrawDeferred()
 {
 	ID3D11ShaderResourceView* nullSRV[3] = { nullptr, nullptr, nullptr };
-	mDeviceContext->PSSetShaderResources(Deferred::slotBegin, 3, nullSRV);
+	mDeviceContext->PSSetShaderResources(Deferred::SlotBegin, 3, nullSRV);
 
 	ZeldaCamera* mainCamera = ResourceManager::GetInstance().GetCamera(ZeldaCamera::GetMainCamera());
 
@@ -908,7 +886,7 @@ void ZeldaDX11Renderer::DrawDeferred()
 #pragma region Draw Deferred Light
 	// 다음 그리기에 영향을 주지 않기 위해 뎁스스텐실을 비워놓음
 	mDeviceContext->OMSetRenderTargets(Deferred::Light::Count, deferredRenderTargets + Deferred::Light::Begin, nullptr);
-	mDeviceContext->PSSetShaderResources(Deferred::slotBegin, 2, deferredShaderResources + Deferred::Object::Begin);
+	mDeviceContext->PSSetShaderResources(Deferred::SlotBegin, 2, deferredShaderResources + Deferred::Object::Begin);
 	float alphaBlendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	mDeviceContext->OMSetBlendState(alphaBlendState, alphaBlendFactor, 0xFFFFFFFF);
 	
@@ -989,8 +967,8 @@ void ZeldaDX11Renderer::DrawDeferred()
 #pragma region Draw Deferred Final
 	// 다음 그리기에 영향을 주지 않기 위해 뎁스스텐실을 비워놓음
 	mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, nullptr);
-	mDeviceContext->PSSetShaderResources(Deferred::slotBegin + 0, 1, deferredShaderResources + Deferred::Object::Albedo);
-	mDeviceContext->PSSetShaderResources(Deferred::slotBegin + 1, 2, deferredShaderResources + Deferred::Light::Begin);
+	mDeviceContext->PSSetShaderResources(Deferred::SlotBegin + 0, 1, deferredShaderResources + Deferred::Object::Albedo);
+	mDeviceContext->PSSetShaderResources(Deferred::SlotBegin + 1, 2, deferredShaderResources + Deferred::Light::Begin);
 
 	squareMesh->Render(mDeviceContext);
 	deferredFinalShader->Render(mDeviceContext, squareMesh->GetIndexCount());
@@ -1001,7 +979,7 @@ void ZeldaDX11Renderer::DrawDeferred()
 void ZeldaDX11Renderer::DrawForward()
 {
 	ID3D11ShaderResourceView* nullSRV[3] = { nullptr, nullptr, nullptr };
-	mDeviceContext->PSSetShaderResources(Deferred::slotBegin, 3, nullSRV);
+	mDeviceContext->PSSetShaderResources(Deferred::SlotBegin, 3, nullSRV);
 	mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
 
 	for (auto& iter : forwardMeshRenderInfo)
@@ -1027,7 +1005,7 @@ void ZeldaDX11Renderer::DrawSprite()
 	const static long hsize = 135;
 	const static long space = 20;
 
-	long fullsize = wsize * Deferred::bufferCount + max(Deferred::bufferCount - 1, 0) * space;
+	long fullsize = wsize * Deferred::BufferCount + max(Deferred::BufferCount - 1, 0) * space;
 
 #pragma region Draw Deferred Debug Info
 	if (CheckDebugMode(DebugMode::DeferredDebug0))
@@ -1057,7 +1035,7 @@ void ZeldaDX11Renderer::DrawSprite()
 
 	if (CheckDebugMode(DebugMode::DeferredDebugAll))
 	{
-		for (int i = 0; i < Deferred::bufferCount; i++)
+		for (int i = 0; i < Deferred::BufferCount; i++)
 		{
 			spriteBatch->Draw(deferredShaderResources[i], RECT{ ((1920l - fullsize) / 2) + (i) * (wsize + space), 100, ((1920l - fullsize) / 2) + (i) * (wsize + space) + wsize, 100 + hsize });
 		}
@@ -1329,7 +1307,7 @@ void ZeldaDX11Renderer::DrawModelRenderInfo(ModelRenderInfo renderInfo, ZeldaSha
 		UseWireFrameRasterState(renderInfo.wireFrame);
 		mDeviceContext->RSSetState(currentRasterState);
 
-		modelData->RenderInstanced(mDeviceContext, matrixVsConstBuffer, instancingMatrixVsConstBuffer, animationHierarchyVsConstBuffer, instancingAnimationVsConstBuffer, materialConstBuffer, renderInfo.instancingInfo, shader);
+		modelData->RenderInstanced(mDeviceContext, matrixVsConstBuffer, instancingMatrixVsConstBuffer, animationHierarchyVsConstBuffer, instancingAnimationVsConstBuffer, materialConstBuffer, renderInfo.instancingInfo, shader, renderInfo.animationName);
 	}
 	else
 	{
@@ -1340,7 +1318,7 @@ void ZeldaDX11Renderer::DrawModelRenderInfo(ModelRenderInfo renderInfo, ZeldaSha
 			UseWireFrameRasterState(renderInfo.wireFrame);
 			mDeviceContext->RSSetState(currentRasterState);
 
-			modelData->Render(mDeviceContext, matrixVsConstBuffer, animationHierarchyVsConstBuffer, animationConstBuffer, materialConstBuffer, instancingInfo.worldMatrix, shader, instancingInfo.firstAnimationName, instancingInfo.secondAnimationName, instancingInfo.firstAnimationTime, instancingInfo.secondAnimationTime, instancingInfo.ratio);
+			modelData->Render(mDeviceContext, matrixVsConstBuffer, animationHierarchyVsConstBuffer, animationConstBuffer, materialConstBuffer, instancingInfo.worldMatrix, shader, renderInfo.animationName, instancingInfo.time);
 		}
 	}
 }

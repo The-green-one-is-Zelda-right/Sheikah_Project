@@ -114,6 +114,11 @@ Eigen::Matrix4f PurahEngine::Transform::GetWorldMatrix() const
 	}
 }
 
+PurahEngine::Transform* PurahEngine::Transform::GetParent()
+{
+	return parentTransform;
+}
+
 void PurahEngine::Transform::SetLocalPosition(Eigen::Vector3f setPosition)
 {
 	position = setPosition;

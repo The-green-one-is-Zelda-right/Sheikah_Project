@@ -1,0 +1,13 @@
+diff a/ZeldaClient/ZeldaClient.vcxproj b/ZeldaClient/ZeldaClient.vcxproj	(rejected hunks)
+@@ -145,7 +145,11 @@
+   <ItemGroup>
+     <ClCompile Include="BeomJoon.cpp" />
+     <ClCompile Include="CameraMovement.cpp" />
++<<<<<<< HEAD
+     <ClCompile Include="KiHoon.cpp" />
++=======
++    <ClCompile Include="Controller.cpp" />
++>>>>>>> ZonaiPhysics
+     <ClCompile Include="main.cpp" />
+     <ClCompile Include="NaDong.cpp" />
+     <ClCompile Include="TestMovement.cpp" />

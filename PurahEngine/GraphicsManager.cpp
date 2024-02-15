@@ -7,8 +7,9 @@
 #include "PhysicsSystem.h"
 #include "Renderer.h"
 #include "Camera.h"
-#include <Eigen/Dense>
+#include "GraphicsResourceManager.h"
 
+#include <Eigen/Dense>
 #include <cassert>
 
 #ifdef YH_DEBUG
@@ -35,46 +36,84 @@ void PurahEngine::GraphicsManager::Initialize(HWND hWnd)
 		// DLL 함수를 찾을 수 없습니다.
 		assert(0);
 	}
-	renderer = createZeldaRenderer();
+	graphicsModule = createZeldaRenderer();
 #endif
-	renderer->Initialize(1920, 1080, true, hWnd, false, 1000.0f, 1.0f);
 
+	graphicsModule->Initialize(1920, 1080, true, hWnd, false);
 
+	resourceManager = new GraphicsResourceManager(graphicsModule);
 }
 
-void PurahEngine::GraphicsManager::Run()
+void PurahEngine::GraphicsManager::Finalize()
 {
-	renderer->BeginDraw(1.0f);
-	Camera* mainCamera = PurahEngine::SceneManager::GetInstance().GetMainCamera();
-	Eigen::Matrix4f position = mainCamera->GetGameObject()->GetComponent<PurahEngine::Transform>()->GetWorldMatrix();
-	
-	mainCamera->SetRenderer(renderer);
-	mainCamera->UpdateCamera(position, 3.141592654f / 4.0f, 1.0f, 1000.0f);
-
-	for (auto render : rendererList)
+#ifdef YH_RENDERER
+	assert(0); // Not implement to delete YH Renderer 
+#else
+	auto releaseZeldaRenderer = reinterpret_cast<void(*)(IZeldaRenderer*)>(GetProcAddress(zeldaGraphicsDLL, "ReleaseZeldaRenderer"));
+	if (releaseZeldaRenderer == nullptr)
 	{
-		render->Render(renderer);
+		// DLL 함수를 찾을 수 없습니다.
+		assert(0);
 	}
 
-	renderer->EndDraw();
+	releaseZeldaRenderer(graphicsModule);
+
+	FreeLibrary(zeldaGraphicsDLL);
+#endif
+
+	if (resourceManager != nullptr)
+	{
+		delete resourceManager;
+	}
 }
 
-IZeldaRenderer* PurahEngine::GraphicsManager::GetRenderer()
+void PurahEngine::GraphicsManager::Run(float deltaTime)
 {
-	return renderer;
+	graphicsModule->BeginDraw(deltaTime);
+
+	// Camera
+	Camera* mainCamera = PurahEngine::SceneManager::GetInstance().GetMainCamera();
+	mainCamera->Render(graphicsModule);
+
+	// Light
+	for (auto light : lightList)
+	{
+		light->Render(graphicsModule);
+	}
+
+	// Object
+	for (auto render : rendererList)
+	{
+		render->Render(graphicsModule);
+	}
+
+	graphicsModule->EndDraw();
 }
 
-void PurahEngine::GraphicsManager::AddRenderer(Renderer* render)
+void PurahEngine::GraphicsManager::AddRenderer(IRenderer* renderer)
 {
-	rendererList.push_back(render);
+	rendererList.push_back(renderer);
 }
 
-void PurahEngine::GraphicsManager::RemoveRenderer()
+void PurahEngine::GraphicsManager::RemoveRenderer(IRenderer* renderer)
 {
-
+	rendererList.erase(remove(rendererList.begin(), rendererList.end(), renderer), rendererList.end());
 }
 
-PurahEngine::GraphicsManager::GraphicsManager()
+void PurahEngine::GraphicsManager::AddLight(IRenderer* renderer)
+{
+	lightList.push_back(renderer);
+}
+
+void PurahEngine::GraphicsManager::RemoveLight(IRenderer* renderer)
+{
+	lightList.erase(remove(lightList.begin(), lightList.end(), renderer), lightList.end());
+}
+
+PurahEngine::GraphicsManager::GraphicsManager() :
+	graphicsModule(nullptr),
+	zeldaGraphicsDLL(NULL),
+	resourceManager(nullptr)
 {
 
 }

@@ -6,7 +6,7 @@
 #include "TimeController.h"
 
 PurahEngine::SceneManager::SceneManager()
-	: mainCamera(nullptr), cameraPosition(Eigen::Vector3f(0.0f, 0.0f, -10.0f))
+	: mainCamera(nullptr), cameraPosition(Eigen::Vector3f(0.0f, 0.0f, -10.0f)), state(RunningState::AWAKE)
 {
 
 }
@@ -20,7 +20,7 @@ PurahEngine::GameObject* PurahEngine::SceneManager::CreateGameObject(std::wstrin
 {
 	GameObject* object = new GameObject(objectName);
 	objectList.push_back(object);
-	object->AddComponent<Transform>();
+	object->trans = object->AddComponent<Transform>();
 	return object;
 }
 
@@ -52,16 +52,57 @@ void PurahEngine::SceneManager::Update()
 	float deltaTime = PurahEngine::TimeController::GetInstance().GetDeltaTime("physics");
 	physicsTime += deltaTime;
 
-	for (PurahEngine::GameObject* object : objectList)
+	if (state == RunningState::AWAKE)
 	{
-		if (object->isRun != true)
+		for (PurahEngine::GameObject* object : objectList)
 		{
-			object->Awake();
-			object->Start();
+			object->AwakeEvent();
+			state = RunningState::START;
+		}
+	}
+	else if (state == RunningState::START)
+	{
+		for (PurahEngine::GameObject* object : objectList)
+		{
+			object->StartEvent();
+			state = RunningState::UPDATE;
+		}
+	}
+	else if (state == RunningState::UPDATE)
+	{
+		for (PurahEngine::GameObject* object : objectList)
+		{
+			object->UpdateEvent();
+			object->LateUpdateEvent();
+		}
+	}
+
+	if (physicsTime >= 0.02f)
+	{
+		for (PurahEngine::GameObject* object : objectList)
+		{
+			object->FixedUpdateEvent();
+
+			object->OnCollisionEnter();
+			object->OnCollisionStay();
+			object->OnCollisionExit();
+
+			object->OnTriggerEnter();
+			object->OnTriggerStay();
+			object->OnTriggerExit();
+		}
+	}
+
+
+	/*for (PurahEngine::GameObject* object : objectList)
+	{
+		if (state == RunningState::START)
+		{
+			object->StartEvent();
 		}
 		if (physicsTime >= 0.02f)
 		{
-			object->FixedUpdate();
+			object->FixedUpdateEvent();
 
 			object->OnCollisionEnter();
 			object->OnCollisionStay();
@@ -73,14 +114,14 @@ void PurahEngine::SceneManager::Update()
 		}
 		if (object->isRun == true)
 		{
-			object->Update();
-			object->LateUpdate();
+			object->UpdateEvent();
+			object->LateUpdateEvent();
 		}
 		object->isRun = true;
-	}
+	}*/
 	if (physicsTime >= 0.02f)
 	{
-		physicsTime = 0.0f;
+		physicsTime -= 0.02f;
 	}
 
 }

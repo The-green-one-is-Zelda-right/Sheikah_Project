@@ -1,6 +1,9 @@
 #pragma once
 #include <cstdint>
+#pragma warning(push)
+#pragma warning(disable: 33010 26495 4819)
 #include <Eigen/Dense>
+#pragma warning (pop)
 
 namespace ZonaiPhysics
 {

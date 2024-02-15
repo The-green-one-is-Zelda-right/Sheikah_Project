@@ -37,6 +37,16 @@ namespace PurahEngine
 		void Initialize();
 
 	private:
+		enum class RunningState
+		{
+			AWAKE,
+			START,
+			UPDATE,
+			DESTROY
+		};
+
+		RunningState state;
+
 		std::wstring sceneName;
 
 		// 씬에 생성된 오브젝트 리스트

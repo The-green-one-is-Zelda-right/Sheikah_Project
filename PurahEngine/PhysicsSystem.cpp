@@ -2,6 +2,8 @@
 #include "../ZonaiPhysicsBase/ZnPhysicsBase.h"
 #include <cassert>
 
+#include "EventCallbackSystem.h"
+#include "Collider.h"
 #include "RigidBody.h"
 
 namespace PurahEngine
@@ -19,7 +21,16 @@ namespace PurahEngine
 		using ImportFunction = ZonaiPhysics::ZnPhysicsBase* (*) ();
 		ImportFunction createZonaiPhysics{ reinterpret_cast<ImportFunction>(GetProcAddress(ZonaiPhysicsXDLL, "CreatePhysics")) };
 
+
 		if (createZonaiPhysics == nullptr)
+		{
+			// DLL 함수를 찾을 수 없습니다.
+			assert(0);
+		}
+
+		releaseFuntion = { reinterpret_cast<void (*) ()>(GetProcAddress(ZonaiPhysicsXDLL, "ReleasePhysics")) };
+
+		if (releaseFuntion == nullptr)
 		{
 			// DLL 함수를 찾을 수 없습니다.
 			assert(0);
@@ -32,38 +43,68 @@ namespace PurahEngine
 			assert(0);
 		}
 
-		physics->Initialize();
+		callbackSystem = new EventCallbackSystem;
+
+		physics->Initialize(callbackSystem);
+		physics->CreateScene(this, {0, -9.81, 0});
+		physics->LoadScene(this);
 	}
 
-	void PhysicsSystem::Simulation(float _dt) noexcept
+	void PhysicsSystem::PreStep() const
+	{
+		for (const auto& e : dynamicColliders)
+		{
+			e->PreStep();
+		}
+	}
+
+	void PhysicsSystem::Simulation(float _dt) const noexcept
 	{
 		physics->Simulation(_dt);
-		//
 	}
 
-	void PhysicsSystem::SimulateResult()
+	void PhysicsSystem::SimulateResult() const
 	{
-		for (auto& e : bodies)
+		for (const auto& e : bodies)
 		{
 			e->SimulateResult();
 		}
 	}
 
-	void PhysicsSystem::Finalize() noexcept
+	void PhysicsSystem::Finalize() const noexcept
 	{
 		physics->Finalize();
+
+		/// Release 함수
+		releaseFuntion();
 
 		FreeLibrary(ZonaiPhysicsXDLL);
 	}
 
-	ZonaiPhysics::ZnRigidBody* PhysicsSystem::CreateRigidBody(const std::wstring& _id) noexcept
+	void PhysicsSystem::FreeObject(void* _object) const
 	{
-		return physics->CreateRigidBody(_id);
+		assert(_object != nullptr);
+		physics->FreeObject(_object);
 	}
 
-	ZonaiPhysics::ZnCollider* PhysicsSystem::CreateBoxCollider(const std::wstring& _id, float x, float y, float z) noexcept
+	ZonaiPhysics::ZnRigidBody* PhysicsSystem::CreateRigidBody(void* _gameObject) const noexcept
 	{
-		return physics->CreateBoxCollider(_id, x, y, z);
+		return physics->CreateRigidBody(_gameObject);
+	}
+
+	ZonaiPhysics::ZnCollider* PhysicsSystem::CreateBoxCollider(void* _gameObject, float x, float y, float z) const noexcept
+	{
+		return physics->CreateBoxCollider(_gameObject, { x, y, z }, 0);
+	}
+
+	ZonaiPhysics::ZnCollider* PhysicsSystem::CreateSphereCollider(void* _gameObject, float radius) const noexcept
+	{
+		return physics->CreateSphereCollider(_gameObject, radius, 0);
+	}
+
+	ZonaiPhysics::ZnCollider* PhysicsSystem::CreateCapsuleCollider(void* _gameObject, float radius, float height) const noexcept
+	{
+		return physics->CreateCapsuleCollider(_gameObject, radius, height, 0);
 	}
 
 	PurahEngine::PhysicsSystem& PurahEngine::PhysicsSystem::GetInstance()

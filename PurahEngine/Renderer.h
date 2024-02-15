@@ -6,19 +6,25 @@
 
 namespace PurahEngine
 {
+	class Transform;
+
 	class PURAHENGINE_API Renderer : public Component, IRenderer
 	{
 	public:
 		Renderer();
-		~Renderer();
+		virtual ~Renderer();
 
-		virtual void Render(IZeldaRenderer* renderer) override;
+		void Awake() override;
 
-		void AddTexture(TextureID textureID);
-		void AddLight(LightID lightID);
-	private:
-		TextureID texture;
-		LightID light = LightID::ID_NULL;
+		//void AddTexture(TextureID textureID);
+		//void AddLight(LightID lightID);
+
+	protected:
+		TextureID GetTextureID(std::wstring textureName);
+		ModelID GetModelID(std::wstring modelName);
+
+	protected:
+		Transform* transform;
 	};
 }
 

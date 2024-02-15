@@ -1,5 +1,6 @@
 #pragma once
 #include "PurahEngineAPI.h"
+#include "Transform.h"
 
 #include <vector>
 #include <string>
@@ -10,23 +11,26 @@ namespace PurahEngine
 	class SceneManager;
 	class Transform;
 
+	template <typename T>
+	concept componentType = std::is_base_of_v<Component, T>;
+
 	class PURAHENGINE_API GameObject
 	{
 	public:
 
-		virtual void Awake();
-		virtual void Start();
+		virtual void AwakeEvent();
+		virtual void StartEvent();
 
 		/// Update
 		// 물리 관련 업데이트
-		virtual void FixedUpdate();
+		virtual void FixedUpdateEvent();
 		// 기존 업데이트
-		virtual void Update();
+		virtual void UpdateEvent();
 
 		// 물리 관련 업데이트 2종 추가예정
 
 		// Upate 후에 한번 더 업데이트 (주로 카메라 관련에서 사용한다고 한다)
-		virtual void LateUpdate();
+		virtual void LateUpdateEvent();
 
 		void Enable();
 		void Disable();
@@ -70,7 +74,7 @@ namespace PurahEngine
 		virtual ~GameObject();
 
 	private:
-		enum class State
+		enum class ObjectState
 		{
 			CREATE,
 			ENABLE,
@@ -78,27 +82,34 @@ namespace PurahEngine
 			DESTROY
 		};
 
-		State state;
+		ObjectState state;
 		std::wstring name;
 		bool isActive;
 		bool isRun = false;
 
+		Transform* trans;
+
 	public:
 		bool IsEnable();
+		bool IsRootEnable();
 		bool isEnable;
+
+		Transform* GetTransform();
 
 	public:
 		// ComponentList로 Component 추가
-		template<typename T>
+		template<componentType T>
 		T* AddComponent() 
 		{
 			T* t = new T;
 			componentList.push_back(t);
 			dynamic_cast<Component*>(t)->gameObject = this;
+			t->Initialize();
+
 			return t; // 추가된 컴포넌트 포인터를 반환
 		}
 
-		template<typename T>
+		template<componentType T>
 		T* GetComponent() const
 		{
 			for (auto component : componentList)

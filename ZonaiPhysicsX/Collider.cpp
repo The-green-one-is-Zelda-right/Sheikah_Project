@@ -45,6 +45,7 @@ namespace ZonaiPhysics
 	{
 		assert(znBody != nullptr);
 
+		znBody->WakeUp();
 		znBody->SetPosition(_position);
 	}
 
@@ -73,6 +74,9 @@ namespace ZonaiPhysics
 
 	void Collider::SetQuaternion(const Eigen::Quaternionf& _quaternion)
 	{
+		assert(znBody != nullptr);
+
+		znBody->WakeUp();
 		znBody->SetQuaternion(_quaternion);
 	}
 

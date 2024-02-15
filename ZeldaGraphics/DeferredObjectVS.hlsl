@@ -25,44 +25,28 @@ PixelInputType main(VertexInputType input)
 	// 적절한 행렬 계산을 위해 위치 벡터를 동차 좌표로 변환한다.
     input.position.w = 1.0f;
     
-    // 애니메이션이 있는 경우
-    if (input.boneIndices[0] != 0xffffffffu)
-    {
-        float frameData[2] = { animationInfo.firstAnimationFrame, animationInfo.secondAnimationFrame };
-        unsigned int idData[2] = { animationInfo.firstAnimationID, animationInfo.secondAnimationID };
-        float finalRatio = animationInfo.ratio;
+    float4x4 finalMatrix[4];
+    finalMatrix[0] = GetFinalTM(input.boneIndices[0], animationInfo.time);
+    finalMatrix[1] = GetFinalTM(input.boneIndices[1], animationInfo.time);
+    finalMatrix[2] = GetFinalTM(input.boneIndices[2], animationInfo.time);
+    finalMatrix[3] = GetFinalTM(input.boneIndices[3], animationInfo.time);
         
-        float4x4 finalMatrix[4];
-        finalMatrix[0] = matrix(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-        finalMatrix[1] = matrix(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-        finalMatrix[2] = matrix(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-        finalMatrix[3] = matrix(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    // boneIndices와 weight를 이용해 애니메이션된 position을 계산한다.
+    // boneIndices의 값이 unsigned int의 MAX값이면 영향을 받는 본이 없는것으로 생각한다.
+    output.position =
+        mul(input.boneIndices[0] != 0xffffffffu, mul(mul(input.position, finalMatrix[0]), input.weight[0])) +
+        mul(input.boneIndices[1] != 0xffffffffu, mul(mul(input.position, finalMatrix[1]), input.weight[1])) +
+        mul(input.boneIndices[2] != 0xffffffffu, mul(mul(input.position, finalMatrix[2]), input.weight[2])) +
+        mul(input.boneIndices[3] != 0xffffffffu, mul(mul(input.position, finalMatrix[3]), input.weight[3])) +
+        mul(input.boneIndices[0] == 0xffffffffu, input.position);
         
-        if (input.boneIndices[0] != 0xffffffffu) finalMatrix[0] = GetFinalTM(input.boneIndices[0], idData[0], frameData[0], idData[1], frameData[1], finalRatio);
-        if (input.boneIndices[1] != 0xffffffffu) finalMatrix[1] = GetFinalTM(input.boneIndices[1], idData[0], frameData[0], idData[1], frameData[1], finalRatio);
-        if (input.boneIndices[2] != 0xffffffffu) finalMatrix[2] = GetFinalTM(input.boneIndices[2], idData[0], frameData[0], idData[1], frameData[1], finalRatio);
-        if (input.boneIndices[3] != 0xffffffffu) finalMatrix[3] = GetFinalTM(input.boneIndices[3], idData[0], frameData[0], idData[1], frameData[1], finalRatio);
-        
-        // boneIndices와 weight를 이용해 애니메이션된 position을 계산한다.
-        // boneIndices의 값이 unsigned int의 MAX값이면 영향을 받는 본이 없는것으로 생각한다.
-        output.position =
-            mul(input.boneIndices[0] != 0xffffffffu, mul(mul(input.position, finalMatrix[0]), input.weight[0])) +
-            mul(input.boneIndices[1] != 0xffffffffu, mul(mul(input.position, finalMatrix[1]), input.weight[1])) +
-            mul(input.boneIndices[2] != 0xffffffffu, mul(mul(input.position, finalMatrix[2]), input.weight[2])) +
-            mul(input.boneIndices[3] != 0xffffffffu, mul(mul(input.position, finalMatrix[3]), input.weight[3]));
-        
-            // normal의 애니메이션 계산
-        output.normal =
-            mul(input.boneIndices[0] != 0xffffffffu, mul(mul(input.normal, (float3x3) finalMatrix[0]), input.weight[0])) +
-            mul(input.boneIndices[1] != 0xffffffffu, mul(mul(input.normal, (float3x3) finalMatrix[1]), input.weight[1])) +
-            mul(input.boneIndices[2] != 0xffffffffu, mul(mul(input.normal, (float3x3) finalMatrix[2]), input.weight[2])) +
-            mul(input.boneIndices[3] != 0xffffffffu, mul(mul(input.normal, (float3x3) finalMatrix[3]), input.weight[3]));
-    }
-    else
-    {
-        output.position = input.position;
-        output.normal = input.normal;
-    }
+    // normal의 애니메이션 계산
+    output.normal =
+        mul(input.boneIndices[0] != 0xffffffffu, mul(mul(input.normal, (float3x3) finalMatrix[0]), input.weight[0])) +
+        mul(input.boneIndices[1] != 0xffffffffu, mul(mul(input.normal, (float3x3) finalMatrix[1]), input.weight[1])) +
+        mul(input.boneIndices[2] != 0xffffffffu, mul(mul(input.normal, (float3x3) finalMatrix[2]), input.weight[2])) +
+        mul(input.boneIndices[3] != 0xffffffffu, mul(mul(input.normal, (float3x3) finalMatrix[3]), input.weight[3])) +
+        mul(input.boneIndices[0] == 0xffffffffu, input.normal);
     
 	// 월드, 뷰, 프로젝션 행렬들을 이용해 정점의 위치를 계산한다.
     output.position = mul(output.position, worldMatrix);

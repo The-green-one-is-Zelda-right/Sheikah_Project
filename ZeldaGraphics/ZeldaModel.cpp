@@ -21,12 +21,6 @@ constexpr unsigned int ID_NO_ANIMATION = 0;
 
 ZeldaModel::~ZeldaModel()
 {
-	if (animationResourceView)
-	{
-		animationResourceView->Release();
-		animationResourceView = nullptr;
-	}
-
 	// root 부터 트리타고 전부 제거
 	std::queue<Node*> q;
 	if (root != nullptr)
@@ -71,11 +65,16 @@ ZeldaModel::~ZeldaModel()
 	}
 	animationTable.clear();
 
-	if (animationResourceView != nullptr)
+	// Shader Resource View 해제
+	for (auto iter = animationResourceViewTable.begin(); iter != animationResourceViewTable.end(); iter++)
 	{
-		animationResourceView->Release();
-		animationResourceView = nullptr;
+		ID3D11ShaderResourceView* srv = iter->second;
+		if (srv != nullptr)
+		{
+			srv->Release();
+		}
 	}
+	animationResourceViewTable.clear();
 }
 
 void ZeldaModel::Render(
@@ -86,47 +85,19 @@ void ZeldaModel::Render(
 	ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
 	DirectX::XMMATRIX worldMatrix,
 	ZeldaShader* shader,
-	const std::wstring& firstAnimationName,
-	const std::wstring& secondAnimationName,
-	float firstAnimationTime,
-	float secondAnimationTime,
-	float ratio)
+	const std::wstring& animationName,
+	float animationTime)
 {
-	assert(firstAnimationTime >= 0.0f);
-	assert(secondAnimationTime >= 0.0f);
+	assert(animationIDTable.count(animationName) > 0);
+	unsigned int animationID = animationIDTable[animationName];
 
-	SetAnimationTexture(deviceContext);
+	assert(animationTPSTable.count(animationID) > 0);
+	float tps = animationTPSTable[animationIDTable[animationName]];
 
-	animationHierarchyVsConstBuffer->SetData(boneHierarchyData);
+	SetAnimationTexture(deviceContext, animationID);
 
 	AnimationBufferType animationData;
-
-	// 비정상적인 애니메이션 정보가 들어온 경우 기본상태를 출력한다.
-	if (animationTable.count(firstAnimationName) == 0 || animationTable.count(secondAnimationName) == 0)
-	{
-		animationData.animationInfo.firstAnimationID = ID_NO_ANIMATION; // ID 0이 애니메이션이 없는 상태
-		animationData.animationInfo.secondAnimationID = ID_NO_ANIMATION; // ID 0이 애니메이션이 없는 상태
-		animationData.animationInfo.firstAnimationFrame = 0.0f;
-		animationData.animationInfo.secondAnimationFrame = 0.0f;
-		animationData.animationInfo.ratio = 0.0f;
-	}
-	else
-	{
-		animationData.animationInfo.firstAnimationID = animationIDTable[firstAnimationName];
-		animationData.animationInfo.secondAnimationID = animationIDTable[secondAnimationName];
-
-		float firstFrameTime = firstAnimationTime * animationTable[firstAnimationName]->tickPerSecond;
-		if (firstFrameTime < 0.0f) firstFrameTime = 0.0f;
-		if (firstFrameTime > animationTable[firstAnimationName]->duration) firstFrameTime = animationTable[firstAnimationName]->duration;
-
-		float secondFrameTime = secondAnimationTime * animationTable[secondAnimationName]->tickPerSecond;
-		if (secondFrameTime < 0.0f) secondFrameTime = 0.0f;
-		if (secondFrameTime > animationTable[secondAnimationName]->duration) secondFrameTime = animationTable[secondAnimationName]->duration;
-
-		animationData.animationInfo.firstAnimationFrame = firstFrameTime;
-		animationData.animationInfo.secondAnimationFrame = secondFrameTime;
-		animationData.animationInfo.ratio = ratio;
-	}
+	animationData.animationInfo.animationTime = animationTime * tps;
 
 	ZeldaCamera* currentcamera = ResourceManager::GetInstance().GetCamera(ZeldaCamera::GetMainCamera());
 
@@ -164,11 +135,16 @@ void ZeldaModel::RenderInstanced(
 	ConstantBuffer<InstancingAnimationBufferType, ShaderType::VertexShader>* instancingAnimationConstBuffer,
 	ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
 	const std::vector<ModelInstancingInfo>& instancingInfo,
-	ZeldaShader* shader)
+	ZeldaShader* shader,
+	const std::wstring& animationName)
 {
-	SetAnimationTexture(deviceContext);
+	assert(animationIDTable.count(animationName) > 0);
+	unsigned int animationID = animationIDTable[animationName];
 
-	animationHierarchyVsConstBuffer->SetData(boneHierarchyData);
+	assert(animationTPSTable.count(animationID) > 0);
+	float tps = animationTPSTable[animationIDTable[animationName]];
+
+	SetAnimationTexture(deviceContext, animationID);
 
 	ZeldaCamera* currentcamera = ResourceManager::GetInstance().GetCamera(ZeldaCamera::GetMainCamera());
 
@@ -184,43 +160,9 @@ void ZeldaModel::RenderInstanced(
 
 	for (size_t i = 0; i < instancingInfo.size(); i++)
 	{
-		double firstFrameTime = 0.0;
-		if (instancingInfo[i].firstAnimationName != L"" && animationTable.count(instancingInfo[i].firstAnimationName) != 0)
-		{
-			float duration = animationTable[instancingInfo[i].firstAnimationName]->duration;
-			firstFrameTime = instancingInfo[i].firstAnimationTime * animationTable[instancingInfo[i].firstAnimationName]->tickPerSecond;
-			if (firstFrameTime < 0.0f) firstFrameTime = 0.0f;
-			if (firstFrameTime > duration) firstFrameTime = duration;
-		}
-
-		double secondFrameTime = 0.0;
-		if (instancingInfo[i].secondAnimationName != L"" && animationTable.count(instancingInfo[i].secondAnimationName) != 0)
-		{
-			float duration = animationTable[instancingInfo[i].secondAnimationName]->duration;
-			secondFrameTime = instancingInfo[i].secondAnimationTime * animationTable[instancingInfo[i].secondAnimationName]->tickPerSecond;
-			if (secondFrameTime < 0.0f) secondFrameTime = 0.0f;
-			if (secondFrameTime > duration) secondFrameTime = duration;
-		}
-
-		unsigned int firstAnimationID = 0;
-		if (instancingInfo[i].firstAnimationName != L"" && animationIDTable.count(instancingInfo[i].firstAnimationName) != 0)
-		{
-			firstAnimationID = animationIDTable[instancingInfo[i].firstAnimationName];
-		}
-
-		unsigned int secondAnimationID = 0;
-		if (instancingInfo[i].secondAnimationName != L"" && animationIDTable.count(instancingInfo[i].secondAnimationName) != 0)
-		{
-			secondAnimationID = animationIDTable[instancingInfo[i].secondAnimationName];
-		}
-
 		// 셰이더에 넘기는 행렬을 전치를 한 후 넘겨야 한다.
 		instacingMatrix->instancingWorldMatrix[i % INSTANCING_MAX] = XMMatrixTranspose(instancingInfo[i].worldMatrix);
-		instacingData->animationInfo[i % INSTANCING_MAX].firstAnimationFrame = firstFrameTime;
-		instacingData->animationInfo[i % INSTANCING_MAX].secondAnimationFrame = secondFrameTime;
-		instacingData->animationInfo[i % INSTANCING_MAX].firstAnimationID = firstAnimationID;
-		instacingData->animationInfo[i % INSTANCING_MAX].secondAnimationID = secondAnimationID;
-		instacingData->animationInfo[i % INSTANCING_MAX].ratio = instancingInfo[i].ratio;
+		instacingData->animationInfo[i % INSTANCING_MAX].animationTime = instancingInfo[i].time * tps;
 
 		// 인스턴싱 가능한 최대 갯수로 끊어서 그리기
 		if (((i % INSTANCING_MAX) + 1 == INSTANCING_MAX) || (i == instancingInfo.size() - 1))
@@ -296,8 +238,7 @@ std::vector<float> ZeldaModel::GetAnimationPlayTime()
 
 ZeldaModel::ZeldaModel(ID3D11Device* device, FBXLoader::Model* fbxModel) :
 	root(nullptr),
-	updatedWorldMatrix(false),
-	animationResourceView(nullptr)
+	animationResourceViewTable()
 {
 	root = new Node();
 
@@ -411,229 +352,267 @@ ZeldaModel::ZeldaModel(ID3D11Device* device, FBXLoader::Model* fbxModel) :
 
 void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 {
-	struct AnimationData
-	{
-		XMMATRIX matrix;
-	};
+	constexpr unsigned int animationTickMax = Model::Animation::Tick::Max;
+	constexpr unsigned int boneCountMax = Model::Animation::Bone::Max;
+	constexpr float targetTPS = Model::Animation::Tick::TargetTickPerSecond;
 
-	// 기본상태를 추가하여 애니메이션 종류 + 1
-	// 0번 애니메이션에는 Animation Node의 Transform과 Offset을 저장한다.
-	unsigned long long animationSize = static_cast<unsigned long long>(animationTable.size()) + 1;
-	
-	// (애니메이션 종류) x (애니메이션 데이터 크기)
-	AnimationData identityData;
-	identityData.matrix = XMMatrixIdentity();
-	std::vector<std::vector<AnimationData>> textureData(animationSize, std::vector<AnimationData>(BONE_COUNT_MAX* ANIMATION_FRAME_MAX, identityData));
+	const size_t animationCount = animationTable.size() + 1;
 
-	std::unordered_map<std::wstring, unsigned int> boneIDMap;
+	std::vector<std::vector<XMMATRIX>> animationData(animationCount, std::vector<XMMATRIX>(boneCountMax * animationTickMax, XMMatrixIdentity()));
 
-	for (int i = 0; i < bones.size(); i++)
+	// 기본 상태에 대한 데이터 생성
+	CalculateIdleBoneTM();
+
+	for (size_t i = 0ull; i < bones.size(); i++)
 	{
 		if (bones[i] == nullptr) continue;
 
-		boneIDMap[bones[i]->name] = i;
-	}
-
-	for (int i = 0; i < bones.size(); i++)
-	{
-		if (bones[i] == nullptr) continue;
-
-		textureData[0][BONE_COUNT_MAX * 0 + i].matrix = bones[i]->transformMatrix;
-		textureData[0][BONE_COUNT_MAX * 1 + i].matrix = bones[i]->offsetMatrix;
-
-		// 부모가 없을 때 사용하기 위한 자기 자신의 ID
-		unsigned int parentID = i;
-
-		if (bones[i]->parent != nullptr)
+		for (unsigned int j = 0u; j < animationTickMax; j++)
 		{
-			// boneIDMap에서 부모를 찾지 못했다면 찾거나 root를 만날 때까지 올라간다.
-			if (boneIDMap.count(bones[i]->parent->name) == 0)
-			{
-				Node* tmpNode = bones[i]->parent;
-
-				XMMATRIX parentTM = XMMatrixIdentity();
-
-				while (true)
-				{
-					parentTM = parentTM * tmpNode->transformMatrix;
-
-					if (tmpNode == root)
-					{
-						break;
-					}
-
-					if (boneIDMap.count(tmpNode->name) != 0)
-					{
-						break;
-					}
-
-					tmpNode = tmpNode->parent;
-				}
-
-				// root가 부모
-				if (tmpNode == root)
-				{
-					// 부모를 자기 자신으로 설정
-					parentID = i;
-
-					// 자기 자신의 모든 프레임에 parentTM을 미리 곱해둔다.
-					int animationCount = 0;
-					for (auto animIter = animationTable.begin(); animIter != animationTable.end(); animIter++)
-					{
-						for (int currentFrame = 0; currentFrame < ANIMATION_FRAME_MAX - 1; currentFrame++)
-						{
-							textureData[animationCount + 1][BONE_COUNT_MAX * currentFrame + i].matrix = textureData[animationCount + 1][BONE_COUNT_MAX * currentFrame + i].matrix * parentTM;
-						}
-						animationCount += 1;
-					}
-
-					// transformMatrix에도 곱해둔다
-					textureData[0][BONE_COUNT_MAX * 0 + i].matrix = textureData[0][BONE_COUNT_MAX * 0 + i].matrix * parentTM;
-				}
-				else if (boneIDMap.count(tmpNode->name) != 0)
-				{
-					// 일단 boneIDMap에서 부모를 다시 찾는 경우는 없다고 생각하겠음
-					// 현재까지는 그런 데이터가 없음
-					assert(0);
-				}
-			}
-			else
-			{
-				parentID = boneIDMap[bones[i]->parent->name];
-			}
+			animationData[0][boneCountMax * j + i] = bones[i]->worldMatrix;
 		}
-
-		boneHierarchyData.parentBone[i] = parentID;
 	}
 
 	animationIDTable.clear();
+	animationIDTable[L""] = 0u; // 기본상태의 AnimationID
 
-	int animationCount = 0;
+	animationTPSTable.clear();
+
+	// 컨테이너들 생성
+	int cnt = 0;
 	for (auto animIter = animationTable.begin(); animIter != animationTable.end(); animIter++)
 	{
-		// animationIDTable을 채운다. TransformMatrix와 Offset와 계층정보에 사용하기 위해 0번은 사용하지 않음, 순서대로 frame 0, 1, 2 사용
-		animationIDTable[animIter->first] = animationCount + 1;
+		unsigned int currentAnimationID = cnt + 1;
 
 		Animation* currentAnimation = animIter->second;
 
-		double currentDuration = currentAnimation->duration;
-		double currentTickPerSecond = currentAnimation->tickPerSecond;
+		// animationIDTable을 채운다.
+		animationIDTable[animIter->first] = currentAnimationID;
+
+		cnt += 1;
+	}
+
+	// 단일 애니메이션에 대한 데이터 생성
+	for (auto animIter = animationTable.begin(); animIter != animationTable.end(); animIter++)
+	{
+		Animation* currentAnimation = animIter->second;
+		unsigned int currentAnimationID = animationIDTable[animIter->first];
+
+		double animationDuration = round(currentAnimation->duration);
+		double currentTPS = currentAnimation->tickPerSecond;
 		auto& currentAnimationKey = currentAnimation->animationKey;
 
-		int intDuration = static_cast<int>(currentDuration);
-
-		// assert에 걸린다면 단순히 static_cast가 아니라 반올림 후 캐스팅하는것으로 수정할 것
-		assert(abs(currentDuration - intDuration) < 0.1);
-
-		// 모든 애니메이션의 각 프레임
-		for (int currentFrame = 0; currentFrame < ANIMATION_FRAME_MAX - 1; currentFrame++)
+		float textureTPS = targetTPS;
+		unsigned int textureDuration = static_cast<unsigned int>(animationDuration * (static_cast<double>(targetTPS) / currentTPS));
+		if (!(animationDuration * (static_cast<double>(targetTPS) / currentTPS) <= static_cast<double>(animationTickMax - 1u)))
 		{
-			// 애니메이션 데이터가 존재하는 부분 (Duration까지 애니메이션이 존재하여 등호 포함)
-			if (currentFrame <= intDuration)
-			{
-				double frameTime = static_cast<double>(currentFrame);
+			textureTPS = currentTPS * (static_cast<double>(animationTickMax - 1) / animationDuration);
+			textureDuration = animationTickMax - 1u;
+		}
 
-				// 계산된 finalTM을 Texture에 넣는다.
-				for (int i = 0; i < bones.size(); i++)
+		animationTPSTable[currentAnimationID] = textureTPS;
+
+		float samplingRate = static_cast<float>(currentTPS) / textureTPS;
+
+		for (unsigned int tick = 0; tick <= animationTickMax - 1; tick++)
+		{
+			float fTick = static_cast<float>(tick);
+
+			if (tick <= textureDuration)
+			{
+				CalculateAnimationBoneTM(currentAnimation, fTick * samplingRate);
+
+				for (size_t i = 0ull; i < bones.size(); i++)
 				{
 					if (bones[i] == nullptr) continue;
 
-					DirectX::XMMATRIX data = bones[i]->transformMatrix;
-
-					if (currentAnimation->animationKey.count(bones[i]->name) != 0)
-					{
-						auto rightIter = currentAnimation->animationKey[bones[i]->name].lower_bound(frameTime);
-						auto endIter = currentAnimation->animationKey[bones[i]->name].end();
-
-						if (rightIter == endIter)
-						{
-							rightIter--;
-						}
-
-						XMMATRIX animationMatrix;
-
-						AnimationKeyInfo keyinfo = rightIter->second;
-						DirectX::XMMATRIX scaleMatrix = XMMatrixScalingFromVector(keyinfo.scale);
-						DirectX::XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(keyinfo.rotation);
-						DirectX::XMMATRIX translationMatrix = XMMatrixTranslationFromVector(keyinfo.position);
-						animationMatrix = scaleMatrix * rotationMatrix * translationMatrix;
-
-						data = animationMatrix;
-					}
-
-					// identity로 초기화 해놨기 때문에 추가로 곱하는 방식으로 연산한다.
-					// parentTM이 미리 곱해진 본들이 존재할 수 있기 때문
-					textureData[animationCount + 1][BONE_COUNT_MAX * currentFrame + i].matrix = data * textureData[animationCount + 1][BONE_COUNT_MAX * currentFrame + i].matrix;
+					animationData[currentAnimationID][boneCountMax * tick + i] = bones[i]->finalTM;
 				}
 			}
-			// Duration이후의 프레임은 마지막 프레임으로 전부 채운다.
 			else
 			{
-				// 잘못된 데이터를 가져와서 넣음, 데이터가 없는 애니메이션
-				assert(currentFrame > 0);
+				assert(tick != 0);
 
-				// 이전 프레임의 finalTM을 Texture에 넣는다.
-				for (int i = 0; i < bones.size(); i++)
+				// 이전 틱의 데이터 넣기
+				for (size_t i = 0ull; i < bones.size(); i++)
 				{
 					if (bones[i] == nullptr) continue;
 
-					textureData[animationCount + 1][BONE_COUNT_MAX * currentFrame + i] = textureData[animationCount + 1][BONE_COUNT_MAX * (currentFrame - 1) + i];
+					animationData[currentAnimationID][boneCountMax * tick + i] = animationData[currentAnimationID][boneCountMax * (tick - 1) + i];
 				}
 			}
 		}
-
-		animationCount += 1;
-	}
-	
-
-	// 계산된 애니메이션 데이터로 텍스쳐 생성하여 셰이더 리소스 뷰 생성
-	ID3D11Texture2D* tex2d = nullptr;
-
-	// 텍스처 생성
-	D3D11_TEXTURE2D_DESC textureDesc = {};
-	textureDesc.Width = 4 * BONE_COUNT_MAX;		// 텍스처 가로 크기 (Matrix를 이루는 Vector의 수) x (본 최대치)
-	textureDesc.Height = ANIMATION_FRAME_MAX;	// 텍스처 세로 크기 (프레임 최대치)
-	textureDesc.MipLevels = 1;
-	textureDesc.ArraySize = animationSize;	// ArraySize 애니메이션 종류
-	textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	textureDesc.SampleDesc.Count = 1;
-	textureDesc.Usage = D3D11_USAGE_DEFAULT;
-	textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	//textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-	std::vector<D3D11_SUBRESOURCE_DATA> initData(animationSize);
-	for (int i = 0; i < animationSize; i++)
-	{
-		initData[i].pSysMem = textureData[i].data();
-		initData[i].SysMemPitch = 16 * 4 * BONE_COUNT_MAX; // 바이트 단위인거 같다...
-		initData[i].SysMemSlicePitch = 16 * 4 * BONE_COUNT_MAX * ANIMATION_FRAME_MAX;
 	}
 
-	HRESULT hr = device->CreateTexture2D(&textureDesc, initData.data(), &tex2d);
-	if (FAILED(hr))
-	{
-		MessageBox(0, L"Failed to Create Animation Resource View", L"Model Error", MB_OK);
-		assert(0);
-	}
 
-	// 셰이더 리소스 뷰 생성
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Format = textureDesc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
-	srvDesc.Texture2DArray.MipLevels = 1;
-	srvDesc.Texture2DArray.ArraySize = animationSize;
-
-	hr = device->CreateShaderResourceView(tex2d, &srvDesc, &animationResourceView);
-	if (FAILED(hr))
+	for (size_t i = 0; i < animationCount; i++)
 	{
-		MessageBox(0, L"Failed to Create Animation Resource View", L"Model Error", MB_OK);
-		assert(0);
+		// 계산된 애니메이션 데이터로 텍스쳐 생성하여 셰이더 리소스 뷰 생성
+		ID3D11Texture2D* tex2d = nullptr;
+
+		// 텍스처 생성
+		D3D11_TEXTURE2D_DESC textureDesc = {};
+		textureDesc.Width = 4 * boneCountMax;		// 텍스처 가로 크기 (Matrix를 이루는 Vector의 수) x (본 최대치)
+		textureDesc.Height = animationTickMax;	// 텍스처 세로 크기 (프레임 최대치)
+		textureDesc.MipLevels = 1;
+		textureDesc.ArraySize = 1;
+		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.Usage = D3D11_USAGE_DEFAULT;
+		textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		//textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		D3D11_SUBRESOURCE_DATA initData;
+		initData.pSysMem = animationData[i].data();
+		initData.SysMemPitch = 16 * 4 * boneCountMax; // 바이트 단위인거 같다...
+		initData.SysMemSlicePitch = 16 * 4 * boneCountMax * animationTickMax;
+
+		HRESULT hr = device->CreateTexture2D(&textureDesc, &initData, &tex2d);
+		if (FAILED(hr))
+		{
+			MessageBox(0, L"Failed to Create Animation Resource View", L"Model Error", MB_OK);
+			assert(0);
+		}
+
+		// 셰이더 리소스 뷰 생성
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+		srvDesc.Format = textureDesc.Format;
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+		srvDesc.Texture2DArray.MipLevels = 1;
+		srvDesc.Texture2DArray.ArraySize = 1;
+
+		ID3D11ShaderResourceView* animationResourceView;
+		hr = device->CreateShaderResourceView(tex2d, &srvDesc, &animationResourceView);
+		if (FAILED(hr))
+		{
+			MessageBox(0, L"Failed to Create Animation Resource View", L"Model Error", MB_OK);
+			assert(0);
+		}
+
+		animationResourceViewTable[i] = animationResourceView;
+
+		if (tex2d != nullptr)
+		{
+			tex2d->Release();
+			tex2d = nullptr;
+		}
 	}
 }
 
-void ZeldaModel::SetAnimationTexture(ID3D11DeviceContext* deviceContext)
+void ZeldaModel::SetAnimationTexture(ID3D11DeviceContext* deviceContext, unsigned int animationID)
 {
-	deviceContext->VSSetShaderResources(TEXTURE_SLOT_ANIMATION, 1, &animationResourceView);
+	assert(animationResourceViewTable.count(animationID) > 0);
+
+	auto iter = animationResourceViewTable.find(animationID);
+	if (iter != animationResourceViewTable.end())
+	{
+		ID3D11ShaderResourceView* srv = iter->second;
+		deviceContext->VSSetShaderResources(TEXTURE_SLOT_ANIMATION, 1, &srv);
+	}
+}
+
+void ZeldaModel::CalculateIdleBoneTM()
+{
+	std::queue<std::pair<Node*, DirectX::XMMATRIX>> nodeQueue;
+
+	nodeQueue.push({ root, root->transformMatrix });
+
+	while (!nodeQueue.empty())
+	{
+		auto current = nodeQueue.front();
+		nodeQueue.pop();
+		Node* currentNode = current.first;
+		DirectX::XMMATRIX currentMatrix = current.second;
+
+		currentNode->worldMatrix = currentNode->offsetMatrix * currentMatrix;
+
+		for (int i = 0; i < currentNode->children.size(); i++)
+		{
+			Node* nextNode = currentNode->children[i];
+			DirectX::XMMATRIX nextMatrix = nextNode->transformMatrix * currentMatrix;
+
+			nodeQueue.push({ nextNode, nextMatrix });
+		}
+	}
+}
+
+void ZeldaModel::CalculateAnimationBoneTM(Animation* animation, float tickTime)
+{
+	// 애니메이션 시간에 따라 Bone정보 변경
+	std::queue<std::pair<Node*, DirectX::XMMATRIX>> nodeQueue;
+
+	nodeQueue.push({ root, root->transformMatrix });
+
+	while (!nodeQueue.empty())
+	{
+		auto current = nodeQueue.front();
+		nodeQueue.pop();
+		Node* currentNode = current.first;
+		DirectX::XMMATRIX currentMatrix = current.second;
+
+		currentNode->finalTM = currentNode->offsetMatrix * currentMatrix;
+
+		for (int i = 0; i < currentNode->children.size(); i++)
+		{
+			Node* nextNode = currentNode->children[i];
+			DirectX::XMMATRIX nextMatrix = nextNode->transformMatrix * currentMatrix;
+
+			if (animation->animationKey.count(nextNode->name) != 0)
+			{
+				auto lowerIter = animation->animationKey[nextNode->name].lower_bound(static_cast<double>(tickTime));
+
+				auto upperIter = animation->animationKey[nextNode->name].upper_bound(static_cast<double>(tickTime));
+
+				if (lowerIter != animation->animationKey[nextNode->name].begin())
+				{
+					lowerIter--;
+				}
+
+				if (upperIter == animation->animationKey[nextNode->name].end())
+				{
+					upperIter--;
+				}
+
+				XMMATRIX interpolatedMatrix;
+				if (lowerIter != upperIter)
+				{
+					float beginTime = static_cast<float>(lowerIter->first);
+					float endTime = static_cast<float>(upperIter->first);
+					float currentTime = static_cast<float>(static_cast<double>(tickTime));
+
+					// 시간에 대한 보간 계수 계산
+					float t = (currentTime - beginTime) / (endTime - beginTime);
+
+					// 선형 보간을 사용하여 행렬 보간
+					AnimationKeyInfo lowerKey = lowerIter->second;
+					AnimationKeyInfo upperKey = upperIter->second;
+
+					XMVECTOR scale = XMVectorLerp(lowerKey.scale, upperKey.scale, t);
+					XMVECTOR rotation = XMQuaternionSlerp(lowerKey.rotation, upperKey.rotation, t);
+					XMVECTOR position = XMVectorLerp(lowerKey.position, upperKey.position, t);
+
+					// 보간된 행렬 구성
+					XMMATRIX scaleMatrix = XMMatrixScalingFromVector(scale);
+					XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(rotation);
+					XMMATRIX translationMatrix = XMMatrixTranslationFromVector(position);
+
+					interpolatedMatrix = scaleMatrix * rotationMatrix * translationMatrix;
+				}
+				else
+				{
+					AnimationKeyInfo keyinfo = lowerIter->second;
+					DirectX::XMMATRIX scaleMatrix = XMMatrixScalingFromVector(keyinfo.scale);
+					DirectX::XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(keyinfo.rotation);
+					DirectX::XMMATRIX translationMatrix = XMMatrixTranslationFromVector(keyinfo.position);
+					interpolatedMatrix = scaleMatrix * rotationMatrix * translationMatrix;
+				}
+
+				nextMatrix = interpolatedMatrix * currentMatrix;
+			}
+
+			nodeQueue.push({ nextNode, nextMatrix });
+		}
+	}
 }
 
 void ZeldaModel::CopyNode(Node* node, FBXLoader::Bone* bone, std::map<std::wstring, Node*>& nodeTable)

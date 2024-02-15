@@ -1,7 +1,17 @@
 #pragma once
-#include <string>
 #include <vector>
 #include <windows.h>
+
+#include "ColliderBase.h"
+
+namespace PurahEngine
+{
+	class EventCallbackSystem;
+
+	// template <ColliderType T> class Collider;
+	// extern typedef Collider<ColliderType::DYNAMIC> DynamicCollider;
+	// extern typedef Collider<ColliderType::STATIC> StaticCollider;
+}
 
 namespace ZonaiPhysics
 {
@@ -13,7 +23,7 @@ namespace ZonaiPhysics
 
 namespace PurahEngine
 {
-	class Collider;
+	// class Collider;
 	class RigidBody;
 	class Joint;
 
@@ -32,25 +42,33 @@ namespace PurahEngine
 	private:
 		ZonaiPhysics::ZnPhysicsBase* physics;
 		HMODULE ZonaiPhysicsXDLL;
+		std::function<void()> releaseFuntion;
 
 	public:
 		void Initialize() noexcept;
-		void Simulation(float _dt) noexcept;
-		void SimulateResult();
-		void Finalize() noexcept;
-
-		std::vector<RigidBody*> bodies;
-		std::vector<Collider*> colliders;
-		std::vector<Joint*> joints;
+		void PreStep() const;
+		void Simulation(float _dt) const noexcept;
+		void SimulateResult() const;
+		void Finalize() const noexcept;
 
 	public:
-		ZonaiPhysics::ZnRigidBody*	CreateRigidBody(const std::wstring&) noexcept;
+		void FreeObject(void*) const;
 
-		ZonaiPhysics::ZnCollider*	CreateBoxCollider(const std::wstring&, float x, float y, float z) noexcept;
-		ZonaiPhysics::ZnCollider*	CreatPlaneCollider(const std::wstring&, float x, float y) noexcept;
-		ZonaiPhysics::ZnCollider*	CreatSphereCollider(const std::wstring&, float radius) noexcept;
-		ZonaiPhysics::ZnCollider*	CreateCapsuleCollider(const std::wstring&, float radius, float height) noexcept;
-		ZonaiPhysics::ZnCollider*	CreateCustomCollider(const std::wstring&) noexcept;
+	public:
+		std::vector<RigidBody*> bodies;
+		std::vector<ColliderBase*> dynamicColliders;
+		std::vector<ColliderBase*> staticColliders;
+		std::vector<Joint*> joints;
+		EventCallbackSystem* callbackSystem;
+
+	public:
+		ZonaiPhysics::ZnRigidBody*	CreateRigidBody(void* _gameObject) const noexcept;
+
+		ZonaiPhysics::ZnCollider*	CreateBoxCollider(void* _gameObject, float x, float y, float z) const noexcept;
+		// ZonaiPhysics::ZnCollider*	CreatPlaneCollider(void* _gameObject, float x, float y) noexcept;
+		ZonaiPhysics::ZnCollider*	CreateSphereCollider(void* _gameObject, float radius) const noexcept;
+		ZonaiPhysics::ZnCollider*	CreateCapsuleCollider(void* _gameObject, float radius, float height) const noexcept;
+		// ZonaiPhysics::ZnCollider*	CreateCustomCollider(void* _gameObject) noexcept;
 
 	public:
 		static PhysicsSystem& GetInstance();

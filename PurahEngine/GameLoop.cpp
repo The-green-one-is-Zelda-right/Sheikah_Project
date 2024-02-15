@@ -109,21 +109,22 @@ void PurahEngine::GameLoop::Run(_In_ int nCmdShow)
 
 void PurahEngine::GameLoop::Finalize()
 {
-
+	PurahEngine::GraphicsManager::GetInstance().Finalize();
 }
 
 void PurahEngine::GameLoop::run()
 {
 	PurahEngine::TimeController::GetInstance().Update(timeInit);
 	float deltaTime = PurahEngine::TimeController::GetInstance().GetDeltaTime(timeInit);
-	PurahEngine::PhysicsSystem::GetInstance().Simulation(0.02f);
 
+	PurahEngine::PhysicsSystem::GetInstance().PreStep();
+	PurahEngine::PhysicsSystem::GetInstance().Simulation(0.02f);
 
 	PurahEngine::InputManager::Getinstance().Update();
 	PurahEngine::SceneManager::GetInstance().Update();
 	PurahEngine::SoundManager::GetInstance().Update();
 
-	PurahEngine::GraphicsManager::GetInstance().Run();
+	PurahEngine::GraphicsManager::GetInstance().Run(deltaTime);
 }
 
 LRESULT CALLBACK PurahEngine::GameLoop::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

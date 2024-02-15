@@ -1,6 +1,10 @@
 #pragma once
 #include <vector>
+
+#pragma warning(push)
+#pragma warning(disable: 33010 26495 4819)
 #include <Eigen/Dense>
+#pragma warning (pop)
 
 #include "ForceType.h"
 #include "ZnRigidBody.h"

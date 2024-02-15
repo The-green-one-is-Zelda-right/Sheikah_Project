@@ -18,11 +18,10 @@ namespace PurahEngine
 
 	void RigidBody::Awake()
 	{
-		auto name = GetGameObject()->GetName();
-		body = PhysicsSystem::GetInstance().CreateRigidBody(name);
+		body = PhysicsSystem::GetInstance().CreateRigidBody(GetGameObject());
 		PhysicsSystem::GetInstance().bodies.push_back(this);
 		awake = false;
-		auto trans = GetGameObject()->GetComponent<Transform>();
+		const auto trans = GetGameObject()->GetComponent<Transform>();
 
 		body->SetPosition(trans->GetWorldPosition());
 		body->SetQuaternion(trans->GetWorldRotation());
@@ -96,17 +95,17 @@ namespace PurahEngine
 	}
 
 	/// 
-	ZonaiPhysics::DynamicLocks RigidBody::GetDynamicLockFlags() const noexcept
+	uint8_t RigidBody::GetDynamicLockFlags() const noexcept
 	{
 		return body->GetDynamicLockFlags();
 	}
 
-	void RigidBody::SetDynamicLockFlag(ZonaiPhysics::DynamicLock flag, bool value) noexcept
+	void RigidBody::SetDynamicLockFlag(ZonaiPhysics::FreezeFlag flag, bool value) noexcept
 	{
 		body->SetDynamicLockFlag(flag, value);
 	}
 
-	void RigidBody::SetDynamicLockFlags(ZonaiPhysics::DynamicLocks flags) noexcept
+	void RigidBody::SetDynamicLockFlags(uint8_t flags) noexcept
 	{
 		body->SetDynamicLockFlags(flags);
 	}
@@ -313,7 +312,6 @@ namespace PurahEngine
 	{
 		auto pos = body->GetPosition();
 		auto rot = body->GetQuaternion();
-		auto y = pos.y();
 
 		auto transform = GetGameObject()->GetComponent<Transform>();
 		// matrix4f로 만들어서 보내는걸로 하자

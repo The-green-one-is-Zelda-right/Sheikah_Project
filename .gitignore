@@ -82,6 +82,7 @@
 x64/
 x86/
 .vs/
+*.cso
 # endif
 
 /ZonaiMath/x64/Debug/ZonaiMath.tlog

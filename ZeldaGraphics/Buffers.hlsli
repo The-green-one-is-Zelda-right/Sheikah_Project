@@ -8,6 +8,7 @@
 #define LIGHT_COUNT_MAX 50u
 
 #define BONE_COUNT_MAX 256u
+#define ANIMATION_TICK_MAX 8192u
 
 #define INSTANCING_MAX 1024u
 
@@ -19,7 +20,7 @@ Texture2D EmissionMap : register(t4);
 Texture2D Temp0Map : register(t5);
 Texture2D Temp1Map : register(t6);
 Texture2D Temp2Map : register(t7);
-Texture2DArray AnimationMap : register(t8);
+Texture2D AnimationMap : register(t8);
 TextureCube cubeMap : register(t9);
 
 SamplerState Sampler : register(s0);
@@ -35,11 +36,7 @@ cbuffer MatrixBuffer : register(b0)
 
 struct AnimationInfo
 {
-    float firstAnimationFrame;
-    float secondAnimationFrame;
-    unsigned int firstAnimationID;
-    unsigned int secondAnimationID;
-    float ratio;
+    float time;
     float3 padding;
 };
 

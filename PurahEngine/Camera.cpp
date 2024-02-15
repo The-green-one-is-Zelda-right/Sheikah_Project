@@ -1,62 +1,70 @@
 #include "Camera.h"
 
-const float DEFAULT_NEAR = 1.0f;
-const float DEFAULT_FAR = 1000.0f;
-const float DEFAULT_FOV = 3.141592654f / 4.0f;
+#include "SceneManager.h"
+#include "GraphicsResourceManager.h"
+#include "GameObject.h"
+#include "Transform.h"
 
-PurahEngine::Camera::Camera()
-	: cameraID(CameraID::ID_NULL), renderer(nullptr), 
-	cameraNear(DEFAULT_NEAR), cameraFar(DEFAULT_FAR), fieldOfView(DEFAULT_FOV)
+namespace PurahEngine
 {
-	
-}
+	const float Camera::DEFAULT_NEAR = 1.0f;
+	const float Camera::DEFAULT_FAR = 1000.0f;
+	const float Camera::DEFAULT_FOV = 3.141592654f / 4.0f;
 
-PurahEngine::Camera::~Camera()
-{
+	PurahEngine::Camera::Camera()
+		: cameraID(CameraID::ID_NULL),
+		cameraNear(DEFAULT_NEAR),
+		cameraFar(DEFAULT_FAR),
+		fieldOfView(DEFAULT_FOV)
+	{
+		cameraID = GraphicsManager::GetInstance().resourceManager->CreateCamera();
+	}
 
-}
+	PurahEngine::Camera::~Camera()
+	{
+		GraphicsManager::GetInstance().resourceManager->ReleaseCamera(cameraID);
+	}
 
-CameraID PurahEngine::Camera::GetCameraID()
-{
-	return cameraID;
-}
+	void PurahEngine::Camera::SetCameraNear(float cameraNear)
+	{
+		this->cameraNear = cameraNear;
+	}
 
-float PurahEngine::Camera::GetCameraNear()
-{
-	return cameraNear;
-}
+	void PurahEngine::Camera::SetCameraFar(float cameraFar)
+	{
+		this->cameraFar = cameraFar;
+	}
 
-float PurahEngine::Camera::GetCameraFar()
-{
-	return cameraFar;
-}
+	void PurahEngine::Camera::SetCameraFOV(float fov)
+	{
+		this->fieldOfView = fov;
+	}
 
-float PurahEngine::Camera::GetCameraFOV()
-{
-	return fieldOfView;
-}
+	float PurahEngine::Camera::GetCameraNear()
+	{
+		return cameraNear;
+	}
 
-void PurahEngine::Camera::SetCameraID(CameraID camera)
-{
-	cameraID = camera;
-}
+	float PurahEngine::Camera::GetCameraFar()
+	{
+		return cameraFar;
+	}
 
-void PurahEngine::Camera::SetRenderer(IZeldaRenderer* render)
-{
-	renderer = render;
-}
+	float PurahEngine::Camera::GetCameraFOV()
+	{
+		return fieldOfView;
+	}
 
-void PurahEngine::Camera::CreateCamera()
-{
-	cameraID = renderer->CreateCamera();
-}
+	void PurahEngine::Camera::SetMainCamera()
+	{
+		SceneManager::GetInstance().SetMainCamera(this);
+	}
 
-void PurahEngine::Camera::SetMainCamera()
-{
-	renderer->SetMainCamera(cameraID);
-}
+	void PurahEngine::Camera::Render(IZeldaRenderer* renderer)
+	{
+		renderer->SetMainCamera(cameraID);
 
-void PurahEngine::Camera::UpdateCamera(const Eigen::Matrix4f& worldMatrix, float fieldOfView, float cameraNear, float cameraFar)
-{
-	renderer->UpdateCamera(cameraID, worldMatrix, fieldOfView, cameraNear, cameraFar);
+		auto worldTM = GetGameObject()->GetComponent<Transform>()->GetWorldMatrix();
+		renderer->UpdateCamera(cameraID, worldTM, fieldOfView, cameraNear, cameraFar);
+	}
 }
