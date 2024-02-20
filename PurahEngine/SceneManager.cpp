@@ -6,7 +6,7 @@
 #include "TimeController.h"
 
 PurahEngine::SceneManager::SceneManager()
-	: mainCamera(nullptr), cameraPosition(Eigen::Vector3f(0.0f, 0.0f, -10.0f)), state(RunningState::AWAKE)
+	: mainCamera(nullptr), cameraPosition(Eigen::Vector3f(0.0f, 0.0f, -10.0f)), state(RunningState::AWAKE), physicsTime(0.0f)
 {
 
 }
@@ -57,16 +57,16 @@ void PurahEngine::SceneManager::Update()
 		for (PurahEngine::GameObject* object : objectList)
 		{
 			object->AwakeEvent();
-			state = RunningState::START;
 		}
+		state = RunningState::START;
 	}
 	else if (state == RunningState::START)
 	{
 		for (PurahEngine::GameObject* object : objectList)
 		{
 			object->StartEvent();
-			state = RunningState::UPDATE;
 		}
+		state = RunningState::UPDATE;
 	}
 	else if (state == RunningState::UPDATE)
 	{

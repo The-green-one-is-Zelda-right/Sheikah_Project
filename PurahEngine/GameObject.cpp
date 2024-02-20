@@ -10,7 +10,7 @@ void PurahEngine::GameObject::AwakeEvent()
 			component->Awake();
 		}
 	}
-	if (isActive == true)
+	if (isEnable == true)
 	{
 		Enable();
 	}
@@ -68,6 +68,20 @@ void PurahEngine::GameObject::Disable()
 {
 	state = ObjectState::DISABLE;
 	isEnable = false;
+
+	if (trans->GetParent() != nullptr)
+	{
+		state = ObjectState::DISABLE;
+		isEnable = false;
+	}
+	else
+	{
+		for (PurahEngine::Transform* test : trans->GetChildren())
+		{
+			test->GetGameObject()->state = ObjectState::DISABLE;
+			test->GetGameObject()->isEnable = false;
+		}
+	}
 }
 
 bool PurahEngine::GameObject::IsEnable()
@@ -170,9 +184,9 @@ void PurahEngine::GameObject::OnMouseExit()
 	}
 }
 
-void PurahEngine::GameObject::SetActive(bool isTrue)
+void PurahEngine::GameObject::SetEnable(bool isTrue)
 {
-	isActive = isTrue;
+	isEnable = isTrue;
 }
 
 std::wstring PurahEngine::GameObject::GetName()
@@ -181,17 +195,19 @@ std::wstring PurahEngine::GameObject::GetName()
 }
 
 PurahEngine::GameObject::GameObject(std::wstring objectname)
+	: trans(nullptr)
 {
 	state = ObjectState::CREATE;
 	name = objectname;
-	isActive = true;
+	isEnable = true;
 }
 
-PurahEngine::GameObject::GameObject(std::wstring objectname, bool isactive)
+PurahEngine::GameObject::GameObject(std::wstring objectname, bool isenable)
+	: trans(nullptr)
 {
 	state = ObjectState::CREATE;
 	name = objectname;
-	isActive = isactive;
+	isEnable = isenable;
 }
 
 PurahEngine::GameObject::~GameObject()

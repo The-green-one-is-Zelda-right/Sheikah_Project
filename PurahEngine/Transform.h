@@ -43,6 +43,8 @@ namespace PurahEngine
 
 		Transform* GetParent();
 
+		std::vector<PurahEngine::Transform*> GetChildren() const;
+
 		/// set
 		// Local
 		// 포지션 세팅

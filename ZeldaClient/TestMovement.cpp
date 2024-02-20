@@ -224,7 +224,7 @@ int i = 0;
 
 void PurahEngine::TestMovement::FixedUpdate()
 {
-	auto& inputManager = PurahEngine::InputManager::Getinstance();
+	//auto& inputManager = PurahEngine::InputManager::Getinstance();
 	i++;
 	//	OutputDebugStringW((std::to_wstring(i) + L"\n").c_str());
 

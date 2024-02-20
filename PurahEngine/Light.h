@@ -10,10 +10,11 @@ namespace PurahEngine
 {
 	class Light : public Component, IRenderer
 	{
-	public:
+	protected:
 		Light();
 		virtual ~Light();
 
+	public:
 		void SetLightAmbient(const Eigen::Vector3f&);
 		void SetLightDiffuse(const Eigen::Vector3f&);
 		void SetLightSpecular(const Eigen::Vector3f&);
@@ -32,6 +33,8 @@ namespace PurahEngine
 		Eigen::Vector3f ambient;
 		Eigen::Vector3f diffuse;
 		Eigen::Vector3f specular;
+		float range;
+		float angle;
 
 		LightID lightID;
 	};

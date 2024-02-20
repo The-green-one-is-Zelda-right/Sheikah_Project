@@ -6,7 +6,6 @@
 #include <DirectXMath.h>
 
 constexpr unsigned int LIGHT_COUNT_MAX = 50u;
-constexpr unsigned int BONE_COUNT_MAX = 256u;
 constexpr unsigned int ANIMATION_FRAME_MAX = 1024u;
 constexpr unsigned int INSTANCING_MAX = 1024u;
 
@@ -217,13 +216,13 @@ struct InstancingAnimationBufferType
 };
 static_assert(sizeof(InstancingAnimationBufferType) % 16 == 0, "Constant Buffer size must be a multiple of 16 bytes");
 
-struct AnimationHierarchyBufferType
+struct BlendingAnimationBufferType
 {
-	unsigned int parentBone[BONE_COUNT_MAX];
+	DirectX::XMMATRIX finalTM[Model::Animation::Bone::Max];
 
 	constexpr static unsigned int registerNumB = 8;
 };
-static_assert(sizeof(AnimationHierarchyBufferType) % 16 == 0, "Constant Buffer size must be a multiple of 16 bytes");
+static_assert(sizeof(BlendingAnimationBufferType) % 16 == 0, "Constant Buffer size must be a multiple of 16 bytes");
 
 #pragma endregion
 

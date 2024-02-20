@@ -20,9 +20,6 @@ namespace PurahEngine
 		~GraphicsResourceManager();
 
 		// 여러개 사용될 수 있는 것
-		void CreateTexture(std::wstring textureName);
-		void CreateModel(std::wstring modelName);
-
 		TextureID GetTextureID(std::wstring textureName);
 		ModelID GetModelID(std::wstring modelName);
 

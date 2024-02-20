@@ -1,5 +1,6 @@
 #include "Test.h"
 #include "TestSingleton.h"
+#include "InputManager.h"
 
 PurahEngine::Test::Test()
 {

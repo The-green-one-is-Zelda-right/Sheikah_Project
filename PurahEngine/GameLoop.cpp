@@ -65,7 +65,7 @@ void PurahEngine::GameLoop::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gameNam
 	PurahEngine::GraphicsManager::GetInstance().Initialize(hWnd);
 
 	// InputManager 초기화
-	PurahEngine::InputManager::Getinstance().Initialize();
+	PurahEngine::InputManager::Getinstance().Initialize(hWnd);
 
 	// SceneManager 초기화
 	PurahEngine::SceneManager::GetInstance().Initialize();

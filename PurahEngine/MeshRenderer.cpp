@@ -16,10 +16,14 @@ namespace PurahEngine
 	void MeshRenderer::Render(IZeldaRenderer* renderer)
 	{
 		// 게임오브젝트가 활성화 되어 있는 경우에만 작동한다.
-		if (GetGameObject()->IsEnable())
+		if (GetGameObject()->IsRootEnable())
 		{
-			Eigen::Matrix4f worldTM = transform->GetWorldMatrix();
-			TextureID textureID = GetTextureID(textureName);
+			Eigen::Matrix4f worldTM = GetGameObject()->GetTransform()->GetWorldMatrix();
+			TextureID textureID = TextureID::ID_NULL;
+			if (textureName != L"")
+			{
+				textureID = GetTextureID(textureName);
+			}
 			
 			switch (meshType)
 			{

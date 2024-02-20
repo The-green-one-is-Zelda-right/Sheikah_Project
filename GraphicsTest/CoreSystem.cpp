@@ -222,6 +222,7 @@ void CoreSystem::run()
 
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(current_time - last_time);
 	auto deltaTime = static_cast<float>(duration.count()) / 1000000.0f;
+	deltaTime = 0.016f;
 
 	if (deltaTime < 0.016f)
 	{
@@ -566,57 +567,57 @@ void CoreSystem::run()
 	instMatrix(0, 3) = 0.0f;
 	instMatrix(1, 3) = 1.0f;
 	instMatrix(2, 3) = 0.0f;
-	for (int i = 0; i < 1000; i++)
+	//for (int i = 0; i < 1000; i++)
+	//{
+	//	instMatrix(0, 3) = 100.0f * (i % 100);
+	//	instMatrix(1, 3) = 250.0f * (i / 100);
+
+	//	float d = animationTime + i * 0.2f;
+	//	while (d >= animationPlayTimeList[animationNumber])
+	//	{
+	//		d -= animationPlayTimeList[animationNumber];
+	//	}
+
+
+	//	renderer->DrawAnimation(instMatrix, fbxID, animationList[animationNumber], d, false);
+	//}
+
+	if (isReset)
 	{
-		instMatrix(0, 3) = 100.0f * (i % 100);
-		instMatrix(1, 3) = 250.0f * (i / 100);
-
-		float d = animationTime + i * 0.2f;
-		while (d >= animationPlayTimeList[animationNumber])
+		if (cutTime > 0.0f)
 		{
-			d -= animationPlayTimeList[animationNumber];
+			instMatrix(0, 3) = 0.0f;
+			renderer->DrawChangingAnimation(instMatrix, fbxID, animationList[animationNumber], animationList[animationNumber], cutTime, 0.0f, animationTime / resetTime, false);
+
+			instMatrix(0, 3) = 100.0f;
+			renderer->DrawChangingAnimation(instMatrix, fbxID, animationList[animationNumber], animationList[animationNumber], cutTime, 0.0f, animationTime / resetTime, false);
+
+			instMatrix(0, 3) = 200.0f;
+			renderer->DrawChangingAnimation(instMatrix, fbxID, animationList[animationNumber], animationList[animationNumber], cutTime, 0.0f, animationTime / resetTime, false);
 		}
+		else
+		{
+			instMatrix(0, 3) = 0.0f;
+			renderer->DrawChangingAnimation(instMatrix, fbxID, animationList[animationNumber], animationList[animationNumber], animationPlayTimeList[animationNumber], 0.0f, animationTime / resetTime, false);
 
+			instMatrix(0, 3) = 100.0f;
+			renderer->DrawChangingAnimation(instMatrix, fbxID, animationList[animationNumber], animationList[animationNumber], animationPlayTimeList[animationNumber], 0.0f, animationTime / resetTime, false);
 
-		renderer->DrawAnimation(instMatrix, fbxID, animationList[animationNumber], d, false);
+			instMatrix(0, 3) = 200.0f;
+			renderer->DrawChangingAnimation(instMatrix, fbxID, animationList[animationNumber], animationList[animationNumber], animationPlayTimeList[animationNumber], 0.0f, animationTime / resetTime, false);
+		}
 	}
+	else
+	{
+		instMatrix(0, 3) = 0.0f;
+		renderer->DrawAnimation(instMatrix, fbxID, animationList[animationNumber], animationTime, false);
 
-	//if (isReset)
-	//{
-	//	if (cutTime > 0.0f)
-	//	{
-	//		instMatrix(0, 3) = 0.0f;
-	//		renderer->DrawChangingAnimation(instMatrix, fbxID, animationList[animationNumber], animationList[animationNumber], cutTime, 0.0f, animationTime / resetTime, false);
+		instMatrix(0, 3) = 100.0f;
+		renderer->DrawAnimation(instMatrix, fbxID, animationList[animationNumber], animationTime, false);
 
-	//		instMatrix(0, 3) = 100.0f;
-	//		renderer->DrawChangingAnimation(instMatrix, fbxID, animationList[animationNumber], animationList[animationNumber], cutTime, 0.0f, animationTime / resetTime, false);
-
-	//		instMatrix(0, 3) = 200.0f;
-	//		renderer->DrawChangingAnimation(instMatrix, fbxID, animationList[animationNumber], animationList[animationNumber], cutTime, 0.0f, animationTime / resetTime, false);
-	//	}
-	//	else
-	//	{
-	//		instMatrix(0, 3) = 0.0f;
-	//		renderer->DrawChangingAnimation(instMatrix, fbxID, animationList[animationNumber], animationList[animationNumber], animationPlayTimeList[animationNumber], 0.0f, animationTime / resetTime, false);
-
-	//		instMatrix(0, 3) = 100.0f;
-	//		renderer->DrawChangingAnimation(instMatrix, fbxID, animationList[animationNumber], animationList[animationNumber], animationPlayTimeList[animationNumber], 0.0f, animationTime / resetTime, false);
-
-	//		instMatrix(0, 3) = 200.0f;
-	//		renderer->DrawChangingAnimation(instMatrix, fbxID, animationList[animationNumber], animationList[animationNumber], animationPlayTimeList[animationNumber], 0.0f, animationTime / resetTime, false);
-	//	}
-	//}
-	//else
-	//{
-	//	instMatrix(0, 3) = 0.0f;
-	//	renderer->DrawAnimation(instMatrix, fbxID, animationList[animationNumber], animationTime, false);
-
-	//	instMatrix(0, 3) = 100.0f;
-	//	renderer->DrawAnimation(instMatrix, fbxID, animationList[animationNumber], animationTime, false);
-
-	//	instMatrix(0, 3) = 200.0f;
-	//	renderer->DrawAnimation(instMatrix, fbxID, animationList[animationNumber], animationTime, false);
-	//}
+		instMatrix(0, 3) = 200.0f;
+		renderer->DrawAnimation(instMatrix, fbxID, animationList[animationNumber], animationTime, false);
+	}
 
 	renderer->DrawCube(fallingMatrix * worldMatrix2, scdTextureID, false, 0.0f, 1.0f, 1.0f, 1.0f);
 

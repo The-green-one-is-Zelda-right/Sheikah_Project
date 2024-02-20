@@ -110,9 +110,9 @@ cbuffer InstancingAnimationBufferType : register(b7)
     AnimationInfo instancingAnimationInfo[INSTANCING_MAX];
 }
 
-cbuffer AnimationHierarchyBufferType : register(b8)
+cbuffer BlendingAnimationBufferType : register(b8)
 {
-    uint4 parentBone[BONE_COUNT_MAX / 4];
+    matrix finalTM[BONE_COUNT_MAX];
 }
 
 #endif

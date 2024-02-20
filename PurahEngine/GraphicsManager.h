@@ -23,6 +23,7 @@ namespace PurahEngine
 	class Renderer;
 	class Light;
 	class IRenderer;
+	class Animator;
 	class GraphicsResourceManager;
 
 	class PURAHENGINE_API GraphicsManager
@@ -61,6 +62,7 @@ namespace PurahEngine
 		friend Renderer;
 		friend Light;
 		friend Camera;
+		friend Animator;
 	};
 }
 

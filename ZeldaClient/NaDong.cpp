@@ -3,9 +3,11 @@
 
 #include "PurahEngine.h"
 
-#include "TestMovement.h"
-#include "CameraMovement.h"
+//#include "TestMovement.h"
+//#include "CameraMovement.h"
 #include "Test.h"
+#include "Test2.h"
+#include "Test3.h"
 
 using namespace PurahEngine;
 
@@ -33,44 +35,51 @@ void NaDong::Run()
 	//cube->SetMesh(MeshRenderer::MeshType::Cube);
 
 	GameObject* object1 = SceneManager::GetInstance().CreateGameObject(L"1");
-	GameObject* object2 = SceneManager::GetInstance().CreateGameObject(L"2");
-	GameObject* object3 = SceneManager::GetInstance().CreateGameObject(L"3");
-	GameObject* object4 = SceneManager::GetInstance().CreateGameObject(L"4");
-
-	//GameObject* cObject1 = SceneManager::GetInstance().CreateGameObject(L"c1");
+	//GameObject* object2 = SceneManager::GetInstance().CreateGameObject(L"2");
+	//GameObject* object3 = SceneManager::GetInstance().CreateGameObject(L"3");
+	//GameObject* object4 = SceneManager::GetInstance().CreateGameObject(L"4");
+	//
+	//
+	GameObject* cObject1 = SceneManager::GetInstance().CreateGameObject(L"c1");
 	//GameObject* cObject2 = SceneManager::GetInstance().CreateGameObject(L"c2");
 	//GameObject* cObject3 = SceneManager::GetInstance().CreateGameObject(L"c3");
 	//GameObject* cObject4 = SceneManager::GetInstance().CreateGameObject(L"c4");
 	//
-	//GameObject* ccObject1 = SceneManager::GetInstance().CreateGameObject(L"cc1");
+	GameObject* ccObject1 = SceneManager::GetInstance().CreateGameObject(L"cc1");
 	//GameObject* ccObject2 = SceneManager::GetInstance().CreateGameObject(L"cc2");
 	//GameObject* ccObject3 = SceneManager::GetInstance().CreateGameObject(L"cc3");
 	//GameObject* ccObject4 = SceneManager::GetInstance().CreateGameObject(L"cc4");
-
-	//cObject1->GetComponent<Transform>()->SetParent(object1->GetComponent<Transform>());
+	//
+	cObject1->GetComponent<Transform>()->SetParent(object1->GetComponent<Transform>());
 	//cObject2->GetComponent<Transform>()->SetParent(object2->GetComponent<Transform>());
 	//cObject3->GetComponent<Transform>()->SetParent(object3->GetComponent<Transform>());
 	//cObject4->GetComponent<Transform>()->SetParent(object4->GetComponent<Transform>());
 	//
-	//ccObject1->GetComponent<Transform>()->SetParent(cObject1->GetComponent<Transform>());
+	ccObject1->GetComponent<Transform>()->SetParent(cObject1->GetComponent<Transform>());
 	//ccObject2->GetComponent<Transform>()->SetParent(cObject2->GetComponent<Transform>());
 	//ccObject3->GetComponent<Transform>()->SetParent(cObject3->GetComponent<Transform>());
 	//ccObject4->GetComponent<Transform>()->SetParent(cObject4->GetComponent<Transform>());
 
 
 	object1->AddComponent<Test>();
-	object2->AddComponent<Test>();
-	object3->AddComponent<Test>();
-	object4->AddComponent<Test>();
+	object1->AddComponent<Test2>();
+	//object1->AddComponent<Test3>();
+	//object2->AddComponent<Test>();
+	//object3->AddComponent<Test>();
+	//object4->AddComponent<Test>();
 
-	//cObject1->AddComponent<Test>();
+	cObject1->AddComponent<Test>();
+	//cObject1->AddComponent<Test2>();
 	//cObject2->AddComponent<Test>();
 	//cObject3->AddComponent<Test>();
 	//cObject4->AddComponent<Test>();
-	//
-	//ccObject1->AddComponent<Test>();
+
+	ccObject1->AddComponent<Test>();
 	//ccObject2->AddComponent<Test>();
 	//ccObject3->AddComponent<Test>();
 	//ccObject4->AddComponent<Test>();
+
+	//GameObject* testObject = SceneManager::GetInstance().CreateGameObject(L"test");
+	//testObject->AddComponent<Test3>();
 
 }

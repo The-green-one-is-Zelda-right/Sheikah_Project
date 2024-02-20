@@ -150,6 +150,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NaDong.cpp" />
     <ClCompile Include="Test.cpp" />
+    <ClCompile Include="Test2.cpp" />
+    <ClCompile Include="Test3.cpp" />
     <ClCompile Include="TestMovement.cpp" />
     <ClCompile Include="TestSingleton.cpp" />
     <ClCompile Include="YongHun.cpp" />
@@ -162,6 +164,8 @@
     <ClInclude Include="KiHoon.h" />
     <ClInclude Include="NaDong.h" />
     <ClInclude Include="Test.h" />
+    <ClInclude Include="Test2.h" />
+    <ClInclude Include="Test3.h" />
     <ClInclude Include="TestMovement.h" />
     <ClInclude Include="TestSingleton.h" />
     <ClInclude Include="YongHun.h" />

@@ -6,8 +6,7 @@
 
 namespace PurahEngine
 {
-	Renderer::Renderer() :
-		transform(nullptr)
+	Renderer::Renderer()
 	{
 		GraphicsManager::GetInstance().AddRenderer(this);
 	}
@@ -15,11 +14,6 @@ namespace PurahEngine
 	Renderer::~Renderer()
 	{
 		GraphicsManager::GetInstance().RemoveRenderer(this);
-	}
-
-	void Renderer::Awake()
-	{
-		transform = GetGameObject()->GetComponent<Transform>();
 	}
 
 	TextureID Renderer::GetTextureID(std::wstring textureName)

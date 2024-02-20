@@ -60,9 +60,16 @@ namespace PurahEngine
 		// 마우스가 오브젝트에서 벗어났을 때 호출
 		virtual void OnMouseExit();
 
-		void SetActive(bool isTrue);
+		void SetEnable(bool isTrue);
+
+		bool IsEnable();
+		bool IsRootEnable();
+
+		Transform* GetTransform();
+
 
 		std::wstring GetName();
+
 
 	private:
 		// ComponentList로 Component 관리
@@ -70,7 +77,7 @@ namespace PurahEngine
 
 	private:
 		GameObject(std::wstring objectname);
-		GameObject(std::wstring objectname, bool isactive);
+		GameObject(std::wstring objectname, bool isenable);
 		virtual ~GameObject();
 
 	private:
@@ -84,17 +91,10 @@ namespace PurahEngine
 
 		ObjectState state;
 		std::wstring name;
-		bool isActive;
+		bool isEnable;
 		bool isRun = false;
 
 		Transform* trans;
-
-	public:
-		bool IsEnable();
-		bool IsRootEnable();
-		bool isEnable;
-
-		Transform* GetTransform();
 
 	public:
 		// ComponentList로 Component 추가

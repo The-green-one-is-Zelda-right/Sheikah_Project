@@ -25,24 +25,6 @@ namespace PurahEngine
 		}
 	}
 
-	void GraphicsResourceManager::CreateTexture(std::wstring textureName)
-	{
-		if (textureTable.count(textureName) == 0)
-		{
-			TextureID id = graphicsModule->CreateTexture(textureName);
-			textureTable[textureName] = id;
-		}
-	}
-
-	void GraphicsResourceManager::CreateModel(std::wstring modelName)
-	{
-		if (modelTable.count(modelName) == 0)
-		{
-			ModelID id = graphicsModule->CreateModel(modelName);
-			modelTable[modelName] = id;
-		}
-	}
-
 	TextureID GraphicsResourceManager::GetTextureID(std::wstring textureName)
 	{
 		auto iter = textureTable.find(textureName);
@@ -50,7 +32,9 @@ namespace PurahEngine
 		// textureName이 textureTable에 존재하지 않음
 		if (iter == textureTable.end())
 		{
-			return TextureID::ID_NULL;
+			TextureID id = graphicsModule->CreateTexture(textureName);
+			textureTable[textureName] = id;
+			return id;
 		}
 		else
 		{
@@ -65,7 +49,9 @@ namespace PurahEngine
 		// modelName이 modelTable에 존재하지 않음
 		if (iter == modelTable.end())
 		{
-			return ModelID::ID_NULL;
+			ModelID id = graphicsModule->CreateModel(modelName);
+			modelTable[modelName] = id;
+			return id;
 		}
 		else
 		{

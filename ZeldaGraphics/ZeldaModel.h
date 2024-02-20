@@ -67,7 +67,6 @@ public:
 	void Render(
 		ID3D11DeviceContext* deviceContext,
 		ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
-		ConstantBuffer<AnimationHierarchyBufferType, ShaderType::VertexShader>* animationHierarchyVsConstBuffer,
 		ConstantBuffer<AnimationBufferType, ShaderType::VertexShader>* animationConstBuffer,
 		ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
 		DirectX::XMMATRIX worldMatrix,
@@ -80,12 +79,25 @@ public:
 		ID3D11DeviceContext* deviceContext,
 		ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
 		ConstantBuffer<InstancingMatrixBufferType, ShaderType::VertexShader>* instancingMatrixConstBuffer,
-		ConstantBuffer<AnimationHierarchyBufferType, ShaderType::VertexShader>* animationHierarchyVsConstBuffer,
 		ConstantBuffer<InstancingAnimationBufferType, ShaderType::VertexShader>* instancingAnimationConstBuffer,
 		ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
 		const std::vector<ModelInstancingInfo>& instancingInfo,
 		ZeldaShader* shader,
 		const std::wstring& animationName
+	);
+
+	void RenderBlendingAnimation(
+		ID3D11DeviceContext* deviceContext,
+		ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
+		ConstantBuffer<BlendingAnimationBufferType, ShaderType::VertexShader>* blendingAnimationVsConstBuffer,
+		ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
+		DirectX::XMMATRIX worldMatrix,
+		ZeldaShader* shader,
+		const std::wstring& firstAnimationName,
+		const std::wstring& secondAnimationName,
+		float firstAnimationTime,
+		float secondAnimationTime,
+		float ratio
 	);
 
 	std::vector<std::wstring> GetAnimationList();

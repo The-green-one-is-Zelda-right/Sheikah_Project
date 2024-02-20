@@ -6,11 +6,15 @@
 
 namespace PurahEngine
 {
+	// 나중에 Angle 관련된것 구현할 때 Radian과 Degree 주의
+
 	Light::Light() :
 		ambient({ 0.2f, 0.2f, 0.2f }),
 		diffuse({ 1.0f, 1.0f, 1.0f }),
 		specular({ 1.0f, 1.0f, 1.0f }),
-		lightID(LightID::ID_NULL)
+		lightID(LightID::ID_NULL),
+		range(10.0f),
+		angle(45.0f)
 	{
 		GraphicsManager::GetInstance().AddLight(this);
 	}
@@ -38,8 +42,13 @@ namespace PurahEngine
 	void Light::Render(IZeldaRenderer* renderer)
 	{
 		// 게임오브젝트가 활성화 되어 있는 경우에만 작동한다.
-		if (GetGameObject()->IsEnable())
+		if (GetGameObject()->IsRootEnable())
 		{
+			Eigen::Vector3f direction = { 0.0f , 0.0f, 1.0f };
+			direction = GetGameObject()->GetTransform()->GetWorldMatrix().block<3, 3>(0, 0) * direction;
+			direction.normalize();
+
+			renderer->UpdateLight(lightID, ambient, diffuse, specular, direction, {}, range, angle);
 			renderer->DrawLight(lightID);
 		}
 	}
@@ -49,6 +58,8 @@ namespace PurahEngine
 		assert(lightID == LightID::ID_NULL);
 
 		Eigen::Vector3f direction = { 0.0f , 0.0f, 1.0f };
+		direction = GetGameObject()->GetTransform()->GetWorldMatrix().block<3, 3>(0, 0) * direction;
+		direction.normalize();
 
 		lightID = GraphicsManager::GetInstance().resourceManager->CreateDirectionalLight(ambient, diffuse, specular, direction);
 	}
@@ -57,7 +68,7 @@ namespace PurahEngine
 	{
 		assert(lightID == LightID::ID_NULL);
 
-		Eigen::Vector3f position = { 0.0f , 0.0f, 0.0f };
+		Eigen::Vector3f position = GetGameObject()->GetTransform()->GetWorldPosition();
 
 		lightID = GraphicsManager::GetInstance().resourceManager->CreatePointLight(ambient, diffuse, specular, position, range);
 	}
@@ -67,7 +78,9 @@ namespace PurahEngine
 		assert(lightID == LightID::ID_NULL);
 
 		Eigen::Vector3f direction = { 0.0f , 0.0f, 1.0f };
-		Eigen::Vector3f position = { 0.0f , 0.0f, 0.0f };
+		direction = GetGameObject()->GetTransform()->GetWorldMatrix().block<3, 3>(0, 0) * direction;
+		direction.normalize();
+		Eigen::Vector3f position = GetGameObject()->GetTransform()->GetWorldPosition();
 
 		lightID = GraphicsManager::GetInstance().resourceManager->CreateSpotLight(ambient, diffuse, specular, direction, position, range, angle);
 	}

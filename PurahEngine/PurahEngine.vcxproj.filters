@@ -140,6 +140,9 @@
     <ClCompile Include="Light.cpp">
       <Filter>Component\3. Renderer\Light</Filter>
     </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>Component\3. Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameLoop.h">
@@ -219,6 +222,9 @@
     </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>Component\3. Renderer\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>Component\3. Renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

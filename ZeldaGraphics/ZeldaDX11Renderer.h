@@ -64,6 +64,18 @@ struct ModelRenderInfo
 	bool wireFrame;
 };
 
+struct BlendingAnimationRenderInfo
+{
+	DirectX::XMMATRIX worldMatrix;
+	ModelID modelID;
+	std::wstring firstAnimationName;
+	std::wstring secondAnimationName;
+	float firstAnimationTime;
+	float secondAnimationTime;
+	float ratio;
+	bool wireFrame;
+};
+
 struct SpriteRenderInfo
 {
 	std::vector<SpriteInstancingInfo> instancingInfo;
@@ -103,7 +115,7 @@ public:
 	virtual void DrawCube(const Eigen::Matrix4f& worldMatrix, TextureID texture, bool wireFrame, float r, float g, float b, float a) override;
 	virtual void DrawModel(const Eigen::Matrix4f& worldMatrix, ModelID model, bool wireFrame) override;
 	virtual void DrawAnimation(const Eigen::Matrix4f& worldMatrix, ModelID model, std::wstring animationName, float animationTime, bool wireFrame) override;
-	virtual void DrawChangingAnimation(const Eigen::Matrix4f& worldMatrix, ModelID model, std::wstring firstAnimationName, std::wstring secondAnimationName, float firstAnimationTime, float secondAnimationTime, float ratio, bool wireFrame) override;
+	virtual void DrawChangingAnimation(const Eigen::Matrix4f& worldMatrix, ModelID model, const std::wstring& firstAnimationName, const std::wstring& secondAnimationName, float firstAnimationTime, float secondAnimationTime, float ratio, bool wireFrame) override;
 
 	virtual void DrawLight(LightID lightID) override;
 
@@ -144,6 +156,7 @@ private:
 
 	void DrawMeshRenderInfo(MeshRenderInfo renderInfo, ZeldaShader* shader);
 	void DrawModelRenderInfo(ModelRenderInfo renderInfo, ZeldaShader* shader);
+	void DrawBlendingAnimationRenderInfo(BlendingAnimationRenderInfo renderInfo, ZeldaShader* shader);
 	void DrawSpriteRenderInfo(SpriteRenderInfo renderInfo);
 	void DrawCubeMapRenderInfo();
 
@@ -182,12 +195,14 @@ private:
 	ID3D11RenderTargetView* deferredRenderTargets[Deferred::BufferCount];
 	ID3D11ShaderResourceView* deferredShaderResources[Deferred::BufferCount];
 
+	ZeldaShader* deferredBlendingObjectShader;
 	ZeldaShader* deferredObjectShader;
 	ZeldaShader* deferredDirectionalLightShader;
 	ZeldaShader* deferredPointLightShader;
 	ZeldaShader* deferredSpotLightShader;
 	ZeldaShader* deferredFinalShader;
 	ZeldaShader* forwardShader;
+	ZeldaShader* forwardBlendingShader;
 	ZeldaShader* cubeMapShader;
 
 	DebugMode debugMode;
@@ -211,7 +226,7 @@ private:
 	ConstantBuffer<AnimationBufferType, ShaderType::VertexShader>* animationConstBuffer;
 	ConstantBuffer<InstancingMatrixBufferType, ShaderType::VertexShader>* instancingMatrixVsConstBuffer;
 	ConstantBuffer<InstancingAnimationBufferType, ShaderType::VertexShader>* instancingAnimationVsConstBuffer;
-	ConstantBuffer<AnimationHierarchyBufferType, ShaderType::VertexShader>* animationHierarchyVsConstBuffer;
+	ConstantBuffer<BlendingAnimationBufferType, ShaderType::VertexShader>* blendingAnimationVsConstBuffer;
 
 	ConstantBuffer<MatrixBufferType, ShaderType::PixelShader>* matrixPsConstBuffer;
 	ConstantBuffer<LightInfoBufferType, ShaderType::PixelShader>* lightInfoConstBuffer;
@@ -227,10 +242,14 @@ private:
 	std::unordered_map<TextureID, SpriteRenderInfo> organizedSpriteRenderInfo;
 	std::unordered_set<LightID> organizedLightRenderInfo;
 
+	std::vector<BlendingAnimationRenderInfo> blendingAnimationRenderInfo;
+
 	// 오브젝트들을 실제로 그리는 과정에서 WireFrame으로 그리도록 설정된 오브젝트들을 여기에 저장해두고 deferred render 후에 그린다.
 	// 만약 RendererMode가 WireFrameMode라면 사용하지 않는다.
 	std::unordered_map<std::pair<std::pair<MeshID, TextureID>, std::pair<bool, Color>>, MeshRenderInfo> forwardMeshRenderInfo;
 	std::unordered_map<std::pair<std::pair<ModelID, std::wstring>, bool>, ModelRenderInfo> forwardModelRenderInfo;
+
+	std::vector<BlendingAnimationRenderInfo> forwardBlendingAnimationRenderInfo;
 
 	TextureID cubeMapRenderInfo;
 

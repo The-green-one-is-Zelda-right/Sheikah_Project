@@ -10,8 +10,9 @@ PurahEngine::InputManager::~InputManager()
 
 }
 
-void PurahEngine::InputManager::Initialize()
+void PurahEngine::InputManager::Initialize(HWND hwnd)
 {
+	hWnd = hwnd;
 	result = XInputGetState(0, &state);
 
 	if (result == ERROR_SUCCESS)
@@ -22,7 +23,7 @@ void PurahEngine::InputManager::Initialize()
 
 void PurahEngine::InputManager::Update()
 {
-	if (hWnd != GetFocus())
+	if (hWnd == GetFocus())
 	{
 		for (int i = 0; i < KEY_COUNT; i++)
 		{

@@ -23,7 +23,7 @@ namespace PurahEngine
 		InputManager& operator=(const InputManager& ref) = delete;
 
 	public:
-		void Initialize();
+		void Initialize(HWND hwnd);
 
 		// Update를 돌며 키의 입력값을 계속 체크한다.
 		void Update();

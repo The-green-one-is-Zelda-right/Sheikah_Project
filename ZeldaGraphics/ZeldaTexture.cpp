@@ -24,7 +24,7 @@ ZeldaTexture::ZeldaTexture(ID3D11Device* device, const std::wstring& filePath) :
 	{
 		result = LoadFromDDSFile(filePath.c_str(), DDS_FLAGS_NONE, &metaData, image);
 	}
-	else if (fileType == L".jpg" || fileType == L".png")
+	else if (fileType == L".jpg" || fileType == L".png" || fileType == L".tif" || fileType == L".tiff")
 	{
 		result = LoadFromWICFile(filePath.c_str(), WIC_FLAGS_NONE, &metaData, image);
 	}

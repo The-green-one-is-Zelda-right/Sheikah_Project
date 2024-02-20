@@ -80,7 +80,6 @@ ZeldaModel::~ZeldaModel()
 void ZeldaModel::Render(
 	ID3D11DeviceContext* deviceContext,
 	ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
-	ConstantBuffer<AnimationHierarchyBufferType, ShaderType::VertexShader>* animationHierarchyVsConstBuffer,
 	ConstantBuffer<AnimationBufferType, ShaderType::VertexShader>* animationConstBuffer,
 	ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
 	DirectX::XMMATRIX worldMatrix,
@@ -91,7 +90,7 @@ void ZeldaModel::Render(
 	assert(animationIDTable.count(animationName) > 0);
 	unsigned int animationID = animationIDTable[animationName];
 
-	assert(animationTPSTable.count(animationID) > 0);
+	assert(animationTPSTable.count(animationID) > 0 || animationID);
 	float tps = animationTPSTable[animationIDTable[animationName]];
 
 	SetAnimationTexture(deviceContext, animationID);
@@ -131,7 +130,6 @@ void ZeldaModel::RenderInstanced(
 	ID3D11DeviceContext* deviceContext,
 	ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
 	ConstantBuffer<InstancingMatrixBufferType, ShaderType::VertexShader>* instancingMatrixConstBuffer,
-	ConstantBuffer<AnimationHierarchyBufferType, ShaderType::VertexShader>* animationHierarchyVsConstBuffer,
 	ConstantBuffer<InstancingAnimationBufferType, ShaderType::VertexShader>* instancingAnimationConstBuffer,
 	ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
 	const std::vector<ModelInstancingInfo>& instancingInfo,
@@ -195,6 +193,203 @@ void ZeldaModel::RenderInstanced(
 
 	delete instacingMatrix;
 	delete instacingData;
+}
+
+void ZeldaModel::RenderBlendingAnimation(
+	ID3D11DeviceContext* deviceContext, ConstantBuffer<MatrixBufferType, ShaderType::VertexShader>* matrixConstBuffer,
+	ConstantBuffer<BlendingAnimationBufferType, ShaderType::VertexShader>* blendingAnimationVsConstBuffer,
+	ConstantBuffer<MaterialBufferType, ShaderType::PixelShader>* materialConstBuffer,
+	DirectX::XMMATRIX worldMatrix,
+	ZeldaShader* shader,
+	const std::wstring& firstAnimationName,
+	const std::wstring& secondAnimationName,
+	float firstAnimationTime,
+	float secondAnimationTime,
+	float ratio)
+{
+	auto iter1 = animationTable.find(firstAnimationName);
+	auto iter2 = animationTable.find(secondAnimationName);
+
+	if (iter1 != animationTable.end() && iter2 != animationTable.end())
+	{
+		Animation* animation1 = iter1->second;
+		Animation* animation2 = iter2->second;
+
+		float tickTime1 = firstAnimationTime * animation1->tickPerSecond;
+		float tickTime2 = secondAnimationTime * animation2->tickPerSecond;
+
+		// 애니메이션 시간에 따라 Bone정보 변경
+		std::queue<std::pair<Node*, DirectX::XMMATRIX>> nodeQueue;
+
+		nodeQueue.push({ root, root->transformMatrix });
+
+		while (!nodeQueue.empty())
+		{
+			auto current = nodeQueue.front();
+			nodeQueue.pop();
+			Node* currentNode = current.first;
+			DirectX::XMMATRIX currentMatrix = current.second;
+
+			currentNode->finalTM = currentNode->offsetMatrix * currentMatrix;
+
+			for (int i = 0; i < currentNode->children.size(); i++)
+			{
+				Node* nextNode = currentNode->children[i];
+				
+				XMVECTOR s1, r1, t1;
+				XMVECTOR s2, r2, t2;
+
+				XMMatrixDecompose(&s1, &r1, &t1, nextNode->transformMatrix);
+				s2 = s1;
+				r2 = r1;
+				t2 = t1;
+
+				if (animation1->animationKey.count(nextNode->name) != 0)
+				{
+					auto lowerIter = animation1->animationKey[nextNode->name].lower_bound(static_cast<double>(tickTime1));
+
+					auto upperIter = animation1->animationKey[nextNode->name].upper_bound(static_cast<double>(tickTime1));
+
+					if (lowerIter != animation1->animationKey[nextNode->name].begin())
+					{
+						lowerIter--;
+					}
+
+					if (upperIter == animation1->animationKey[nextNode->name].end())
+					{
+						upperIter--;
+					}
+
+					if (lowerIter != upperIter)
+					{
+						float beginTime = static_cast<float>(lowerIter->first);
+						float endTime = static_cast<float>(upperIter->first);
+						float currentTime = static_cast<float>(static_cast<double>(tickTime1));
+
+						// 시간에 대한 보간 계수 계산
+						float t = (currentTime - beginTime) / (endTime - beginTime);
+
+						// 선형 보간을 사용하여 행렬 보간
+						AnimationKeyInfo lowerKey = lowerIter->second;
+						AnimationKeyInfo upperKey = upperIter->second;
+
+						XMVECTOR scale = XMVectorLerp(lowerKey.scale, upperKey.scale, t);
+						XMVECTOR rotation = XMQuaternionSlerp(lowerKey.rotation, upperKey.rotation, t);
+						XMVECTOR position = XMVectorLerp(lowerKey.position, upperKey.position, t);
+
+						s1 = scale;
+						r1 = rotation;
+						t1 = position;
+					}
+					else
+					{
+						AnimationKeyInfo keyinfo = lowerIter->second;
+						s1 = keyinfo.scale;
+						r1 = keyinfo.rotation;
+						t1 = keyinfo.position;
+					}
+				}
+
+				if (animation2->animationKey.count(nextNode->name) != 0)
+				{
+					auto lowerIter = animation2->animationKey[nextNode->name].lower_bound(static_cast<double>(tickTime2));
+
+					auto upperIter = animation2->animationKey[nextNode->name].upper_bound(static_cast<double>(tickTime2));
+
+					if (lowerIter != animation2->animationKey[nextNode->name].begin())
+					{
+						lowerIter--;
+					}
+
+					if (upperIter == animation2->animationKey[nextNode->name].end())
+					{
+						upperIter--;
+					}
+
+					if (lowerIter != upperIter)
+					{
+						float beginTime = static_cast<float>(lowerIter->first);
+						float endTime = static_cast<float>(upperIter->first);
+						float currentTime = static_cast<float>(static_cast<double>(tickTime2));
+
+						// 시간에 대한 보간 계수 계산
+						float t = (currentTime - beginTime) / (endTime - beginTime);
+
+						// 선형 보간을 사용하여 행렬 보간
+						AnimationKeyInfo lowerKey = lowerIter->second;
+						AnimationKeyInfo upperKey = upperIter->second;
+
+						XMVECTOR scale = XMVectorLerp(lowerKey.scale, upperKey.scale, t);
+						XMVECTOR rotation = XMQuaternionSlerp(lowerKey.rotation, upperKey.rotation, t);
+						XMVECTOR position = XMVectorLerp(lowerKey.position, upperKey.position, t);
+
+						s2 = scale;
+						r2 = rotation;
+						t2 = position;
+					}
+					else
+					{
+						AnimationKeyInfo keyinfo = lowerIter->second;
+						s2 = keyinfo.scale;
+						r2 = keyinfo.rotation;
+						t2 = keyinfo.position;
+					}
+				}
+
+				XMMATRIX interpolatedMatrix;
+				XMVECTOR scale = XMVectorLerp(s1, s2, ratio);
+				XMVECTOR rotation = XMQuaternionSlerp(r1, r2, ratio);
+				XMVECTOR position = XMVectorLerp(t1, t2, ratio);
+
+				DirectX::XMMATRIX scaleMatrix = XMMatrixScalingFromVector(scale);
+				DirectX::XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(rotation);
+				DirectX::XMMATRIX translationMatrix = XMMatrixTranslationFromVector(position);
+				interpolatedMatrix = scaleMatrix * rotationMatrix * translationMatrix;
+
+				DirectX::XMMATRIX nextMatrix = interpolatedMatrix * currentMatrix;
+
+				nodeQueue.push({ nextNode, nextMatrix });
+			}
+		}
+	}
+
+	BlendingAnimationBufferType* finalTMData = new BlendingAnimationBufferType();
+	for (int i = 0; i < bones.size(); i++)
+	{
+		if (bones[i] == nullptr) continue;
+
+		finalTMData->finalTM[i] = XMMatrixTranspose(bones[i]->finalTM);
+	}
+
+	blendingAnimationVsConstBuffer->SetData(*finalTMData);
+
+	delete finalTMData;
+
+	ZeldaCamera* currentcamera = ResourceManager::GetInstance().GetCamera(ZeldaCamera::GetMainCamera());
+
+	// 셰이더에 넘기는 행렬을 전치를 한 후 넘겨야 한다.
+	matrixConstBuffer->SetData({ XMMatrixTranspose(worldMatrix), XMMatrixTranspose(currentcamera->GetViewMatrix()), XMMatrixTranspose(currentcamera->GetProjMatrix()) });
+
+	// 모든 메쉬 그리기
+	for (int i = 0; i < meshes.size(); i++)
+	{
+		ZeldaMesh* currentMesh = meshes[i];
+		currentMesh->Render(deviceContext);
+		int indexCount = currentMesh->GetIndexCount();
+
+		materialConstBuffer->SetData({
+			materials[materialIndex[i]]->baseColor,
+			!materials[materialIndex[i]]->useDiffuseMap,
+			materials[materialIndex[i]]->UseSRGB(ZeldaMaterial::DIFFUSE_MAP),
+			materials[materialIndex[i]]->useDiffuseMap
+			});
+
+		ConstantBufferManager::GetInstance().SetBuffer();
+
+		materials[materialIndex[i]]->SetShaderResource(deviceContext);
+
+		shader->Render(deviceContext, indexCount);
+	}
 }
 
 std::vector<std::wstring> ZeldaModel::GetAnimationList()
@@ -377,6 +572,7 @@ void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 	animationIDTable[L""] = 0u; // 기본상태의 AnimationID
 
 	animationTPSTable.clear();
+	animationTPSTable[0u] = 0.0f; // 기본상태의 TPS
 
 	// 컨테이너들 생성
 	int cnt = 0;

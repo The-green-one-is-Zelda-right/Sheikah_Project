@@ -2,7 +2,7 @@
 
 namespace PurahEngine
 {
-	DirectionalLight::DirectionalLight()
+	void DirectionalLight::Initialize()
 	{
 		CreateDirectionalLight();
 	}
@@ -11,4 +11,6 @@ namespace PurahEngine
 	{
 		ReleaseLight();
 	}
+
+
 }
