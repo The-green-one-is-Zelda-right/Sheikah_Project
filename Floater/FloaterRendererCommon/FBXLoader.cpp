@@ -2,6 +2,7 @@
 #include "../FloaterUtil/include/FloaterMacro.h"
 #include "../FloaterUtil/include/ConvString.h"
 #include "./include/RawNode.h"
+#include "./include/RawAnimation.h"
 #include <iostream>
 
 
@@ -250,7 +251,8 @@ bool flt::FBXLoader::LoadToRawNode(fbxsdk::FbxNode& node, RawNode* outNode)
 	}
 
 	// animation 세팅
-	CreateAnimation(node, &outNode->animation);
+	outNode->animation->clips.push_back(RawAnimationClip{});
+	SetAnimationClip(node, &outNode->animation->clips.back());
 
 	return true;
 }
@@ -305,8 +307,6 @@ bool flt::FBXLoader::CreateMesh(fbxsdk::FbxMesh& mesh, Resource<RawMesh>* outMes
 		builder.indices.push_back(index);
 	}
 
-	builder.pRootBone = nullptr;
-
 	_splitVertexMap.Clear();
 
 	auto materialCount = mesh.GetElementMaterialCount();
@@ -319,14 +319,12 @@ bool flt::FBXLoader::CreateMesh(fbxsdk::FbxMesh& mesh, Resource<RawMesh>* outMes
 	return true;
 }
 
-bool flt::FBXLoader::CreateAnimation(fbxsdk::FbxNode& node, RawAnimation** outAnimation)
+bool flt::FBXLoader::SetAnimationClip(fbxsdk::FbxNode& node, RawAnimationClip* outAnimClip)
 {
 	int animCurveNodeCount = node.GetSrcObjectCount<fbxsdk::FbxAnimCurveNode>();
 
 	if (animCurveNodeCount == 0)
 		return true;
-
-	*outAnimation = new RawAnimation();
 
 	for (int i = 0; i < animCurveNodeCount; ++i)
 	{
@@ -338,9 +336,9 @@ bool flt::FBXLoader::CreateAnimation(fbxsdk::FbxNode& node, RawAnimation** outAn
 		{
 			auto animCurve = animCurveNode->GetCurve(j);
 			int animCurveKeyCount = animCurve->KeyGetCount();
-			(*outAnimation)->keyPosition.reserve(animCurveKeyCount);
-			(*outAnimation)->keyRotation.reserve(animCurveKeyCount);
-			(*outAnimation)->keyScale.reserve(animCurveKeyCount);
+			outAnimClip->keyPosition.reserve(animCurveKeyCount);
+			outAnimClip->keyRotation.reserve(animCurveKeyCount);
+			outAnimClip->keyScale.reserve(animCurveKeyCount);
 			for (int k = 0; k < animCurveKeyCount; ++k)
 			{
 				auto animCurveKey = animCurve->KeyGet(k);
@@ -350,9 +348,9 @@ bool flt::FBXLoader::CreateAnimation(fbxsdk::FbxNode& node, RawAnimation** outAn
 
 				Transform transform;
 				LoadToTransform(node.EvaluateLocalTransform(animCurveKeyTime), &transform);
-				(*outAnimation)->keyPosition.emplace_back(animCurveKeyTimeSecond, transform.GetLocalPosition());
-				(*outAnimation)->keyRotation.emplace_back(animCurveKeyTimeSecond, transform.GetLocalRotation());
-				(*outAnimation)->keyScale.emplace_back(animCurveKeyTimeSecond, transform.GetLocalScale());
+				outAnimClip->keyPosition.emplace_back(animCurveKeyTimeSecond, transform.GetLocalPosition());
+				outAnimClip->keyRotation.emplace_back(animCurveKeyTimeSecond, transform.GetLocalRotation());
+				outAnimClip->keyScale.emplace_back(animCurveKeyTimeSecond, transform.GetLocalScale());
 			}
 		}
 	}

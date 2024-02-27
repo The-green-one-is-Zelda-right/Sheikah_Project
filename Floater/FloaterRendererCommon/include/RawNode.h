@@ -2,6 +2,7 @@
 #include "TransformOwner.h"
 #include "RawMesh.h"
 #include "RawSkin.h"
+#include "RawSkeleton.h"
 #include "RawAnimation.h"
 #include "Camera.h"
 
@@ -20,7 +21,7 @@ namespace flt
 
 		std::wstring name;
 		std::vector<Resource<RawMesh>> meshes;
-		RawSkin* skin;
+		RawSkeleton* skeleton;
 		RawAnimation* animation;
 		Camera* camera;
 

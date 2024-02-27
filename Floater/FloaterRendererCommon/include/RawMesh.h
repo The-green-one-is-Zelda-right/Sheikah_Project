@@ -64,15 +64,12 @@ namespace flt
 
 	struct RawMesh
 	{
-		RawMesh() : vertices(), indices(), material(), pRootBone(nullptr) {}
+		RawMesh() : vertices(), indices(), material() {}
 		void Release() {}
 
 		std::vector<RawVertex> vertices;
 		std::vector<int> indices;
 		RawMaterial material;
-
-		//Transform* pRootBone;
-		RawAnimation* pAnimation;
 	};
 
 	template struct Resource<RawMesh>;
@@ -82,13 +79,11 @@ namespace flt
 		RawMeshBuilder(const std::wstring& filePath, const std::wstring& name) :
 			IBuilder<RawMesh>(filePath + name),
 			vertices(),
-			indices(),
-			pRootBone(nullptr) {}
+			indices() {}
 
 		virtual RawMesh* build() const override;
 
 		std::vector<RawVertex> vertices;
 		std::vector<int> indices;
-		Transform* pRootBone;
 	};
 }

@@ -3,7 +3,7 @@
 flt::RawNode::RawNode(const std::wstring& name) :
 	name(name),
 	meshes(),
-	skin(nullptr),
+	skeleton(nullptr),
 	animation(nullptr),
 	camera(nullptr),
 	boneIndex(-1),
@@ -15,9 +15,10 @@ flt::RawNode::RawNode(const std::wstring& name) :
 
 flt::RawNode::~RawNode()
 {
-	//delete skin;
 	//delete animation;
 	//delete camera;
+	//delete skeleton;
+	//delete animation;
 
 	for (auto& child : children)
 	{

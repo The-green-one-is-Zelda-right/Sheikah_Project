@@ -1,13 +1,12 @@
 ﻿#pragma once
+#include "Transform.h"
 #include <vector>
 
 namespace flt
 {
-	class Transform;
-
 	struct RawSkeleton
 	{
-		std::vector<Transform*> bones;
-		
+		std::vector<Transform> bones;
+		int rootBoneIndex;
 	};
 }

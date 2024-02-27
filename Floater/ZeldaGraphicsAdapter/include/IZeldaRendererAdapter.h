@@ -18,7 +18,8 @@ public:
 	IZeldaRendererAdapter();
 	virtual ~IZeldaRendererAdapter();
 
-	virtual bool Initialize(unsigned int screenWidth, unsigned int screenHeight, bool vsync, HWND hwnd, bool fullScreen, float screenDepth, float cameraNear) override;
+	virtual bool Initialize(unsigned int screenWidth, unsigned int screenHeight, bool vsync, HWND hwnd, bool fullScreen) override;
+	
 	virtual void Finalize() override;
 
 	// deltaTime의 단위는 second
@@ -51,8 +52,6 @@ private:
 	bool _vsync;
 	HWND _hwnd;
 	bool _fullScreen;
-	float _screenDepth;
-	float _cameraNear;
 	float _deltaTime;
 	flt::IRenderer* _renderer;
 	RendererObjectMgr* _rendererObjectMgr;

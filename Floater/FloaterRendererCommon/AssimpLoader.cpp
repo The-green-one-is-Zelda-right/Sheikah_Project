@@ -244,10 +244,6 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 			const int channelCount = animation->mNumChannels;
 			for (int j = 0; j < channelCount; ++j)
 			{
-				RawAnimation* rawAnim = new(std::nothrow) RawAnimation();
-				ASSERT(rawAnim, "rawAnim is nullptr");
-				rawAnim->name = ConvertToWstring(animName.C_Str());
-
 				aiNodeAnim* nodeAnim = animation->mChannels[j];
 				aiString nodeName = nodeAnim->mNodeName;
 
@@ -255,27 +251,29 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 				auto iter = _nodeMap.find(wNodeName);
 				ASSERT(iter != _nodeMap.end(), "node not found");
 				ASSERT(!iter->second->animation, "node already has animation");
-				iter->second->animation = rawAnim;
+				iter->second->animation->clips.push_back(RawAnimationClip{});
+				RawAnimationClip& rawAnim = iter->second->animation->clips.back();
+				rawAnim.name = ConvertToWstring(animName.C_Str());
 
 				int keyCount = (int)nodeAnim->mNumPositionKeys;
 				for (int k = 0; k < keyCount; ++k)
 				{
 					aiVectorKey key = nodeAnim->mPositionKeys[k];
-					rawAnim->keyPosition.push_back(RawAnimation::KeyPosition((float)key.mTime, { key.mValue.x, key.mValue.y, key.mValue.z, 0.0f }));
+					rawAnim.keyPosition.push_back(RawAnimationClip::KeyPosition((float)key.mTime, { key.mValue.x, key.mValue.y, key.mValue.z, 0.0f }));
 				}
 
 				keyCount = (int)nodeAnim->mNumRotationKeys;
 				for (int k = 0; k < keyCount; ++k)
 				{
 					aiQuatKey key = nodeAnim->mRotationKeys[k];
-					rawAnim->keyRotation.push_back(RawAnimation::KeyRotation((float)key.mTime, { key.mValue.x, key.mValue.y, key.mValue.z, key.mValue.w }));
+					rawAnim.keyRotation.push_back(RawAnimationClip::KeyRotation((float)key.mTime, { key.mValue.x, key.mValue.y, key.mValue.z, key.mValue.w }));
 				}
 
 				keyCount = (int)nodeAnim->mNumScalingKeys;
 				for (int k = 0; k < keyCount; ++k)
 				{
 					aiVectorKey key = nodeAnim->mScalingKeys[k];
-					rawAnim->keyScale.push_back(RawAnimation::KeyScale((float)key.mTime, { key.mValue.x, key.mValue.y, key.mValue.z, 0.0f }));
+					rawAnim.keyScale.push_back(RawAnimationClip::KeyScale((float)key.mTime, { key.mValue.x, key.mValue.y, key.mValue.z, 0.0f }));
 				}
 			}
 		}

@@ -35,7 +35,6 @@ namespace flt
 			Vector4f scale;
 		};
 #pragma endregion
-
 		RawAnimationClip() : RawAnimationClip(L"", 0.0f, 0.0f) {}
 		RawAnimationClip(const std::wstring& name, float startTime, float endTime) : name(name), startTime(startTime), endTime(endTime), keyPosition(), keyRotation(), keyScale() {}
 

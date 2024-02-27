@@ -9,8 +9,6 @@ IZeldaRendererAdapter::IZeldaRendererAdapter() :
 	_vsync(false),
 	_hwnd(nullptr),
 	_fullScreen(false),
-	_screenDepth(0.0f),
-	_cameraNear(0.0f),
 	_deltaTime(0.0f),
 	_renderer(nullptr),
 	_rendererObjectMgr(nullptr)
@@ -33,15 +31,13 @@ IZeldaRendererAdapter::~IZeldaRendererAdapter()
 	}
 }
 
-bool IZeldaRendererAdapter::Initialize(unsigned int screenWidth, unsigned int screenHeight, bool vsync, HWND hwnd, bool fullScreen, float screenDepth, float cameraNear)
+bool IZeldaRendererAdapter::Initialize(unsigned int screenWidth, unsigned int screenHeight, bool vsync, HWND hwnd, bool fullScreen)
 {
 	_screenWidth = screenWidth;
 	_screenHeight = screenHeight;
 	_vsync = vsync;
 	_hwnd = hwnd;
 	_fullScreen = fullScreen;
-	_screenDepth = screenDepth;
-	_cameraNear = cameraNear;
 	_deltaTime = 0.0f;
 
 	_renderer = flt::CreateRendererDX11(hwnd);

@@ -21,7 +21,7 @@ namespace flt
 	struct RawScene;
 	struct RawNode;
 	struct RawMesh;
-	struct RawAnimation;
+	struct RawAnimationClip;
 	class Transform;
 
 	class FBXLoader final
@@ -40,7 +40,7 @@ namespace flt
 		bool LoadToTransform(fbxsdk::FbxAMatrix& fbxMatrix, Transform* outTransform);
 		bool LoadToRawNode(fbxsdk::FbxNode& node, RawNode* outNode);
 		bool CreateMesh(fbxsdk::FbxMesh& mesh, Resource<RawMesh>* outMesh);
-		bool CreateAnimation(fbxsdk::FbxNode& node, RawAnimation** outNode);
+		bool SetAnimationClip(fbxsdk::FbxNode& node, RawAnimationClip* outAnimClip);
 
 
 		void GetVertexPosition(const fbxsdk::FbxMesh& mesh, std::vector<Vector3f>* outVector);

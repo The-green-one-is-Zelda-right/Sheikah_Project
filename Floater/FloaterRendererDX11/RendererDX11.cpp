@@ -486,10 +486,10 @@ bool flt::RendererDX11::Render(float deltaTime)
 
 			for (auto& mesh : node->meshes)
 			{
-				if (mesh->pRootBoneTransform)
-				{
+				//if (mesh->pRootBoneTransform)
+				//{
 
-				}
+				//}
 
 				DX11Mesh* pMesh = mesh.Get();
 
