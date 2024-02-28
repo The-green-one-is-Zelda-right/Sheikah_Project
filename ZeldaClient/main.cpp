@@ -3,6 +3,7 @@
 #include <cassert>
 #include "PurahEngine.h"
 
+
 #include "TestMovement.h"
 #include "CameraMovement.h"
 #include "TestSingleton.h"
@@ -34,6 +35,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	// DLL 함수를 찾을 수 없습니다.
 	assert(!(CreateInitialize == nullptr || CreateRun == nullptr || CreateFinalize == nullptr));
 
+	PurahEngine::ComponentFactory::GetInstance().RegisterComponent<PurahEngine::Test>("Test");
+	PurahEngine::ComponentFactory::GetInstance().RegisterComponent<PurahEngine::Test2>("Test2");
+	PurahEngine::ComponentFactory::GetInstance().RegisterComponent<PurahEngine::Test3>("Test3");
+	PurahEngine::ComponentFactory::GetInstance().RegisterComponent<PurahEngine::TestMovement>("TestMovement");
+	PurahEngine::ComponentFactory::GetInstance().RegisterComponent<PurahEngine::CameraMovement>("CameraMovement");
+	PurahEngine::ComponentFactory::GetInstance().RegisterComponent<AnimationTestController>("AnimationTestController");
+
 	//PurahEngine::Initialize(hInstance, gameName.c_str(), 1920, 1080); 역할
 	CreateInitialize(hInstance, gameName.c_str(), 1920, 1080);
 
@@ -41,8 +49,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	int KH = 1;
 	int DH = 2;
 	int YH = 3;
+	int loadScene = 4;
 
-	int play = DH;
+	int play = loadScene;
 
 	IMaker* iMaker = nullptr;
 
@@ -62,11 +71,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	{
 		iMaker = new YongHun();
 	}
+	else if (play == loadScene)
+	{
+		PurahEngine::SceneManager::GetInstance().LoadScene();
+	}
 
 	/// 건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마
 	/// 건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마
 	/// 건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마
-	iMaker->Run();
+
+	if (play != loadScene)
+	{
+		iMaker->Run();
+	}
 	/// 건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마
 	/// 건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마
 	/// 건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마건들지마

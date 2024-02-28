@@ -24,6 +24,12 @@ namespace PurahEngine
 		void SetBreakForce(float _force, float _torque) noexcept override;
 		void GetBreakForce(float& _force, float& _torque) const noexcept override;
 
+	public:
+		virtual void PreSerialize(json& jsonData) const override;
+		virtual void PreDeserialize(const json& jsonData) override;
+		virtual void PostSerialize(json& jsonData) const override;
+		virtual void PostDeserialize(const json& jsonData) override;
+
 	private:
 		ZonaiPhysics::ZnFixedJoint* joint;
 	};

@@ -6,9 +6,9 @@
 namespace PurahEngine
 {
 	MeshRenderer::MeshRenderer() :
-		meshType(MeshType::None),
 		textureName(L""),
-		meshColor(White)
+		meshType(MeshType::None),
+		wireFrame(false), r(1.0f), g(1.0f), b(1.0f), a(1.0f)
 	{
 
 	}
@@ -35,7 +35,7 @@ namespace PurahEngine
 				}
 				case PurahEngine::MeshRenderer::MeshType::Cube:
 				{
-					renderer->DrawCube(worldTM, textureID, false, meshColor.r, meshColor.g, meshColor.b, meshColor.a);
+					renderer->DrawCube(worldTM, textureID, wireFrame, r, g, b, a);
 
 					break;
 				}
@@ -56,4 +56,45 @@ namespace PurahEngine
 	{
 		meshType = type;
 	}
+
+	void MeshRenderer::SetWireFrame(bool value)
+	{
+		wireFrame = value;
+	}
+
+	void MeshRenderer::SetColor(float r, float g, float b, float a)
+	{
+		this->r = r;
+		this->g = g;
+		this->b = b;
+		this->a = a;
+	}
+
+	void MeshRenderer::PreSerialize(json& jsonData) const
+	{
+
+	}
+
+	void MeshRenderer::PreDeserialize(const json& jsonData)
+	{
+		PREDESERIALIZE_BASE();
+		PREDESERIALIZE_WSTRING(textureName);
+		PREDESERIALIZE_VALUE(meshType);
+		PREDESERIALIZE_VALUE(wireFrame);
+		PREDESERIALIZE_VALUE(r);
+		PREDESERIALIZE_VALUE(g);
+		PREDESERIALIZE_VALUE(b);
+		PREDESERIALIZE_VALUE(a);
+	}
+
+	void MeshRenderer::PostSerialize(json& jsonData) const
+	{
+
+	}
+
+	void MeshRenderer::PostDeserialize(const json& jsonData)
+	{
+
+	}
+
 }

@@ -12,14 +12,30 @@ namespace PurahEngine
 		void Start() override;
 
 		void Update() override;
-		void FixedUpdate() override;
+
+	private:
+		void Move();
+		void HandsUp();
+
 
 	public:
+		void SetPlayer(GameObject*);
+
+	private:
+		bool detect;
 		float speed;
 		float drag;
 
+		GameObject* playerBody;
 		RigidBody* rigidbody;
 		Transform* transform;
+
+		/// 사라질 변수들
+	private:
+		Eigen::Vector3f startPosition;
+		Eigen::Vector3f startLinearVelocity;
+		Eigen::Vector3f startAngularVelocity;
+		Eigen::Quaternionf startRotation;
 	};
 }
 

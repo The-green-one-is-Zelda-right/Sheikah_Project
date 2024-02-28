@@ -1,4 +1,4 @@
-ï»¿#include "../FloaterUtil/include/FloaterMacro.h"
+ï»include "../FloaterUtil/include/FloaterMacro.h"
 #include "./include/Common.h"
 #include "./include/Matrix3f.h"
 #include "./include/Vector3f.h"

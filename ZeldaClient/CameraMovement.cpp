@@ -41,3 +41,23 @@ void PurahEngine::CameraMovement::Update()
 	}
 	//if(inputManager.IsKeyPressed(VK_WHEEL))
 }
+
+void PurahEngine::CameraMovement::PreSerialize(json& jsonData) const
+{
+
+}
+
+void PurahEngine::CameraMovement::PreDeserialize(const json& jsonData)
+{
+	PREDESERIALIZE_BASE();
+}
+
+void PurahEngine::CameraMovement::PostSerialize(json& jsonData) const
+{
+
+}
+
+void PurahEngine::CameraMovement::PostDeserialize(const json& jsonData)
+{
+
+}

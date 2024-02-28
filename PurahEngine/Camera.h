@@ -9,7 +9,7 @@ namespace PurahEngine
 {
 	class GameObject;
 
-	class PURAHENGINE_API Camera : public Component, IRenderer
+	class PURAHENGINE_API Camera final : public Component, IRenderer
 	{
 	public:
 		Camera();
@@ -26,6 +26,12 @@ namespace PurahEngine
 		void SetMainCamera();
 
 		void Render(IZeldaRenderer* renderer) override;
+
+	public:
+		virtual void PreSerialize(json& jsonData) const override;
+		virtual void PreDeserialize(const json& jsonData) override;
+		virtual void PostSerialize(json& jsonData) const override;
+		virtual void PostDeserialize(const json& jsonData) override;
 
 	private:
 		float cameraNear;	// 최소 거리

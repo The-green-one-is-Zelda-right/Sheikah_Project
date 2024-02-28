@@ -1,0 +1,454 @@
+{
+  "gameObjects": [
+    {
+      "__Base__instanceID": 15690,
+      "name": "blue (1)",
+      "transform": {
+        "__Base__instanceID": 15692,
+        "position": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 5.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "__ID__parent": [
+          15780
+        ],
+        "__ID__children": []
+      },
+      "components": [
+        {
+          "__Base__instanceID": 15698,
+          "__Base__Component": "MeshRenderer",
+          "meshType": 1,
+          "wireFrame": false,
+          "textureName": "",
+          "r": 0.0,
+          "g": 0.0,
+          "b": 1.0,
+          "a": 1.0
+        }
+      ]
+    },
+    {
+      "__Base__instanceID": 15700,
+      "name": "red (1)",
+      "transform": {
+        "__Base__instanceID": 15702,
+        "position": {
+          "x": 5.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "__ID__parent": [
+          15728
+        ],
+        "__ID__children": []
+      },
+      "components": [
+        {
+          "__Base__instanceID": 15708,
+          "__Base__Component": "MeshRenderer",
+          "meshType": 1,
+          "wireFrame": false,
+          "textureName": "",
+          "r": 1.0,
+          "g": 0.0,
+          "b": 0.0,
+          "a": 1.0
+        }
+      ]
+    },
+    {
+      "__Base__instanceID": 15710,
+      "name": "green (0)",
+      "transform": {
+        "__Base__instanceID": 15712,
+        "position": {
+          "x": 0.0,
+          "y": 5.0,
+          "z": 0.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "__ID__parent": [
+          15776
+        ],
+        "__ID__children": []
+      },
+      "components": [
+        {
+          "__Base__instanceID": 15718,
+          "__Base__Component": "MeshRenderer",
+          "meshType": 1,
+          "wireFrame": false,
+          "textureName": "",
+          "r": 0.0,
+          "g": 1.0,
+          "b": 0.0,
+          "a": 1.0
+        }
+      ]
+    },
+    {
+      "__Base__instanceID": 15720,
+      "name": "DirectionalLight",
+      "transform": {
+        "__Base__instanceID": 15722,
+        "position": {
+          "x": 0.0,
+          "y": 10.0,
+          "z": 0.0
+        },
+        "rotation": {
+          "x": 0.5,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.8660254
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "__ID__parent": [],
+        "__ID__children": []
+      },
+      "components": [
+        {
+          "__Base__instanceID": 15724,
+          "__Base__Component": "DirectionalLight",
+          "ambient": {
+            "x": 0.2,
+            "y": 0.2,
+            "z": 0.2
+          },
+          "diffuse": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "specular": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          },
+          "range": 0.0,
+          "angle": 0.0
+        }
+      ]
+    },
+    {
+      "__Base__instanceID": 15726,
+      "name": "Parent (0)",
+      "transform": {
+        "__Base__instanceID": 15728,
+        "position": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "__ID__parent": [
+          15752
+        ],
+        "__ID__children": [
+          15766,
+          15702
+        ]
+      },
+      "components": []
+    },
+    {
+      "__Base__instanceID": 15730,
+      "name": "green (1)",
+      "transform": {
+        "__Base__instanceID": 15732,
+        "position": {
+          "x": 0.0,
+          "y": 3.0,
+          "z": 0.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "__ID__parent": [
+          15776
+        ],
+        "__ID__children": []
+      },
+      "components": [
+        {
+          "__Base__instanceID": 15738,
+          "__Base__Component": "MeshRenderer",
+          "meshType": 1,
+          "wireFrame": false,
+          "textureName": "",
+          "r": 0.0,
+          "g": 1.0,
+          "b": 0.0,
+          "a": 1.0
+        }
+      ]
+    },
+    {
+      "__Base__instanceID": 15740,
+      "name": "blue (0)",
+      "transform": {
+        "__Base__instanceID": 15742,
+        "position": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 3.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "__ID__parent": [
+          15780
+        ],
+        "__ID__children": []
+      },
+      "components": [
+        {
+          "__Base__instanceID": 15748,
+          "__Base__Component": "MeshRenderer",
+          "meshType": 1,
+          "wireFrame": false,
+          "textureName": "",
+          "r": 0.0,
+          "g": 0.0,
+          "b": 1.0,
+          "a": 1.0
+        }
+      ]
+    },
+    {
+      "__Base__instanceID": 15750,
+      "name": "GrandParent",
+      "transform": {
+        "__Base__instanceID": 15752,
+        "position": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "__ID__parent": [],
+        "__ID__children": [
+          15728,
+          15780,
+          15776
+        ]
+      },
+      "components": []
+    },
+    {
+      "__Base__instanceID": 15754,
+      "name": "Camera",
+      "transform": {
+        "__Base__instanceID": 15758,
+        "position": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": -15.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "__ID__parent": [],
+        "__ID__children": []
+      },
+      "components": [
+        {
+          "__Base__instanceID": 15756,
+          "__Base__Component": "Camera",
+          "mainCamera": true,
+          "cameraNear": 0.3,
+          "cameraFar": 1000.0,
+          "fieldOfView": 1.04719758
+        },
+        {
+          "__Base__instanceID": 15762,
+          "__Base__Component": "CameraMovement"
+        }
+      ]
+    },
+    {
+      "__Base__instanceID": 15764,
+      "name": "red (0)",
+      "transform": {
+        "__Base__instanceID": 15766,
+        "position": {
+          "x": 3.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "__ID__parent": [
+          15728
+        ],
+        "__ID__children": []
+      },
+      "components": [
+        {
+          "__Base__instanceID": 15772,
+          "__Base__Component": "MeshRenderer",
+          "meshType": 1,
+          "wireFrame": false,
+          "textureName": "",
+          "r": 1.0,
+          "g": 0.0,
+          "b": 0.0,
+          "a": 1.0
+        }
+      ]
+    },
+    {
+      "__Base__instanceID": 15774,
+      "name": "Parent (2)",
+      "transform": {
+        "__Base__instanceID": 15776,
+        "position": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "__ID__parent": [
+          15752
+        ],
+        "__ID__children": [
+          15712,
+          15732
+        ]
+      },
+      "components": []
+    },
+    {
+      "__Base__instanceID": 15778,
+      "name": "Parent (1)",
+      "transform": {
+        "__Base__instanceID": 15780,
+        "position": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 1.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        },
+        "__ID__parent": [
+          15752
+        ],
+        "__ID__children": [
+          15742,
+          15692
+        ]
+      },
+      "components": []
+    }
+  ]
+}

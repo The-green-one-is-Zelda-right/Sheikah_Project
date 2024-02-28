@@ -13,7 +13,7 @@ namespace PurahEngine
 
 	RigidBody::~RigidBody()
 	{
-		GetGameObject()->GetComponent<PurahEngine::Transform>()->SetRigidBody(nullptr);
+		GetGameObject()->GetTransform()->SetRigidBody(nullptr);
 	}
 
 	void RigidBody::Awake()
@@ -21,20 +21,29 @@ namespace PurahEngine
 		body = PhysicsSystem::GetInstance().CreateRigidBody(GetGameObject());
 		PhysicsSystem::GetInstance().bodies.push_back(this);
 		awake = false;
-		const auto trans = GetGameObject()->GetComponent<Transform>();
 
+		const auto trans = GetGameObject()->GetTransform();
 		body->SetPosition(trans->GetWorldPosition());
 		body->SetQuaternion(trans->GetWorldRotation());
+		trans->SetRigidBody(this);
+
+		SetDynamicLockFlags(freeze);
 		SetKinematic(isKinematic);
 		UseGravity(useGravity);
-		GetGameObject()->GetComponent<PurahEngine::Transform>()->SetRigidBody(this);
+		// SetLinearVelocity(LinearVelocity);
+		// SetAngularVelocity(angularVelocity);
+		SetMass(mass);
+		// SetLinearDamping(linearDamping);
+		// SetAngularDamping(angularDamping);
+		// AddForce(force);
+		// AddTorque(torque);
 	}
 
 	void RigidBody::SetPosition(const Eigen::Vector3f& _pos) noexcept
 	{
 		if (awake)
 		{
-			auto trans = GetGameObject()->GetComponent<Transform>();
+			auto trans = GetGameObject()->GetTransform();
 			trans->SetLocalPosition(_pos);
 		}
 		else
@@ -47,7 +56,7 @@ namespace PurahEngine
 	{
 		if (awake)
 		{
-			auto trans = GetGameObject()->GetComponent<Transform>();
+			auto trans = GetGameObject()->GetTransform();
 			return trans->GetLocalPosition();
 		}
 		else
@@ -60,7 +69,7 @@ namespace PurahEngine
 	{
 		if (awake)
 		{
-			auto trans = GetGameObject()->GetComponent<Transform>();
+			auto trans = GetGameObject()->GetTransform();
 			trans->SetLocalRotation(_rot);
 		}
 		else
@@ -73,7 +82,7 @@ namespace PurahEngine
 	{
 		if (awake)
 		{
-			auto trans = GetGameObject()->GetComponent<Transform>();
+			auto trans = GetGameObject()->GetTransform();
 			return trans->GetLocalRotation();
 		}
 		else
@@ -97,17 +106,38 @@ namespace PurahEngine
 	/// 
 	uint8_t RigidBody::GetDynamicLockFlags() const noexcept
 	{
-		return body->GetDynamicLockFlags();
+		if (awake)
+		{
+			return freeze;
+		}
+		else
+		{
+			return body->GetDynamicLockFlags();
+		}
 	}
 
 	void RigidBody::SetDynamicLockFlag(ZonaiPhysics::FreezeFlag flag, bool value) noexcept
 	{
-		body->SetDynamicLockFlag(flag, value);
+		if (awake)
+		{
+			value ? freeze |= flag : freeze &= flag;
+		}
+		else
+		{
+			body->SetDynamicLockFlag(flag, value);
+		}
 	}
 
 	void RigidBody::SetDynamicLockFlags(uint8_t flags) noexcept
 	{
-		body->SetDynamicLockFlags(flags);
+		if (awake)
+		{
+			freeze = flags;
+		}
+		else
+		{
+			body->SetDynamicLockFlags(flags);
+		}
 	}
 
 	float RigidBody::GetMass() const noexcept
@@ -313,16 +343,29 @@ namespace PurahEngine
 		auto pos = body->GetPosition();
 		auto rot = body->GetQuaternion();
 
-		auto transform = GetGameObject()->GetComponent<Transform>();
-		// matrix4f로 만들어서 보내는걸로 하자
-
-		//transform->GetLocalScale();
-		//transform->GetWorldScale();
-		//Eigen::Matrix4f inverseW = transform->GetWorldMatrix().inverse();
-
-
-
+		const auto transform = GetGameObject()->GetTransform();
 		transform->SetWorldPosition(pos);
 		transform->SetWorldRotation(rot);
 	}
+
+	void RigidBody::PreSerialize(json& jsonData) const
+	{
+
+	}
+
+	void RigidBody::PreDeserialize(const json& jsonData)
+	{
+
+	}
+
+	void RigidBody::PostSerialize(json& jsonData) const
+	{
+
+	}
+
+	void RigidBody::PostDeserialize(const json& jsonData)
+	{
+
+	}
+
 }

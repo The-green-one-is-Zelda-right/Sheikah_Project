@@ -91,4 +91,30 @@ namespace PurahEngine
 
 		GraphicsManager::GetInstance().resourceManager->ReleaseLight(lightID);
 	}
+
+	void Light::PreSerialize(json& jsonData) const
+	{
+
+	}
+
+	void Light::PreDeserialize(const json& jsonData)
+	{
+		PREDESERIALIZE_BASE();
+		PREDESERIALIZE_VALUE(range);
+		PREDESERIALIZE_VALUE(angle);
+		PREDESERIALIZE_VECTOR3F(ambient);
+		PREDESERIALIZE_VECTOR3F(diffuse);
+		PREDESERIALIZE_VECTOR3F(specular);
+	}
+
+	void Light::PostSerialize(json& jsonData) const
+	{
+
+	}
+
+	void Light::PostDeserialize(const json& jsonData)
+	{
+
+	}
+
 }

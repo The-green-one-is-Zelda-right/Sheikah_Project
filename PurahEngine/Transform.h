@@ -67,6 +67,12 @@ namespace PurahEngine
 		Eigen::Vector3f right = Eigen::Vector3f::UnitX();
 		Eigen::Vector3f front = Eigen::Vector3f::UnitZ();
 
+	public:
+		virtual void PreSerialize(json& jsonData) const override;
+		virtual void PreDeserialize(const json& jsonData) override;
+		virtual void PostSerialize(json& jsonData) const override;
+		virtual void PostDeserialize(const json& jsonData) override;
+
 	private:
 		// À§Ä¡
 		Eigen::Vector3f position;

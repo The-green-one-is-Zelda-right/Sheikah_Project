@@ -60,7 +60,7 @@ void PurahEngine::SceneManager::Update()
 		}
 		state = RunningState::START;
 	}
-	else if (state == RunningState::START)
+	if (state == RunningState::START)
 	{
 		for (PurahEngine::GameObject* object : objectList)
 		{
@@ -68,13 +68,27 @@ void PurahEngine::SceneManager::Update()
 		}
 		state = RunningState::UPDATE;
 	}
-	else if (state == RunningState::UPDATE)
+	if (state == RunningState::UPDATE)
 	{
 		for (PurahEngine::GameObject* object : objectList)
 		{
-			object->UpdateEvent();
-			object->LateUpdateEvent();
+			if (object->IsRootEnable() == true)
+			{
+				object->UpdateEvent();
+			}
 		}
+		state = RunningState::LATEUPDATE;
+	}
+	if (state == RunningState::LATEUPDATE)
+	{
+		for (PurahEngine::GameObject* object : objectList)
+		{
+			if (object->IsRootEnable() == true)
+			{
+				object->LateUpdateEvent();
+			}
+		}
+		state = RunningState::UPDATE;
 	}
 
 	if (physicsTime >= 0.02f)
@@ -82,14 +96,6 @@ void PurahEngine::SceneManager::Update()
 		for (PurahEngine::GameObject* object : objectList)
 		{
 			object->FixedUpdateEvent();
-
-			object->OnCollisionEnter();
-			object->OnCollisionStay();
-			object->OnCollisionExit();
-
-			object->OnTriggerEnter();
-			object->OnTriggerStay();
-			object->OnTriggerExit();
 		}
 	}
 
@@ -124,6 +130,48 @@ void PurahEngine::SceneManager::Update()
 		physicsTime -= 0.02f;
 	}
 
+}
+
+void PurahEngine::SceneManager::LoadScene()
+{
+	auto& fManager = PurahEngine::FileManager::GetInstance();
+	fManager.clear();
+
+	for (int i = 0; i < objectList.size(); i++)
+	{
+		delete objectList[i];
+	}
+	objectList.clear();
+	sceneData = fManager.LoadData(L"SampleSceneObjectInfo.json");
+	Deserialize(sceneData);
+}
+
+void PurahEngine::SceneManager::PreSerialize(json& jsonData) const
+{
+
+}
+
+void PurahEngine::SceneManager::PreDeserialize(const json& jsonData)
+{
+	for (int i = 0; i < jsonData["gameObjects"].size(); i++)
+	{
+		std::string name = jsonData["gameObjects"][i]["name"];
+		GameObject* object = CreateGameObject(std::wstring(name.begin(),name.end()));
+		object->PreDeserialize(jsonData["gameObjects"][i]);
+	}
+}
+
+void PurahEngine::SceneManager::PostSerialize(json& jsonData) const
+{
+
+}
+
+void PurahEngine::SceneManager::PostDeserialize(const json& jsonData)
+{
+	for (int i = 0; i < objectList.size(); i++)
+	{
+		objectList[i]->PostDeserialize(jsonData["gameObjects"][i]);
+	}
 }
 
 void PurahEngine::SceneManager::Initialize()

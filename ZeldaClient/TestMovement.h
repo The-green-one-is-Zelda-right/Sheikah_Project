@@ -22,6 +22,10 @@ namespace PurahEngine
 		const float vibDuration = 100.6f;
 		float vibElapsedTime = 0.0f;
 
-
+	public:
+		virtual void PreSerialize(json& jsonData) const override;
+		virtual void PreDeserialize(const json& jsonData) override;
+		virtual void PostSerialize(json& jsonData) const override;
+		virtual void PostDeserialize(const json& jsonData) override;
 	};
 }

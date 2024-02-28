@@ -21,10 +21,10 @@ namespace PurahEngine
 		void SetTimeScale(float timescale);
 		float GetTimeScale();
 
-		void GetDeltaTime();
+		float GetDeltaTime();
 
 	private:
-		void Initialize(std::string timeName);
+		void Initialize(std::string timename);
 
 		void Update(std::string timeName);
 

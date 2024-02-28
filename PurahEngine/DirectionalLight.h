@@ -5,7 +5,7 @@
 
 namespace PurahEngine
 {
-	class PURAHENGINE_API DirectionalLight : public Light
+	class PURAHENGINE_API DirectionalLight final : public Light
 	{
 	public:
 		void Initialize() override;

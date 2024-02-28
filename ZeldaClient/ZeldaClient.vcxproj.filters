@@ -1,112 +1,153 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="BeomJoon.cpp">
-      <Filter>Maker\BJ</Filter>
+    <ClCompile Include="CameraMovement.cpp" />
+    <ClCompile Include="Test.cpp" />
+    <ClCompile Include="Test2.cpp" />
+    <ClCompile Include="Test3.cpp" />
+    <ClCompile Include="TestMovement.cpp" />
+    <ClCompile Include="TestSingleton.cpp" />
+    <ClCompile Include="Player.cpp">
+      <Filter>KH\PLAYER</Filter>
     </ClCompile>
     <ClCompile Include="KiHoon.cpp">
-      <Filter>Maker\KH</Filter>
-    </ClCompile>
-    <ClCompile Include="NaDong.cpp">
-      <Filter>Maker\Dh</Filter>
-    </ClCompile>
-    <ClCompile Include="YongHun.cpp">
-      <Filter>Maker\YH</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraMovement.cpp">
-      <Filter>Component\CameraMovement</Filter>
-    </ClCompile>
-    <ClCompile Include="Test.cpp">
-      <Filter>Component\TestComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="Test2.cpp">
-      <Filter>Component\TestComponent</Filter>
-    </ClCompile>
-    <ClCompile Include="TestMovement.cpp">
-      <Filter>Component\TestMovement</Filter>
+      <Filter>KH\SCENE</Filter>
     </ClCompile>
     <ClCompile Include="Controller.cpp">
-      <Filter>Component\Controller</Filter>
+      <Filter>KH\PLAYER</Filter>
     </ClCompile>
-    <ClCompile Include="TestSingleton.cpp">
-      <Filter>Component\TestSingleton</Filter>
+    <ClCompile Include="main.cpp">
+      <Filter>EntryPoint</Filter>
     </ClCompile>
-    <ClCompile Include="Test3.cpp">
-      <Filter>Component\TestComponent</Filter>
+    <ClCompile Include="NaDong.cpp">
+      <Filter>DH</Filter>
+    </ClCompile>
+    <ClCompile Include="BeomJoon.cpp">
+      <Filter>BJ</Filter>
+    </ClCompile>
+    <ClCompile Include="YongHun.cpp">
+      <Filter>YH</Filter>
+    </ClCompile>
+    <ClCompile Include="Tween.cpp">
+      <Filter>KH\Tween</Filter>
+    </ClCompile>
+    <ClCompile Include="IObject.cpp">
+      <Filter>KH\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationTestController.cpp" />
+    <ClCompile Include="PlayerSystem.cpp">
+      <Filter>KH\PLAYER</Filter>
+    </ClCompile>
+    <ClCompile Include="UltraHand.cpp">
+      <Filter>KH\PLAYER\Ability</Filter>
+    </ClCompile>
+    <ClCompile Include="Rewind.cpp">
+      <Filter>KH\PLAYER\Ability</Filter>
+    </ClCompile>
+    <ClCompile Include="IAbility.cpp">
+      <Filter>KH\PLAYER\Ability</Filter>
+    </ClCompile>
+    <ClCompile Include="Hold.cpp">
+      <Filter>KH\PLAYER\Ability</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BeomJoon.h">
-      <Filter>Maker\BJ</Filter>
+    <ClInclude Include="CameraMovement.h" />
+    <ClInclude Include="IMaker.h" />
+    <ClInclude Include="Test.h" />
+    <ClInclude Include="Test2.h" />
+    <ClInclude Include="Test3.h" />
+    <ClInclude Include="TestMovement.h" />
+    <ClInclude Include="TestSingleton.h" />
+    <ClInclude Include="Player.h">
+      <Filter>KH\PLAYER</Filter>
     </ClInclude>
     <ClInclude Include="KiHoon.h">
-      <Filter>Maker\KH</Filter>
-    </ClInclude>
-    <ClInclude Include="NaDong.h">
-      <Filter>Maker\Dh</Filter>
-    </ClInclude>
-    <ClInclude Include="YongHun.h">
-      <Filter>Maker\YH</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraMovement.h">
-      <Filter>Component\CameraMovement</Filter>
-    </ClInclude>
-    <ClInclude Include="Test.h">
-      <Filter>Component\TestComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="Test2.h">
-      <Filter>Component\TestComponent</Filter>
-    </ClInclude>
-    <ClInclude Include="TestMovement.h">
-      <Filter>Component\TestMovement</Filter>
+      <Filter>KH\SCENE</Filter>
     </ClInclude>
     <ClInclude Include="Controller.h">
-      <Filter>Component\Controller</Filter>
+      <Filter>KH\PLAYER</Filter>
     </ClInclude>
-    <ClInclude Include="IMaker.h">
-      <Filter>Maker</Filter>
+    <ClInclude Include="NaDong.h">
+      <Filter>DH</Filter>
     </ClInclude>
-    <ClInclude Include="TestSingleton.h">
-      <Filter>Component\TestSingleton</Filter>
+    <ClInclude Include="BeomJoon.h">
+      <Filter>BJ</Filter>
     </ClInclude>
-    <ClInclude Include="Test3.h">
-      <Filter>Component\TestComponent</Filter>
+    <ClInclude Include="YongHun.h">
+      <Filter>YH</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>KH\ETC</Filter>
+    </ClInclude>
+    <ClInclude Include="Tween.h">
+      <Filter>KH\Tween</Filter>
+    </ClInclude>
+    <ClInclude Include="eEasing.h">
+      <Filter>KH\Tween</Filter>
+    </ClInclude>
+    <ClInclude Include="EasingFunction.h">
+      <Filter>KH\Tween</Filter>
+    </ClInclude>
+    <ClInclude Include="IObject.h">
+      <Filter>KH\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationTestController.h" />
+    <ClInclude Include="PlayerSystem.h">
+      <Filter>KH\PLAYER</Filter>
+    </ClInclude>
+    <ClInclude Include="UltraHand.h">
+      <Filter>KH\PLAYER\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="Rewind.h">
+      <Filter>KH\PLAYER\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="IAbility.h">
+      <Filter>KH\PLAYER\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectProperty.h">
+      <Filter>KH\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="TemplateFlag.h">
+      <Filter>KH\ETC</Filter>
+    </ClInclude>
+    <ClInclude Include="Hold.h">
+      <Filter>KH\PLAYER\Ability</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Maker">
-      <UniqueIdentifier>{ab56d61c-8dd0-4ad4-addc-c88b732d7c7d}</UniqueIdentifier>
+    <Filter Include="KH">
+      <UniqueIdentifier>{93a3032c-a648-43dd-a9b8-4b9a0884efe1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Maker\KH">
-      <UniqueIdentifier>{81b865ae-0f85-4d53-85a5-df196ae2e5d5}</UniqueIdentifier>
+    <Filter Include="KH\SCENE">
+      <UniqueIdentifier>{37249a48-b695-43b3-b122-742d33c69569}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Maker\BJ">
-      <UniqueIdentifier>{6094e695-9aca-4fda-bffc-1f4573a8c992}</UniqueIdentifier>
+    <Filter Include="KH\PLAYER">
+      <UniqueIdentifier>{2bca997a-4dfd-4f5e-b7f0-be07c5f10356}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Maker\Dh">
-      <UniqueIdentifier>{8b412372-73bc-43e1-a507-502a7fa25d7e}</UniqueIdentifier>
+    <Filter Include="EntryPoint">
+      <UniqueIdentifier>{4d62666c-da44-4bd4-9655-21e82a2cbd6f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Component">
-      <UniqueIdentifier>{84e3b54d-c1e3-47ab-b1a3-056d981249bd}</UniqueIdentifier>
+    <Filter Include="DH">
+      <UniqueIdentifier>{4cae644f-611d-4614-913f-88e42e5f3dc1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Maker\YH">
-      <UniqueIdentifier>{2eac87f6-c5f8-4407-9ddb-6409baac3e5d}</UniqueIdentifier>
+    <Filter Include="BJ">
+      <UniqueIdentifier>{56dfe26d-ed46-4315-a567-c2968c5d6044}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Component\CameraMovement">
-      <UniqueIdentifier>{4cc2aeb4-fce1-4d15-bfd9-ffd9d33ad043}</UniqueIdentifier>
+    <Filter Include="YH">
+      <UniqueIdentifier>{4673e658-65bd-4ea5-9228-e1d498ecad54}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Component\TestComponent">
-      <UniqueIdentifier>{911a6a79-6ace-4607-a110-292f06488422}</UniqueIdentifier>
+    <Filter Include="KH\ETC">
+      <UniqueIdentifier>{048452e9-c902-4698-9af9-8e4a9122f0c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Component\TestMovement">
-      <UniqueIdentifier>{a49196e1-9dda-4d01-b016-bed28d59d013}</UniqueIdentifier>
+    <Filter Include="KH\Tween">
+      <UniqueIdentifier>{f63bea33-fdba-40b2-9a5d-a0cbb497d2cd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Component\Controller">
-      <UniqueIdentifier>{89ae7aa4-bd2e-47e8-ace1-234799477a54}</UniqueIdentifier>
+    <Filter Include="KH\Object">
+      <UniqueIdentifier>{0095cd59-04b0-4218-b5d5-e6a72052ab37}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Component\TestSingleton">
-      <UniqueIdentifier>{2e7bd5ce-77b3-404c-8a5b-8c0909032ac0}</UniqueIdentifier>
+    <Filter Include="KH\PLAYER\Ability">
+      <UniqueIdentifier>{6452ba17-f6c7-4808-9efa-26bba6abd277}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

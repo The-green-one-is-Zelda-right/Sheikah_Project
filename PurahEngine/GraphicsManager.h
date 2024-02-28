@@ -32,7 +32,8 @@ namespace PurahEngine
 		void Initialize(HWND hWnd);
 		void Finalize();
 
-		void Run(float deltaTime);
+		void UpdateAnimator(float deltaTime);
+		void Render(float deltaTime);
 
 	private:
 		void AddRenderer(IRenderer* renderer);
@@ -40,6 +41,9 @@ namespace PurahEngine
 
 		void AddLight(IRenderer* renderer);
 		void RemoveLight(IRenderer* renderer);
+		
+		void AddAnimator(Animator* animator);
+		void RemoveAnimator(Animator* animator);
 
 	private:
 		HMODULE zeldaGraphicsDLL;
@@ -47,6 +51,7 @@ namespace PurahEngine
 		
 		std::vector<IRenderer*> lightList;
 		std::vector<IRenderer*> rendererList;
+		std::vector<Animator*> animatorList;
 
 		GraphicsResourceManager* resourceManager;
 

@@ -23,6 +23,11 @@ namespace PurahEngine
 	PurahEngine::Camera::~Camera()
 	{
 		GraphicsManager::GetInstance().resourceManager->ReleaseCamera(cameraID);
+		
+		if (SceneManager::GetInstance().GetMainCamera() == this)
+		{
+			SceneManager::GetInstance().SetMainCamera(nullptr);
+		}
 	}
 
 	void PurahEngine::Camera::SetCameraNear(float cameraNear)
@@ -67,4 +72,32 @@ namespace PurahEngine
 		auto worldTM = GetGameObject()->GetComponent<Transform>()->GetWorldMatrix();
 		renderer->UpdateCamera(cameraID, worldTM, fieldOfView, cameraNear, cameraFar);
 	}
+
+	void PurahEngine::Camera::PreSerialize(json& jsonData) const
+	{
+
+	}
+
+	void PurahEngine::Camera::PreDeserialize(const json& jsonData)
+	{
+		PREDESERIALIZE_BASE();
+		PREDESERIALIZE_VALUE(cameraNear);
+		PREDESERIALIZE_VALUE(cameraFar);
+		PREDESERIALIZE_VALUE(fieldOfView);
+		if (jsonData["mainCamera"] == true)
+		{
+			SetMainCamera();
+		}
+	}
+
+	void PurahEngine::Camera::PostSerialize(json& jsonData) const
+	{
+
+	}
+
+	void PurahEngine::Camera::PostDeserialize(const json& jsonData)
+	{
+
+	}
+
 }

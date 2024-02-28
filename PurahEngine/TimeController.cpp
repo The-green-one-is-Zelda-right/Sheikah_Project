@@ -30,15 +30,16 @@ float PurahEngine::TimeController::GetTimeScale()
 	return timeScale;
 }
 
-void PurahEngine::TimeController::GetDeltaTime()
+float PurahEngine::TimeController::GetDeltaTime()
 {
-
+	return GetDeltaTime(timeName);
 }
 
-void PurahEngine::TimeController::Initialize(std::string timeName)
+void PurahEngine::TimeController::Initialize(std::string timename)
 {
 	timeScale = TIMESCALE_DEFAULT;
 	framePerSecond = FPS_DEFAULT;
+	timeName = timename;
 }
 
 void PurahEngine::TimeController::Update(std::string timeName)

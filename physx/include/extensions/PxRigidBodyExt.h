@@ -156,20 +156,21 @@ public:
 	static		bool			setMassAndUpdateInertia(PxRigidBody& body, const PxReal* shapeMasses, PxU32 shapeMassCount, const PxVec3* massLocalPose = NULL, bool includeNonSimShapes = false);
 
 	/**
-	\brief Computation of mass properties for a rigid body actor
+	\brief 강체 액터의 질량 속성을 계산합니다.
 
-	This method sets the mass, inertia and center of mass of a rigid body. The mass is set to the user-supplied
-	value, and the inertia and center of mass are computed according to the rigid body's shapes and the input mass.
+	이 메서드는 강체의 질량, 관성 및 질량 중심을 설정합니다. 
+	질량은 사용자가 제공한 값으로 설정되며, 
+	관성과 질량 중심은 강체의 형상과 입력된 질량에 따라 계산됩니다.
 
-	If no collision shapes are found, the inertia tensor is set to (1,1,1)
+	충돌 형상이 없는 경우 관성 텐서는 (1,1,1)로 설정됩니다.
 
-	@see updateMassAndInertia for more details.
+	자세한 내용은 updateMassAndInertia를 참조하십시오.
 
-	\param[in,out] body The rigid body for which to set the mass and centre of mass local pose properties.
-	\param[in] mass The mass of the body. Must be greater than 0.
-	\param[in] massLocalPose The center of mass relative to the actor frame. If set to null then (0,0,0) is assumed.
-	\param[in] includeNonSimShapes True if all kind of shapes (PxShapeFlag::eSCENE_QUERY_SHAPE, PxShapeFlag::eTRIGGER_SHAPE) should be taken into account.
-	\return Boolean. True on success else false.
+	\param[in,out]	body 질량 및 질량 중심 로컬 포즈 속성을 설정할 강체입니다.
+	\param[in]		mass 몸체의 질량입니다. 0보다 커야 합니다.
+	\param[in]		massLocalPose 액터 프레임을 기준으로 한 질량 중심입니다. null로 설정하면 (0,0,0)으로 가정됩니다.
+	\param[in]		includeNonSimShapes PxShapeFlag::eSCENE_QUERY_SHAPE, PxShapeFlag::eTRIGGER_SHAPE과 같은 모든 종류의 형상을 고려해야 하는지 여부입니다.
+	\return			부울값입니다. 성공하면 true를 반환하고, 그렇지 않으면 false를 반환합니다.
 
 	@see PxRigidBody::setCMassLocalPose PxRigidBody::setMassSpaceInertiaTensor PxRigidBody::setMass
 	*/

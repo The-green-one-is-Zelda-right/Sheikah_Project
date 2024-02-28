@@ -1,17 +1,7 @@
 #pragma once
+#include <functional>
 #include <vector>
 #include <windows.h>
-
-#include "ColliderBase.h"
-
-namespace PurahEngine
-{
-	class EventCallbackSystem;
-
-	// template <ColliderType T> class Collider;
-	// extern typedef Collider<ColliderType::DYNAMIC> DynamicCollider;
-	// extern typedef Collider<ColliderType::STATIC> StaticCollider;
-}
 
 namespace ZonaiPhysics
 {
@@ -23,7 +13,8 @@ namespace ZonaiPhysics
 
 namespace PurahEngine
 {
-	// class Collider;
+	class EventCallbackSystem;
+	class Collider;
 	class RigidBody;
 	class Joint;
 
@@ -56,8 +47,8 @@ namespace PurahEngine
 
 	public:
 		std::vector<RigidBody*> bodies;
-		std::vector<ColliderBase*> dynamicColliders;
-		std::vector<ColliderBase*> staticColliders;
+		std::vector<Collider*> dynamicColliders;
+		std::vector<Collider*> staticColliders;
 		std::vector<Joint*> joints;
 		EventCallbackSystem* callbackSystem;
 

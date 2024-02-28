@@ -8,7 +8,7 @@
 
 namespace PurahEngine
 {
-	class Light : public Component, IRenderer
+	class PURAHENGINE_API Light : public Component, IRenderer
 	{
 	protected:
 		Light();
@@ -28,6 +28,12 @@ namespace PurahEngine
 		void CreateSpotLight(float range, float angle);
 
 		void ReleaseLight();
+
+	public:
+		virtual void PreSerialize(json& jsonData) const override;
+		virtual void PreDeserialize(const json& jsonData) override;
+		virtual void PostSerialize(json& jsonData) const override;
+		virtual void PostDeserialize(const json& jsonData) override;
 
 	protected:
 		Eigen::Vector3f ambient;

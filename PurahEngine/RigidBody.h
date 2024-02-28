@@ -88,14 +88,14 @@ namespace PurahEngine
 		/**
 		선속도 제한
 		*/
-		float		GetMaxLinearVelocity() const noexcept;
-		void		SetMaxLinearVelocity(const float&) noexcept;
+		// float		GetMaxLinearVelocity() const noexcept;
+		// void		SetMaxLinearVelocity(const float&) noexcept;
 
 		/**
 		각속도 제한
 		*/
-		float		GetMaxAngularVelocity() const noexcept;
-		void		SetMaxAngularVelocity(const float&) noexcept;
+		// float		GetMaxAngularVelocity() const noexcept;
+		// void		SetMaxAngularVelocity(const float&) noexcept;
 
 		/**
 		물체에 힘을 가하거나 지움
@@ -116,23 +116,29 @@ namespace PurahEngine
 	public:
 		void SimulateResult();
 
+	public:
+		virtual void PreSerialize(json& jsonData) const override;
+		virtual void PreDeserialize(const json& jsonData) override;
+		virtual void PostSerialize(json& jsonData) const override;
+		virtual void PostDeserialize(const json& jsonData) override;
+
 	private:
 		bool awake{ true };
-		bool lock[3]{ false, false, false };
 		bool isKinematic{ false };
-		bool useGravity{ false };
+		bool useGravity{ true };
 
 		// float maxLinearVelocity{ 0.f };
 		// float maxAngularVelocity{ 0.f };
 		// Eigen::Vector3f position{ 0.f, 0.f, 0.f };
 		// Eigen::Quaternionf rotation{ Eigen::Quaternionf::Identity() };
+		uint8_t freeze{ 0 };
 		Eigen::Vector3f LinearVelocity{ 0.f, 0.f, 0.f };
 		Eigen::Vector3f angularVelocity{ 0.f, 0.f, 0.f };
-		float mass;
-		float linearDamping;
-		float angularDamping;
-		Eigen::Vector3f force{};
-		Eigen::Vector3f torque{};
+		float mass{ 1.f };
+		float linearDamping{ 0.1f };
+		float angularDamping{ 0.1f };
+		Eigen::Vector3f force{ 0.f, 0.f, 0.f };
+		Eigen::Vector3f torque{ 0.f, 0.f, 0.f };
 		ZonaiPhysics::ZnRigidBody* body{};
 
 		friend class Transform;

@@ -1,5 +1,6 @@
 #pragma once
 #include "PurahEngineAPI.h"
+#include "SerializableDefine.h"
 
 #include <string>
 #include <vector>
@@ -12,7 +13,7 @@ namespace PurahEngine
 	class Camera;
 	class Transform;
 
-	class PURAHENGINE_API SceneManager
+	class PURAHENGINE_API SceneManager : public Serializable
 	{
 	private:
 		SceneManager();
@@ -33,6 +34,17 @@ namespace PurahEngine
 
 		void Update();
 
+		void LoadScene();
+
+	protected:
+		json sceneData;
+
+	public:
+		virtual void PreSerialize(json& jsonData) const override;
+		virtual void PreDeserialize(const json& jsonData) override;
+		virtual void PostSerialize(json& jsonData) const override;
+		virtual void PostDeserialize(const json& jsonData) override;
+
 	private:
 		void Initialize();
 
@@ -42,6 +54,7 @@ namespace PurahEngine
 			AWAKE,
 			START,
 			UPDATE,
+			LATEUPDATE,
 			DESTROY
 		};
 

@@ -5,9 +5,7 @@
 
 //#include "TestMovement.h"
 //#include "CameraMovement.h"
-#include "Test.h"
-#include "Test2.h"
-#include "Test3.h"
+
 
 using namespace PurahEngine;
 

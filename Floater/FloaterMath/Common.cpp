@@ -1,4 +1,4 @@
-ï»¿#include <cmath>
+ï»include <cmath>
 #include "./include/Common.h"
 #include <limits>
 

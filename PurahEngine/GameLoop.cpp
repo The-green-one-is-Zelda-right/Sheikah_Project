@@ -118,13 +118,14 @@ void PurahEngine::GameLoop::run()
 	float deltaTime = PurahEngine::TimeController::GetInstance().GetDeltaTime(timeInit);
 
 	PurahEngine::PhysicsSystem::GetInstance().PreStep();
-	PurahEngine::PhysicsSystem::GetInstance().Simulation(0.02f);
+	PurahEngine::PhysicsSystem::GetInstance().Simulation(deltaTime);
 
 	PurahEngine::InputManager::Getinstance().Update();
 	PurahEngine::SceneManager::GetInstance().Update();
 	PurahEngine::SoundManager::GetInstance().Update();
 
-	PurahEngine::GraphicsManager::GetInstance().Run(deltaTime);
+	PurahEngine::GraphicsManager::GetInstance().UpdateAnimator(deltaTime);
+	PurahEngine::GraphicsManager::GetInstance().Render(deltaTime);
 }
 
 LRESULT CALLBACK PurahEngine::GameLoop::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

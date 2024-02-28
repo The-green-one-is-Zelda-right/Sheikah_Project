@@ -6,6 +6,8 @@
 #include "InputManager.h"
 #include "PhysicsSystem.h"
 #include "Renderer.h"
+#include "ModelRenderer.h"
+#include "Animator.h"
 #include "Camera.h"
 #include "GraphicsResourceManager.h"
 
@@ -67,7 +69,16 @@ void PurahEngine::GraphicsManager::Finalize()
 	}
 }
 
-void PurahEngine::GraphicsManager::Run(float deltaTime)
+void PurahEngine::GraphicsManager::UpdateAnimator(float deltaTime)
+{
+	for (auto iter = animatorList.begin(); iter != animatorList.end(); iter++)
+	{
+		Animator* animator = *iter;
+		animator->UpdateAnimation(deltaTime);
+	}
+}
+
+void PurahEngine::GraphicsManager::Render(float deltaTime)
 {
 	graphicsModule->BeginDraw(deltaTime);
 
@@ -108,6 +119,16 @@ void PurahEngine::GraphicsManager::AddLight(IRenderer* renderer)
 void PurahEngine::GraphicsManager::RemoveLight(IRenderer* renderer)
 {
 	lightList.erase(remove(lightList.begin(), lightList.end(), renderer), lightList.end());
+}
+
+void PurahEngine::GraphicsManager::AddAnimator(Animator* animator)
+{
+	animatorList.push_back(animator);
+}
+
+void PurahEngine::GraphicsManager::RemoveAnimator(Animator* animator)
+{
+	animatorList.erase(remove(animatorList.begin(), animatorList.end(), animator), animatorList.end());
 }
 
 PurahEngine::GraphicsManager::GraphicsManager() :

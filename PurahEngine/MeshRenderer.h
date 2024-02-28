@@ -4,7 +4,7 @@
 
 namespace PurahEngine
 {
-	class PURAHENGINE_API MeshRenderer : public Renderer
+	class PURAHENGINE_API MeshRenderer final : public Renderer
 	{
 	public:
 		MeshRenderer();
@@ -20,11 +20,22 @@ namespace PurahEngine
 
 		void SetTexture(const std::wstring& textureName);
 		void SetMesh(MeshType type);
+		void SetWireFrame(bool value);
+		void SetColor(float r, float g, float b, float a);
+
+	public:
+		virtual void PreSerialize(json& jsonData) const override;
+		virtual void PreDeserialize(const json& jsonData) override;
+		virtual void PostSerialize(json& jsonData) const override;
+		virtual void PostDeserialize(const json& jsonData) override;
 
 	private:
 		std::wstring textureName;
 		MeshType meshType;
-
-		Color meshColor;
+		bool wireFrame;
+		float r;
+		float g;
+		float b;
+		float a;
 	};
 }

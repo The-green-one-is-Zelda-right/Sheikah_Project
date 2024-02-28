@@ -1,85 +1,57 @@
 #pragma once
 #include "PurahEngineAPI.h"
-#include "GameObject.h"
-#include "Transform.h"
+#include "Component.h"
+#include "Eigen/Dense"
 
-#include "ZnCollider.h"
-
-#include "ColliderBase.h"
-
-#include "PhysicsSystem.h"
+namespace ZonaiPhysics
+{
+    class ZnCollider;
+}
 
 namespace PurahEngine
 {
     class Transform;
 
-    class PURAHENGINE_API Collider : public ColliderBase
+    enum class ColliderType
+    {
+        DYNAMIC,
+        STATIC,
+    };
+
+    class PURAHENGINE_API Collider : public Component
     {
     public:
         Collider() = default;
 
-        ~Collider() override
-        {
-            transform = nullptr;
-
-            auto& physicsSystem = PhysicsSystem::GetInstance();
-
-            switch (type)
-            {
-            case ColliderType::DYNAMIC:
-            {
-				auto& colliders = physicsSystem.dynamicColliders;
-				colliders.erase(std::remove(colliders.begin(), colliders.end(), this));
-                physicsSystem.FreeObject(znCollider);
-            }
-            break;
-
-            case ColliderType::STATIC:
-            {
-                auto& colliders = physicsSystem.staticColliders;
-                colliders.erase(std::remove(colliders.begin(), colliders.end(), this));
-                physicsSystem.FreeObject(znCollider);
-            }
-            break;
-
-            default:
-                throw"";
-            }
-        }
-
-        void Awake() override
-        {
-            this->transform = gameObject->GetComponent<Transform>();
-
-            switch (type)
-            {
-            case ColliderType::DYNAMIC:
-                PhysicsSystem::GetInstance().dynamicColliders.push_back(this);
-                break;
-
-            case ColliderType::STATIC:
-                PhysicsSystem::GetInstance().staticColliders.push_back(this);
-                break;
-
-            default:
-                throw"";
-            }
-        }
-
-        void SetDynamic(bool _value)
-        {
-            type = _value ? ColliderType::DYNAMIC : ColliderType::STATIC;
-        }
+        ~Collider() override;
 
     public:
-        void PreStep() override
-        {
-            znCollider->SetPosition(transform->GetWorldPosition());
-            znCollider->SetQuaternion(transform->GetWorldRotation());
-        }
+        void Awake() override;
+
+    public:
+        void SetPositionOffset(const Eigen::Vector3f& _pos);
+
+        void SetRotationOffset(const Eigen::Quaternionf& _quat);
+
+        void SetDynamic(bool _value);
+
+        void SetTrigger(bool _value);
+
+        void SetLayer(uint32_t _value);
+
+    public:
+        virtual void PreStep();
 
     protected:
+        bool awake = true;
         Transform* transform = nullptr;
         ColliderType type = ColliderType::STATIC;
+
+    protected:
+        bool isTrigger = false;
+        uint32_t layer = 0;
+        ZonaiPhysics::ZnCollider* znCollider = nullptr;
+        Eigen::Vector3f positionOffset{ Eigen::Vector3f::Zero() };
+        Eigen::Quaternionf rotationOffset{ Eigen::Quaternionf::Identity() };
     };
 }

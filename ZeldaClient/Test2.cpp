@@ -79,3 +79,23 @@ void PurahEngine::Test2::FixedUpdate()
 	}
 }
 
+void PurahEngine::Test2::PreSerialize(json& jsonData) const
+{
+
+}
+
+void PurahEngine::Test2::PreDeserialize(const json& jsonData)
+{
+
+}
+
+void PurahEngine::Test2::PostSerialize(json& jsonData) const
+{
+
+}
+
+void PurahEngine::Test2::PostDeserialize(const json& jsonData)
+{
+
+}
+

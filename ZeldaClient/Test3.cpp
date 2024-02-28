@@ -35,3 +35,23 @@ void PurahEngine::Test3::Update()
 		}
 	}
 }
+
+void PurahEngine::Test3::PreSerialize(json& jsonData) const
+{
+
+}
+
+void PurahEngine::Test3::PreDeserialize(const json& jsonData)
+{
+
+}
+
+void PurahEngine::Test3::PostSerialize(json& jsonData) const
+{
+
+}
+
+void PurahEngine::Test3::PostDeserialize(const json& jsonData)
+{
+
+}

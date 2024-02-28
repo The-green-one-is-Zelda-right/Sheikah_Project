@@ -63,8 +63,8 @@ namespace ZonaiPhysics
 			uint32_t contacts = 0;
 			Eigen::Vector3f totalImpulse{ 0.f, 0.f, 0.f };
 
-			const auto thisCollider = GetCollider(cp.shapes[0]);
-			const auto otherCollider = GetCollider(cp.shapes[1]);
+			const ZnCollider* thisCollider = GetCollider(cp.shapes[0]);
+			const ZnCollider* otherCollider = GetCollider(cp.shapes[1]);
 
 			assert(thisCollider != nullptr && otherCollider != nullptr);
 

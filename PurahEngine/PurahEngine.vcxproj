@@ -41,9 +41,11 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="ComponentFactory.h" />
     <ClInclude Include="Componentmanager.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="EventCallbackSystem.h" />
+    <ClInclude Include="FileManager.h" />
     <ClInclude Include="FixedJoint.h" />
     <ClInclude Include="GameLoop.h" />
     <ClInclude Include="GameObject.h" />
@@ -51,6 +53,7 @@
     <ClInclude Include="GraphicsResourceManager.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="IRenderer.h" />
+    <ClInclude Include="ISerializable.h" />
     <ClInclude Include="Joint.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="MeshRenderer.h" />
@@ -61,6 +64,8 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Serializable.h" />
+    <ClInclude Include="SerializableDefine.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="TimeController.h" />
     <ClInclude Include="Transform.h" />
@@ -75,6 +80,7 @@
     <ClCompile Include="Componentmanager.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="EventCallbackSystem.cpp" />
+    <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FixedJoint.cpp" />
     <ClCompile Include="GameLoop.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -90,6 +96,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Serializable.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="TimeController.cpp" />
     <ClCompile Include="Transform.cpp" />
@@ -258,7 +265,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)eigen-3.4.0;$(SolutionDir)ZeldaGraphics\header\;$(SolutionDir)Floater\ZeldaGraphicsAdapter\;$(SolutionDir)ZonaiPhysicsBase\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)eigen-3.4.0;$(SolutionDir)ZeldaGraphics\header\;$(SolutionDir)Floater\ZeldaGraphicsAdapter\;$(SolutionDir)ZonaiPhysicsBase\;$(SolutionDir)json-develop\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -147,11 +147,11 @@ namespace ZonaiPhysics
 		{
 			znBody = ZnFactoryX::CreateDynamicRigidBody(_userData);
 			ZnWorld::AddBody(znBody, userScene);
+			znBody->UseGravity(false);
+			znBody->SetKinematic(true);
 		}
 
 		const auto collider = ZnFactoryX::CreateBoxCollider(znBody, _extend, material);
-		znBody->UseGravity(false);
-		znBody->SetKinematic(true);
 
 		return collider;
 	}

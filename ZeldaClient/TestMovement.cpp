@@ -256,3 +256,23 @@ void PurahEngine::TestMovement::FixedUpdate()
 
 
 }
+
+void PurahEngine::TestMovement::PreSerialize(json& jsonData) const
+{
+
+}
+
+void PurahEngine::TestMovement::PreDeserialize(const json& jsonData)
+{
+
+}
+
+void PurahEngine::TestMovement::PostSerialize(json& jsonData) const
+{
+
+}
+
+void PurahEngine::TestMovement::PostDeserialize(const json& jsonData)
+{
+
+}

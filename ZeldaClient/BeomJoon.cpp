@@ -3,6 +3,7 @@
 #include "PurahEngine.h"
 
 #include "CameraMovement.h"
+#include "AnimationTestController.h"
 
 using namespace PurahEngine;
 
@@ -13,7 +14,7 @@ void BeomJoon::Run()
 	Camera* mainCamera = mainCameraObject->AddComponent<Camera>();
 	mainCameraObject->AddComponent<CameraMovement>();
 
-	mainCameraObject->GetTransform()->SetLocalPosition({ 0.0f, 0.0f, -10.0f });
+	mainCameraObject->GetTransform()->SetLocalPosition({ 0.0f, 0.0f, -100.0f });
 
 	// 메인 카메라로 설정
 	SceneManager::GetInstance().SetMainCamera(mainCamera);
@@ -39,6 +40,12 @@ void BeomJoon::Run()
 	GameObject* characterObject = SceneManager::GetInstance().CreateGameObject(L"Character");
 	ModelRenderer* character = characterObject->AddComponent<ModelRenderer>();
 	character->SetModelName(L"Character\\Character.fbx");
+	//character->SetModelName(L"C:\\Users\\KOCCA62\\Desktop\\Ganondorf-3d-model-dl\\source\\Ganondorf (TotK) 3D Model\\Dying6.fbx");
 
-	characterObject->GetTransform()->SetLocalScale({ 0.02f, 0.02f, 0.02f });
+	characterObject->GetTransform()->SetLocalScale({ 0.2f, 0.2f, 0.2f });
+
+	// 애니메이션을 테스트하기 위한 컴포넌트 추가
+	characterObject->AddComponent<Animator>();
+	characterObject->AddComponent<AnimationTestController>();
+
 }

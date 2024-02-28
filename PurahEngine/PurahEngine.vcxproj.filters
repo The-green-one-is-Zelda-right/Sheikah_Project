@@ -64,6 +64,12 @@
     <Filter Include="Audio">
       <UniqueIdentifier>{0505cefc-87c2-4209-ae57-1b47cad691ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Manager\FileManager">
+      <UniqueIdentifier>{7d806f8f-3739-4237-9b82-8f56fd98b236}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Serialize">
+      <UniqueIdentifier>{bcd01ca1-98c4-4146-8609-8336a90e438b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameLoop.cpp">
@@ -143,6 +149,12 @@
     <ClCompile Include="Animator.cpp">
       <Filter>Component\3. Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="FileManager.cpp">
+      <Filter>Core\Manager\FileManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Serializable.cpp">
+      <Filter>Core\Serialize</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameLoop.h">
@@ -173,7 +185,6 @@
     <ClInclude Include="Componentmanager.h">
       <Filter>Component\1. Manager</Filter>
     </ClInclude>
-    <ClInclude Include="IRenderer.h" />
     <ClInclude Include="BoxCollider.h">
       <Filter>Component\2. Physics\Collider</Filter>
     </ClInclude>
@@ -225,6 +236,24 @@
     </ClInclude>
     <ClInclude Include="Animator.h">
       <Filter>Component\3. Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>Core\Manager\FileManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ISerializable.h">
+      <Filter>Core\Serialize</Filter>
+    </ClInclude>
+    <ClInclude Include="Serializable.h">
+      <Filter>Core\Serialize</Filter>
+    </ClInclude>
+    <ClInclude Include="IRenderer.h">
+      <Filter>Component\3. Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentFactory.h">
+      <Filter>Component\0. Base</Filter>
+    </ClInclude>
+    <ClInclude Include="SerializableDefine.h">
+      <Filter>Core\Serialize</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

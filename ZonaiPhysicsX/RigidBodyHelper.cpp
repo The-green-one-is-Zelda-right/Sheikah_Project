@@ -132,7 +132,10 @@ namespace ZonaiPhysics
 
 		const auto pxBody = static_cast<physx::PxRigidDynamic*>(_pxBody);
 		pxBody->setMass(_mass);
-		physx::PxRigidBodyExt::setMassAndUpdateInertia(*pxBody, _mass);
+		const auto pos = pxBody->getCMassLocalPose();
+		physx::PxRigidBodyExt::setMassAndUpdateInertia(*pxBody, _mass, &pos.p);
+		// auto iner = GetInertiaTensor(_pxBody);
+		// iner = iner;
 	}
 
 	float RigidBodyHelper::GetInvMass(void* _pxBody)
@@ -195,7 +198,7 @@ namespace ZonaiPhysics
 	{
 		assert(_pxBody != nullptr);
 
-		static_cast<physx::PxRigidDynamic*>(_pxBody)->setLinearVelocity(EigenToPhysx(_velo));
+		static_cast<physx::PxRigidDynamic*>(_pxBody)->setLinearVelocity(EigenToPhysx(_velo), false);
 	}
 
 	Eigen::Vector3f RigidBodyHelper::GetAngularVelocity(void* _pxBody)
@@ -209,7 +212,7 @@ namespace ZonaiPhysics
 	{
 		assert(_pxBody != nullptr);
 
-		static_cast<physx::PxRigidDynamic*>(_pxBody)->setAngularVelocity(EigenToPhysx(_velo));
+		static_cast<physx::PxRigidDynamic*>(_pxBody)->setAngularVelocity(EigenToPhysx(_velo), false);
 	}
 
 	float RigidBodyHelper::GetMaxLinearVelocity(void* _pxBody)
@@ -254,7 +257,7 @@ namespace ZonaiPhysics
 		const auto pxBody = static_cast<physx::PxRigidDynamic*>(_pxBody);
 		physx::PxTransform t = pxBody->getGlobalPose();
 		t.p = EigenToPhysx(_pos);
-		pxBody->setGlobalPose(t);
+		pxBody->setGlobalPose(t, false);
 	}
 
 	Eigen::Quaternionf RigidBodyHelper::GetQuaternion(void* _pxBody)
@@ -271,7 +274,7 @@ namespace ZonaiPhysics
 		const auto pxBody = static_cast<physx::PxRigidDynamic*>(_pxBody);
 		physx::PxTransform t = pxBody->getGlobalPose();
 		t.q = EigenToPhysx(_quat);
-		pxBody->setGlobalPose(t);
+		pxBody->setGlobalPose(t, false);
 	}
 
 	void RigidBodyHelper::SetForceAndTorque(void* _pxBody, const Eigen::Vector3f& _force,

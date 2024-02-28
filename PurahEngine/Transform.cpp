@@ -11,7 +11,7 @@ PurahEngine::Transform::Transform() :
 	parentTransform(nullptr),
 	rigidbody(nullptr)
 {
-	
+
 }
 
 PurahEngine::Transform::~Transform()
@@ -70,7 +70,6 @@ Eigen::Vector3f PurahEngine::Transform::GetWorldScale() const
 	{
 		Eigen::Vector3f parentScale = parentTransform->GetWorldScale();
 
-		//return parentScale.transpose() * scale;
 		return parentScale.cwiseProduct(scale);
 	}
 	else
@@ -127,7 +126,7 @@ std::vector<PurahEngine::Transform*> PurahEngine::Transform::GetChildren() const
 void PurahEngine::Transform::SetLocalPosition(Eigen::Vector3f setPosition)
 {
 	position = setPosition;
-	
+
 	if (rigidbody != nullptr)
 	{
 		rigidbody->SetPosition(position);
@@ -149,15 +148,11 @@ void PurahEngine::Transform::SetWorldPosition(Eigen::Vector3f setPosition)
 	/// 이론 : WorldMatrix 에서 Position 부분만 교체한다.
 	// Eigen::Matrix4f worldMatrix = GetWorldMatrix();
 	// worldMatrix.block<3, 1>(0, 3) = setPosition;
-	
+
 
 	// matrix inverse 로 바꿔라
 	if (parentTransform != nullptr)
 	{
-		//Eigen::Vector3f inverseParent = parentTransform->GetWorldPosition().array().inverse();
-		//position = (parentTransform->GetWorldMatrix().block<3, 1>(0, 3)) + setPosition;
-		//position = parentTransform->GetWorldMatrix().block<3, 1>(0, 3).inverse() * setPosition;
-		//position = inverseParent.cwiseProduct(setPosition);
 		Eigen::Matrix4f inverseP = parentTransform->GetWorldMatrix().inverse();
 		Eigen::Matrix4f inverseC = GetWorldMatrix().inverse();
 		Eigen::Matrix4f localT = Eigen::Matrix4f::Identity();
@@ -167,12 +162,9 @@ void PurahEngine::Transform::SetWorldPosition(Eigen::Vector3f setPosition)
 		localT.block<3, 1>(0, 3) = setPosition;
 
 		position = (inverseC * localT * inverseP * setT).block<3, 1>(0, 3);
-		//position = (inverseP * (inverseC * localT) * setT).block<3, 1>(0, 3);
-		//position = (localT * inverseP).block<3, 1>(0, 3);
-		//position = parentTransform->GetWorldPosition().array().inverse().cwiseProduct(setPosition);
 	}
 	else
-	{ 
+	{
 		position = setPosition;
 	}
 
@@ -223,14 +215,6 @@ void PurahEngine::Transform::SetParent(PurahEngine::Transform* parentObject)
 
 void PurahEngine::Transform::SetWorldMatrix(Eigen::Matrix4f targetMatrix)
 {
-	/*Eigen::Matrix4f inversePM = parentTransform->GetWorldMatrix().inverse();
-	Eigen::Matrix4f targetLM = targetMatrix * inversePM;
-	Eigen::Affine3f affineTransform(targetLM);
-
-	position = affineTransform.translation();
-	rotation = affineTransform.linear();
-	scale = affineTransform.scale();*/
-
 	Eigen::Affine3f transformation = Eigen::Affine3f::Identity();
 	transformation.translation() << 1.0f, 2.0f, 3.0f; // 이동
 	transformation.rotate(Eigen::AngleAxisf(45.0f * M_PI / 180.0f, Eigen::Vector3f::UnitY())); // 회전
@@ -243,19 +227,45 @@ void PurahEngine::Transform::SetWorldMatrix(Eigen::Matrix4f targetMatrix)
 	scaling[0] = transformation.linear().col(0).norm(); // x 축의 크기
 	scaling[1] = transformation.linear().col(1).norm(); // y 축의 크기
 	scaling[2] = transformation.linear().col(2).norm(); // z 축의 크기
+}
 
+void PurahEngine::Transform::PreSerialize(json& jsonData) const
+{
 
+}
 
-	//affineTransform.linear().decomposed().computeScaling() = affineTransform.scale();
-	//affineTransform.linear().decomposed().computeRotationScaling(&rotation, &scale);
-	//translation = affineTransform.translation();
+void PurahEngine::Transform::PreDeserialize(const json& jsonData)
+{
+	PREDESERIALIZE_BASE();
+	PREDESERIALIZE_VECTOR3F(position);
+	PREDESERIALIZE_QUATERNIONF(rotation);
+	PREDESERIALIZE_VECTOR3F(scale);
+}
 
+void PurahEngine::Transform::PostSerialize(json& jsonData) const
+{
+
+}
+
+void PurahEngine::Transform::PostDeserialize(const json& jsonData)
+{
+	auto& fManager = FileManager::GetInstance();
+
+	//for (int i = 0; i < jsonData["__ID__children"].size(); i++)
+	//{
+	//	children.push_back(static_cast<Transform*>(fManager.GetAddress(jsonData["__ID__children"][i])));
+	//}
+	POSTDESERIALIZE_VECTOR_PTR(children);
+
+	if (jsonData["__ID__parent"].size() != 0)
+	{
+		parentTransform = static_cast<Transform*>(fManager.GetAddress(jsonData["__ID__parent"][0]));
+	}
 }
 
 void PurahEngine::Transform::SetRigidBody(RigidBody* rigid)
 {
 	assert(rigidbody == nullptr || (rigid == nullptr && rigidbody != nullptr));
-	
-	rigidbody = rigid;
 
+	rigidbody = rigid;
 }
