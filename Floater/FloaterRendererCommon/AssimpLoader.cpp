@@ -218,9 +218,53 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 	{
 		for (unsigned int i = 0; i < meshCount; ++i)
 		{
-			AssimpRawMeshBuilder meshBuilder(scene->mMeshes[i], filePath, i, outRawScene , _nodeMap);
+			aiMesh* mesh = scene->mMeshes[i];
+
+			AssimpRawMeshBuilder meshBuilder(mesh, filePath, i, outRawScene, _nodeMap);
 
 			rawMeshes[i].Set(meshBuilder);
+
+			// 본 데이터
+			if (mesh->HasBones())
+			{
+
+				RawSkeleton* skeleton = new RawSkeleton();
+
+				// 루트 본 찾기
+				std::wstring firstBoneName = ConvertToWstring(mesh->mBones[0]->mName.C_Str());
+				RawNode* rootBoneNode = _nodeMap.find(firstBoneName)->second;
+				while (rootBoneNode->parent)
+				{
+					if (rootBoneNode->parent->boneIndex != -1)
+					{
+						rootBoneNode = rootBoneNode->parent;
+					}
+					else
+					{
+						break;
+					}
+				}
+
+				skeleton->rootBoneIndex = rootBoneNode->boneIndex;
+
+				skeleton->bones.resize(mesh->mNumBones);
+				for (unsigned int j = 0; j < mesh->mNumBones; ++j)
+				{
+					aiBone* bone = mesh->mBones[j];
+					std::wstring boneName = ConvertToWstring(bone->mName.C_Str());
+					skeleton->bones[j].name = boneName;
+
+					auto boneOffsetMatrix = bone->mOffsetMatrix;
+					aiVector3D bonePosition;
+					aiQuaternion boneRotation;
+					aiVector3D boneScale;
+
+					boneOffsetMatrix.Decompose(boneScale, boneRotation, bonePosition);
+					skeleton->bones[j].transform.SetPosition(bonePosition.x, bonePosition.y, bonePosition.z);
+					skeleton->bones[j].transform.SetRotation(boneRotation.x, boneRotation.y, boneRotation.z, boneRotation.w);
+					skeleton->bones[j].transform.SetScale(boneScale.x, boneScale.y, boneScale.z);
+				}
+			}
 		}
 	}
 
@@ -250,9 +294,9 @@ void flt::AssimpLoader::Load(const std::wstring& filePath, RawScene* outRawScene
 				std::wstring wNodeName = ConvertToWstring(nodeName.C_Str());
 				auto iter = _nodeMap.find(wNodeName);
 				ASSERT(iter != _nodeMap.end(), "node not found");
-				ASSERT(!iter->second->animation, "node already has animation");
-				iter->second->animation->clips.push_back(RawAnimationClip{});
-				RawAnimationClip& rawAnim = iter->second->animation->clips.back();
+
+				iter->second->skeleton->clips.push_back(RawAnimationClip{});
+				RawAnimationClip& rawAnim = iter->second->skeleton->clips.back();
 				rawAnim.name = ConvertToWstring(animName.C_Str());
 
 				int keyCount = (int)nodeAnim->mNumPositionKeys;

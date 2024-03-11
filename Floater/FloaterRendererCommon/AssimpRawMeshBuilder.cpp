@@ -80,78 +80,78 @@ flt::RawMesh* flt::AssimpRawMeshBuilder::build() const
 	}
 
 	// 본 데이터
-	if (mesh->HasBones())
-	{
-		// 루트 본 찾기
-		std::wstring firstBoneName = ConvertToWstring(mesh->mBones[0]->mName.C_Str());
-		RawNode* rootBoneNode = nodeMap.find(firstBoneName)->second;
-		while (rootBoneNode->parent)
-		{
-			if (rootBoneNode->parent->boneIndex != -1)
-			{
-				rootBoneNode = rootBoneNode->parent;
-			}
-			else
-			{
-				break;
-			}
-		}
-		pRawMesh->pRootBone = &rootBoneNode->transform;
+	//if (mesh->HasBones())
+	//{
+	//	// 루트 본 찾기
+	//	std::wstring firstBoneName = ConvertToWstring(mesh->mBones[0]->mName.C_Str());
+	//	RawNode* rootBoneNode = nodeMap.find(firstBoneName)->second;
+	//	while (rootBoneNode->parent)
+	//	{
+	//		if (rootBoneNode->parent->boneIndex != -1)
+	//		{
+	//			rootBoneNode = rootBoneNode->parent;
+	//		}
+	//		else
+	//		{
+	//			break;
+	//		}
+	//	}
+	//	pRawMesh->pRootBone = &rootBoneNode->transform;
 
-		int boneCount = mesh->mNumBones;
-		for (int boneIndex = 0; boneIndex < boneCount; ++boneIndex)
-		{
-			aiBone* bone = mesh->mBones[boneIndex];
+	//	int boneCount = mesh->mNumBones;
+	//	for (int boneIndex = 0; boneIndex < boneCount; ++boneIndex)
+	//	{
+	//		aiBone* bone = mesh->mBones[boneIndex];
 
-			std::wstring boneName = ConvertToWstring(bone->mName.C_Str());
-			auto boneOffsetMatrix = bone->mOffsetMatrix;
-			aiVector3D bonePosition;
-			aiQuaternion boneRotation;
-			aiVector3D boneScale;
+	//		std::wstring boneName = ConvertToWstring(bone->mName.C_Str());
+	//		auto boneOffsetMatrix = bone->mOffsetMatrix;
+	//		aiVector3D bonePosition;
+	//		aiQuaternion boneRotation;
+	//		aiVector3D boneScale;
 
-			boneOffsetMatrix.Decompose(boneScale, boneRotation, bonePosition);
+	//		boneOffsetMatrix.Decompose(boneScale, boneRotation, bonePosition);
 
-			auto iter = nodeMap.find(boneName);
-			ASSERT(iter != nodeMap.end(), "boneName is not found");
-			iter->second->boneIndex = boneIndex;
+	//		auto iter = nodeMap.find(boneName);
+	//		ASSERT(iter != nodeMap.end(), "boneName is not found");
+	//		iter->second->boneIndex = boneIndex;
 
-			/*{
-				// 해당 노드의 로컬 트랜스폰 값과 본의 오프셋 매트릭스가 같은지 확인
-				// 현재 다른경우가 있는데 좌표 변환이 노드에만 적용되고 본에서는 적용이 되지 않아 그럴 수 있을거라 생각됨.
-				auto pos = iter->second->transform.GetPosition();
-				float epsilon = 0.0001f;
-				float subX = pos.x - bonePosition.x;
-				float subY = pos.y - bonePosition.y;
-				float subZ = pos.z - bonePosition.z;
-				ASSERT(subX < epsilon && subX > -epsilon && subY < epsilon && subY > -epsilon && subZ < epsilon && subZ > -epsilon, "diff");
+	//		/*{
+	//			// 해당 노드의 로컬 트랜스폰 값과 본의 오프셋 매트릭스가 같은지 확인
+	//			// 현재 다른경우가 있는데 좌표 변환이 노드에만 적용되고 본에서는 적용이 되지 않아 그럴 수 있을거라 생각됨.
+	//			auto pos = iter->second->transform.GetPosition();
+	//			float epsilon = 0.0001f;
+	//			float subX = pos.x - bonePosition.x;
+	//			float subY = pos.y - bonePosition.y;
+	//			float subZ = pos.z - bonePosition.z;
+	//			ASSERT(subX < epsilon && subX > -epsilon && subY < epsilon && subY > -epsilon && subZ < epsilon && subZ > -epsilon, "diff");
 
-				auto rot = iter->second->transform.GetRotation();
-				subX = rot.x - boneRotation.x;
-				subY = rot.y - boneRotation.y;
-				subZ = rot.z - boneRotation.z;
-				float subW = rot.w - boneRotation.w;
-				ASSERT(subX < epsilon && subX > -epsilon && subY < epsilon && subY > -epsilon && subZ < epsilon && subZ > -epsilon && subW < epsilon && subW > -epsilon, "diff");
+	//			auto rot = iter->second->transform.GetRotation();
+	//			subX = rot.x - boneRotation.x;
+	//			subY = rot.y - boneRotation.y;
+	//			subZ = rot.z - boneRotation.z;
+	//			float subW = rot.w - boneRotation.w;
+	//			ASSERT(subX < epsilon && subX > -epsilon && subY < epsilon && subY > -epsilon && subZ < epsilon && subZ > -epsilon && subW < epsilon && subW > -epsilon, "diff");
 
-				auto scale = iter->second->transform.GetScale();
-				subX = scale.x - boneScale.x;
-				subY = scale.y - boneScale.y;
-				subZ = scale.z - boneScale.z;
-				ASSERT(subX < epsilon&& subX > -epsilon && subY < epsilon && subY > -epsilon && subZ < epsilon && subZ > -epsilon, "diff");
-			}*/
+	//			auto scale = iter->second->transform.GetScale();
+	//			subX = scale.x - boneScale.x;
+	//			subY = scale.y - boneScale.y;
+	//			subZ = scale.z - boneScale.z;
+	//			ASSERT(subX < epsilon&& subX > -epsilon && subY < epsilon && subY > -epsilon && subZ < epsilon && subZ > -epsilon, "diff");
+	//		}*/
 
-			int weightCount = bone->mNumWeights;
-			for (int k = 0; k < weightCount; ++k)
-			{
-				aiVertexWeight vertexWeight = bone->mWeights[k];
+	//		int weightCount = bone->mNumWeights;
+	//		for (int k = 0; k < weightCount; ++k)
+	//		{
+	//			aiVertexWeight vertexWeight = bone->mWeights[k];
 
-				int vertexId = vertexWeight.mVertexId;
-				float weight = vertexWeight.mWeight;
+	//			int vertexId = vertexWeight.mVertexId;
+	//			float weight = vertexWeight.mWeight;
 
-				pRawMesh->vertices[vertexId].boneIndice.push_back(boneIndex);
-				pRawMesh->vertices[vertexId].boneWeights.push_back(weight);
-			}
-		}
-	}
+	//			pRawMesh->vertices[vertexId].boneIndice.push_back(boneIndex);
+	//			pRawMesh->vertices[vertexId].boneWeights.push_back(weight);
+	//		}
+	//	}
+	//}
 
 	// 인덱스 데이터
 	int faceCount = mesh->mNumFaces;

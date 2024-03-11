@@ -45,19 +45,19 @@ flt::OsWindows::OsWindows(bool useConsole) :
 	{
 		if (_consoleHwnd == NULL)
 		{
-			if (useConsole)
-			{
-				AllocConsole();
-				_consoleHwnd = GetConsoleWindow();
-				ASSERT(_consoleHwnd != NULL, "콘솔 윈도우 핸들을 가져오지 못했습니다.");
-			}
+			ASSERT(AllocConsole() != NULL, "콘솔 생성 실패");
+			_consoleHwnd = GetConsoleWindow();
+			ASSERT(_consoleHwnd != NULL, "콘솔 윈도우 핸들을 가져오지 못했습니다.");
 		}
+
+		ShowWindow(_consoleHwnd, SW_SHOW);
 	}
 	else
 	{
 		if (_consoleHwnd != NULL)
 		{
 			ShowWindow(_consoleHwnd, SW_HIDE);
+			ASSERT(FreeConsole() != FALSE, "콘솔 해제 실패");
 		}
 	}
 }
@@ -67,6 +67,10 @@ flt::OsWindows::~OsWindows()
 	delete[] _pKeyStates;
 	delete[] _pKeyDatas;
 
+	if (_consoleHwnd != NULL)
+	{
+		ASSERT(FreeConsole() != FALSE, "콘솔 해제 실패");
+	}
 }
 
 //typedef BOOL(WINAPI* MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, 
@@ -557,7 +561,45 @@ LRESULT WINAPI flt::OsWindows::WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 
 		case WM_INPUT_DEVICE_CHANGE:
 		{
+			UINT deviceCount = 0;
 
+			if (GetRawInputDeviceList(NULL, &deviceCount, sizeof(RAWINPUTDEVICELIST)) == -1)
+			{
+				ASSERT(false, "RawInputDeviceList 정보 가져오기 실패");
+			}
+
+			std::unique_ptr<RAWINPUTDEVICELIST[]> pDeviceList(new(std::nothrow) RAWINPUTDEVICELIST[deviceCount]);
+			ASSERT(pDeviceList != nullptr, "메모리 동적 할당 실패");
+
+			int result = GetRawInputDeviceList(pDeviceList.get(), &deviceCount, sizeof(RAWINPUTDEVICELIST));
+			ASSERT(result != -1, "RawInputDeviceList 정보 가져오기 실패");
+
+			for (unsigned int i = 0; i < deviceCount; ++i)
+			{
+				UINT bufferSize = 0;
+				result = GetRawInputDeviceInfo(pDeviceList[i].hDevice, RIDI_DEVICENAME, NULL, &bufferSize);
+				if (result == -1)
+				{
+					ASSERT(false, "메모리 동적 할당 실패");
+					continue;
+				}
+
+				std::unique_ptr<wchar_t[]> buffer(new(std::nothrow) wchar_t[bufferSize]);
+				if (buffer == nullptr)
+				{
+					ASSERT(false, "메모리 동적 할당 실패");
+					continue;
+				}
+
+				result = GetRawInputDeviceInfo(pDeviceList[i].hDevice, RIDI_DEVICENAME, buffer.get(), &bufferSize);
+				if (result == -1)
+				{
+					ASSERT(false, "RawInputDevice 정보 가져오기 실패");
+					continue;
+				}
+
+				//std::wcout << L"TYPE : " << pDeviceList[i].dwType << L" | " << buffer << std::endl;
+			}
 		}
 		break;
 
@@ -577,19 +619,11 @@ LRESULT WINAPI flt::OsWindows::WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 
 			//RAWINPUTDEVICELIST* pDeviceList = (PRAWINPUTDEVICELIST)malloc(sizeof(RAWINPUTDEVICELIST) * rawDeviceCount);
 			//RAWINPUTDEVICELIST* pDeviceList = new RAWINPUTDEVICELIST[rawDeviceCount];
-			std::unique_ptr<RAWINPUTDEVICELIST[]> pDeviceList(new RAWINPUTDEVICELIST[rawDeviceCount]);
-			if (pDeviceList == nullptr)
-			{
-				ASSERT(false, "메모리 동적 할당 실패");
-				break;
-			}
+			std::unique_ptr<RAWINPUTDEVICELIST[]> pDeviceList(new(std::nothrow) RAWINPUTDEVICELIST[rawDeviceCount]);
+			ASSERT(pDeviceList != nullptr, "메모리 동적 할당 실패");
 
 			result = GetRawInputDeviceList(pDeviceList.get(), &rawDeviceCount, sizeof(RAWINPUTDEVICELIST));
-			if (result == -1)
-			{
-				ASSERT(false, "RawInputDeviceList 정보 가져오기 실패");
-				break;
-			}
+			ASSERT(result != -1, "RawInputDeviceList 정보 가져오기 실패");
 
 			for (unsigned int i = 0; i < rawDeviceCount; ++i)
 			{
@@ -602,7 +636,7 @@ LRESULT WINAPI flt::OsWindows::WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARA
 				}
 
 				//wchar_t* buffer = new(std::nothrow) wchar_t[bufferSize];
-				std::unique_ptr<wchar_t[]> buffer(new wchar_t[bufferSize]);
+				std::unique_ptr<wchar_t[]> buffer(new(std::nothrow) wchar_t[bufferSize]);
 				if (buffer == nullptr)
 				{
 					ASSERT(false, "메모리 동적 할당 실패");
