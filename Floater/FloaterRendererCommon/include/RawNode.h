@@ -22,7 +22,6 @@ namespace flt
 		std::wstring name;
 		std::vector<Resource<RawMesh>> meshes;
 		RawSkeleton* skeleton;
-		RawAnimation* animation;
 		Camera* camera;
 
 		int boneIndex;

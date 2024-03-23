@@ -140,11 +140,11 @@ flt::DX11Mesh* flt::DX11MeshBuilder::build() const
 	pMesh->srv = textureViewArr;
 	pMesh->srvCount = srvCount;
 	pMesh->sampler = samplerState;
-	if (!pRawMesh->pRootBone)
-	{
-		pMesh->pAnimation = new(std::nothrow) DX11Animation();
-		pMesh->pAnimation->pRootBoneTransform = pRawMesh->pRootBone;
-	}
+	//if (!pRawMesh->pRootBone)
+	//{
+	//	pMesh->pAnimation = new(std::nothrow) DX11Animation();
+	//	pMesh->pAnimation->pRootBoneTransform = pRawMesh->pRootBone;
+	//}
 
 	return pMesh;
 }
