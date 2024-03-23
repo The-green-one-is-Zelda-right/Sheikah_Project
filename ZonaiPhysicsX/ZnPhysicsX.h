@@ -8,6 +8,7 @@
 #pragma warning (pop)
 
 #include "ZnLayer.h"
+#include <queue>
 
 namespace physx
 {
@@ -135,7 +136,9 @@ namespace ZonaiPhysics
 			float _distance,
 			ZnRaycastInfo& _out) override;
 
-		void FreeObject(void*) override;
+		void ReleaseRigidBody(ZnRigidBody*, void* _userData, void* _userScene = nullptr) override;
+		void ReleaseCollider(ZnCollider*, void* _userData, void* _userScene = nullptr) override;
+		void ReleaseJoint(ZnJoint*, void* _userData, void* _userScene = nullptr) override;
 
 		// bool Boxcast(const Eigen::Vector3f&, const Eigen::Vector3f&, float, ZnRaycastInfo&) override;
 

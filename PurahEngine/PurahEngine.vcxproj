@@ -37,69 +37,108 @@
   <ItemGroup>
     <ClInclude Include="Animator.h" />
     <ClInclude Include="AudioListener.h" />
+    <ClInclude Include="AudioSource.h" />
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CapsuleCollider.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentFactory.h" />
     <ClInclude Include="Componentmanager.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="DistanceJoint.h" />
+    <ClInclude Include="EasingFunc.h" />
+    <ClInclude Include="eKey.h" />
+    <ClInclude Include="EngineSetting.h" />
+    <ClInclude Include="ePad.h" />
     <ClInclude Include="EventCallbackSystem.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FixedJoint.h" />
     <ClInclude Include="GameLoop.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GamePadManager.h" />
     <ClInclude Include="GraphicsManager.h" />
     <ClInclude Include="GraphicsResourceManager.h" />
+    <ClInclude Include="HingeJoint.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="IRenderer.h" />
     <ClInclude Include="ISerializable.h" />
+    <ClInclude Include="ITimer.h" />
+    <ClInclude Include="ITween.h" />
     <ClInclude Include="Joint.h" />
+    <ClInclude Include="JointT.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="ModelRenderer.h" />
+    <ClInclude Include="GamePad.h" />
     <ClInclude Include="PhysicsSystem.h" />
+    <ClInclude Include="PreTimerHandler.h" />
     <ClInclude Include="PurahEngine.h" />
     <ClInclude Include="PurahEngineAPI.h" />
+    <ClInclude Include="PurahSound.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Serializable.h" />
     <ClInclude Include="SerializableDefine.h" />
+    <ClInclude Include="SlideJoint.h" />
     <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="SphereCollider.h" />
+    <ClInclude Include="BallJoint.h" />
+    <ClInclude Include="SpringJoint.h" />
     <ClInclude Include="TimeController.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimerHandler.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="Tween.h" />
+    <ClInclude Include="TweenHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="AudioListener.cpp" />
+    <ClCompile Include="AudioSource.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CapsuleCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Componentmanager.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="DistanceJoint.cpp" />
+    <ClCompile Include="EasingFunc.cpp" />
+    <ClCompile Include="EngineSetting.cpp" />
     <ClCompile Include="EventCallbackSystem.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FixedJoint.cpp" />
     <ClCompile Include="GameLoop.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GamePadManager.cpp" />
     <ClCompile Include="GraphicsManager.cpp" />
     <ClCompile Include="GraphicsResourceManager.cpp" />
+    <ClCompile Include="HingeJoint.cpp" />
     <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="Joint.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="ModelRenderer.cpp" />
+    <ClCompile Include="GamePad.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
+    <ClCompile Include="PreTimerHandler.cpp" />
     <ClCompile Include="PurahEngine.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Serializable.cpp" />
+    <ClCompile Include="SlideJoint.cpp" />
     <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="SphereCollider.cpp" />
+    <ClCompile Include="BallJoint.cpp" />
+    <ClCompile Include="SpringJoint.cpp" />
     <ClCompile Include="TimeController.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TimerHandler.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Tween.cpp" />
+    <ClCompile Include="TweenHandler.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -315,7 +354,8 @@ xcopy /R /Y "$(TargetDir)*.cso" "$(SolutionDir)\PurahEngine\CompiledShader\"</Co
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)eigen-3.4.0;$(SolutionDir)ZeldaGraphics\header\;$(SolutionDir)Floater\ZeldaGraphicsAdapter\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)eigen-3.4.0;$(SolutionDir)ZeldaGraphics\header\;$(SolutionDir)Floater\ZeldaGraphicsAdapter\;$(SolutionDir)ZonaiPhysicsBase\;$(SolutionDir)json-develop\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

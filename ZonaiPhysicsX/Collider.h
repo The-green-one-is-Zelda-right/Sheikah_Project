@@ -24,7 +24,7 @@ namespace ZonaiPhysics
 							Collider() = delete;
 							Collider(physx::PxShape*, RigidBody*);
 							//Collider(physx::PxPhysics*&, RigidBody*);
-		virtual				~Collider() = default;
+							~Collider() override;
 
 	public:
 		void				SetTrigger(bool) final;
@@ -57,6 +57,8 @@ namespace ZonaiPhysics
 		void				UpdateInertiaTensor() const;
 
 	protected:
+		friend class ZnPhysicsX;
+
 		RigidBody* znBody;
 		physx::PxShape* pxShape;
 	};

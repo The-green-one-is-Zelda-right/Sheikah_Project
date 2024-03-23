@@ -23,7 +23,7 @@ void BeomJoon::Run()
 	GameObject* lightObject = SceneManager::GetInstance().CreateGameObject(L"Light");
 	
 	// 라이트의 방향을 왼쪽 위에서 들여다 보는 방향으로 설정
-	lightObject->GetTransform()->Rotate({ 0.0f, 1.0f, 0.0f }, 45.0f);
+	//lightObject->GetTransform()->Rotate({ 0.0f, 1.0f, 0.0f }, 45.0f);
 	DirectionalLight* light = lightObject->AddComponent<DirectionalLight>();
 
 	// 큐브 생성
@@ -47,5 +47,4 @@ void BeomJoon::Run()
 	// 애니메이션을 테스트하기 위한 컴포넌트 추가
 	characterObject->AddComponent<Animator>();
 	characterObject->AddComponent<AnimationTestController>();
-
 }

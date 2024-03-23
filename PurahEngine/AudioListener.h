@@ -1,16 +1,25 @@
 #pragma once
-#include "PurahEngine.h"
+#include "PurahEngineAPI.h"
+#include "Component.h"
+
+#include "Transform.h"
+
 
 namespace PurahEngine
 {
+	class Transform;
 	class GameObject;
+	class SoundManager;
 
-	class AudioListener : public Component
+	class PURAHENGINE_API AudioListener : public Component
 	{
 	public:
 		AudioListener();
 		~AudioListener();
 
+	public:
+		void Initialize();
+		void Update();
 	public:
 		virtual void PreSerialize(json& jsonData) const override;
 		virtual void PreDeserialize(const json& jsonData) override;
@@ -21,4 +30,3 @@ namespace PurahEngine
 		Transform* listenerTransform;
 	};
 }
-

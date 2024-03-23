@@ -32,6 +32,9 @@ namespace PurahEngine
 		void Initialize(HWND hWnd);
 		void Finalize();
 
+		// 자주 사용될 모델링 파일을 미리 등록한다.
+		void RegisterDefaultModelFile(const std::wstring& fileName);
+
 		void UpdateAnimator(float deltaTime);
 		void Render(float deltaTime);
 

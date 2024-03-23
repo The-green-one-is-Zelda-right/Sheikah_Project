@@ -5,6 +5,7 @@ struct VertexInputType
 {
     float4 position : POSITION;
     float3 normal : NORMAL;
+    float3 tangent : TANGENT;
     float2 tex : TEXCOORD0;
     uint4 boneIndices : BLENDINDICES;
     float4 weight : BLENDWEIGHT;
@@ -15,6 +16,8 @@ struct PixelInputType
     float4 position : SV_POSITION;
     float4 viewPosition : POSITION;
     float3 normal : NORMAL;
+    float3 tangent : TANGENT;
+    float3 biNormal : BINORMAL;
     float2 tex : TEXCOORD0;
 };
 
@@ -61,9 +64,12 @@ PixelInputType main(VertexInputType input)
     
     // Calculate the normal vector against the world matrix only.
     output.normal = mul(mul(output.normal, (float3x3) worldMatrix), (float3x3) viewMatrix);
-
-	// Normalize the normal vector.
-    output.normal = normalize(output.normal);
+    output.tangent = mul(mul(input.tangent, (float3x3) worldMatrix), (float3x3) viewMatrix);
+    output.biNormal = cross(output.tangent, output.normal);
+    
+    output.normal = (length(output.normal) > F_EPSILON) ? (normalize(output.normal)) : (float3(0.0f, 0.0f, 0.0f));
+    output.tangent = (length(output.tangent) > F_EPSILON) ? (normalize(output.tangent)) : (float3(0.0f, 0.0f, 0.0f));
+    output.biNormal = (length(output.biNormal) > F_EPSILON) ? (normalize(output.biNormal)) : (float3(0.0f, 0.0f, 0.0f));
     
     return output;
 }

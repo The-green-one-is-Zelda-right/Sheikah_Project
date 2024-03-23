@@ -12,6 +12,18 @@ constexpr unsigned int INSTANCING_MAX = 1024u;
 constexpr unsigned int TEXTURE_SLOT_ANIMATION = 8u;
 constexpr unsigned int TEXTURE_SLOT_CUBEMAP = 9u;
 
+namespace Texture
+{
+	namespace Slot
+	{
+		constexpr unsigned int DiffuseMap = 0u;
+		constexpr unsigned int NormalMap = 1u;
+		constexpr unsigned int ARMMap = 2u;
+		constexpr unsigned int HeightMap = 3u;
+		constexpr unsigned int EmissionMap = 4u;
+	}
+}
+
 namespace Model
 {
 	namespace Animation
@@ -73,6 +85,7 @@ struct VertexType
 {
 	DirectX::XMFLOAT4 position;
 	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT3 tangent;
 	DirectX::XMFLOAT2 texture;
 	DirectX::XMUINT4 boneIndices;
 	DirectX::XMFLOAT4 weight;
@@ -85,6 +98,7 @@ struct InstancingVertexType
 {
 	DirectX::XMFLOAT4 position;
 	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT3 tangent;
 	DirectX::XMFLOAT2 texture;
 	DirectX::XMUINT4 boneIndices;
 	DirectX::XMFLOAT4 weight;

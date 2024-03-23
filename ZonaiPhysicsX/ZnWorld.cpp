@@ -17,7 +17,8 @@ namespace ZonaiPhysics
 {
 	physx::PxScene*										ZnWorld::currScene = nullptr;
 	std::unordered_map<void*, physx::PxScene*>			ZnWorld::sceneList{};
-	std::map<void*, ZnWorld::BodyList>					ZnWorld::bodies{};
+	std::map<void*, ZnWorld::Bodies>					ZnWorld::bodyList{};
+	std::map<void*, ZnWorld::Colliders>					ZnWorld::colliderList{};
 	std::unordered_map<uint32_t, physx::PxMaterial*>	ZnWorld::materials{};
 
 	void ZnWorld::Run(float _dt)
@@ -30,22 +31,39 @@ namespace ZonaiPhysics
 
 	void ZnWorld::Release()
 	{
-		for (auto& [scene, bodyList] : bodies)
+		for (auto& [scene, colliders] : colliderList)
 		{
-			for(auto& znBody : bodyList | std::views::values)
+			for (auto& [userData, collider] : colliders)
 			{
-				if (znBody)
+				if (userData)
 				{
-					delete znBody;
-					znBody = nullptr;
+					for (auto& shape : collider)
+					{
+						delete shape;
+					}
 				}
 			}
 
-			bodyList.clear();
-			sceneList[scene]->release();
+			colliders.clear();
 		}
 
-		bodies.clear();
+		colliderList.clear();
+
+		for (auto& [scene, bodies] : bodyList)
+		{
+			for (auto& [userData, rigidbody] : bodies)
+			{
+				if (userData)
+				{
+					auto& [body, hasShape] = rigidbody;
+					delete body;
+				}
+			}
+
+			bodies.clear();
+		}
+
+		bodyList.clear();
 
 		for (auto& Scene : sceneList | std::views::values)
 		{
@@ -84,18 +102,34 @@ namespace ZonaiPhysics
 		auto& scene = sceneList[_userScene];
 		assert(scene != nullptr);
 
-		auto& bodylist = bodies[_userScene];
+		auto& bodies = bodyList[_userScene];
+		auto& colliders = colliderList[_userScene];
 
-		for (auto& znBody : bodylist | std::views::values)
+		for (auto& [userData, rigidbody] : bodies)
 		{
-			if (znBody)
+			if (userData)
 			{
-				delete znBody;
-				znBody = nullptr;
+				auto& [body, hasShape] = rigidbody;
+				delete body;
 			}
 		}
 
-		bodylist.clear();
+		for (auto& [userData, collider] : colliders)
+		{
+			if (userData)
+			{
+				for (auto& znCollider : collider)
+				{
+					delete znCollider;
+				}
+			}
+		}
+
+		bodies.clear();
+		bodyList.erase(_userScene);
+		colliders.clear();
+		colliderList.erase(_userScene);
+
 		PX_RELEASE(scene);
 		sceneList.erase(_userScene);
 	}
@@ -143,31 +177,97 @@ namespace ZonaiPhysics
 		return false;
 	}
 
-	void ZnWorld::AddBody(void* _znBody, void* _userScene)
+	void ZnWorld::AddBody(RigidBody* _znBody, void* _userData, void* _userScene)
 	{
 		assert(currScene != nullptr);
 		assert(_znBody != nullptr);
 
-		const auto znBody = static_cast<RigidBody*>(_znBody);
-		const auto pxBody = static_cast<physx::PxRigidDynamic*>(znBody->pxBody);
+		const auto pxBody = static_cast<physx::PxRigidDynamic*>(_znBody->pxBody);
+
 		physx::PxScene* scene = _userScene ? sceneList[_userScene] : currScene;
 		scene->addActor(*pxBody);
 
-		bodies[scene].insert(std::make_pair(znBody->userData, znBody));
+		auto& bodies = bodyList[scene];
+		bodies.insert(std::make_pair(_userData, std::make_pair(_znBody, false)));
 	}
 
-	void ZnWorld::RemoveBody(void* _znBody, void* _userScene)
+	void ZnWorld::AddCollider(Collider* _znShape, void* _userData, void* _userScene /*= nullptr*/)
+	{
+		assert(currScene != nullptr);
+		assert(_znShape != nullptr);
+
+		physx::PxScene* scene = _userScene ? sceneList[_userScene] : currScene;
+
+		auto& colliders = colliderList[scene];
+		auto& shapes = colliders[_userData];
+		shapes.push_back(_znShape);
+	}
+
+	void ZnWorld::RemoveBody(RigidBody* _znBody, void* _userData, void* _userScene)
 	{
 		assert(currScene != nullptr);
 		assert(_znBody != nullptr);
 
-		const auto znBody = static_cast<RigidBody*>(_znBody);
-		const auto pxBody = static_cast<physx::PxRigidDynamic*>(znBody->pxBody);
 		physx::PxScene* scene = _userScene ? sceneList[_userScene] : currScene;
-		scene->removeActor(*pxBody);
 
-		bodies[scene].erase(znBody->userData);
-		delete znBody;
+		auto& colliders = colliderList[scene];
+		auto& shapes = colliders[_userData];
+
+		auto& bodies = bodyList[scene];
+		auto& [znBody, hasBody] = bodies[_userData];
+
+		// 콜라이더가 비어있으면 리지드바디도 아예 삭제시켜야함
+		if (shapes.empty())
+		{
+			const auto pxBody = static_cast<physx::PxRigidDynamic*>(_znBody->pxBody);
+			scene->removeActor(*pxBody);
+
+			bodies.erase(_userData);
+
+			delete znBody;
+		}
+		// 안 비어있으면 삭제시키면 안됨
+		else
+		{
+			hasBody = false;
+
+			_znBody->SetKinematic(true);
+			_znBody->UseGravity(false);
+		}
+	}
+
+	void ZnWorld::RemoveCollider(Collider* _znShape, void* _userData, void* _userScene /*= nullptr*/)
+	{
+		assert(currScene != nullptr);
+		assert(_znShape != nullptr);
+
+		physx::PxScene* scene = _userScene ? sceneList[_userScene] : currScene;
+
+		auto& colliders = colliderList[scene];
+		auto& shapes = colliders[_userData];
+
+		shapes.erase(std::ranges::find(shapes, _znShape));
+
+		delete _znShape;
+
+		// 콜라이더가 비어있네?
+		if (shapes.empty())
+		{
+			auto& bodies = bodyList[scene];
+			auto& [znBody, hasBody] = bodies[_userData];
+
+			// 근데 바디도 없네?
+			if (znBody && !hasBody)
+			{
+				// 바디 삭제
+				const auto pxBody = static_cast<physx::PxRigidDynamic*>(znBody->pxBody);
+				scene->removeActor(*pxBody);
+
+				bodies.erase(_userData);
+
+				delete znBody;
+			}
+		}
 	}
 
 	RigidBody* ZnWorld::GetBody(void* _userData, void* _userScene)
@@ -178,11 +278,28 @@ namespace ZonaiPhysics
 		physx::PxScene* scene = nullptr;
 		scene = _userScene ? sceneList[_userScene] : currScene;
 
-		auto& bodyList = bodies[scene];
-		if (bodyList.contains(_userData))
-			return bodyList[_userData];
+		auto& bodies = bodyList[scene];
+
+		if (bodies.contains(_userData))
+			return bodies[_userData].first;
 		
 		return nullptr;
+	}
+
+	void ZnWorld::SetHasBody(void* _userData, bool _hasBody, void* _userScene /*= nullptr*/)
+	{
+		assert(currScene != nullptr);
+		assert(_userData != nullptr);
+
+		physx::PxScene* scene = nullptr;
+		scene = _userScene ? sceneList[_userScene] : currScene;
+
+		auto& bodies = bodyList[scene];
+
+		if (!bodies.contains(_userData))
+			return;
+		
+		bodies[_userData].second = _hasBody;
 	}
 
 	void ZnWorld::AddMaterial(uint32_t _id, physx::PxMaterial* _material)

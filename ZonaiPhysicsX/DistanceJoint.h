@@ -49,6 +49,8 @@ namespace ZonaiPhysics
 		void SetDamping(float _damping) override;
 		float GetDamping() const override;
 
+		void SetSpringArg(float _stiffness, float _damping) override;
+
 		void SetMinDistanceEnable(bool _value) override;
 		void SetMaxDistanceEnable(bool _value) override;
 		void SetSpringEnable(bool _value) override;

@@ -46,5 +46,12 @@ namespace ZonaiPhysics
 		*/
 		virtual void		SetBreakForce(float _force, float _torque) = 0;
 		virtual void		GetBreakForce(float& _force, float& _torque) const = 0;
+
+		/**
+		연결된 강체끼리 충돌할지 여부
+		*/
+		virtual void		EnableCollision(bool) = 0;
+
+		virtual void		EnablePreprocessing(bool) = 0;
 	};
 }

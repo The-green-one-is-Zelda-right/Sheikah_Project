@@ -12,6 +12,8 @@
 
 #define INSTANCING_MAX 1024u
 
+#define F_EPSILON 0.0001f
+
 Texture2D DiffuseMap : register(t0);
 Texture2D NormalMap : register(t1);
 Texture2D ARMMap : register(t2);

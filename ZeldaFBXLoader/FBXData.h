@@ -65,6 +65,8 @@ namespace FBXLoader
 	{
 		Float3 position;
 		Float3 normal;
+		Float3 tangent;
+		Float3 biTangent;
 		Float2 textureCoordinate;
 		unsigned int boneIndices[4];
 		float weight[4];
@@ -81,9 +83,11 @@ namespace FBXLoader
 	struct Material
 	{
 		bool useDiffuseMap;
+		bool useNormalMap;
 
 		Color baseColor;
 		std::wstring diffuseMap;
+		std::wstring normalMap;
 	};
 
 	struct Bone

@@ -58,9 +58,6 @@
     <Filter Include="Component\3. Renderer\Camera">
       <UniqueIdentifier>{b029a29e-d767-4deb-a584-ef7958d355ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SoundManager">
-      <UniqueIdentifier>{4db416fc-8637-40c4-8896-de7558706be2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Audio">
       <UniqueIdentifier>{0505cefc-87c2-4209-ae57-1b47cad691ff}</UniqueIdentifier>
     </Filter>
@@ -69,6 +66,45 @@
     </Filter>
     <Filter Include="Core\Serialize">
       <UniqueIdentifier>{bcd01ca1-98c4-4146-8609-8336a90e438b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\4. Sound">
+      <UniqueIdentifier>{8f6a5657-ce33-49e5-a5c7-15deb8373eab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Time\Timer">
+      <UniqueIdentifier>{24b2084d-d0f1-432d-8bcd-e90e10a74d3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Manager\InputManager\Keyboard">
+      <UniqueIdentifier>{b45c55c2-0e33-4ddd-81bf-ac0c73eae0de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Manager\InputManager\GamePad">
+      <UniqueIdentifier>{579cccf8-652e-4b6b-960e-1e1da6493809}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Time\Tween">
+      <UniqueIdentifier>{795b88ff-a9e5-4baf-a025-ca764011308f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Time\Timer\Handler">
+      <UniqueIdentifier>{c2bda3d8-f8fe-4b6c-819c-fa059b3f6527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Time\Tween\Handler">
+      <UniqueIdentifier>{cba43b2a-425d-468a-9bf7-bdcf2f46c878}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\4. Sound\AudioListener">
+      <UniqueIdentifier>{d7268312-7453-41fa-8a58-06871a92fad0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\4. Sound\AudioSource">
+      <UniqueIdentifier>{cc2616fa-2d1e-4a91-bf85-a2cb78e5807d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Manager\SoundManager">
+      <UniqueIdentifier>{4db416fc-8637-40c4-8896-de7558706be2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\EngineSetting">
+      <UniqueIdentifier>{fc4e6f9f-99f2-4ced-b40c-903af227d300}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="Component\2. Physics\Joint\Base">
+      <UniqueIdentifier>{80212ab9-314a-4a63-abf7-42b3d2558294}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\2. Physics\Collider\Base">
+      <UniqueIdentifier>{ea38ca8f-c084-4d33-890a-edced291833b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -81,17 +117,11 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Component\3. Renderer\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Collider.cpp">
-      <Filter>Component\2. Physics\Collider</Filter>
-    </ClCompile>
     <ClCompile Include="RigidBody.cpp">
       <Filter>Component\2. Physics\Rigidbody</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>Core\Manager\SceneManager</Filter>
-    </ClCompile>
-    <ClCompile Include="InputManager.cpp">
-      <Filter>Core\Manager\InputManager</Filter>
     </ClCompile>
     <ClCompile Include="PurahEngine.cpp" />
     <ClCompile Include="Componentmanager.cpp">
@@ -99,9 +129,6 @@
     </ClCompile>
     <ClCompile Include="BoxCollider.cpp">
       <Filter>Component\2. Physics\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="Joint.cpp">
-      <Filter>Component\2. Physics\Joint</Filter>
     </ClCompile>
     <ClCompile Include="FixedJoint.cpp">
       <Filter>Component\2. Physics\Joint</Filter>
@@ -131,9 +158,8 @@
       <Filter>Component\3. Renderer</Filter>
     </ClCompile>
     <ClCompile Include="SoundManager.cpp">
-      <Filter>SoundManager</Filter>
+      <Filter>Core\Manager\SoundManager</Filter>
     </ClCompile>
-    <ClCompile Include="AudioListener.cpp" />
     <ClCompile Include="GraphicsManager.cpp">
       <Filter>Core\Manager\GraphicsManager</Filter>
     </ClCompile>
@@ -155,6 +181,66 @@
     <ClCompile Include="Serializable.cpp">
       <Filter>Core\Serialize</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Core\Time\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Tween.cpp">
+      <Filter>Core\Time\Tween</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereCollider.cpp">
+      <Filter>Component\2. Physics\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="CapsuleCollider.cpp">
+      <Filter>Component\2. Physics\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePad.cpp">
+      <Filter>Core\Manager\InputManager\GamePad</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePadManager.cpp">
+      <Filter>Core\Manager\InputManager\GamePad</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Core\Manager\InputManager\Keyboard</Filter>
+    </ClCompile>
+    <ClCompile Include="EasingFunc.cpp">
+      <Filter>Core\Time\Tween</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerHandler.cpp">
+      <Filter>Core\Time\Timer\Handler</Filter>
+    </ClCompile>
+    <ClCompile Include="PreTimerHandler.cpp">
+      <Filter>Core\Time\Timer\Handler</Filter>
+    </ClCompile>
+    <ClCompile Include="TweenHandler.cpp">
+      <Filter>Core\Time\Tween\Handler</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioListener.cpp">
+      <Filter>Component\4. Sound\AudioListener</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSource.cpp">
+      <Filter>Component\4. Sound\AudioSource</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineSetting.cpp">
+      <Filter>Core\EngineSetting</Filter>
+    </ClCompile>
+    <ClCompile Include="SpringJoint.cpp">
+      <Filter>Component\2. Physics\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="DistanceJoint.cpp">
+      <Filter>Component\2. Physics\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Component\2. Physics\Collider\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="BallJoint.cpp">
+      <Filter>Component\2. Physics\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="HingeJoint.cpp">
+      <Filter>Component\2. Physics\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="SlideJoint.cpp">
+      <Filter>Component\2. Physics\Joint</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameLoop.h">
@@ -170,26 +256,17 @@
       <Filter>Core\dll</Filter>
     </ClInclude>
     <ClInclude Include="PurahEngine.h" />
-    <ClInclude Include="Collider.h">
-      <Filter>Component\2. Physics\Collider</Filter>
-    </ClInclude>
     <ClInclude Include="RigidBody.h">
       <Filter>Component\2. Physics\Rigidbody</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>Core\Manager\SceneManager</Filter>
     </ClInclude>
-    <ClInclude Include="InputManager.h">
-      <Filter>Core\Manager\InputManager</Filter>
-    </ClInclude>
     <ClInclude Include="Componentmanager.h">
       <Filter>Component\1. Manager</Filter>
     </ClInclude>
     <ClInclude Include="BoxCollider.h">
       <Filter>Component\2. Physics\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="Joint.h">
-      <Filter>Component\2. Physics\Joint</Filter>
     </ClInclude>
     <ClInclude Include="FixedJoint.h">
       <Filter>Component\2. Physics\Joint</Filter>
@@ -222,9 +299,8 @@
       <Filter>Component\3. Renderer</Filter>
     </ClInclude>
     <ClInclude Include="SoundManager.h">
-      <Filter>SoundManager</Filter>
+      <Filter>Core\Manager\SoundManager</Filter>
     </ClInclude>
-    <ClInclude Include="AudioListener.h" />
     <ClInclude Include="GraphicsResourceManager.h">
       <Filter>Core\Manager\GraphicsManager</Filter>
     </ClInclude>
@@ -254,6 +330,87 @@
     </ClInclude>
     <ClInclude Include="SerializableDefine.h">
       <Filter>Core\Serialize</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Core\Time\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Tween.h">
+      <Filter>Core\Time\Tween</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollider.h">
+      <Filter>Component\2. Physics\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="CapsuleCollider.h">
+      <Filter>Component\2. Physics\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="ePad.h">
+      <Filter>Core\Manager\InputManager\GamePad</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePad.h">
+      <Filter>Core\Manager\InputManager\GamePad</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePadManager.h">
+      <Filter>Core\Manager\InputManager\GamePad</Filter>
+    </ClInclude>
+    <ClInclude Include="eKey.h">
+      <Filter>Core\Manager\InputManager\Keyboard</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Core\Manager\InputManager\Keyboard</Filter>
+    </ClInclude>
+    <ClInclude Include="EasingFunc.h">
+      <Filter>Core\Time\Tween</Filter>
+    </ClInclude>
+    <ClInclude Include="ITimer.h">
+      <Filter>Core\Time\Timer\Handler</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerHandler.h">
+      <Filter>Core\Time\Timer\Handler</Filter>
+    </ClInclude>
+    <ClInclude Include="PreTimerHandler.h">
+      <Filter>Core\Time\Timer\Handler</Filter>
+    </ClInclude>
+    <ClInclude Include="ITween.h">
+      <Filter>Core\Time\Tween\Handler</Filter>
+    </ClInclude>
+    <ClInclude Include="TweenHandler.h">
+      <Filter>Core\Time\Tween\Handler</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioListener.h">
+      <Filter>Component\4. Sound\AudioListener</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSource.h">
+      <Filter>Component\4. Sound\AudioSource</Filter>
+    </ClInclude>
+    <ClInclude Include="PurahSound.h">
+      <Filter>Core\Manager\SoundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineSetting.h">
+      <Filter>Core\EngineSetting</Filter>
+    </ClInclude>
+    <ClInclude Include="SpringJoint.h">
+      <Filter>Component\2. Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="DistanceJoint.h">
+      <Filter>Component\2. Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="JointT.h">
+      <Filter>Component\2. Physics\Joint\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Component\2. Physics\Collider\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="BallJoint.h">
+      <Filter>Component\2. Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="HingeJoint.h">
+      <Filter>Component\2. Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="SlideJoint.h">
+      <Filter>Component\2. Physics\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="Joint.h">
+      <Filter>Component\2. Physics\Joint\Base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

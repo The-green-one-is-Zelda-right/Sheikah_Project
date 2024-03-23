@@ -115,7 +115,8 @@ void ZeldaModel::Render(
 			materials[materialIndex[i]]->baseColor,
 			!materials[materialIndex[i]]->useDiffuseMap,
 			materials[materialIndex[i]]->UseSRGB(ZeldaMaterial::DIFFUSE_MAP) ,
-			materials[materialIndex[i]]->useDiffuseMap
+			materials[materialIndex[i]]->useDiffuseMap,
+			materials[materialIndex[i]]->useNormalMap
 			});
 
 		ConstantBufferManager::GetInstance().SetBuffer();
@@ -179,7 +180,8 @@ void ZeldaModel::RenderInstanced(
 					materials[materialIndex[meshNum]]->baseColor,
 					!materials[materialIndex[meshNum]]->useDiffuseMap,
 					materials[materialIndex[meshNum]]->UseSRGB(ZeldaMaterial::DIFFUSE_MAP),
-					materials[materialIndex[meshNum]]->useDiffuseMap
+					materials[materialIndex[meshNum]]->useDiffuseMap,
+					materials[materialIndex[meshNum]]->useNormalMap
 					});
 
 				ConstantBufferManager::GetInstance().SetBuffer();
@@ -381,7 +383,8 @@ void ZeldaModel::RenderBlendingAnimation(
 			materials[materialIndex[i]]->baseColor,
 			!materials[materialIndex[i]]->useDiffuseMap,
 			materials[materialIndex[i]]->UseSRGB(ZeldaMaterial::DIFFUSE_MAP),
-			materials[materialIndex[i]]->useDiffuseMap
+			materials[materialIndex[i]]->useDiffuseMap,
+			materials[materialIndex[i]]->useNormalMap
 			});
 
 		ConstantBufferManager::GetInstance().SetBuffer();
@@ -467,6 +470,10 @@ ZeldaModel::ZeldaModel(ID3D11Device* device, FBXLoader::Model* fbxModel) :
 			vertexType.normal.y = fbxMesh->vertices[j].normal.y;
 			vertexType.normal.z = fbxMesh->vertices[j].normal.z;
 
+			vertexType.tangent.x = fbxMesh->vertices[j].tangent.x;
+			vertexType.tangent.y = fbxMesh->vertices[j].tangent.y;
+			vertexType.tangent.z = fbxMesh->vertices[j].tangent.z;
+
 			vertexType.texture.x = fbxMesh->vertices[j].textureCoordinate.u;
 			vertexType.texture.y = fbxMesh->vertices[j].textureCoordinate.v;
 
@@ -495,7 +502,7 @@ ZeldaModel::ZeldaModel(ID3D11Device* device, FBXLoader::Model* fbxModel) :
 	for (int i = 0; i < fbxModel->materialList.size(); i++)
 	{
 		FBXLoader::Material* fbxMaterial = fbxModel->materialList[i];
-		ZeldaMaterial* material = new ZeldaMaterial(device, DirectX::XMFLOAT4(fbxMaterial->baseColor.r, fbxMaterial->baseColor.g, fbxMaterial->baseColor.b, fbxMaterial->baseColor.a), fbxMaterial->diffuseMap);
+		ZeldaMaterial* material = new ZeldaMaterial(device, DirectX::XMFLOAT4(fbxMaterial->baseColor.r, fbxMaterial->baseColor.g, fbxMaterial->baseColor.b, fbxMaterial->baseColor.a), fbxMaterial->diffuseMap, fbxMaterial->normalMap);
 		materials.push_back(material);
 	}
 

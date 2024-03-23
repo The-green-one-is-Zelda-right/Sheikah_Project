@@ -132,14 +132,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)fmod\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)PurahEngine;$(SolutionDir)eigen-3.4.0;$(SolutionDir)ZeldaGraphics\header\;$(SolutionDir)ZonaiPhysicsBase;$(SolutionDir)fmod\inc;$(SolutionDir)json-develop\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)DLL\PurahEngine.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -161,7 +163,6 @@
     <ClCompile Include="Test3.cpp" />
     <ClCompile Include="TestMovement.cpp" />
     <ClCompile Include="TestSingleton.cpp" />
-    <ClCompile Include="Tween.cpp" />
     <ClCompile Include="UltraHand.cpp" />
     <ClCompile Include="YongHun.cpp" />
   </ItemGroup>
@@ -170,8 +171,6 @@
     <ClInclude Include="BeomJoon.h" />
     <ClInclude Include="CameraMovement.h" />
     <ClInclude Include="Controller.h" />
-    <ClInclude Include="EasingFunction.h" />
-    <ClInclude Include="eEasing.h" />
     <ClInclude Include="Hold.h" />
     <ClInclude Include="TemplateFlag.h" />
     <ClInclude Include="IAbility.h" />
@@ -179,7 +178,7 @@
     <ClInclude Include="IObject.h" />
     <ClInclude Include="KiHoon.h" />
     <ClInclude Include="NaDong.h" />
-    <ClInclude Include="ObjectProperty.h" />
+    <ClInclude Include="eObjectProperty.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerSystem.h" />
     <ClInclude Include="Rewind.h" />
@@ -189,7 +188,6 @@
     <ClInclude Include="Test3.h" />
     <ClInclude Include="TestMovement.h" />
     <ClInclude Include="TestSingleton.h" />
-    <ClInclude Include="Tween.h" />
     <ClInclude Include="UltraHand.h" />
     <ClInclude Include="YongHun.h" />
   </ItemGroup>

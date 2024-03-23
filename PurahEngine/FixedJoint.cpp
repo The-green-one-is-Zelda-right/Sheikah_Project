@@ -1,55 +1,38 @@
-#include "FixedJoint.h"
+#include "GameObject.h"
+#include "PhysicsSystem.h"
+#include "ZnTransform.h"
+#include "RigidBody.h"
+#include "ZnRigidBody.h"
 
-#include "ZnFixedJoint.h"
+#include "FixedJoint.h"
 
 namespace PurahEngine
 {
-	void FixedJoint::SetLocalPosition(int _index, const Eigen::Vector3f& _position) noexcept
+	FixedJoint::~FixedJoint()
 	{
-		assert(_index == 1 || _index == 0);
-
-		 joint->SetLocalPosition(static_cast<ZonaiPhysics::ZnJoint::eOBJECT>(_index), _position);
 	}
 
-	Eigen::Vector3f FixedJoint::GetLocalPosition(int _index) const noexcept
+	void FixedJoint::Initialize()
 	{
-		assert(_index == 1 || _index == 0);
 
-		return joint->GetLocalPosition(static_cast<ZonaiPhysics::ZnJoint::eOBJECT>(_index));
 	}
 
-	void FixedJoint::SetLocalQuaternion(int _index, const Eigen::Quaternionf& _quaternion) noexcept
+	void FixedJoint::OnDataLoadComplete()
 	{
-		assert(_index == 1 || _index == 0);
+		auto& instance = PhysicsSystem::GetInstance();
 
-		joint->SetLocalQuaternion(static_cast<ZonaiPhysics::ZnJoint::eOBJECT>(_index), _quaternion);
-	}
+		const RigidBody* body0 = GetGameObject()->GetComponent<RigidBody>();
 
-	Eigen::Quaternionf FixedJoint::GetLocalQuaternion(int _index) const noexcept
-	{
-		assert(_index == 1 || _index == 0);
+		assert(body0 != nullptr);
 
-		return joint->GetLocalQuaternion(static_cast<ZonaiPhysics::ZnJoint::eOBJECT>(_index));
-	}
+		joint = instance.CreateFixedJoint(
+			body0->body, { LocalAnchor, LocalAnchorRotation },
+			connectedBody->body, { connectedLocalAnchor, connectedLocalAnchorRotation }
+		);
 
-	Eigen::Vector3f FixedJoint::GetRelativeLinearVelocity() const noexcept
-	{
-		return joint->GetRelativeLinearVelocity();
-	}
-
-	Eigen::Vector3f FixedJoint::GetRelativeAngularVelocity() const noexcept
-	{
-		return joint->GetRelativeAngularVelocity();
-	}
-
-	void FixedJoint::SetBreakForce(float _force, float _torque) noexcept
-	{
-		joint->SetBreakForce(_force, _torque);
-	}
-
-	void FixedJoint::GetBreakForce(float& _force, float& _torque) const noexcept
-	{
-		joint->GetBreakForce(_force, _torque);
+		SetBreakForce(breakForce, breakTorque);
+		EnableCollision(enableCollision);
+		EnablePreprocessing(enablePreprocessing);
 	}
 
 	void FixedJoint::PreSerialize(json& jsonData) const
@@ -59,7 +42,17 @@ namespace PurahEngine
 
 	void FixedJoint::PreDeserialize(const json& jsonData)
 	{
+		PREDESERIALIZE_BASE();
 
+		PREDESERIALIZE_VECTOR3F(LocalAnchor);
+		PREDESERIALIZE_QUATERNIONF(LocalAnchorRotation);
+		PREDESERIALIZE_VECTOR3F(connectedLocalAnchor);
+		PREDESERIALIZE_QUATERNIONF(connectedLocalAnchorRotation);
+
+		PREDESERIALIZE_VALUE(breakForce);
+		PREDESERIALIZE_VALUE(breakTorque);
+		PREDESERIALIZE_VALUE(enableCollision);
+		PREDESERIALIZE_VALUE(enablePreprocessing);
 	}
 
 	void FixedJoint::PostSerialize(json& jsonData) const
@@ -69,7 +62,6 @@ namespace PurahEngine
 
 	void FixedJoint::PostDeserialize(const json& jsonData)
 	{
-
+		POSTDESERIALIZE_PTR(connectedBody);
 	}
-
 }

@@ -37,6 +37,9 @@ namespace ZonaiPhysics
 		virtual void	SetDamping(float _damping) = 0;
 		virtual float	GetDamping() const = 0;
 
+		// 스프링 관련 변수
+		virtual void	SetSpringArg(float _stiffness, float _damping) = 0;
+
 		// 조인트 플래그
 		virtual void	SetMinDistanceEnable(bool _value) = 0;
 		virtual void	SetMaxDistanceEnable(bool _value) = 0;

@@ -5,6 +5,8 @@ struct PixelInputType
     float4 position : SV_POSITION;
     float4 viewPosition : POSITION;
     float3 normal : NORMAL;
+    float3 tangent : TANGENT;
+    float3 biNormal : BINORMAL;
     float2 tex : TEXCOORD0;
 };
 
@@ -56,8 +58,23 @@ PixelOutputType main(PixelInputType input)
     // 
     float depth = projPos.z / cameraFar;
     
+    float3 tangentSpaceNormal = NormalMap.Sample(Sampler, input.tex).xyz;
+    // [0, 1] 범위에서 [-1, 1]로 변환
+    tangentSpaceNormal = (tangentSpaceNormal - 0.5f) * 2.f;
+    float3x3 matTBN = { input.tangent, input.biNormal, input.normal };
+    float3 viewNormal = normalize(mul(tangentSpaceNormal, matTBN));
+    
     output.position = float4(input.viewPosition.xyz, 1.0f);
-    output.normal = float4(input.normal, 1.0f);
+    
+    if (useNormal)
+    {
+        output.normal = float4(viewNormal, 1.0f);
+    }
+    else
+    {
+        output.normal = float4(input.normal, 1.0f);
+    }
+    
     output.color = textureColor;
     output.depth = float4(depth, depth, depth, 1.0f);
     

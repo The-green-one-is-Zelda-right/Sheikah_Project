@@ -90,11 +90,16 @@ namespace ZonaiPhysics
 		joint->setLimit({*tolerances, _lower, _upper});
 	}
 
-	void PrismaticJoint::SetLimitWithSpring(float _lower, float _upper, float _stiffness, float _damping)
+	void PrismaticJoint::SetSpringArg(float _stiffness, float _damping)
 	{
 		assert(joint != nullptr);
 
-		joint->setLimit({_lower, _upper, {_stiffness, _damping}});
+		auto limit = joint->getLimit();
+
+		limit.stiffness = _stiffness;
+		limit.damping = _damping;
+
+		joint->setLimit(limit);
 	}
 
 	void PrismaticJoint::SetLimitEnable(bool _value)

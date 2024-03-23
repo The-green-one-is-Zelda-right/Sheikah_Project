@@ -19,10 +19,9 @@ namespace PurahEngine
 		GraphicsResourceManager(IZeldaRenderer* zeldaRenderer);
 		~GraphicsResourceManager();
 
-		// 여러개 사용될 수 있는 것
-		TextureID GetTextureID(std::wstring textureName);
-		ModelID GetModelID(std::wstring modelName);
-
+		// 여러개 사용될 수 있는 것, 없다면 생성함
+		TextureID GetTextureID(const std::wstring& textureName);
+		ModelID GetModelID(const std::wstring& modelName);
 
 		// 하나만 사용되는 것
 		LightID CreateDirectionalLight(const Eigen::Vector3f& ambient, const Eigen::Vector3f& diffuse, const Eigen::Vector3f& specular, const Eigen::Vector3f& direction);

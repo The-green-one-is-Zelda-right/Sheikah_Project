@@ -1,14 +1,11 @@
 #pragma once
 #include "PurahEngineAPI.h"
 
+#include <map>
+#include <vector>
+#include "eKey.h"
+
 #include <windows.h>
-#include <Xinput.h>
-
-#pragma comment(lib, "xinput.lib")
-
-
-#define KEY_COUNT 0xFF
-#define CONTROLLER_COUNT 0xFFFF
 
 namespace PurahEngine
 {
@@ -23,33 +20,28 @@ namespace PurahEngine
 		InputManager& operator=(const InputManager& ref) = delete;
 
 	public:
-		void Initialize(HWND hwnd);
+		void Initialize(HWND hwnd, eKey* _inputArr, UINT _size);
 
 		// Update를 돌며 키의 입력값을 계속 체크한다.
 		void Update();
 		
 		/// 키보드
 		// 키가 방금 눌렸는가?
-		bool IsKeyDown(int keycode);
+		bool IsKeyDown(eKey keycode);
 		// 키를 눌리고 있는가?
-		bool IsKeyPressed(int keycode);
+		bool IsKeyPressed(eKey keycode);
 		// 키를 방금 뗐는가?
-		bool IsKeyUp(int keycode);
-
-		/// 게임패드
-		XINPUT_STATE GetState();
-		int deadZone = 5000;
-
+		bool IsKeyUp(eKey keycode);
 
 		/// 마우스
 
 	private:
-		int PrevKeyState[KEY_COUNT] = { 0, };
-		int NowKeyState[KEY_COUNT] = { 0, };
+		std::vector<eKey> keys;
+		std::map<eKey, short> PrevKeyState;
+		std::map<eKey, short> NowKeyState;
 
-		XINPUT_STATE state;
-		DWORD result;
 		HWND hWnd;
+
 	public:
 		static InputManager& Getinstance();
 	};

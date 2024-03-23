@@ -2,6 +2,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <queue>
 
 #pragma warning(push)
 #pragma warning(disable: 33010 26495 4819)
@@ -14,6 +15,8 @@ namespace ZonaiPhysics
 	class EventCallback;
 	class ZnTransform;
 	class RigidBody;
+	class Collider;
+	class Joint;
 }
 
 namespace physx
@@ -42,9 +45,13 @@ namespace ZonaiPhysics
 		static bool					Boxcast(float _x, float _y, float _z, const ZnTransform& trans);
 
 	public:
-		static void					AddBody(void* _znBody, void* _userScene = nullptr);
-		static void					RemoveBody(void* _znBody, void* _userScene = nullptr);
+		static void					AddBody(RigidBody* _znBody, void* _userData, void* _userScene = nullptr);
+		static void					RemoveBody(RigidBody* _znBody, void* _userData, void* _userScene = nullptr);
+
+		static void					AddCollider(Collider* _znShape, void* _userData, void* _userScene = nullptr);
+		static void					RemoveCollider(Collider* _znShape, void* _userData, void* _userScene = nullptr);
 		static RigidBody*			GetBody(void* _znBody, void* _userScene = nullptr);
+		static void					SetHasBody(void* _userData, bool _hasBody, void* _userScene = nullptr);
 
 		static void					AddMaterial(uint32_t, physx::PxMaterial*);
 		static physx::PxMaterial*	GetMaterial(uint32_t);
@@ -54,11 +61,19 @@ namespace ZonaiPhysics
 
 	private:
 		static physx::PxScene* currScene;
-		static std::unordered_map<void*, physx::PxScene*> sceneList;	// [userScene, pxScene]
+		static std::unordered_map<void*, physx::PxScene*> sceneList;					// [userScene, pxScene]
 
-		using BodyList = std::map<void*, RigidBody*>;					// [userData, znBody]
-		static std::map<void*, BodyList> bodies;						// [pxScene, bodyList]
+		using Bodies = std::map<void*, std::pair<RigidBody*, bool>>;										// [userData, RigidBody]
+		static std::map<void*, Bodies>		bodyList;									// [pxScene, [userData, RigidBody]]
+
+		using Colliders = std::map<void*, std::vector<Collider*>>;						// [userData, Colliders]
+		static std::map<void*, Colliders>	colliderList;								// [pxScene, [userData, Colliders]]
+
 		static std::unordered_map<uint32_t, physx::PxMaterial*> materials;	// [id, pxMaterial]
+
+		// static std::queue<RigidBody*>	rigidbodyRemoveList;
+		// static std::queue<Collider*>		colliderRemoveList;
+		// static std::queue<Joint*>		jointRemoveList;
 	};
 }
 

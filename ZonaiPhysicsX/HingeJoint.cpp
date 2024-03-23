@@ -87,11 +87,62 @@ namespace ZonaiPhysics
 		joint->setLimit({_lower, _upper});
 	}
 
-	void HingeJoint::SetLimitWithSpring(float _lower, float _upper, float _stiffness, float _damping)
+	void HingeJoint::GetLimit(float& _upper, float& _lower) const
 	{
-		assert(joint != nullptr);
+		const auto limit = joint->getLimit();
 
-		joint->setLimit({_lower, _upper, {_stiffness, _damping}});
+		_upper = limit.upper;
+		_lower = limit.lower;
+	}
+
+	void HingeJoint::SetRestitution(float _restitution) const
+	{
+		auto limit = joint->getLimit();
+
+		limit.restitution = _restitution;
+
+		joint->setLimit(limit);
+	}
+
+	float HingeJoint::GetRestitution() const
+	{
+		const auto limit = joint->getLimit();
+
+		return limit.restitution;
+	}
+
+	void HingeJoint::SetBounceThreshold(float _bounceThreshold) const
+	{
+		auto limit = joint->getLimit();
+
+		limit.bounceThreshold = _bounceThreshold;
+
+		joint->setLimit(limit);
+	}
+
+	float HingeJoint::GetBounceThreshold() const
+	{
+		const auto limit = joint->getLimit();
+
+		return limit.bounceThreshold;
+	}
+
+	void HingeJoint::SetSpringArg(float _stiffness, float _damping)
+	{
+		auto limit = joint->getLimit();
+
+		limit.stiffness = _stiffness;
+		limit.damping = _damping;
+
+		joint->setLimit(limit);
+	}
+
+	void HingeJoint::GetSpringArg(float& _stiffness, float& _damping)
+	{
+		auto limit = joint->getLimit();
+
+		_stiffness = limit.stiffness;
+		_damping = limit.damping;
 	}
 
 	void HingeJoint::SetDriveVelocity(float _velocity)
@@ -125,6 +176,8 @@ namespace ZonaiPhysics
 	void HingeJoint::SetDriveGearRatio(float _ratio)
 	{
 		assert(joint != nullptr);
+
+		_ratio = std::clamp(_ratio, 0.f, 1.f);
 
 		joint->setDriveGearRatio(_ratio);
 	}

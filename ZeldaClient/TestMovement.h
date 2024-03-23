@@ -15,12 +15,12 @@ namespace PurahEngine
 
 		void FixedUpdate();
 
-		XINPUT_VIBRATION vib;
+		//XINPUT_VIBRATION vib;
 
-		bool isVib = false;
-		bool isPushed = false;
-		const float vibDuration = 100.6f;
-		float vibElapsedTime = 0.0f;
+		//bool isVib = false;
+		//bool isPushed = false;
+		//const float vibDuration = 100.6f;
+		//float vibElapsedTime = 0.0f;
 
 	public:
 		virtual void PreSerialize(json& jsonData) const override;

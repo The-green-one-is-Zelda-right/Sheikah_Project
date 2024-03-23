@@ -71,9 +71,14 @@ bool ZeldaTexture::UseSRGB()
 	return useSRGB;
 }
 
-void ZeldaTexture::SetShaderResource(ID3D11DeviceContext* deviceContext)
+void ZeldaTexture::SetDiffuseMapShaderResource(ID3D11DeviceContext* deviceContext)
 {
-	deviceContext->PSSetShaderResources(0, 1, &textureView);
+	deviceContext->PSSetShaderResources(Texture::Slot::DiffuseMap, 1, &textureView);
+}
+
+void ZeldaTexture::SetNormalMapShaderResource(ID3D11DeviceContext* deviceContext)
+{
+	deviceContext->PSSetShaderResources(Texture::Slot::NormalMap, 1, &textureView);
 }
 
 void ZeldaTexture::SetCubeMapShaderResource(ID3D11DeviceContext* deviceContext)

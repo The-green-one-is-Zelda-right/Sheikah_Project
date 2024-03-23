@@ -56,37 +56,7 @@ namespace FBXLoader
 
 				Material* materialData = new Material();
 
-				if (assimpMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0)
-				{
-					materialData->useDiffuseMap = true;
-
-					aiString texturePath;
-					if (assimpMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS)
-					{
-						std::string str = texturePath.C_Str();
-						std::wstring wstr(str.begin(), str.end());
-
-						wstr = fileDirectory + L"\\" + wstr;
-
-						materialData->diffuseMap = wstr;
-					}
-				}
-				else
-				{
-					materialData->useDiffuseMap = false;
-				}
-
-				aiColor3D baseColor(1.0f, 1.0f, 1.0f);
-
-				if (assimpMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, baseColor) == AI_SUCCESS)
-				{
-					// Base Color를 가진경우
-				}
-
-				materialData->baseColor.r = baseColor.r;
-				materialData->baseColor.g = baseColor.g;
-				materialData->baseColor.b = baseColor.b;
-				materialData->baseColor.a = 1.0f;
+				CopyMaterialData(materialData, assimpMaterial, fileDirectory);
 
 				model->materialList.push_back(materialData);
 			}
@@ -150,6 +120,17 @@ namespace FBXLoader
 						vtx.normal.x = assimpMesh->mNormals[j].x;
 						vtx.normal.y = assimpMesh->mNormals[j].y;
 						vtx.normal.z = assimpMesh->mNormals[j].z;
+					}
+
+					if (assimpMesh->HasTangentsAndBitangents())
+					{
+						vtx.tangent.x = assimpMesh->mTangents[j].x;
+						vtx.tangent.y = assimpMesh->mTangents[j].y;
+						vtx.tangent.z = assimpMesh->mTangents[j].z;
+
+						vtx.biTangent.x = assimpMesh->mBitangents[j].x;
+						vtx.biTangent.y = assimpMesh->mBitangents[j].y;
+						vtx.biTangent.z = assimpMesh->mBitangents[j].z;
 					}
 
 					vtx.boneIndices[0] = 0xffffffffu;
@@ -385,5 +366,60 @@ namespace FBXLoader
 			bone->children.push_back(childBone);
 			CopyNodeData(childBone, aichild, boneIndexMap, boneList, boneCount);
 		}
+	}
+
+	void FBXLoader::CopyMaterialData(Material* materialData, aiMaterial* assimpMaterial, const std::wstring& fileDirectory)
+	{
+		if (assimpMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+		{
+			materialData->useDiffuseMap = true;
+
+			aiString texturePath;
+			if (assimpMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS)
+			{
+				std::string str = texturePath.C_Str();
+				std::wstring wstr(str.begin(), str.end());
+
+				wstr = fileDirectory + L"\\" + wstr;
+
+				materialData->diffuseMap = wstr;
+			}
+		}
+		else
+		{
+			materialData->useDiffuseMap = false;
+		}
+
+		if (assimpMaterial->GetTextureCount(aiTextureType_NORMALS) > 0)
+		{
+			materialData->useNormalMap = true;
+
+			aiString texturePath;
+			if (assimpMaterial->GetTexture(aiTextureType_NORMALS, 0, &texturePath) == AI_SUCCESS)
+			{
+				std::string str = texturePath.C_Str();
+				std::wstring wstr(str.begin(), str.end());
+
+				wstr = fileDirectory + L"\\" + wstr;
+
+				materialData->normalMap = wstr;
+			}
+		}
+		else
+		{
+			materialData->useNormalMap = false;
+		}
+
+		aiColor3D baseColor(1.0f, 1.0f, 1.0f);
+
+		if (assimpMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, baseColor) == AI_SUCCESS)
+		{
+			// Base Color를 가진경우
+		}
+
+		materialData->baseColor.r = baseColor.r;
+		materialData->baseColor.g = baseColor.g;
+		materialData->baseColor.b = baseColor.b;
+		materialData->baseColor.a = 1.0f;
 	}
 }

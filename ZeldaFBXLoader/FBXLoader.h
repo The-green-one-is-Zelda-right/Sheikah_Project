@@ -10,6 +10,7 @@
 
 namespace FBXLoader
 {
+	struct Material;
 	struct Model;
 	struct Bone;
 
@@ -21,6 +22,7 @@ namespace FBXLoader
 
 	private:
 		void CopyNodeData(Bone* bone, aiNode* ainode, std::map<std::wstring, unsigned int>& boneIndexMap, std::vector<Bone*>& boneList, int& boneCount);
+		void CopyMaterialData(Material* materialData, aiMaterial* assimpMaterial, const std::wstring& fileDirectory);
 
 		static const unsigned int BONE_MAX;
 

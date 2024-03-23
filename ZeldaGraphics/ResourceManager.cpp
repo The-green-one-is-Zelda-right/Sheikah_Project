@@ -171,10 +171,10 @@ MeshID ResourceManager::CreateSquareMesh()
 	std::vector<VertexType> vertexList(4);
 	std::vector<unsigned int> indexList(6);
 
-	vertexList[0] = { { -0.5f, -0.5f, 0.0f, 0.0f }, { 0.0f, 0.0f, -1.0f }, { 0.0f, 1.0f} };
-	vertexList[1] = { { -0.5f, +0.5f, 0.0f, 0.0f }, { 0.0f, 0.0f, -1.0f }, { 0.0f, 0.0f} };
-	vertexList[2] = { { +0.5f, +0.5f, 0.0f, 0.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 0.0f} };
-	vertexList[3] = { { +0.5f, -0.5f, 0.0f, 0.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f} };
+	vertexList[0] = { { -0.5f, -0.5f, 0.0f, 0.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f} };
+	vertexList[1] = { { -0.5f, +0.5f, 0.0f, 0.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f} };
+	vertexList[2] = { { +0.5f, +0.5f, 0.0f, 0.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f} };
+	vertexList[3] = { { +0.5f, -0.5f, 0.0f, 0.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f} };
 
 	indexList[0] = 0;
 	indexList[1] = 1;
@@ -262,7 +262,8 @@ MeshID ResourceManager::CreateSphereMesh()
 	std::vector<unsigned int> indexList(36);
 
 	// 북극
-	vertexList.push_back({ { 0.0f, radius, 0.0f, 0.0f }, { 0.0f , 1.0f, 0.0f }, { 0.5f, 0.0f } });
+	// 일단 임시로 tangent는 (1, 0, 0)을 넣었다, 제대로 하려면 북극 버텍스를 면의 갯수만큼 여러개 만들고 면마다 다르게 설정해 줘야 한다.
+	vertexList.push_back({ { 0.0f, radius, 0.0f, 0.0f }, { 0.0f , 1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { 0.5f, 0.0f } });
 
 	float stackAngle = DirectX::XM_PI / static_cast<float>(stackCount);
 	float sliceAngle = DirectX::XM_2PI / static_cast<float>(sliceCount);
@@ -288,17 +289,15 @@ MeshID ResourceManager::CreateSphereMesh()
 			DirectX::XMStoreFloat3(&v.normal, DirectX::XMVector3Normalize({ v.position.x, v.position.y, v.position.z }));
 			v.texture = { deltaU * x, deltaV * y };
 
-			//v.tangent.x = -radius * sinf(phi) * sinf(theta);
-			//v.tangent.y = 0.0f;
-			//v.tangent.z = radius * sinf(phi) * cosf(theta);
-			//v.tangent.Normalize();
+			DirectX::XMStoreFloat3(&v.tangent, DirectX::XMVector3Normalize({ -radius * sinf(phi) * sinf(theta), 0.0f, radius * sinf(phi) * cosf(theta) }));
 
 			vertexList.push_back(v);
 		}
 	}
 
 	// 남극
-	vertexList.push_back({ { 0.0f, -radius, 0.0f, 0.0f }, { 0.0f, -1.0f, 0.0f }, { 0.5f, 1.0f } });
+	// 일단 임시로 tangent는 (1, 0, 0)을 넣었다, 제대로 하려면 남극 버텍스를 면의 갯수만큼 여러개 만들고 면마다 다르게 설정해 줘야 한다.
+	vertexList.push_back({ { 0.0f, -radius, 0.0f, 0.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { 0.5f, 1.0f } });
 
 	// 북극 인덱스
 	for (unsigned int i = 0; i <= sliceCount; ++i)

@@ -41,7 +41,7 @@ namespace ZonaiPhysics
 		/**
 		오브젝트의 포지션
 		*/
-		virtual void SetLocalPosition(ZnJoint::eOBJECT _index, const Eigen::Vector3f& _localPos) override
+		void SetLocalPosition(ZnJoint::eOBJECT _index, const Eigen::Vector3f& _localPos) override
 		{
 			assert(joint != nullptr);
 
@@ -52,7 +52,7 @@ namespace ZonaiPhysics
 			joint->setLocalPose(index, t);
 		}
 
-		virtual Eigen::Vector3f GetLocalPosition(ZnJoint::eOBJECT _index) const override
+		Eigen::Vector3f GetLocalPosition(ZnJoint::eOBJECT _index) const override
 		{
 			assert(joint != nullptr);
 
@@ -65,7 +65,7 @@ namespace ZonaiPhysics
 		/**
 		오브젝트의 로테이션
 		*/
-		virtual void SetLocalQuaternion(ZnJoint::eOBJECT _index, const Quaternionf& _localQuat) override
+		void SetLocalQuaternion(ZnJoint::eOBJECT _index, const Quaternionf& _localQuat) override
 		{
 			assert(joint != nullptr);
 
@@ -76,7 +76,7 @@ namespace ZonaiPhysics
 			joint->setLocalPose(index, t);
 		}
 
-		virtual Quaternionf GetLocalQuaternion(ZnJoint::eOBJECT _index) const override
+		Quaternionf GetLocalQuaternion(ZnJoint::eOBJECT _index) const override
 		{
 			assert(joint != nullptr);
 
@@ -89,7 +89,7 @@ namespace ZonaiPhysics
 		/**
 		오브젝트0을 기준으로 오브젝트1의 상대 속도를 반환함.
 		*/
-		virtual Eigen::Vector3f GetRelativeLinearVelocity() const override
+		Eigen::Vector3f GetRelativeLinearVelocity() const override
 		{
 			assert(joint != nullptr);
 
@@ -98,7 +98,7 @@ namespace ZonaiPhysics
 			return {velo.x, velo.y, velo.z};
 		}
 
-		virtual Eigen::Vector3f GetRelativeAngularVelocity() const override
+		Eigen::Vector3f GetRelativeAngularVelocity() const override
 		{
 			assert(joint != nullptr);
 
@@ -110,18 +110,32 @@ namespace ZonaiPhysics
 		/**
 		조인트 파괴 힘을 설정함
 		*/
-		virtual void SetBreakForce(float _force, float _torque) override
+		void		SetBreakForce(float _force, float _torque) override
 		{
 			assert(joint != nullptr);
 
 			joint->setBreakForce(_force, _torque);
 		}
 
-		virtual void GetBreakForce(float& _force, float& _torque) const override
+		void		GetBreakForce(float& _force, float& _torque) const override
 		{
 			assert(joint != nullptr);
 
 			joint->getBreakForce(_force, _torque);
+		}
+
+		void		EnableCollision(bool _value) override
+		{
+			assert(joint != nullptr);
+
+			joint->setConstraintFlag(physx::PxConstraintFlag::eCOLLISION_ENABLED, _value);
+		}
+
+		void		EnablePreprocessing(bool _value) override
+		{
+			assert(joint != nullptr);
+
+			joint->setConstraintFlag(physx::PxConstraintFlag::eDISABLE_PREPROCESSING, !_value);
 		}
 	};
 }

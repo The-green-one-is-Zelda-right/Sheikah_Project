@@ -1,6 +1,8 @@
 #pragma once
 #include "PurahEngineAPI.h"
 
+#include "PurahSound.h"
+
 #include <fmod.h>
 #include <fmod.hpp>
 #include <fmod_errors.h>
@@ -9,35 +11,47 @@
 
 namespace PurahEngine
 {
+	class Transform;
+	class AudioSource;
 
 	class PURAHENGINE_API SoundManager
 	{
 	public:
-		enum class SoundType
-		{
-			BGM,
-			EFFECT
-		};
-	public:
 		void Initialize();
 
-		void LoadSound(const std::wstring& soundName, const std::wstring& filePath, SoundType type);
+		void LoadSound(const std::wstring& soundName, PurahEngine::Transform* transform, AudioSource* audioSource, SoundType type);
+		
+		void LoadBGMSound(const std::wstring& soundName, AudioSource* audioSource);
 
-		void Play(const std::wstring& soundName);
+		void LoadEffectSound(const std::wstring& soundName, Transform* transform, AudioSource* audioSource);
+
+		void PlayBGM(const std::wstring& soundName, AudioSource* audioSource);
+
+		void PlayEffect(const std::wstring& soundName, AudioSource* audioSource);
 
 		void Update();
 
+		void SetListenerTransform(PurahEngine::Transform* transform);
+
+		void SetObject3DAttributes();
+
+		FMOD::System* GetSystem() const;
+
 	private:
 		FMOD::System* system;
-
 		FMOD::Channel* bgmChannel;
 		FMOD::Channel* effectChannel;
 		FMOD::ChannelGroup* effectChannelGroup;
 
-		std::unordered_map<std::wstring, FMOD::Sound*> bgmSounds;
-		std::unordered_map<std::wstring, FMOD::Sound*> effectSounds;
+		PurahEngine::Transform* listenerTransform;
+
+		std::unordered_map<PurahEngine::AudioSource*, PurahSound> soundMap;
 
 		FMOD_VECTOR position = { 0.0f, 0.0f, 0.0f };
+		FMOD_VECTOR listenerPosition = { 0.0f, 0.0f, 0.0f };
+		FMOD_VECTOR listenerForward = { 0.0f, 0.0f, 0.0f };
+		FMOD_VECTOR listenerUp = { 0.0f, 0.0f, 0.0f };
+
 
 	private:
 		SoundManager();

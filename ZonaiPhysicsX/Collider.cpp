@@ -14,6 +14,15 @@ namespace ZonaiPhysics
 		znBody(_znBody), pxShape(_pxShape)
 	{
 		ColliderHelper::SetLayer(pxShape, 0);
+		pxShape->userData = this;
+	}
+
+	Collider::~Collider()
+	{
+		RigidBodyHelper::Detach(znBody->pxBody, pxShape);
+		ColliderHelper::Release(pxShape);
+		pxShape = nullptr;
+		znBody = nullptr;
 	}
 
 	void Collider::SetTrigger(bool _flag)
@@ -45,7 +54,6 @@ namespace ZonaiPhysics
 	{
 		assert(znBody != nullptr);
 
-		znBody->WakeUp();
 		znBody->SetPosition(_position);
 	}
 
@@ -76,7 +84,6 @@ namespace ZonaiPhysics
 	{
 		assert(znBody != nullptr);
 
-		znBody->WakeUp();
 		znBody->SetQuaternion(_quaternion);
 	}
 

@@ -1,79 +1,60 @@
 #include "InputManager.h"
 
-PurahEngine::InputManager::InputManager()
+namespace PurahEngine
 {
+	InputManager::InputManager() :
+		hWnd(nullptr)
+	{}
 
-}
+	InputManager::~InputManager()
+		= default;
 
-PurahEngine::InputManager::~InputManager()
-{
-
-}
-
-void PurahEngine::InputManager::Initialize(HWND hwnd)
-{
-	hWnd = hwnd;
-	result = XInputGetState(0, &state);
-
-	if (result == ERROR_SUCCESS)
+	void InputManager::Initialize(HWND hwnd, eKey* _inputArr, UINT _size)
 	{
-		ZeroMemory(&state, sizeof(XINPUT_STATE));
-	}
-}
+		hWnd = hwnd;
 
-void PurahEngine::InputManager::Update()
-{
-	if (hWnd == GetFocus())
-	{
-		for (int i = 0; i < KEY_COUNT; i++)
+		for (auto i = 0; i < _size; i++)
 		{
-			PrevKeyState[i] = NowKeyState[i];
-			NowKeyState[i] = GetAsyncKeyState(i);
+			keys.push_back(_inputArr[i]);
 		}
 
-		if (result == ERROR_SUCCESS)
+		PrevKeyState.clear();
+		NowKeyState.clear();
+	}
+
+	void InputManager::Update()
+	{
+		if (hWnd == GetFocus())
 		{
-			XInputGetState(0, &state);
-
-			if (abs(state.Gamepad.sThumbLX) < deadZone)
+			for (const auto e : keys)
 			{
-				state.Gamepad.sThumbLX = 0;
-			}
-
-			if (abs(state.Gamepad.sThumbLY) < deadZone)
-			{
-				state.Gamepad.sThumbLY = 0;
+				PrevKeyState[e] = NowKeyState[e];
+				NowKeyState[e] = GetAsyncKeyState(static_cast<int>(e));
 			}
 		}
 	}
-}
 
-// 키를 방금 눌렀는가
-bool PurahEngine::InputManager::IsKeyDown(int keycode)
-{
-	return (PrevKeyState[keycode] == 0) && (NowKeyState[keycode] & 0x8001);
-}
+	// 키를 방금 눌렀는가
+	bool InputManager::IsKeyDown(eKey keycode)
+	{
+		return (PrevKeyState[keycode] == 0) && (NowKeyState[keycode] & 0x8001);
+	}
 
-// 키를 눌리고 있는가
-bool PurahEngine::InputManager::IsKeyPressed(int keycode)
-{
-	return (PrevKeyState[keycode] & 0x8001) && (NowKeyState[keycode] & 0x8001);
-}
+	// 키를 눌리고 있는가
+	bool InputManager::IsKeyPressed(eKey keycode)
+	{
+		return (PrevKeyState[keycode] & 0x8001) && (NowKeyState[keycode] & 0x8001);
+	}
 
-// 키를 뗐는가
-bool PurahEngine::InputManager::IsKeyUp(int keycode)
-{
-	return (PrevKeyState[keycode] & 0x8001) && (NowKeyState[keycode] == 0);
-}
+	// 키를 뗐는가
+	bool InputManager::IsKeyUp(eKey keycode)
+	{
+		return (PrevKeyState[keycode] & 0x8001) && (NowKeyState[keycode] == 0);
+	}
 
-
-XINPUT_STATE PurahEngine::InputManager::GetState()
-{
-	return state;
-}
-
-PurahEngine::InputManager& PurahEngine::InputManager::Getinstance()
-{
-	static InputManager instance;
-	return instance;
+	InputManager& PurahEngine::InputManager::Getinstance()
+	{
+		static InputManager instance;
+		return instance;
+	}
 }

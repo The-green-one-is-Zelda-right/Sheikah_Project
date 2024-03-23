@@ -13,7 +13,8 @@ public:
 	ID3D11ShaderResourceView* GetTexture();
 	bool UseSRGB();
 
-	void SetShaderResource(ID3D11DeviceContext* deviceContext);
+	void SetDiffuseMapShaderResource(ID3D11DeviceContext* deviceContext);
+	void SetNormalMapShaderResource(ID3D11DeviceContext* deviceContext);
 	void SetCubeMapShaderResource(ID3D11DeviceContext* deviceContext);
 
 private:

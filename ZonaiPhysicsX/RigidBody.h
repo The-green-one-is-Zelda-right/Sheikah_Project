@@ -84,7 +84,6 @@ namespace ZonaiPhysics
 	public:
 		void* userData;
 		physx::PxRigidDynamic* pxBody;
-		std::list<Collider*> colliders;
 	};
 } // namespace ZonaiPhysics
 

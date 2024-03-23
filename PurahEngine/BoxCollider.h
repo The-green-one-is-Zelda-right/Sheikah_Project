@@ -10,16 +10,18 @@ namespace PurahEngine
 		BoxCollider() = default;
 		~BoxCollider() override = default;
 
-		void Awake() override;
+	public:
+		void Initialize() override;
+		void OnDataLoadComplete() override;
 
 	public:
 		void SetSize(const Eigen::Vector3f& _size);
 
 	public:
-		virtual void PreSerialize(json& jsonData) const override;
-		virtual void PreDeserialize(const json& jsonData) override;
-		virtual void PostSerialize(json& jsonData) const override;
-		virtual void PostDeserialize(const json& jsonData) override;
+		void PreSerialize(json& jsonData) const override;
+		void PreDeserialize(const json& jsonData) override;
+		void PostSerialize(json& jsonData) const override;
+		void PostDeserialize(const json& jsonData) override;
 
 	public:
 		Eigen::Vector3f size{ 1.f, 1.f, 1.f };

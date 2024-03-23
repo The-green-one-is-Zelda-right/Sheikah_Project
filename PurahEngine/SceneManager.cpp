@@ -6,7 +6,7 @@
 #include "TimeController.h"
 
 PurahEngine::SceneManager::SceneManager()
-	: mainCamera(nullptr), cameraPosition(Eigen::Vector3f(0.0f, 0.0f, -10.0f)), state(RunningState::AWAKE), physicsTime(0.0f)
+	: mainCamera(nullptr), cameraPosition(Eigen::Vector3f(0.0f, 0.0f, -10.0f)), state(RunningState::AWAKE), physicsTime(0.0f), sceneBuffer(L"")
 {
 
 }
@@ -41,6 +41,8 @@ void PurahEngine::SceneManager::SetName(std::wstring name)
 
 void PurahEngine::SceneManager::Update()
 {
+	LoadScene();
+
 	PurahEngine::TimeController::GetInstance().Update("Simulate");
 	float SdeltaTime = PurahEngine::TimeController::GetInstance().GetDeltaTime("Simulate");
 	static float SimuleTime = 0;
@@ -132,8 +134,18 @@ void PurahEngine::SceneManager::Update()
 
 }
 
+void PurahEngine::SceneManager::LoadScene(const std::wstring fileName)
+{
+	sceneBuffer = fileName;
+}
+
 void PurahEngine::SceneManager::LoadScene()
 {
+	if (sceneBuffer == L"")
+	{
+		return;
+	}
+
 	auto& fManager = PurahEngine::FileManager::GetInstance();
 	fManager.clear();
 
@@ -142,8 +154,28 @@ void PurahEngine::SceneManager::LoadScene()
 		delete objectList[i];
 	}
 	objectList.clear();
-	sceneData = fManager.LoadData(L"SampleSceneObjectInfo.json");
+	sceneData = fManager.LoadData(sceneBuffer);
 	Deserialize(sceneData);
+
+
+
+	LoadSceneCompleteEvent();
+
+	// 필요하다면 여기서 sceneName 변경하는 코드 추가
+	sceneBuffer = L"";
+
+	state = RunningState::AWAKE;
+}
+
+void PurahEngine::SceneManager::LoadSceneCompleteEvent()
+{
+	for (int i = 0; i < objectList.size(); i++)
+	{
+		for (int j = 0; j < objectList[i]->componentList.size(); j++)
+		{
+			objectList[i]->componentList[j]->OnDataLoadComplete();
+		}
+	}
 }
 
 void PurahEngine::SceneManager::PreSerialize(json& jsonData) const

@@ -1270,12 +1270,13 @@ void ZeldaDX11Renderer::DrawMeshRenderInfo(MeshRenderInfo renderInfo, ZeldaShade
 				{ renderInfo.color.r, renderInfo.color.g, renderInfo.color.b, renderInfo.color.a },
 				(texture == nullptr),
 				(texture != nullptr) && texture->UseSRGB(),
-				(texture != nullptr)
+				(texture != nullptr),
+				false
 			});
 
 		if (texture != nullptr)
 		{
-			texture->SetShaderResource(mDeviceContext);
+			texture->SetDiffuseMapShaderResource(mDeviceContext);
 		}
 
 		InstancingMatrixBufferType* instacingMatrix = new InstancingMatrixBufferType();
@@ -1313,12 +1314,13 @@ void ZeldaDX11Renderer::DrawMeshRenderInfo(MeshRenderInfo renderInfo, ZeldaShade
 					{ renderInfo.color.r, renderInfo.color.g, renderInfo.color.b, renderInfo.color.a },
 					(texture == nullptr),
 					(texture != nullptr) && texture->UseSRGB(),
-					(texture != nullptr)
+					(texture != nullptr),
+					false
 				});
 
 			if (texture != nullptr)
 			{
-				texture->SetShaderResource(mDeviceContext);
+				texture->SetDiffuseMapShaderResource(mDeviceContext);
 			}
 
 			// 셰이더에 넘기는 행렬을 전치를 한 후 넘겨야 한다.

@@ -28,7 +28,7 @@ void PurahEngine::Test2::Update()
 	const auto name = GetGameObject()->GetName();
 	bool isRootable = GetGameObject()->IsRootEnable();
 
-	if (inputManager.IsKeyPressed('N') == true)
+	if (inputManager.IsKeyPressed(eKey::eKEY_N) == true)
 	{
 		if (trans->GetParent() != nullptr)
 		{
@@ -57,7 +57,7 @@ void PurahEngine::Test2::FixedUpdate()
 	const auto name = GetGameObject()->GetName();
 	bool isRootable = GetGameObject()->IsRootEnable();
 
-	if (inputManager.IsKeyPressed('M') == true)
+	if (inputManager.IsKeyPressed(eKey::eKEY_M) == true)
 	{
 		if (trans->GetParent() != nullptr)
 		{

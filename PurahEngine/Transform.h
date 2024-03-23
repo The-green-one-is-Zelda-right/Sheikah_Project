@@ -29,7 +29,7 @@ namespace PurahEngine
 
 		Eigen::Matrix4f GetLocalMatrix() const;
 
-		//Eigen::Vector3f GetFront() const;
+
 
 		// World
 		// 오브젝트의 월드 포지션을 가져온다.
@@ -62,6 +62,12 @@ namespace PurahEngine
 		void SetParent(PurahEngine::Transform* parentObject);
 
 		void SetWorldMatrix(Eigen::Matrix4f matrix);
+
+	public:
+
+		Eigen::Vector3f GetFront() const;
+		Eigen::Vector3f GetUp() const;
+		Eigen::Vector3f GetRight() const;
 
 		Eigen::Vector3f up = Eigen::Vector3f::UnitY();
 		Eigen::Vector3f right = Eigen::Vector3f::UnitX();

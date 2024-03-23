@@ -1,4 +1,5 @@
 #include "CameraMovement.h"
+#include <iostream>
 
 PurahEngine::CameraMovement::CameraMovement()
 {
@@ -15,31 +16,33 @@ void PurahEngine::CameraMovement::Update()
 	auto& inputManager = PurahEngine::InputManager::Getinstance();
 	auto trans = GetGameObject()->GetComponent<PurahEngine::Transform>();
 
-	if (inputManager.IsKeyPressed(VK_UP) == true)
+	if (inputManager.IsKeyPressed(eKey::eKEY_UP))
 	{
 		trans->SetLocalPosition(trans->GetLocalPosition() + Eigen::Vector3f(0.0f, 0.1f, 0.0f));
 	}
-	if (inputManager.IsKeyPressed(VK_DOWN) == true)
+	if (inputManager.IsKeyPressed(eKey::eKEY_DOWN))
 	{
 		trans->SetLocalPosition(trans->GetLocalPosition() + Eigen::Vector3f(0.0f, -0.1f, 0.0f));
 	}
-	if (inputManager.IsKeyPressed(VK_LEFT) == true)
+	if (inputManager.IsKeyPressed(eKey::eKEY_LEFT))
 	{
 		trans->SetLocalPosition(trans->GetLocalPosition() + Eigen::Vector3f(-0.1f, 0.0f, 0.0f));
 	}
-	if (inputManager.IsKeyPressed(VK_RIGHT) == true)
+	if (inputManager.IsKeyPressed(eKey::eKEY_RIGHT))
 	{
 		trans->SetLocalPosition(trans->GetLocalPosition() + Eigen::Vector3f(0.1f, 0.0f, 0.0f));
 	}
-	if (inputManager.IsKeyPressed('O') == true)
+	if (inputManager.IsKeyPressed(eKey::eKEY_O))
 	{
 		trans->SetLocalPosition(trans->GetLocalPosition() + Eigen::Vector3f(0.0f, 0.0f, -0.1f));
-	}	
-	if (inputManager.IsKeyPressed('P') == true)
+	}
+	if (inputManager.IsKeyPressed(eKey::eKEY_P))
 	{
 		trans->SetLocalPosition(trans->GetLocalPosition() + Eigen::Vector3f(0.0f, 0.0f, 0.1f));
 	}
-	//if(inputManager.IsKeyPressed(VK_WHEEL))
+
+	std::wcout << GetGameObject()->GetName() << std::endl;
+	std::cout << trans->GetLocalPosition() << std::endl << std::endl;
 }
 
 void PurahEngine::CameraMovement::PreSerialize(json& jsonData) const

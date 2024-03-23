@@ -66,20 +66,28 @@ namespace ZonaiPhysics
 		joint = nullptr;
 	}
 
-	void SphericalJoint::GetLimitAngle(float* _outY, float* _outZ)
+	void SphericalJoint::GetLimitAngle(float& _outY, float& _outZ)
 	{
 		assert(joint != nullptr);
 
 		const auto cone = joint->getLimitCone();
 
-		if (_outY)
-		{
-			*_outY = cone.yAngle;
-		}
-		if (_outZ)
-		{
-			*_outZ = cone.zAngle;
-		}
+		_outY = cone.yAngle;
+		_outZ = cone.zAngle;
+	}
+
+	float SphericalJoint::GetYAngle() const
+	{
+		assert(joint != nullptr);
+
+		return joint->getSwingYAngle();
+	}
+
+	float SphericalJoint::GetZAngle() const
+	{
+		assert(joint != nullptr);
+
+		return joint->getSwingZAngle();
 	}
 
 	void SphericalJoint::LimitEnable(bool _value)
@@ -93,13 +101,32 @@ namespace ZonaiPhysics
 	{
 		assert(joint != nullptr);
 
-		joint->setLimitCone({_yAngle, _zAngle});
+		float yAngleRad = (physx::PxPi / 180.f * _yAngle);
+		float zAngleRad = (physx::PxPi / 180.f * _zAngle);
+
+		joint->setLimitCone({ yAngleRad, zAngleRad });
 	}
 
-	void SphericalJoint::SetLimitConeWithSpring(float _yAngle, float _zAngle, float _stiffness, float _damping)
+	void SphericalJoint::SetSpringArg(float _stiffness, float _damping)
 	{
 		assert(joint != nullptr);
 
-		joint->setLimitCone({_yAngle, _zAngle, {_stiffness, _damping}});
+		auto limit = joint->getLimitCone();
+
+		limit.damping = _damping;
+		limit.stiffness = _stiffness;
+
+		joint->setLimitCone(limit);
+	}
+
+	void SphericalJoint::SetRestitution(float _restitution) const
+	{
+		assert(joint != nullptr);
+
+		auto limit = joint->getLimitCone();
+
+		limit.restitution = _restitution;
+
+		joint->setLimitCone(limit);
 	}
 }

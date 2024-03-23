@@ -62,6 +62,10 @@ namespace ZonaiPhysics
 	{
 		assert(_pxBody != nullptr);
 
+		if (_value)
+		{
+			static int name = (int)_pxBody;
+		}
 		static_cast<physx::PxRigidDynamic*>(_pxBody)->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, _value);
 	}
 
@@ -198,7 +202,7 @@ namespace ZonaiPhysics
 	{
 		assert(_pxBody != nullptr);
 
-		static_cast<physx::PxRigidDynamic*>(_pxBody)->setLinearVelocity(EigenToPhysx(_velo), false);
+		static_cast<physx::PxRigidDynamic*>(_pxBody)->setLinearVelocity(EigenToPhysx(_velo));
 	}
 
 	Eigen::Vector3f RigidBodyHelper::GetAngularVelocity(void* _pxBody)
@@ -212,7 +216,7 @@ namespace ZonaiPhysics
 	{
 		assert(_pxBody != nullptr);
 
-		static_cast<physx::PxRigidDynamic*>(_pxBody)->setAngularVelocity(EigenToPhysx(_velo), false);
+		static_cast<physx::PxRigidDynamic*>(_pxBody)->setAngularVelocity(EigenToPhysx(_velo));
 	}
 
 	float RigidBodyHelper::GetMaxLinearVelocity(void* _pxBody)
@@ -276,6 +280,7 @@ namespace ZonaiPhysics
 		t.q = EigenToPhysx(_quat);
 		pxBody->setGlobalPose(t, false);
 	}
+
 
 	void RigidBodyHelper::SetForceAndTorque(void* _pxBody, const Eigen::Vector3f& _force,
 		const Eigen::Vector3f& _torque, ForceType _type)

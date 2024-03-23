@@ -27,12 +27,6 @@ namespace PurahEngine
 		time1 = 0.0f;
 		time2 = 0.0f;
 		ratio = 0.0f;
-
-		Animator* animator = GetGameObject()->GetComponent<Animator>();
-		if (animator != nullptr)
-		{
-			animator->Initialize_Animator(this);
-		}
 	}
 
 	void ModelRenderer::Render(IZeldaRenderer* renderer)
@@ -75,7 +69,9 @@ namespace PurahEngine
 
 	void ModelRenderer::PreDeserialize(const json& jsonData)
 	{
+		PREDESERIALIZE_BASE();
 
+		PREDESERIALIZE_WSTRING(modelName);
 	}
 
 	void ModelRenderer::PostSerialize(json& jsonData) const

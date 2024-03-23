@@ -25,7 +25,7 @@ namespace PurahEngine
 		}
 	}
 
-	TextureID GraphicsResourceManager::GetTextureID(std::wstring textureName)
+	TextureID GraphicsResourceManager::GetTextureID(const std::wstring& textureName)
 	{
 		auto iter = textureTable.find(textureName);
 		
@@ -42,7 +42,7 @@ namespace PurahEngine
 		}
 	}
 
-	ModelID GraphicsResourceManager::GetModelID(std::wstring modelName)
+	ModelID GraphicsResourceManager::GetModelID(const std::wstring& modelName)
 	{
 		auto iter = modelTable.find(modelName);
 

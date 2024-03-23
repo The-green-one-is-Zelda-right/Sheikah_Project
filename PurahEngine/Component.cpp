@@ -19,6 +19,10 @@ void PurahEngine::Component::Start()
 
 }
 
+void PurahEngine::Component::OnDataLoadComplete()
+{
+}
+
 void PurahEngine::Component::FixedUpdate()
 {
 

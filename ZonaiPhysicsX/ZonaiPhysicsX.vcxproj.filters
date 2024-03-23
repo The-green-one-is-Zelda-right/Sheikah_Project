@@ -4,9 +4,6 @@
     <ClCompile Include="RigidBody.cpp">
       <Filter>Object\Rigidbody</Filter>
     </ClCompile>
-    <ClCompile Include="Collider.cpp">
-      <Filter>Object\Collider</Filter>
-    </ClCompile>
     <ClCompile Include="FixedJoint.cpp">
       <Filter>Object\Joint</Filter>
     </ClCompile>
@@ -71,14 +68,14 @@
     <ClCompile Include="ResourceManager.cpp">
       <Filter>0. Core\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Object\Collider\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ZonaiPhysicsX.h" />
     <ClInclude Include="RigidBody.h">
       <Filter>Object\Rigidbody</Filter>
-    </ClInclude>
-    <ClInclude Include="Collider.h">
-      <Filter>Object\Collider</Filter>
     </ClInclude>
     <ClInclude Include="FixedJoint.h">
       <Filter>Object\Joint</Filter>
@@ -102,9 +99,6 @@
       <Filter>Object\Joint</Filter>
     </ClInclude>
     <ClInclude Include="HingeJoint.h">
-      <Filter>Object\Joint</Filter>
-    </ClInclude>
-    <ClInclude Include="TemplateJoint.h">
       <Filter>Object\Joint</Filter>
     </ClInclude>
     <ClInclude Include="ZnUtil.h" />
@@ -147,6 +141,12 @@
     <ClInclude Include="ResourceManager.h">
       <Filter>0. Core\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Object\Collider\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="TemplateJoint.h">
+      <Filter>Object\Joint\Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="0. Core">
@@ -169,6 +169,12 @@
     </Filter>
     <Filter Include="0. Core\Callback">
       <UniqueIdentifier>{4bc93695-0572-49f8-ab21-3ed039a919d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Collider\Base">
+      <UniqueIdentifier>{3d8860c6-6f82-4755-be8d-3e6a8dd4156b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Joint\Base">
+      <UniqueIdentifier>{fb53a09a-2223-4c85-99a8-f0d8f56ad2d7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -50,7 +50,9 @@ namespace ZonaiPhysics
 		virtual void				SetCollisionLayerData(uint32_t _layer,const std::initializer_list<uint32_t>& _data) = 0;
 
 	public:
-		virtual void				FreeObject(void*) = 0;
+		virtual void				ReleaseRigidBody(ZnRigidBody*, void* _userData, void* _userScene = nullptr) = 0;
+		virtual void				ReleaseCollider(ZnCollider*, void* _userData, void* _userScene = nullptr) = 0;
+		virtual void				ReleaseJoint(ZnJoint*, void* _userData, void* _userScene = nullptr) = 0;
 
 	public:
 		/// <summary>

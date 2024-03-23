@@ -26,6 +26,7 @@ namespace PurahEngine
 	public:
 		virtual void Awake();
 		virtual void Start();
+		virtual void OnDataLoadComplete();
 
 		/// Update
 		// 물리 관련 업데이트

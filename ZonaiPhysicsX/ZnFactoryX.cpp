@@ -95,8 +95,8 @@ namespace ZonaiPhysics
 		scene->userData = _userScene;
 
 #ifdef _DEBUG
-		scene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LIMITS, 3.f);
-		scene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 3.f);
+		scene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LIMITS, 10.f);
+		scene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 10.f);
 
 		physx::PxPvdSceneClient* pvdClient = scene->getScenePvdClient();
 		if (pvdClient)
@@ -147,7 +147,7 @@ namespace ZonaiPhysics
 		assert(pxShape != nullptr);
 
 		const auto znBoxCollider = new BoxCollider(pxShape, znBody);
-		RigidBodyHelper::Attach(znBody->pxBody, pxShape);
+		RigidBodyHelper::Attach(znBody->pxBody, pxShape); 
 
 		return znBoxCollider;
 	}
@@ -158,6 +158,7 @@ namespace ZonaiPhysics
 
 		const auto znBody = static_cast<RigidBody*>(_znBody);
 		const auto pxShape = pxFactory->createShape(physx::PxSphereGeometry(_radius), *_material);
+
 		assert(pxShape != nullptr);
 
 		const auto znSphereCollider = new SphereCollider(pxShape, znBody);
@@ -171,8 +172,13 @@ namespace ZonaiPhysics
 		assert(_znBody != nullptr);
 
 		const auto znBody = static_cast<RigidBody*>(_znBody);
+
 		const auto pxShape = pxFactory->createShape(physx::PxCapsuleGeometry(_radius, _height), *_material);
+
 		assert(pxShape != nullptr);
+
+		const physx::PxQuat rotation(physx::PxPi / 2.f, physx::PxVec3(0.f, 0.f, 1.f));
+		pxShape->setLocalPose(physx::PxTransform(rotation));
 
 		const auto znCapsuleCollider = new CapsuleCollider(pxShape, znBody);
 		RigidBodyHelper::Attach(znBody->pxBody, pxShape);
@@ -285,6 +291,10 @@ namespace ZonaiPhysics
 		const auto joint = physx::PxFixedJointCreate(*pxFactory, pxbody0, t0, pxbody1, t1);
 		assert(joint != nullptr);
 
+#ifdef _DEBUG
+		joint->setConstraintFlag(physx::PxConstraintFlag::eVISUALIZATION, true);
+#endif
+
 		const auto znFixedJoint = new FixedJoint(joint, _znBody0, _znBody1);
 		return znFixedJoint;
 	}
@@ -300,6 +310,10 @@ namespace ZonaiPhysics
 
 		const auto joint = physx::PxPrismaticJointCreate(*pxFactory, pxbody0, t0, pxbody1, t1);
 		assert(joint != nullptr);
+
+#ifdef _DEBUG
+		joint->setConstraintFlag(physx::PxConstraintFlag::eVISUALIZATION, true);
+#endif
 
 		const auto znPrismaticJoint = new PrismaticJoint(joint, _znBody0, _znBody1, &pxFactory->getTolerancesScale());
 		return znPrismaticJoint;
@@ -317,6 +331,10 @@ namespace ZonaiPhysics
 		const auto joint = physx::PxDistanceJointCreate(*pxFactory, pxbody0, t0, pxbody1, t1);
 		assert(joint != nullptr);
 
+#ifdef _DEBUG
+		joint->setConstraintFlag(physx::PxConstraintFlag::eVISUALIZATION, true);
+#endif
+
 		const auto znDistanceJoint = new DistanceJoint(joint, _znBody0, _znBody1);
 		return znDistanceJoint;
 	}
@@ -333,6 +351,10 @@ namespace ZonaiPhysics
 		const auto joint = physx::PxSphericalJointCreate(*pxFactory, pxbody0, t0, pxbody1, t1);
 		assert(joint != nullptr);
 
+#ifdef _DEBUG
+		joint->setConstraintFlag(physx::PxConstraintFlag::eVISUALIZATION, true);
+#endif
+
 		auto znSphericalJoint = new SphericalJoint(joint, _znBody0, _znBody1);
 		return znSphericalJoint;
 	}
@@ -348,6 +370,10 @@ namespace ZonaiPhysics
 
 		const auto joint = physx::PxRevoluteJointCreate(*pxFactory, pxbody0, t0, pxbody1, t1);
 		assert(joint != nullptr);
+
+#ifdef _DEBUG
+		joint->setConstraintFlag(physx::PxConstraintFlag::eVISUALIZATION, true);
+#endif
 
 		const auto znHingeJoint = new HingeJoint(joint, _znBody0, _znBody1);
 		return znHingeJoint;

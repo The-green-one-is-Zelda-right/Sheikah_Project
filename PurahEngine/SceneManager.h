@@ -34,7 +34,11 @@ namespace PurahEngine
 
 		void Update();
 
+		void LoadScene(const std::wstring fileName);
+
+	private:
 		void LoadScene();
+		void LoadSceneCompleteEvent();
 
 	protected:
 		json sceneData;
@@ -61,6 +65,7 @@ namespace PurahEngine
 		RunningState state;
 
 		std::wstring sceneName;
+		std::wstring sceneBuffer;
 
 		// 씬에 생성된 오브젝트 리스트
 		std::vector<GameObject*> objectList;

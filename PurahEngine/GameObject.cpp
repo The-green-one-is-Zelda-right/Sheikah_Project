@@ -2,6 +2,7 @@
 #include "ZnCollision.h"
 
 #include "Component.h"
+#include "EngineSetting.h"
 
 #include "GameObject.h"
 
@@ -184,6 +185,17 @@ std::wstring PurahEngine::GameObject::GetName()
 	return name;
 }
 
+void PurahEngine::GameObject::SetTag(std::wstring tagName)
+{
+	tag.push_back(tagName);
+	PurahEngine::EngineSetting::GetInstance().SetTag(tagName, this);
+}
+
+std::vector<std::wstring> PurahEngine::GameObject::GetTag()
+{
+	return tag;
+}
+
 void PurahEngine::GameObject::PreSerialize(json& jsonData) const
 {
 
@@ -243,6 +255,8 @@ PurahEngine::GameObject::~GameObject()
 		delete componentList[i];
 	}
 	componentList.clear();
+
+	tag.clear();
 }
 
 PurahEngine::Component* PurahEngine::GameObject::AddComponentToString(std::string componentName)

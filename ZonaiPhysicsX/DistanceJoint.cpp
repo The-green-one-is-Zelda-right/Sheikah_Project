@@ -143,6 +143,14 @@ namespace ZonaiPhysics
 		return joint->getDamping();
 	}
 
+	void DistanceJoint::SetSpringArg(float _stiffness, float _damping)
+	{
+		assert(joint != nullptr);
+
+		joint->setStiffness(_stiffness);
+		joint->setDamping(_damping);
+	}
+
 	void DistanceJoint::SetMinDistanceEnable(bool _value)
 	{
 		assert(joint != nullptr);

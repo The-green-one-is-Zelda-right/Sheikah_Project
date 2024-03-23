@@ -1,37 +1,31 @@
 #pragma once
-#include "Joint.h"
-
-namespace ZonaiPhysics
-{
-	class ZnFixedJoint;
-}
+#include "PurahEngineAPI.h"
+#include "ZnFixedJoint.h"
+#include "JointT.h"
 
 namespace PurahEngine
 {
-	class FixedJoint : public Joint
+	class PURAHENGINE_API FixedJoint : public JointT<ZonaiPhysics::ZnFixedJoint>
 	{
 	public:
-		FixedJoint();
+		FixedJoint() = default;
 		~FixedJoint() override;
 
 	public:
-		void SetLocalPosition(int _index, const Eigen::Vector3f&) noexcept override;
-		Eigen::Vector3f GetLocalPosition(int _index) const noexcept override;
-		void SetLocalQuaternion(int _index, const Eigen::Quaternionf&) noexcept override;
-		Eigen::Quaternionf GetLocalQuaternion(int _index) const noexcept override;
-		Eigen::Vector3f GetRelativeLinearVelocity() const noexcept override;
-		Eigen::Vector3f GetRelativeAngularVelocity() const noexcept override;
-		void SetBreakForce(float _force, float _torque) noexcept override;
-		void GetBreakForce(float& _force, float& _torque) const noexcept override;
+		void Initialize() override;
+		void OnDataLoadComplete() override;
 
 	public:
-		virtual void PreSerialize(json& jsonData) const override;
-		virtual void PreDeserialize(const json& jsonData) override;
-		virtual void PostSerialize(json& jsonData) const override;
-		virtual void PostDeserialize(const json& jsonData) override;
+		void PreSerialize(json& jsonData) const override;
+		void PreDeserialize(const json& jsonData) override;
+		void PostSerialize(json& jsonData) const override;
+		void PostDeserialize(const json& jsonData) override;
 
-	private:
-		ZonaiPhysics::ZnFixedJoint* joint;
+	public:
+		Eigen::Vector3f LocalAnchor;
+		Eigen::Quaternionf LocalAnchorRotation;
+		Eigen::Vector3f connectedLocalAnchor;
+		Eigen::Quaternionf connectedLocalAnchorRotation;
 	};
 }
 

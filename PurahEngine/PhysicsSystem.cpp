@@ -4,8 +4,13 @@
 #include "EventCallbackSystem.h"
 #include "Collider.h"
 #include "RigidBody.h"
+#include "Joint.h"
+#include "ZnJoint.h"
 
 #include "PhysicsSystem.h"
+
+#include "Transform.h"
+#include "ZnTransform.h"
 
 namespace PurahEngine
 {
@@ -72,8 +77,38 @@ namespace PurahEngine
 		}
 	}
 
-	void PhysicsSystem::Finalize() const noexcept
+	void PhysicsSystem::Finalize() noexcept
 	{
+		// 강제 종료 되는 경우 아니면
+		// 여기서 컴포넌트를 삭제하는 일은 없을 것임.
+		for (auto& joint : joints)
+		{
+			delete joint;
+		}
+
+		joints.clear();
+
+		for (auto& collider : dynamicColliders)
+		{
+			delete collider;
+		}
+
+		dynamicColliders.clear();
+
+		for (auto& collider : staticColliders)
+		{
+			delete collider;
+		}
+
+		staticColliders.clear();
+
+		for (auto& body : bodies)
+		{
+			delete body;
+		}
+
+		bodies.clear();
+
 		physics->Finalize();
 
 		/// Release 함수
@@ -82,30 +117,110 @@ namespace PurahEngine
 		FreeLibrary(ZonaiPhysicsXDLL);
 	}
 
-	void PhysicsSystem::FreeObject(void* _object) const
+	void PhysicsSystem::FreeObject(ZonaiPhysics::ZnRigidBody* _object, void* _gameObject) const
 	{
 		assert(_object != nullptr);
-		physics->FreeObject(_object);
+
+		physics->ReleaseRigidBody(_object, _gameObject);
 	}
 
-	ZonaiPhysics::ZnRigidBody* PhysicsSystem::CreateRigidBody(void* _gameObject) const noexcept
+	void PhysicsSystem::FreeObject(ZonaiPhysics::ZnCollider* _object, void* _gameObject) const
+	{
+		assert(_object != nullptr);
+
+		physics->ReleaseCollider(_object, _gameObject);
+	}
+
+	void PhysicsSystem::FreeObject(ZonaiPhysics::ZnJoint* _object, void* _gameObject) const
+	{
+		assert(_object != nullptr);
+
+		physics->ReleaseJoint(_object, _gameObject);
+	}
+
+	ZonaiPhysics::ZnRigidBody* PhysicsSystem::CreateRigidBody(
+		void* _gameObject) const noexcept
 	{
 		return physics->CreateRigidBody(_gameObject);
 	}
 
-	ZonaiPhysics::ZnCollider* PhysicsSystem::CreateBoxCollider(void* _gameObject, float x, float y, float z) const noexcept
+	ZonaiPhysics::ZnCollider* PhysicsSystem::CreateBoxCollider(
+		void* _gameObject, float x, float y, float z) const noexcept
 	{
 		return physics->CreateBoxCollider(_gameObject, { x, y, z }, 0);
 	}
 
-	ZonaiPhysics::ZnCollider* PhysicsSystem::CreateSphereCollider(void* _gameObject, float radius) const noexcept
+	ZonaiPhysics::ZnCollider* PhysicsSystem::CreateSphereCollider(
+		void* _gameObject, float radius) const noexcept
 	{
 		return physics->CreateSphereCollider(_gameObject, radius, 0);
 	}
 
-	ZonaiPhysics::ZnCollider* PhysicsSystem::CreateCapsuleCollider(void* _gameObject, float radius, float height) const noexcept
+	ZonaiPhysics::ZnCollider* PhysicsSystem::CreateCapsuleCollider(
+		void* _gameObject, float radius, float height) const noexcept
 	{
 		return physics->CreateCapsuleCollider(_gameObject, radius, height, 0);
+	}
+
+	ZonaiPhysics::ZnFixedJoint* PhysicsSystem::CreateFixedJoint(
+		ZonaiPhysics::ZnRigidBody* _body0, const ZonaiPhysics::ZnTransform& _localTm0,
+		ZonaiPhysics::ZnRigidBody* _body1, const ZonaiPhysics::ZnTransform& _localTm1) const
+	{
+		assert(_body0 != nullptr && _body1 != nullptr);
+
+		return physics->CreateFixedJoint(_body0, _localTm0, _body1, _localTm1);
+	}
+
+	ZonaiPhysics::ZnPrismaticJoint* PhysicsSystem::CreateSlideJoint(
+		ZonaiPhysics::ZnRigidBody* _body0, const ZonaiPhysics::ZnTransform& _localTm0,
+		ZonaiPhysics::ZnRigidBody* _body1, const ZonaiPhysics::ZnTransform& _localTm1) const
+	{
+		assert(_body0 != nullptr && _body1 != nullptr);
+
+		return physics->CreatePrismaticJoint(_body0, _localTm0, _body1, _localTm1);
+	}
+
+	ZonaiPhysics::ZnHingeJoint* PhysicsSystem::CreateHingeJoint(
+		ZonaiPhysics::ZnRigidBody* _body0, const ZonaiPhysics::ZnTransform& _localTm0,
+		ZonaiPhysics::ZnRigidBody* _body1, const ZonaiPhysics::ZnTransform& _localTm1) const
+	{
+		assert(_body0 != nullptr && _body1 != nullptr);
+
+		return physics->CreateHingeJoint(_body0, _localTm0, _body1, _localTm1);
+	}
+
+	ZonaiPhysics::ZnSphericalJoint* PhysicsSystem::CreateBallJoint(
+		ZonaiPhysics::ZnRigidBody* _body0, const ZonaiPhysics::ZnTransform& _localTm0,
+		ZonaiPhysics::ZnRigidBody* _body1, const ZonaiPhysics::ZnTransform& _localTm1) const
+	{
+		assert(_body0 != nullptr && _body1 != nullptr);
+
+		return physics->CreateSphericalJoint(_body0, _localTm0, _body1, _localTm1);
+	}
+
+	ZonaiPhysics::ZnDistanceJoint* PhysicsSystem::CreateDistanceJoint(
+		ZonaiPhysics::ZnRigidBody* _body0, const ZonaiPhysics::ZnTransform& _localTm0, 
+		ZonaiPhysics::ZnRigidBody* _body1, const ZonaiPhysics::ZnTransform& _localTm1) const
+	{
+		assert(_body0 != nullptr && _body1 != nullptr);
+
+		return physics->CreateDistanceJoint(_body0, _localTm0, _body1, _localTm1);
+	}
+
+	ZonaiPhysics::ZnDistanceJoint* PhysicsSystem::CreateSpringJoint(
+		ZonaiPhysics::ZnRigidBody* _body0, const ZonaiPhysics::ZnTransform& _localTm0,
+		ZonaiPhysics::ZnRigidBody* _body1, const ZonaiPhysics::ZnTransform& _localTm1) const
+	{
+		assert(_body0 != nullptr && _body1 != nullptr);
+
+		return physics->CreateDistanceJoint(_body0, _localTm0, _body1, _localTm1);
+	}
+
+	bool PhysicsSystem::Raycast(
+		const Eigen::Vector3f& _from, const Eigen::Vector3f& _to, 
+		float _distance, ZonaiPhysics::ZnRaycastInfo& _out)
+	{
+		return physics->Raycast(_from, _to, _distance, _out);
 	}
 
 	PurahEngine::PhysicsSystem& PurahEngine::PhysicsSystem::GetInstance()
@@ -113,25 +228,4 @@ namespace PurahEngine
 		static PhysicsSystem instance;
 		return instance;
 	}
-
-	//ZonaiPhysics::ZnCollider* PhysicsSystem::CreatPlaneCollider(const std::wstring& _id, float x, float y) noexcept
-	//{
-	//	//return physics->CreatPlaneCollider(_id, x, y);
-	//}
-
-	//ZonaiPhysics::ZnCollider* PhysicsSystem::CreatSphereCollider(const std::wstring& _id, float radius) noexcept
-	//{
-	//	//return physics->CreatSphereCollider(_id, radius);
-	//}
-
-	//ZonaiPhysics::ZnCollider* PhysicsSystem::CreateCapsuleCollider(const std::wstring& _id, float radius, float height) noexcept
-	//{
-	//	//return physics->CreateCapsuleCollider(_id, radius, height);
-	//}
-
-	//ZonaiPhysics::ZnCollider* PhysicsSystem::CreateCustomCollider(const std::wstring& _id) noexcept
-	//{
-	//	//return physics->CreateCustomCollider(_id);
-	//}
-
 }

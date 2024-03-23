@@ -91,11 +91,6 @@ Eigen::Matrix4f PurahEngine::Transform::GetLocalMatrix() const
 	return localTransform.matrix();
 }
 
-//Eigen::Vector3f PurahEngine::Transform::GetFront() const
-//{
-//	Eigen::Vector3f frontdir = front.normalized();
-//}
-
 Eigen::Matrix4f PurahEngine::Transform::GetWorldMatrix() const
 {
 	if (parentTransform != nullptr)
@@ -153,15 +148,11 @@ void PurahEngine::Transform::SetWorldPosition(Eigen::Vector3f setPosition)
 	// matrix inverse 로 바꿔라
 	if (parentTransform != nullptr)
 	{
-		Eigen::Matrix4f inverseP = parentTransform->GetWorldMatrix().inverse();
-		Eigen::Matrix4f inverseC = GetWorldMatrix().inverse();
-		Eigen::Matrix4f localT = Eigen::Matrix4f::Identity();
-		localT.block<3, 1>(0, 3) = position;
-		Eigen::Affine3f a;
-		Eigen::Matrix4f setT = Eigen::Matrix4f::Identity();
-		localT.block<3, 1>(0, 3) = setPosition;
-
-		position = (inverseC * localT * inverseP * setT).block<3, 1>(0, 3);
+		Eigen::Matrix4f parentWorldMatrix = parentTransform->GetWorldMatrix();
+		Eigen::Matrix4f parentInverse = parentWorldMatrix.inverse();
+		Eigen::Vector4f localPosition = parentInverse * Eigen::Vector4f(setPosition.x(), setPosition.y(), setPosition.z(), 1.0f);
+		localPosition.w() = 1.0f; // Ensure it's a position, not a direction
+		SetLocalPosition(localPosition.head<3>());
 	}
 	else
 	{
@@ -229,6 +220,27 @@ void PurahEngine::Transform::SetWorldMatrix(Eigen::Matrix4f targetMatrix)
 	scaling[2] = transformation.linear().col(2).norm(); // z 축의 크기
 }
 
+Eigen::Vector3f PurahEngine::Transform::GetFront() const
+{
+	Eigen::Vector3f frontV = GetWorldRotation().toRotationMatrix() * front;
+
+	return frontV.normalized();
+}
+
+Eigen::Vector3f PurahEngine::Transform::GetUp() const
+{
+	Eigen::Vector3f upV = GetWorldRotation().toRotationMatrix() * up;
+
+	return upV.normalized();
+}
+
+Eigen::Vector3f PurahEngine::Transform::GetRight() const
+{
+	Eigen::Vector3f rightV = GetWorldRotation().toRotationMatrix() * right;
+
+	return rightV.normalized();
+}
+
 void PurahEngine::Transform::PreSerialize(json& jsonData) const
 {
 
@@ -257,9 +269,9 @@ void PurahEngine::Transform::PostDeserialize(const json& jsonData)
 	//}
 	POSTDESERIALIZE_VECTOR_PTR(children);
 
-	if (jsonData["__ID__parent"].size() != 0)
+	if (jsonData["__ID__parentTransform"].size() != 0)
 	{
-		parentTransform = static_cast<Transform*>(fManager.GetAddress(jsonData["__ID__parent"][0]));
+		parentTransform = static_cast<Transform*>(fManager.GetAddress(jsonData["__ID__parentTransform"][0]));
 	}
 }
 

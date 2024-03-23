@@ -174,18 +174,18 @@ public:
 	virtual		PxU32			getNbShapes()		const	= 0;
 
 	/**
-	\brief Retrieve all the shape pointers belonging to the actor.
+	\brief 해당 액터에 속한 모든 모양 포인터를 검색합니다.
 
-	These are the shapes used by the actor for collision detection.
+	이러한 모양은 액터가 충돌 감지에 사용하는 모양입니다.
 
-	You can retrieve the number of shape pointers by calling #getNbShapes()
+	모양 포인터의 수는 #getNbShapes()를 호출하여 검색할 수 있습니다.
 
-	Note: Removing shapes with #PxShape::release() will invalidate the pointer of the released shape.
+	참고: #PxShape::release()를 사용하여 모양을 제거하면 제거된 모양의 포인터가 무효화됩니다.
 
-	\param[out] userBuffer The buffer to store the shape pointers.
-	\param[in] bufferSize Size of provided user buffer.
-	\param[in] startIndex Index of first shape pointer to be retrieved
-	\return Number of shape pointers written to the buffer.
+	\param[out]	userBuffer	모양 포인터를 저장할 버퍼입니다.
+	\param[in]	bufferSize	제공된 사용자 버퍼의 크기입니다.
+	\param[in]	startIndex	검색할 첫 번째 모양 포인터의 인덱스입니다.
+	\return 버퍼에 쓰여진 모양 포인터의 수입니다.
 
 	@see PxShape getNbShapes() PxShape::release()
 	*/

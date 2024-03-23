@@ -30,21 +30,14 @@ void KiHoon::Run()
 		collider->SetDynamic(true);
 	}
 
-	GameObject* light2 = SceneManager::GetInstance().CreateGameObject(L"Light");
-	{
-		const DirectionalLight* directional = light2->AddComponent<DirectionalLight>();
-		const auto trans = light2->GetTransform();
-
-		trans->Rotate(Eigen::Vector3f{ -1.f, -1.f,-1.f }.normalized(), 45.f);
-	}
-
-
 	// 플레이어는
 	// 플레이어의 자식 객체로 Body와 Camera가 있을 예정
 	GameObject* player = SceneManager::GetInstance().CreateGameObject(L"Player");
 	{
 		Transform* trans = player->GetTransform();
 		trans->SetLocalPosition({ 0.0f, 3.0f, 0.0f });
+
+		CapsuleCollider* collider = player->AddComponent<CapsuleCollider>();
 	}
 
 	GameObject* body = SceneManager::GetInstance().CreateGameObject(L"PlayerBody");
@@ -77,8 +70,8 @@ void KiHoon::Run()
 	}
 
 	{
-		//Controller* controller = player->AddComponent<Controller>();
-		//controller->SetPlayer(body);
+		Controller* controller = player->AddComponent<Controller>();
+		// controller->SetPlayer(body);
 	}
 
 	GameObject* camera = SceneManager::GetInstance().CreateGameObject(L"Camera");
