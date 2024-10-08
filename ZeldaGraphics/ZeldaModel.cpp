@@ -93,7 +93,10 @@ void ZeldaModel::Render(
 	DirectX::XMMATRIX worldMatrix = renderInfo->instancingValue.worldMatrix;
 	unsigned int drawID = renderInfo->drawID;
 
-	SetAnimationTexture(deviceContext, animationID);
+	if (animationResourceViewTable.size() > 0ull)
+	{
+		SetAnimationTexture(deviceContext, animationID);
+	}
 
 	AnimationBufferType animationData;
 	animationData.animationInfo.animationTime = animationTime * tps;
@@ -145,7 +148,10 @@ void ZeldaModel::RenderInstanced(
 	unsigned int animationID = renderInfo[0]->instancingKey.animationID;
 	float tps = animationTPSTable[animationID];
 
-	SetAnimationTexture(deviceContext, animationID);
+	if (animationResourceViewTable.size() > 0ull)
+	{
+		SetAnimationTexture(deviceContext, animationID);
+	}
 
 	ZeldaCamera* currentcamera = ResourceManager::GetInstance().GetCamera(ZeldaCamera::GetMainCamera());
 
@@ -588,6 +594,11 @@ void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 	constexpr unsigned int animationTickMax = Model::Animation::Tick::Max;
 	constexpr unsigned int boneCountMax = Model::Animation::Bone::Max;
 	constexpr float targetTPS = Model::Animation::Tick::TargetTickPerSecond;
+
+	if (animationTable.size() == 0ull)
+	{
+		return;
+	}
 
 	const size_t animationCount = animationTable.size() + 1;
 
