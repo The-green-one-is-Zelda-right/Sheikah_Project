@@ -2643,6 +2643,16 @@ void ZeldaDX11Renderer::CreateShadowMap(ZeldaLight* light)
 
 				RenderType renderType = value[0]->renderType;
 
+
+				// 그림자의 깨짐을 줄이기 위해 쉐도우맵을 만들 때 그리는 크기를 조정한다.
+				constexpr float shadowSclae = 0.9f;
+				constexpr float shadowSclaeInverse = 1.0f / shadowSclae;
+
+				for (auto& renderInfo : value)
+				{
+					renderInfo->instancingValue.worldMatrix = DirectX::XMMatrixScaling(shadowSclae, shadowSclae, shadowSclae) * renderInfo->instancingValue.worldMatrix;
+				}
+
 				switch (renderType)
 				{
 					case RenderType::Deferred_Mesh:
@@ -2668,6 +2678,12 @@ void ZeldaDX11Renderer::CreateShadowMap(ZeldaLight* light)
 						assert(0);
 						break;
 					}
+				}
+
+				// Render Info를 원래대로 돌려놓는다. 이 작업을 하지 않으면 외곽선 그리기 등에서 크기가 바뀌어 나올 수 있다.
+				for (auto& renderInfo : value)
+				{
+					renderInfo->instancingValue.worldMatrix = DirectX::XMMatrixScaling(shadowSclaeInverse, shadowSclaeInverse, shadowSclaeInverse) * renderInfo->instancingValue.worldMatrix;
 				}
 			}
 
