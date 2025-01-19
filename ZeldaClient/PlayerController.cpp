@@ -3,6 +3,12 @@
 
 namespace Phyzzle
 {
+
+	PlayerController::~PlayerController()
+	{
+
+	}
+
 	void PlayerController::Start()
 	{
 		gameObject->AddComponent<PurahEngine::RigidBody>();

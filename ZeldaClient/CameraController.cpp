@@ -2,6 +2,12 @@
 
 namespace Phyzzle
 {
+
+	CameraController::~CameraController()
+	{
+
+	}
+
 	void CameraController::Start()
 	{
 
@@ -13,6 +19,22 @@ namespace Phyzzle
 		{
 
 		}
+	}
+
+	void CameraController::PreSerialize(json& jsonData) const
+	{
+	}
+
+	void CameraController::PreDeserialize(const json& jsonData)
+	{
+	}
+
+	void CameraController::PostSerialize(json& jsonData) const
+	{
+	}
+
+	void CameraController::PostDeserialize(const json& jsonData)
+	{
 	}
 
 	Eigen::Vector3f CameraController::GetArmWorldDirection()
@@ -41,7 +63,25 @@ namespace Phyzzle
 
 	void CameraController::ArmRotateX(float _angle)
 	{
-		const Eigen::Vector3f cameraRight = cameraArm->GetWorldRotation() * Eigen::Vector3f::UnitX();
+		float deltaAngle = _angle;
+		camera_xAngle += _angle;
+
+		if (armRotateLimit)
+		{
+			if (camera_xAngle > pitchMaxAngle)
+			{
+				deltaAngle -= (camera_xAngle - pitchMaxAngle);
+				camera_xAngle = pitchMaxAngle;
+			}
+			else if (camera_xAngle < pitchMinAngle)
+			{
+				deltaAngle -= (camera_xAngle - pitchMinAngle);
+				camera_xAngle = pitchMinAngle;
+			}
+		}
+
+		Eigen::Vector3f cameraRight = cameraArm->GetWorldRotation() * Eigen::Vector3f::UnitX();
+		cameraRight.normalize();
 
 		cameraArm->Rotate(cameraRight, _angle);
 	}
@@ -58,18 +98,13 @@ namespace Phyzzle
 		cameraCore->Rotate(cameraRight, _angle);
 	}
 
-	void CameraController::CoreXTranslate(float _distance)
+	float CameraController::GetDistance()
 	{
-	}
-
-	void CameraController::CoreYTranslate(float _distance)
-	{
-
-	}
-
-	void CameraController::CoreZTranslate(float _distance)
-	{
-
+		Eigen::Vector3f armPosition = cameraArm->GetWorldPosition();
+		Eigen::Vector3f corePosition = cameraCore->GetWorldPosition();
+		Eigen::Vector3f diff = armPosition - corePosition;
+		
+		return diff.norm();
 	}
 
 	void CameraController::ArmRotate(const Eigen::Vector3f& _axis, float _angle)

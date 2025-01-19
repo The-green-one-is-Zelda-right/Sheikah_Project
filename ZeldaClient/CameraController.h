@@ -18,6 +18,13 @@ namespace Phyzzle
 		void Update();
 
 	public:
+		// Component을(를) 통해 상속됨
+		void PreSerialize(json& jsonData) const override;
+		void PreDeserialize(const json& jsonData) override;
+		void PostSerialize(json& jsonData) const override;
+		void PostDeserialize(const json& jsonData) override;
+
+	public:
 		Eigen::Vector3f GetArmWorldDirection();
 		Eigen::Vector3f GetCoreWorldDirection();
 
@@ -30,9 +37,7 @@ namespace Phyzzle
 		void CoreRotateY(float _angle);
 		void CoreRotateX(float _angle);
 
-		void CoreXTranslate(float _distance);
-		void CoreYTranslate(float _distance);
-		void CoreZTranslate(float _distance);
+		float GetDistance();
 
 		void ArmRotate(const Eigen::Vector3f& _axis, float _angle);
 		void CoreRotate(const Eigen::Vector3f& _axis, float _angle);
@@ -49,6 +54,11 @@ namespace Phyzzle
 		PurahEngine::Transform* cameraCore;
 
 	private:
+		float camera_xAngle;
+
+		bool armRotateLimit;
+		float pitchMinAngle;
+		float pitchMaxAngle;
 		Eigen::Vector3f armOriginP;
 		Eigen::Quaternionf armOriginR;
 	};

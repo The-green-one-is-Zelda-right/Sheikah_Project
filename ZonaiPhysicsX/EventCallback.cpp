@@ -148,7 +148,7 @@ namespace ZonaiPhysics
 			const bool hasImpulse = cp.flags.isSet(PxContactPairFlag::eINTERNAL_HAS_IMPULSES);
 			const bool hasPostVelocities = !cp.flags.isSet(PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH);
 			uint32_t contacts = 0;
-			Eigen::Vector3f totalImpulse{ 0.f, 0.f, 0.f };
+			Eigen::Vector3f totalImpulse = Eigen::Vector3f::Zero();
 
 			ZnCollider* const thisCollider = GetCollider(cp.shapes[0]);
 			ZnCollider* const otherCollider = GetCollider(cp.shapes[1]);

@@ -196,7 +196,13 @@ void PurahEngine::EngineSetting::PreDeserialize(const json& jsonData)
 
 		std::wstring wMaterialName(materialName.begin(), materialName.end());
 
-		physicsMaterials.push_back({ wMaterialName, staticFriction, dynamicFriction, restitution, eFriction, eRestitution });
+		physicsMaterials.push_back(
+			{ 
+				wMaterialName, 
+				staticFriction, dynamicFriction, 
+				restitution, eFriction, eRestitution 
+			}
+		);
 	}
 
 	const json& collisionInfo = jsonData["collisionSetting"];

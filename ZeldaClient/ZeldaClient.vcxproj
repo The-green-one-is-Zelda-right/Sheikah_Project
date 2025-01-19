@@ -151,11 +151,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ANDGate.cpp" />
+    <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AnimationTestController.cpp" />
     <ClCompile Include="Burnable.cpp" />
     <ClCompile Include="CameraEventDevice.cpp" />
     <ClCompile Include="DebugCameraSetting.cpp" />
     <ClCompile Include="DirectionalLightSystem.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GroundCheck.cpp" />
     <ClCompile Include="LightSystem.cpp" />
     <ClCompile Include="LinearMotor.cpp" />
@@ -209,6 +211,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ANDGate.h" />
+    <ClInclude Include="AnimationController.h" />
     <ClInclude Include="AnimationTestController.h" />
     <ClInclude Include="Bezier.h" />
     <ClInclude Include="Burnable.h" />
@@ -216,6 +219,7 @@
     <ClInclude Include="CoroutineSystem.h" />
     <ClInclude Include="DebugCameraSetting.h" />
     <ClInclude Include="DirectionalLightSystem.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GroundCheck.h" />
     <ClInclude Include="LightSystem.h" />
     <ClInclude Include="LinearMotor.h" />

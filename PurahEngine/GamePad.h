@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <queue>
+#include <set>
 
 // 순서 중요함.
 #include <Windows.h>
@@ -28,6 +29,7 @@ namespace PurahEngine
 		void Update();
 
 		void UpdateInputMap(const XINPUT_STATE& _state);
+		void UpdateVibration();
 
 		/// 게임패드
 		XINPUT_STATE		GetState();
@@ -41,6 +43,38 @@ namespace PurahEngine
 			DOWN,
 			PRESSED,
 			UP,
+		};
+
+		struct VibrateData
+		{
+			float power;
+			float time;
+
+			VibrateData() : power(), time() {}
+			VibrateData(float _p, float _t) : power(_p), time(_t) {}
+			VibrateData(const VibrateData& _data) : power(_data.power), time(_data.time) {}
+			VibrateData(VibrateData&& _data) noexcept : power(_data.power), time(_data.time) {}
+
+			VibrateData& operator=(const VibrateData& _data)
+			{
+				if (this != &_data)
+				{
+					power = _data.power;
+					time = _data.time;
+				}
+
+				return *this;
+			}
+			VibrateData& operator=(VibrateData&& _data) noexcept
+			{
+				if (this != &_data)
+				{
+					power = _data.power;
+					time = _data.time;
+				}
+
+				return *this;
+			}
 		};
 
 		/// 키 입력
@@ -72,9 +106,11 @@ namespace PurahEngine
 		bool				Vibrate(int _left, int _right) const;
 		bool				VibrateRatio(float _left, float _right) const;
 
-		void				Vibrate(int, int, float _time) const;
-		void				VibrateRatio(float, float, float _time) const;
+		void				Vibrate(int, int, float _time);
+		void				VibrateRatio(float, float, float _time);
 
+		void				VibrateStop();
+		void				VibrateResume();
 		void				VibrateOff() const;
 
 		/// 데드존 설정
@@ -94,7 +130,11 @@ namespace PurahEngine
 		std::unordered_map<ePad, State>	prevInputMap;
 		std::unordered_map<ePad, float>	keyDownElapsedMap;
 		std::unordered_map<ePad, bool>	keyMap;
+
 		// std::map<> 진동 관련된 체널을 관리하는 뭔가가 있으면 좋겠음.
+		bool stopVibe = false;
+		std::vector<VibrateData> leftVibeCommend;
+		std::vector<VibrateData> rightVibeCommend;
 
 	private:
 		const static float firstInputDelay;

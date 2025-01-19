@@ -153,6 +153,12 @@
     <ClCompile Include="LinearMotor.cpp">
       <Filter>Device\Electrical Device</Filter>
     </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>KH\SCENE</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationController.cpp">
+      <Filter>KH\PLAYER\Controller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraMovement.h" />
@@ -343,6 +349,12 @@
     </ClInclude>
     <ClInclude Include="LinearMotor.h">
       <Filter>Device\Electrical Device</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>KH\SCENE</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationController.h">
+      <Filter>KH\PLAYER\Controller</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

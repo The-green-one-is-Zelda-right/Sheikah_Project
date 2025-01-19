@@ -78,15 +78,12 @@ namespace ZonaiPhysics
 			return physx::PxFilterFlag::eDEFAULT;
 		}
 
-		// Send events for the kinematic actors but don't solve the contact
-		// 키네마틱 액터에 대한 이벤트를 전송하되, 접촉을 해결하지 마세요.
+		// 키네마틱 액터에 대한 이벤트를 전송하되, 접촉을 해결 안 함.
 		if (physx::PxFilterObjectIsKinematic(attributes0) && physx::PxFilterObjectIsKinematic(attributes1))
 		{
 			return physx::PxFilterFlag::eSUPPRESS;
 		}
 
-		// Trigger the contact callback for pairs (A,B) where the filtermask of A contains the ID of B and vice versa
-		// A의 필터마스크가 B의 ID를 포함하고 B의 필터마스크가 A의 ID를 포함하는 쌍 (A, B)에 대한 contact 콜백을 트리거합니다.
 		pairFlags |= physx::PxPairFlag::eSOLVE_CONTACT;
 		pairFlags |= physx::PxPairFlag::eDETECT_DISCRETE_CONTACT;
 		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;

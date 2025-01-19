@@ -22,7 +22,6 @@ namespace Phyzzle
 
 		virtual void StateStay() = 0;
 		virtual void PostStateStay() = 0;
-		
 		virtual void StateExit() = 0;
 		
 		virtual void StateCancel() = 0;

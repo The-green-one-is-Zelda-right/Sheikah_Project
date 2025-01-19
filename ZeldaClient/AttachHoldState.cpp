@@ -354,16 +354,16 @@ namespace Phyzzle
 			case RotateX_Y:
 				// 문제의 그 각도인데
 				// 메인 면이 되는 게 왼쪽에 있을 때
-				RotateSpringAlongY(rotateAngle);		// 좌
+				RotateSpringAlongY(rotateAngle);	// 좌
 
-				RotateSpringAlongX(rotateAngle);		// 상
+				RotateSpringAlongX(rotateAngle);	// 상
 
 				RotateSpringAlongY(-rotateAngle);	// 우
 				RotateSpringAlongY(-rotateAngle);	// 우
 
-				RotateSpringAlongX(rotateAngle);		// 상
+				RotateSpringAlongX(rotateAngle);	// 상
 
-				RotateSpringAlongY(rotateAngle);		// 좌
+				RotateSpringAlongY(rotateAngle);	// 좌
 				info.info = RotateXY;
 				break;
 
@@ -372,12 +372,12 @@ namespace Phyzzle
 				// 메인 면이 되는 게 오른쪽에 있을 때
 				RotateSpringAlongY(-rotateAngle);	// 우
 
-				RotateSpringAlongX(rotateAngle);		// 상
+				RotateSpringAlongX(rotateAngle);	// 상
 
-				RotateSpringAlongY(rotateAngle);		// 좌
-				RotateSpringAlongY(rotateAngle);		// 좌
+				RotateSpringAlongY(rotateAngle);	// 좌
+				RotateSpringAlongY(rotateAngle);	// 좌
 
-				RotateSpringAlongX(rotateAngle);		// 상
+				RotateSpringAlongX(rotateAngle);	// 상
 
 				RotateSpringAlongY(-rotateAngle);	// 우
 				info.info = RotateX_Y;

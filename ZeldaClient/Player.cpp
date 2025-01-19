@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include <algorithm>
 #include <iostream>
 
@@ -66,11 +67,13 @@ namespace Phyzzle
 
 	void Player::InitializeAbilitySystem()
 	{
-		stateSystem.insert(std::make_pair(ATTACH_HOLD, new AttachHoldState(this)));
-		stateSystem.insert(std::make_pair(DEFAULT, new DefaultState(this)));
-		stateSystem.insert(std::make_pair(ATTACH_SELECT, new AttachSelectState(this)));
-		// stateSystem.insert(std::make_pair(REWIND_SELECT, new RewindState(this)));
-		// stateSystem.insert(std::make_pair(LOCK_SELECT, new LockState(this)));
+		stateSystem = {
+			{DEFAULT,		new DefaultState(this)},
+			{ATTACH_SELECT, new AttachSelectState(this)},
+			{ATTACH_HOLD,	new AttachHoldState(this)}
+			// {REWIND_SELECT, new RewindState(this)},
+			// {LOCK_SELECT, new LockState(this)}
+		};
 
 		stateChange.insert(ATTACH_SELECT);
 		// stateChange.insert(REWIND_SELECT);
@@ -104,7 +107,10 @@ namespace Phyzzle
 
 				if (type == WALK || type == RUN || type >= ABILITY_FRONT)
 				{
-					AddAnimationSpeedController(animationSpeedController, type, animation, data.animator);
+					AddAnimationSpeedController(
+						animationSpeedController, type, 
+						animation, data.animator
+					);
 				}
 			}
 		}
@@ -880,8 +886,6 @@ namespace Phyzzle
 		if (hit)
 			targetDistance = info.distance;
 
-#define EPSILON 1e-2
-
 		// 보간을 안하는 경우
 		if (hit && (targetDistance <= prevDistance))
 		{
@@ -905,12 +909,12 @@ namespace Phyzzle
 			if (hit && (targetDistance > prevDistance))
 			{
 				// 충돌 했지만 이전보다 먼 경우
-				prevDistance = min(prevDistance + 0.2f, targetDistance);
+				prevDistance = std::min(prevDistance + camData.smoothingSpeed, targetDistance);
 			}
 			else if (!hit)
 			{
 				// 충돌 하지 않은 경우
-				prevDistance = min(prevDistance + 0.2f, dis);
+				prevDistance = std::min(prevDistance + camData.smoothingSpeed, dis);
 			}
 
 			Vector3f newPosition = worldStart + worldDir * prevDistance;

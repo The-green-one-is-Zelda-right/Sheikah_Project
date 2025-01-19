@@ -1,5 +1,6 @@
-#include <algorithm>
+#define NOMINMAX
 #include <cmath>
+#include <algorithm>
 #include "Timer.h"
 #include "GamePad.h"
 #include "TimeController.h"
@@ -51,6 +52,7 @@ namespace PurahEngine
 			currState = false;
 		}
 
+		UpdateVibration();
 		UpdateInputMap(newState);
 	}
 
@@ -96,6 +98,47 @@ namespace PurahEngine
 				currState = State::UP;
 			}
 		}
+	}
+
+	void GamePad::UpdateVibration()
+	{
+		float deltaTime = PurahEngine::TimeController::GetInstance().GetDeltaTime();
+		float leftPower = 0.f;
+		float rightPower = 0.f;
+
+		// 남아있는 진동 중에서 가장 쎈 진동 명령을 찾음
+		for (auto it = leftVibeCommend.begin(); it != leftVibeCommend.end();) 
+		{
+			it->time -= deltaTime; // 남은 시간을 델타 타임만큼 감소
+
+			// 남은 시간이 있는가?
+			if (it->time > 0) 
+			{
+				// 가장 강한 진동 강도를 찾음
+				leftPower = std::max(leftPower, it->power);
+
+				++it;  // for문에 넣으면 end을 넘어갈려고 해서 수정함
+			}
+			else
+				// 시간이 다 된 명령은 삭제
+				it = leftVibeCommend.erase(it);
+		}
+
+		for (auto it = rightVibeCommend.begin(); it != rightVibeCommend.end();)
+		{
+			it->time -= deltaTime;
+
+			if (it->time > 0)
+			{
+				rightPower = std::max(rightPower, it->power);
+
+				++it;
+			}
+			else
+				it = rightVibeCommend.erase(it);
+		}
+
+		VibrateRatio(leftPower, rightPower);
 	}
 
 	XINPUT_STATE GamePad::GetState()
@@ -343,32 +386,48 @@ namespace PurahEngine
 		return Vibrate(left, right);
 	}
 
-	void GamePad::Vibrate(int _left, int _right, float _time) const
+	void GamePad::VibrateStop()
 	{
-		Timer::Delay(
-			_time, 
-			false, 
-			[this]()
-			{
-				Vibrate(0, 0);
-			}
-		);
-
-		Vibrate(_left, _right);
+		stopVibe = true;
 	}
 
-	void GamePad::VibrateRatio(float _left, float _right, float _time) const
+	void GamePad::VibrateResume()
 	{
-		Timer::Delay(
-			_time,
-			false,
-			[this]()
-			{
-				VibrateRatio(0.f, 0.f);
-			}
-		);
+		stopVibe = false;
+	}
 
-		VibrateRatio(_left, _right);
+	void GamePad::Vibrate(int _left, int _right, float _time)
+	{
+		float left = 0.f;
+		float right = 0.f;
+		
+		if (_left > 0)
+		{
+			left = static_cast<float>(_left) / static_cast<float>(USHORT_MAX);
+		}
+		if (_right > 0)
+		{
+			right = static_cast<float>(_right) / static_cast<float>(USHORT_MAX);
+		}
+
+		VibrateRatio(left, right, _time);
+	}
+
+	void GamePad::VibrateRatio(float _left, float _right, float _time)
+	{
+		_left = std::clamp(_left, 0.f, 1.f);
+		if (_left > 0.f)
+		{
+			VibrateData leftData(_left, _time);
+			leftVibeCommend.push_back(leftData);
+		}
+
+		_right = std::clamp(_right, 0.f, 1.f);
+		if (_right > 0.f)
+		{
+			VibrateData rightData(_right, _time);
+			rightVibeCommend.push_back(rightData);
+		}
 	}
 
 	void GamePad::VibrateOff() const

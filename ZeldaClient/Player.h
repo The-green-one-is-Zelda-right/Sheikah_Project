@@ -122,6 +122,7 @@ namespace Phyzzle
 
 			unsigned int cameraCollisionLayers = 0;
 			float cameraCollisionRadius = 5.f;
+			float smoothingSpeed = 0.2f;
 		};
 #pragma endregion Camera
 
