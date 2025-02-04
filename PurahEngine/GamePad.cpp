@@ -22,13 +22,13 @@ namespace PurahEngine
 		// 입력 맵 초기화
 		for (auto i = 0; i < _size; i++)
 		{
-			inputMap.insert(std::make_pair(_inputArr[i], State::NONE));
+			inputMap.insert(std::make_pair(_inputArr[i], ePadState::eNONE));
 		}
 
 		// 이전 입력 맵 초기화
 		for (auto i = 0; i < _size; i++)
 		{
-			prevInputMap.insert(std::make_pair(_inputArr[i], State::NONE));
+			prevInputMap.insert(std::make_pair(_inputArr[i], ePadState::eNONE));
 		}
 
 		// keyDownElapsedMap 초기화
@@ -73,10 +73,10 @@ namespace PurahEngine
 			// 누름
 			if (_state.Gamepad.wButtons & button)
 			{
-				currState = State::DOWN;
+				currState = ePadState::eDOWN;
 
 				// 키가 방금 눌렸다면 키가 눌린시간을 초기화 한다.
-				if (prevState == State::UP)
+				if (prevState == ePadState::eUP)
 				{
 					keyDownElapsedMap[keyCode] = 0.0f;
 					keyMap[keyCode] = true;
@@ -95,7 +95,7 @@ namespace PurahEngine
 			// 뗌
 			else
 			{
-				currState = State::UP;
+				currState = ePadState::eUP;
 			}
 		}
 	}
@@ -120,8 +120,10 @@ namespace PurahEngine
 				++it;  // for문에 넣으면 end을 넘어갈려고 해서 수정함
 			}
 			else
+			{
 				// 시간이 다 된 명령은 삭제
 				it = leftVibeCommend.erase(it);
+			}
 		}
 
 		for (auto it = rightVibeCommend.begin(); it != rightVibeCommend.end();)
@@ -135,7 +137,9 @@ namespace PurahEngine
 				++it;
 			}
 			else
+			{
 				it = rightVibeCommend.erase(it);
+			}
 		}
 
 		VibrateRatio(leftPower, rightPower);
@@ -148,64 +152,7 @@ namespace PurahEngine
 		return state;
 	}
 
-	bool GamePad::GetKey(ePad _input)
-	{
-		return keyMap[_input];
-	}
 
-	bool GamePad::IsKeyDown(ePad _input)
-	{
-		return (prevInputMap[_input] == State::UP) && (inputMap[_input] == State::DOWN);
-	}
-
-	bool GamePad::IsKeyPressed(ePad _input)
-	{
-		return (prevInputMap[_input] == State::DOWN) && (inputMap[_input] == State::DOWN);
-	}
-
-	bool GamePad::IsKeyUp(ePad _input)
-	{
-		return (prevInputMap[_input] == State::DOWN) && (inputMap[_input] == State::UP);
-	}
-
-	bool GamePad::IsKeyReleased(ePad _input)
-	{
-		return (prevInputMap[_input] == State::UP) && (inputMap[_input] == State::UP);
-	}
-
-	GamePad::State GamePad::IsKeyValue(ePad _input)
-	{
-		return inputMap[_input];
-	}
-
-	int GamePad::GetTriggerValue(ePadTrigger _index) const
-	{
-		if (_index == ePadTrigger::ePAD_TRIGGER_L)
-		{
-			return state.Gamepad.bLeftTrigger;
-		}
-		else
-		{
-			return state.Gamepad.bRightTrigger;
-		}
-	}
-
-	int GamePad::GetTriggerRawValue(ePadTrigger _index) const
-	{
-		if (_index == ePadTrigger::ePAD_TRIGGER_L)
-		{
-			return state.Gamepad.bLeftTrigger;
-		}
-		else
-		{
-			return state.Gamepad.bRightTrigger;
-		}
-	}
-
-	float GamePad::GetTriggerRatio(ePadTrigger _index) const
-	{
-		return inv255 * static_cast<float>(GetTriggerValue(_index));
-	}
 
 	void GamePad::ApplyDeadZone(int& _value, float _deadZone) const
 	{
@@ -221,9 +168,9 @@ namespace PurahEngine
 		const float LY = static_cast<float>(_yValue);
 
 		float magnitude = sqrtf(LX * LX + LY * LY);
-		if (magnitude > deadZone) 
+		if (magnitude > deadZone)
 		{
-			if (magnitude > 32767) 
+			if (magnitude > 32767)
 			{
 				magnitude = 32767;
 			}
@@ -243,10 +190,102 @@ namespace PurahEngine
 		}
 	}
 
-	int GamePad::GetStickInput(ePadStick _index)
+	void GamePad::GetStickRawValue(ePadStick _index, int& _outX, int& _outY) const
 	{
-		return 0;
+		// 좌측 스틱의 경우
+		if (_index == ePadStick::ePAD_STICK_L)
+		{
+			_outX = state.Gamepad.sThumbLX;
+			_outY = state.Gamepad.sThumbLY;
+		}
+		// 우측 스틱의 경우
+		else if (_index == ePadStick::ePAD_STICK_R)
+		{
+			_outX = state.Gamepad.sThumbRX;
+			_outY = state.Gamepad.sThumbRY;
+		}
+		else
+		{
+			assert(0);
+		}
 	}
+
+	void GamePad::GetStickRawRatio(ePadStick _index, float& _outX, float& _outY) const
+	{
+		// X, Y 값을 각각 변수로 설정
+		int xValue = 0, yValue = 0;
+
+		GetStickRawValue(_index, xValue, yValue);
+
+		if (xValue != 0)
+		{
+			_outX = static_cast<float>(xValue) * inv32767;
+		}
+		if (yValue != 0)
+		{
+			_outY = static_cast<float>(yValue) * inv32767;
+		}
+	}
+
+	bool GamePad::Vibrate(int _left, int _right) const
+	{
+		XINPUT_VIBRATION vibration;
+		ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
+		vibration.wLeftMotorSpeed = static_cast<unsigned short>(_left);
+		vibration.wRightMotorSpeed = static_cast<unsigned short>(_right);
+		return XInputSetState(id, &vibration) == ERROR_SUCCESS;
+	}
+
+
+
+	bool GamePad::GetKey(ePad _input)
+	{
+		return keyMap[_input];
+	}
+
+	bool GamePad::IsKeyDown(ePad _input)
+	{
+		return (prevInputMap[_input] == ePadState::eUP) && (inputMap[_input] == ePadState::eDOWN);
+	}
+
+	bool GamePad::IsKeyPressed(ePad _input)
+	{
+		return (prevInputMap[_input] == ePadState::eDOWN) && (inputMap[_input] == ePadState::eDOWN);
+	}
+
+	bool GamePad::IsKeyUp(ePad _input)
+	{
+		return (prevInputMap[_input] == ePadState::eDOWN) && (inputMap[_input] == ePadState::eUP);
+	}
+
+	bool GamePad::IsKeyReleased(ePad _input)
+	{
+		return (prevInputMap[_input] == ePadState::eUP) && (inputMap[_input] == ePadState::eUP);
+	}
+
+	ePadState GamePad::IsKeyValue(ePad _input)
+	{
+		return inputMap[_input];
+	}
+
+	int GamePad::GetTriggerRawValue(ePadTrigger _index) const
+	{
+		if (_index == ePadTrigger::ePAD_TRIGGER_L)
+		{
+			return state.Gamepad.bLeftTrigger;
+		}
+		else
+		{
+			return state.Gamepad.bRightTrigger;
+		}
+	}
+
+	float GamePad::GetTriggerRatio(ePadTrigger _index) const
+	{
+		return inv255 * static_cast<float>(GetTriggerRawValue(_index));
+	}
+
+
 
 	int GamePad::GetStickValue(ePadStick _index, int& _outX, int& _outY) const
 	{
@@ -285,26 +324,6 @@ namespace PurahEngine
 		}
 
 		return magnitude;
-	}
-
-	void GamePad::GetStickRawValue(ePadStick _index, int& _outX, int& _outY) const
-	{
-		// 좌측 스틱의 경우
-		if (_index == ePadStick::ePAD_STICK_L)
-		{
-			_outX = state.Gamepad.sThumbLX;
-			_outY = state.Gamepad.sThumbLY;
-		}
-		// 우측 스틱의 경우
-		else if (_index == ePadStick::ePAD_STICK_R)
-		{
-			_outX = state.Gamepad.sThumbRX;
-			_outY = state.Gamepad.sThumbRY;
-		}
-		else
-		{
-			assert(0);
-		}
 	}
 
 	float GamePad::GetStickRatio(ePadStick _index, float& _outX, float& _outY) const
@@ -349,31 +368,6 @@ namespace PurahEngine
 		return normalizedMagnitude;
 	}
 
-	void GamePad::GetStickRawRatio(ePadStick _index, float& _outX, float& _outY) const
-	{
-		// X, Y 값을 각각 변수로 설정
-		int xValue = 0, yValue = 0;
-
-		GetStickRawValue(_index, xValue, yValue);
-
-		if (xValue != 0)
-		{
-			_outX = static_cast<float>(xValue) * inv32767;
-		}
-		if (yValue != 0)
-		{
-			_outY = static_cast<float>(yValue) * inv32767;
-		}
-	}
-
-	bool GamePad::Vibrate(int _left, int _right) const
-	{
-		XINPUT_VIBRATION vibration;
-		ZeroMemory(&vibration, sizeof(XINPUT_VIBRATION));
-		vibration.wLeftMotorSpeed = static_cast<unsigned short>(_left);
-		vibration.wRightMotorSpeed = static_cast<unsigned short>(_right);
-		return XInputSetState(id, &vibration) == ERROR_SUCCESS;
-	}
 
 	bool GamePad::VibrateRatio(float _left, float _right) const
 	{
@@ -384,33 +378,6 @@ namespace PurahEngine
 		const auto right = static_cast<int>(_right * static_cast<float>(USHORT_MAX));
 
 		return Vibrate(left, right);
-	}
-
-	void GamePad::VibrateStop()
-	{
-		stopVibe = true;
-	}
-
-	void GamePad::VibrateResume()
-	{
-		stopVibe = false;
-	}
-
-	void GamePad::Vibrate(int _left, int _right, float _time)
-	{
-		float left = 0.f;
-		float right = 0.f;
-		
-		if (_left > 0)
-		{
-			left = static_cast<float>(_left) / static_cast<float>(USHORT_MAX);
-		}
-		if (_right > 0)
-		{
-			right = static_cast<float>(_right) / static_cast<float>(USHORT_MAX);
-		}
-
-		VibrateRatio(left, right, _time);
 	}
 
 	void GamePad::VibrateRatio(float _left, float _right, float _time)
@@ -430,10 +397,22 @@ namespace PurahEngine
 		}
 	}
 
+
+	void GamePad::VibrateStop()
+	{
+		stopVibe = true;
+	}
+
+	void GamePad::VibrateResume()
+	{
+		stopVibe = false;
+	}
+
 	void GamePad::VibrateOff() const
 	{
 		VibrateRatio(0.f, 0.f);
 	}
+
 
 	void GamePad::SetDeadZone(unsigned int _value)
 	{

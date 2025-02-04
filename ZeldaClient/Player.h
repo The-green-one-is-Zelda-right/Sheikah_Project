@@ -495,7 +495,7 @@ namespace Phyzzle
 		PlayerState prevPlayerState = IDLE;
 		PlayerState currPlayerState = IDLE;
 
-		PurahEngine::GamePad* gamePad;
+		PurahEngine::IGamePad* gamePad;
 		PlayerInput currInput;
 		PlayerInput prevInput;
 

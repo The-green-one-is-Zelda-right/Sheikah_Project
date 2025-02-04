@@ -129,8 +129,8 @@ namespace PurahEngine
 			{
 				for (int i = 0; i < 4; i++)
 				{
-					GamePad* pad = padManager.GetGamePad(i);
-					if (pad->enable)
+					IGamePad* pad = padManager.GetGamePad(i);
+					if (pad->IsConnected())
 					{
 						if (pad->IsKeyDown(epad))
 						{
@@ -184,8 +184,8 @@ namespace PurahEngine
 			{
 				for (int i = 0; i < 4; i++)
 				{
-					GamePad* pad = padManager.GetGamePad(i);
-					if (pad->enable)
+					IGamePad* pad = padManager.GetGamePad(i);
+					if (pad->IsConnected())
 					{
 						if (pad->GetKey(epad))
 						{
@@ -236,8 +236,8 @@ namespace PurahEngine
 			{
 				for (int i = 0; i < 4; i++)
 				{
-					GamePad* pad = padManager.GetGamePad(i);
-					if (pad->enable)
+					IGamePad* pad = padManager.GetGamePad(i);
+					if (pad->IsConnected())
 					{
 						if (pad->IsKeyPressed(epad))
 						{
@@ -285,8 +285,8 @@ namespace PurahEngine
 			{
 				for (int i = 0; i < 4; i++)
 				{
-					GamePad* pad = padManager.GetGamePad(i);
-					if (pad->enable)
+					IGamePad* pad = padManager.GetGamePad(i);
+					if (pad->IsConnected())
 					{
 						if (pad->IsKeyUp(epad))
 						{
@@ -334,8 +334,8 @@ namespace PurahEngine
 			{
 				for (int i = 0; i < 4; i++)
 				{
-					GamePad* pad = padManager.GetGamePad(i);
-					if (pad->enable)
+					IGamePad* pad = padManager.GetGamePad(i);
+					if (pad->IsConnected())
 					{
 						if (pad->IsKeyReleased(epad))
 						{

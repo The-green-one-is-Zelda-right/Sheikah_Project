@@ -36,11 +36,6 @@ namespace Phyzzle
 		std::unordered_map<IslandID, AttachIsland> attachIsland;
 		std::queue<IslandID> removedIndex;
 
-	public:
-		Eigen::Vector4f color0;
-		Eigen::Vector4f color1;
-		Eigen::Vector4f color2;
-
 	private:
 		// ID 생성 삭제
 		IslandID					CreateIslandID();
@@ -96,6 +91,11 @@ namespace Phyzzle
 		/// <returns></returns>
 		ZonaiPhysics::ZnBound3		ComputeBoundingBox(PzObject* const _base, const Eigen::Matrix4f& _mat);
 		ZonaiPhysics::ZnBound3		ComputeBoundingBoxAtTransform(PzObject* const _base, const Eigen::Matrix4f& _mat);
+
+	public:
+		Eigen::Vector4f color0;
+		Eigen::Vector4f color1;
+		Eigen::Vector4f color2;
 	};
 }
 

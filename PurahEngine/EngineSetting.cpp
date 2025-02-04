@@ -170,7 +170,6 @@ void PurahEngine::EngineSetting::PreDeserialize(const json& jsonData)
 
 	layerTable.clear();
 	layerIDTable.clear();
-
 	const json& layers = jsonData["layer"];
 	layerSize = layers.size();
 	for (int layerIDCount = 0; layerIDCount < layers.size(); layerIDCount++)

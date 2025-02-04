@@ -52,6 +52,7 @@
     <ClInclude Include="ConvexCollider.h" />
     <ClInclude Include="CubeMapRenderer.h" />
     <ClInclude Include="CustomCollider.h" />
+    <ClInclude Include="IGamePad.h" />
     <ClInclude Include="SpringFlexJoint.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="DirectionalLight.h" />

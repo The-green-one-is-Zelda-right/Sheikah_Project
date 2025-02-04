@@ -580,5 +580,8 @@
     <ClInclude Include="CubeMapRenderer.h">
       <Filter>Component\3. Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="IGamePad.h">
+      <Filter>Core\Manager\InputManager\GamePad</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

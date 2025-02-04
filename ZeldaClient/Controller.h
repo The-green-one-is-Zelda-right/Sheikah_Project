@@ -3,7 +3,7 @@
 
 namespace PurahEngine
 {
-	class GamePad;
+	class IGamePad;
 	class Transform;
 }
 
@@ -16,7 +16,7 @@ namespace Phyzzle
 
 	private:
 		PurahEngine::Transform* transform = nullptr;
-		PurahEngine::GamePad* gamePad = nullptr;
+		PurahEngine::IGamePad* gamePad = nullptr;
 
 	private:
 		static std::vector<PurahEngine::Transform*> controllerable;

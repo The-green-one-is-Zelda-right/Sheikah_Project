@@ -7,6 +7,7 @@
 
 namespace PurahEngine
 {
+	class IGamePad;
 	class GamePad;
 
 	class PURAHENGINE_API GamePadManager
@@ -24,7 +25,7 @@ namespace PurahEngine
 	public:
 		static void AddGamePad(int _id);
 		static void RemoveGamePad(int _id);
-		static GamePad* GetGamePad(int _id);
+		static IGamePad* GetGamePad(int _id);
 
 	private:
 		HWND hWnd;

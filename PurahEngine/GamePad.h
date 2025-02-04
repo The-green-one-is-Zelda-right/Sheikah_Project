@@ -8,7 +8,7 @@
 #include <Xinput.h>
 //
 
-#include "ePad.h"
+#include "IGamePad.h"
 #include "PurahEngineAPI.h"
 #pragma comment(lib, "Xinput.lib")
 
@@ -21,7 +21,7 @@ namespace PurahEngine
 	constexpr float				inv32767 = 1.f / 32767.0f;
 	constexpr float				inv255 = 1.f / 255.f;
 
-	class PURAHENGINE_API GamePad
+	class PURAHENGINE_API GamePad : public IGamePad
 	{
 	private:
 
@@ -37,13 +37,6 @@ namespace PurahEngine
 	public:
 		friend class UnifiedInputManager;
 		friend GamePadManager;
-		enum class State
-		{
-			NONE,
-			DOWN,
-			PRESSED,
-			UP,
-		};
 
 		struct VibrateData
 		{
@@ -77,48 +70,46 @@ namespace PurahEngine
 			}
 		};
 
-		/// 키 입력
-		bool				GetKey(ePad _input);
-		bool				IsKeyDown(ePad _input);
-		bool				IsKeyPressed(ePad _input);
-		bool				IsKeyUp(ePad _input);
-		bool				IsKeyReleased(ePad _input);
-		State				IsKeyValue(ePad _input);
-
-		/// 트리거 값
-		int					GetTriggerValue(ePadTrigger _index) const;
-		int					GetTriggerRawValue(ePadTrigger _index) const;
-		float				GetTriggerRatio(ePadTrigger _index) const;
-
-		/// 스틱 값
 	private:
 		void				ApplyDeadZone(int& _value, float _deadZone) const;
 		void				StickValueNormalize(int _xValue, int _yValue, float& _outX, float& _outY, float _deadZone);
 
-	public:
-		int					GetStickInput(ePadStick _index);
-		int					GetStickValue(ePadStick _index, int&, int&) const;
 		void				GetStickRawValue(ePadStick _index, int& _outX, int& _outY) const;
-		float				GetStickRatio(ePadStick _index, float& _outX, float& _outY) const;
 		void				GetStickRawRatio(ePadStick _index, float& _outX, float& _outY) const;
 
-		/// 진동
 		bool				Vibrate(int _left, int _right) const;
-		bool				VibrateRatio(float _left, float _right) const;
 
-		void				Vibrate(int, int, float _time);
-		void				VibrateRatio(float, float, float _time);
+	public:
+		/// 키 입력
+		bool				GetKey(ePad _input) override;
+		bool				IsKeyDown(ePad _input) override;
+		bool				IsKeyPressed(ePad _input) override;
+		bool				IsKeyUp(ePad _input) override;
+		bool				IsKeyReleased(ePad _input) override;
+		ePadState			IsKeyValue(ePad _input) override;
 
-		void				VibrateStop();
-		void				VibrateResume();
-		void				VibrateOff() const;
+		/// 트리거 값
+		int					GetTriggerRawValue(ePadTrigger _index) const override;
+		float				GetTriggerRatio(ePadTrigger _index) const override;
+
+		/// 스틱 값
+		int					GetStickValue(ePadStick _index, int& _outX, int& _outY) const override;
+		float				GetStickRatio(ePadStick _index, float& _outX, float& _outY) const override;
+
+		/// 진동
+		bool				VibrateRatio(float _left, float _right) const override;
+		void				VibrateRatio(float _left, float _right, float _time) override;
+
+		void				VibrateStop() override;
+		void				VibrateResume() override;
+		void				VibrateOff() const override;
 
 		/// 데드존 설정
-		void				SetDeadZone(unsigned int);
-		void				SetDeadZoneRatio(float _ratio);
+		void				SetDeadZone(unsigned int) override;
+		void				SetDeadZoneRatio(float _ratio) override;
 
 		/// 연결 여부
-		bool				IsConnected();
+		bool				IsConnected() override;
 
 	private:
 		bool					enable;
@@ -126,8 +117,8 @@ namespace PurahEngine
 		XINPUT_STATE			state;
 		XINPUT_KEYSTROKE		stroke;
 		int						deadZone = 1000;
-		std::unordered_map<ePad, State>	inputMap;
-		std::unordered_map<ePad, State>	prevInputMap;
+		std::unordered_map<ePad, ePadState>	inputMap;
+		std::unordered_map<ePad, ePadState>	prevInputMap;
 		std::unordered_map<ePad, float>	keyDownElapsedMap;
 		std::unordered_map<ePad, bool>	keyMap;
 

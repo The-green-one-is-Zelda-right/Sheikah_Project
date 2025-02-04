@@ -81,7 +81,7 @@ namespace PurahEngine
 		Instance().pad[_id].enable = false;
 	}
 
-	GamePad* GamePadManager::GetGamePad(int _id)
+	IGamePad* GamePadManager::GetGamePad(int _id)
 	{
 		return &(Instance().pad[_id]);
 	}
