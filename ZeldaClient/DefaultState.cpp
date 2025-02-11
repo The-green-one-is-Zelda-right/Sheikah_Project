@@ -4,7 +4,16 @@
 
 #include "Transform.h"
 #include "TimeController.h"
+
+#include "EnumPlayerState.h"
 #include "Player.h"
+
+#include "PlayerController.h"
+#include "PlayerStateMachine.h"
+#include "PlayerMovement.h"
+#include "PlayerAnimation.h"
+#include "PlayerCamera.h"
+#include "PlayerUIManager.h"
 
 #include "DefaultState.h"
 
@@ -61,63 +70,63 @@ namespace Phyzzle
 	{
 		if (player->data.isGrounded)
 		{
-			player->ChangeAbilityState(Player::AbilityState::ATTACH_SELECT);
+			player->ChangeAbilityState(AbilityState::ATTACH_SELECT);
 		}
 	}
 
 	void DefaultState::Jump() const
 	{
-		if (player->TryJump())
+		if (player->GetMovement()->TryJump())
 		{
-			player->ChangePlayerAnimationState(Player::JUMPING);
+			player->GetAnimation()->ChangePlayerAnimationState(AnimationState::JUMPING);
 
-			player->PlayJumping();
+			// player->PlayJumping();
 		}
 	}
 
 	void DefaultState::CameraUpdate()
 	{
-		player->UpdateDefaultCamera();
+		player->GetCamera()->UpdateDefaultCamera();
 	}
 
 	void DefaultState::Move() const
 	{
-		if (player->TryPlayerMove(player->data.moveSpeed))
+		if (player->GetMovement()->TryPlayerMove(player->data.moveSpeed))
 		{
 			if (player->data.isGrounded)
 			{
-				if (player->currInput.Lstick.Size > 0.75f)
+				if (player->GetController()->currInput.Lstick.Size > 0.75f)
 				{
-					player->ChangePlayerAnimationState(Player::RUN);
+					player->GetAnimation()->ChangePlayerAnimationState(AnimationState::RUN);
 				}
 				else
 				{
-					player->ChangePlayerAnimationState(Player::WALK);
+					player->GetAnimation()->ChangePlayerAnimationState(AnimationState::WALK);
 				}
 				
-				player->PlayFootStep();
+				// player->PlayFootStep();
 			}
 			else
 			{
-				player->ChangePlayerAnimationState(Player::JUMPING);
+				player->GetAnimation()->ChangePlayerAnimationState(AnimationState::JUMPING);
 			}
 		}
 		else
 		{
 			if (player->data.isGrounded)
 			{
-				player->ChangePlayerAnimationState(Player::IDLE);
+				player->GetAnimation()->ChangePlayerAnimationState(AnimationState::IDLE);
 			}
 			else
 			{
-				player->ChangePlayerAnimationState(Player::JUMPING);
+				player->GetAnimation()->ChangePlayerAnimationState(AnimationState::JUMPING);
 			}
 		}
 	}
 
 	void DefaultState::Around() const
 	{
-		player->RotateCameraArm();
+		player->GetCamera()->RotateCameraArm();
 	}
 
 	void DefaultState::LookToWorldDirection(const Eigen::Vector3f& _to) const

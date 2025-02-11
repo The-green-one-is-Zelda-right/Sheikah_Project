@@ -104,7 +104,7 @@ namespace Phyzzle
 
 	void RewindState::Cancel()
 	{
-		player->ChangeAbilityState(Player::AbilityState::DEFAULT);
+		player->ChangeAbilityState(AbilityState::DEFAULT);
 	}
 
 	void RewindState::Select()

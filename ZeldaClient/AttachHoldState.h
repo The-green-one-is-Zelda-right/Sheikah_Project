@@ -86,7 +86,7 @@ namespace Phyzzle
 		bool roateMode = false;
 		bool adjustmentMode = false;
 
-		std::vector<PzObject*> aroundObject;
+		std::vector<Phyzzle::PzObject*> aroundObject;
 
 		PositionSpring posSpring;
 		QuaternionSpring quatSpring;
@@ -104,7 +104,7 @@ namespace Phyzzle
 		Eigen::Quaternionf targetRotation = Eigen::Quaternionf::Identity();
 
 		PurahEngine::RigidBody* selectBody;
-		PzObject* attachble;
+		Phyzzle::PzObject* attachble;
 
 	private:
 		void PlayerMove(float _speed) const;					// ¿Ãµø

@@ -1,11 +1,21 @@
 #include "AttachHoldState.h"
 
+#include "EnumPlayerState.h"
+
+#include "Player.h"
+#include "PlayerController.h"
+#include "PlayerStateMachine.h"
+#include "PlayerMovement.h"
+#include "PlayerAnimation.h"
+#include "PlayerCamera.h"
+#include "PlayerUIManager.h"
+
 #include "PzObject.h"
 #include "AttachSystem.h"
 
 namespace Phyzzle
 {
-	AttachHoldState::AttachHoldState(Player* _player)
+	AttachHoldState::AttachHoldState(Phyzzle::Player* _player)
 		: IState(_player), selectBody(), attachble()
 	{
 		using namespace Eigen;
@@ -158,19 +168,19 @@ namespace Phyzzle
 
 		if (TrySelect())
 		{
-			Vector3f corePos = player->data.cameraCore->GetWorldPosition();
-			Quaternionf coreRot = player->data.cameraCore->GetWorldRotation();
+			Vector3f corePos = player->GetCameraCoreTrnasform()->GetWorldPosition();
+			Quaternionf coreRot = player->GetCameraCoreTrnasform()->GetWorldRotation();
 
-			player->data.cameraArm->SetLocalPosition(player->camData.armDefaultPosition);
-			player->camData.armTargetPosition = player->camData.armDefaultPosition;
+			player->GetCameraArmTrnasform()->SetLocalPosition(player->GetCamera()->armDefaultPosition);
+			player->GetCamera()->armTargetPosition = player->GetCamera()->armDefaultPosition;
 			
-			auto rot = player->data.modelCore->GetLocalRotation();
-			player->data.cameraArm->SetLocalRotation(rot);
-			player->camData.armTargetRotation = rot;
-			player->camData.xAngle = 0.f;
+			auto rot = player->GetCameraCoreTrnasform()->GetLocalRotation();
+			player->GetCameraArmTrnasform()->SetLocalRotation(rot);
+			player->GetCamera()->armTargetRotation = rot;
+			player->GetCamera()->xAngle = 0.f;
 
-			player->data.cameraCore->SetWorldRotation(coreRot);
-			player->data.cameraCore->SetWorldPosition(corePos);
+			player->GetCameraCoreTrnasform()->SetWorldRotation(coreRot);
+			player->GetCameraCoreTrnasform()->SetWorldPosition(corePos);
 		}
 	}
 
@@ -178,8 +188,8 @@ namespace Phyzzle
 	{
 		{
 			using namespace Eigen;
-			player->SetCameraCoreLocalTargetPosition(player->camData.coreDefaultPosition);
-			player->SetCameraCoreLocalTargetRotation(player->camData.coreDefaultRotation);
+			player->GetCamera()->SetCameraCoreLocalTargetPosition(player->GetCamera()->coreDefaultPosition);
+			player->GetCamera()->SetCameraCoreLocalTargetRotation(player->GetCamera()->coreDefaultRotation);
 		}
 
 		AroundObjectEnableOutline(false);
@@ -231,8 +241,8 @@ namespace Phyzzle
 			UpdateCamera();
 		}
 
-		if (player->data.debugMode)
-			SearchDebugDraw();
+		// if (player->data.debugMode)
+		// 	SearchDebugDraw();
 	}
 		
 	void AttachHoldState::StateCancel()
@@ -260,18 +270,18 @@ namespace Phyzzle
 		using namespace Eigen;
 
 		// 키 입력이 없으면 힘 안줌
-		if (player->currInput.Rstick.Size)
+		if (player->GetController()->currInput.Rstick.Size)
 		{
 			// 타겟 위치와 오브젝트의 위치를 확인하고 offset보다 차이나면 해당 방향으로는 못움직이게 함.
 
-			TranslateObjectAlongXZ(player->currInput.Rstick.X * player->currInput.Rstick.Size);
-			TranslateObjectAlongY(player->currInput.Rstick.Y * player->currInput.Rstick.Size);
+			TranslateObjectAlongXZ(player->GetController()->currInput.Rstick.X * player->GetController()->currInput.Rstick.Size);
+			TranslateObjectAlongY(player->GetController()->currInput.Rstick.Y * player->GetController()->currInput.Rstick.Size);
 		}
 	}
 
 	void AttachHoldState::Trigger_L()
 	{
-		adjustmentMode = player->currInput.LTrigger;
+		adjustmentMode = player->GetController()->currInput.LTrigger;
 	}
 
 	// 취소
@@ -327,7 +337,7 @@ namespace Phyzzle
 
 		if (justTranslate)
 		{
-			TranslateSpringAlongZ(player->abilData.targetPositionZStep);
+			TranslateSpringAlongZ(player->GetStateMachine()->targetPositionZStep);
 		}
 		else if (justRotate)
 		{
@@ -412,7 +422,7 @@ namespace Phyzzle
 
 		if (justTranslate)
 		{
-			TranslateSpringAlongZ(-player->abilData.targetPositionZStep);
+			TranslateSpringAlongZ(-player->GetStateMachine()->targetPositionZStep);
 		}
 		else if (justRotate)
 		{
@@ -661,13 +671,13 @@ namespace Phyzzle
 		if (translateAdjustment)
 		{
 			// 플레이어 - 오브젝트 방향으로 주고 받음.
-			const float velocity = pushingVelocity * player->currInput.LTrigger * dt;
+			const float velocity = pushingVelocity * player->GetController()->currInput.LTrigger * dt;
 
 			TranslateSpringAlongZ(velocity);
 		}
 		else if (rotateAdjustment)
 		{
-			const float velocity = rotateAngle * player->currInput.LTrigger * dt;
+			const float velocity = rotateAngle * player->GetController()->currInput.LTrigger * dt;
 
 			RotateSpringAlongX(velocity);
 		}
@@ -684,14 +694,14 @@ namespace Phyzzle
 		// 이동
 		if (translateAdjustment)
 		{
-			const float velocity = pushingVelocity * player->currInput.LTrigger * dt;
+			const float velocity = pushingVelocity * player->GetController()->currInput.LTrigger * dt;
 
 			TranslateSpringAlongZ(-velocity);
 		}
 		// 회전
 		else if (rotateAdjustment)
 		{
-			const float velocity = rotateAngle * player->currInput.LTrigger * dt;
+			const float velocity = rotateAngle * player->GetController()->currInput.LTrigger * dt;
 			
 			RotateSpringAlongX(-velocity);
 		}
@@ -709,7 +719,7 @@ namespace Phyzzle
 			// 오브젝트에 각속도를 줘서 회전시킴
 			// 플레이어 기준으로 X 축 기준으로 +회전 시킴
 
-			const float velocity = rotateAngle * player->currInput.LTrigger * dt;
+			const float velocity = rotateAngle * player->GetController()->currInput.LTrigger * dt;
 
 			RotateSpringAlongY(velocity);
 		}
@@ -727,7 +737,7 @@ namespace Phyzzle
 			// 오브젝트에 각속도를 줘서 회전시킴
 			// 플레이어 기준으로 Y 축 기준으로 -회전 시킴
 
-			const float velocity = rotateAngle * player->currInput.LTrigger * dt;
+			const float velocity = rotateAngle * player->GetController()->currInput.LTrigger * dt;
 
 			RotateSpringAlongY(-velocity);
 		}
@@ -748,10 +758,10 @@ namespace Phyzzle
 #pragma region Content
 	void AttachHoldState::PlayerMove(float _speed) const
 	{
-		if (player->TryPlayerMove(_speed))
+		if (player->GetMovement()->TryPlayerMove(_speed))
 		{
-			float x = player->currInput.Lstick.X;
-			float y = player->currInput.Lstick.Y;
+			float x = player->GetController()->currInput.Lstick.X;
+			float y = player->GetController()->currInput.Lstick.Y;
 
 			bool front = y > 0.f;
 			bool right = x > 0.f;
@@ -759,24 +769,24 @@ namespace Phyzzle
 
 			if (front && !xBigger)
 			{
-				player->ChangePlayerAnimationState(Player::PlayerState::ABILITY_FRONT);
+				player->GetAnimation()->ChangePlayerAnimationState(AnimationState::ABILITY_FRONT);
 			}
 			else if (!front && !xBigger)
 			{
-				player->ChangePlayerAnimationState(Player::PlayerState::ABILITY_BACK);
+				player->GetAnimation()->ChangePlayerAnimationState(AnimationState::ABILITY_BACK);
 			}
 			else if (right && xBigger)
 			{
-				player->ChangePlayerAnimationState(Player::PlayerState::ABILITY_RIGHT);
+				player->GetAnimation()->ChangePlayerAnimationState(AnimationState::ABILITY_RIGHT);
 			}
 			else if (!right && xBigger)
 			{
-				player->ChangePlayerAnimationState(Player::PlayerState::ABILITY_LEFT);
+				player->GetAnimation()->ChangePlayerAnimationState(AnimationState::ABILITY_LEFT);
 			}
 		}
 		else
 		{
-			player->ChangePlayerAnimationState(Player::PlayerState::ABILITY_IDLE);
+			player->GetAnimation()->ChangePlayerAnimationState(AnimationState::ABILITY_IDLE);
 		}
 	}
 
@@ -791,13 +801,13 @@ namespace Phyzzle
 		UpdateHoldingCameraPosition(localPosition, worldPosition);
 		UpdateHoldingCameraRotation();
 
-		if (player->ResolveCameraCollision(localPosition, worldPosition))
+		if (player->GetCamera()->ResolveCameraCollision(localPosition, worldPosition))
 		{
-			player->SetCameraCoreWorldTargetPosition(worldPosition);
+			player->GetCamera()->SetCameraCoreWorldTargetPosition(worldPosition);
 		}
 		else
 		{
-			player->SetCameraCoreLocalTargetPosition(localPosition);
+			player->GetCamera()->SetCameraCoreLocalTargetPosition(localPosition);
 		}
 	}
 
@@ -815,20 +825,20 @@ namespace Phyzzle
 
 		Vector3f lowCamPos[2] = 
 		{
-			player->camData.attachLowCamera0->GetLocalPosition(),
-			player->camData.attachLowCamera1->GetLocalPosition()
+			player->GetCamera()->attachLowCamera0->GetLocalPosition(),
+			player->GetCamera()->attachLowCamera1->GetLocalPosition()
 		};
 
 		Vector3f defaultCamPos[2] =
 		{
-			player->camData.attachDefaultCamera0->GetLocalPosition(),
-			player->camData.attachDefaultCamera1->GetLocalPosition()
+			player->GetCamera()->attachDefaultCamera0->GetLocalPosition(),
+			player->GetCamera()->attachDefaultCamera1->GetLocalPosition()
 		};
 
 		Vector3f highCamPos[2] =
 		{
-			player->camData.attachHighCamera0->GetLocalPosition(),
-			player->camData.attachHighCamera1->GetLocalPosition()
+			player->GetCamera()->attachHighCamera0->GetLocalPosition(),
+			player->GetCamera()->attachHighCamera1->GetLocalPosition()
 		};
 
 		Vector3f objPos = selectBody->GetPosition();
@@ -848,11 +858,11 @@ namespace Phyzzle
 
 		auto& math = PurahEngine::PurahMath::GetInstance();
 
-		Vector3f interpolatedAF = player->lerp(activeCamPos[0], activeCamPos[1], ratioZ);
-		Vector3f interpolatedDC = player->lerp(defaultCamPos[0], defaultCamPos[1], ratioZ);
-		Vector3f finalInterpolatedCamera = player->lerp(interpolatedDC, interpolatedAF, ratioY);
+		Vector3f interpolatedAF = player->GetCamera()->Lerp(activeCamPos[0], activeCamPos[1], ratioZ);
+		Vector3f interpolatedDC = player->GetCamera()->Lerp(defaultCamPos[0], defaultCamPos[1], ratioZ);
+		Vector3f finalInterpolatedCamera = player->GetCamera()->Lerp(interpolatedDC, interpolatedAF, ratioY);
 
-		Affine3f world{ player->data.cameraArm->GetWorldMatrix() };
+		Affine3f world{ player->GetCameraArmTrnasform()->GetWorldMatrix() };
 		world.translate(finalInterpolatedCamera);
 
 		_local = finalInterpolatedCamera;
@@ -864,7 +874,7 @@ namespace Phyzzle
 		using namespace Eigen;
 
 		Quaternionf modelRot = player->data.modelCore->GetLocalRotation();
-		player->data.cameraArm->SetLocalRotation(modelRot);
+		player->GetCameraArmTrnasform()->SetLocalRotation(modelRot);
 
 		float offset = 1.f;
 
@@ -876,20 +886,20 @@ namespace Phyzzle
 
 		Quaternionf lowCamRot[2] =
 		{
-			player->camData.attachLowCamera0->GetLocalRotation(),
-			player->camData.attachLowCamera1->GetLocalRotation()
+			player->GetCamera()->attachLowCamera0->GetLocalRotation(),
+			player->GetCamera()->attachLowCamera1->GetLocalRotation()
 		};
 
 		Quaternionf defaultCamRot[2] =
 		{
-			player->camData.attachDefaultCamera0->GetLocalRotation(),
-			player->camData.attachDefaultCamera1->GetLocalRotation()
+			player->GetCamera()->attachDefaultCamera0->GetLocalRotation(),
+			player->GetCamera()->attachDefaultCamera1->GetLocalRotation()
 		};
 
 		Quaternionf highCamRot[2] =
 		{
-			player->camData.attachHighCamera0->GetLocalRotation(),
-			player->camData.attachHighCamera1->GetLocalRotation()
+			player->GetCamera()->attachHighCamera0->GetLocalRotation(),
+			player->GetCamera()->attachHighCamera1->GetLocalRotation()
 		};
 
 		Vector3f objPos = selectBody->GetPosition();
@@ -913,18 +923,18 @@ namespace Phyzzle
 		Quaternionf interpolatedDC = defaultCamRot[0].slerp(ratioZ, defaultCamRot[1]);
 		Quaternionf finalInterpolatedCamera = interpolatedDC.slerp(ratioY, interpolatedAF);
 
-		player->SetCameraCoreLocalTargetRotation(finalInterpolatedCamera);
+		player->GetCamera()->SetCameraCoreLocalTargetRotation(finalInterpolatedCamera);
 	}
 
 	void AttachHoldState::CameraReset() const
 	{
-		player->ResetCameraCore();
+		player->GetCamera()->ResetCameraCore();
 	}
 #pragma endregion Camera
 
 	void AttachHoldState::Cancel() const
 	{
-		player->ChangeAbilityState(Player::AbilityState::DEFAULT);
+		player->ChangeAbilityState(AbilityState::DEFAULT);
 	}
 
 	bool AttachHoldState::TrySelect()
@@ -934,14 +944,14 @@ namespace Phyzzle
 
 		if (!attachble || !selectBody)
 		{
-			player->ChangeAbilityState(Player::ATTACH_SELECT);
+			player->ChangeAbilityState(AbilityState::ATTACH_SELECT);
 			return false;;
 		}
 		else
 		{
 			if (selectBody->GetGameObject()->tag.IsContain(L"Phyzzle Player"))
 			{
-				player->ChangeAbilityState(Player::ATTACH_SELECT);
+				player->ChangeAbilityState(AbilityState::ATTACH_SELECT);
 				return false;;
 			}
 			else
@@ -1053,8 +1063,8 @@ namespace Phyzzle
 	Eigen::Vector3f AttachHoldState::GetWorldTargetPosition()
 	{
 		// 플레이어의 월드 위치와 회전
-		Eigen::Vector3f playerPos = player->data.modelCore->GetWorldPosition();
-		Eigen::Quaternionf playerRot = player->data.modelCore->GetWorldRotation();
+		Eigen::Vector3f playerPos = player->GetModelTransform()->GetWorldPosition();
+		Eigen::Quaternionf playerRot = player->GetModelTransform()->GetWorldRotation();
 
 		// 로컬 타겟 포지션을 월드 좌표로 변환
 		return playerPos + playerRot * targetPosition;
@@ -1063,7 +1073,7 @@ namespace Phyzzle
 	Eigen::Quaternionf AttachHoldState::GetWorldTargetQuaternion()
 	{
 		// 플레이어의 월드 회전
-		Eigen::Quaternionf playerRot = player->data.modelCore->GetWorldRotation();
+		Eigen::Quaternionf playerRot = player->GetModelTransform()->GetWorldRotation();
 
 		// 로컬 타겟 회전을 월드 회전으로 변환
 		return playerRot * targetRotation;
@@ -1082,30 +1092,30 @@ namespace Phyzzle
 			ZonaiPhysics::ZnBound3 bound = AttachSystem::Instance()->ComputeBoundingBoxAtTransform(attachble, targetTransform.matrix());
 
 			// 바운딩 박스의 최소 z 값이 1.0보다 작으면 targetPosition.z를 업데이트
-			if (bound.minimum.z() < player->abilData.minTargetPositionZ)
+			if (bound.minimum.z() < player->GetStateMachine()->minTargetPositionZ)
 			{
-				float distance = player->abilData.minTargetPositionZ - bound.minimum.z();
+				float distance = player->GetStateMachine()->minTargetPositionZ - bound.minimum.z();
 				targetPosition.z() += distance;
 			}
 
 			// targetPosition.z가 max를 넘으면 조정
-			if (targetPosition.z() > player->abilData.maxTargetPositionZ)
+			if (targetPosition.z() > player->GetStateMachine()->maxTargetPositionZ)
 			{
-				float distance = player->abilData.maxTargetPositionZ - targetPosition.z();
+				float distance = player->GetStateMachine()->maxTargetPositionZ - targetPosition.z();
 				targetPosition.z() += distance;
 			}
 
 			// targetPosition.y가 min를 넘으면 조정
-			if (targetPosition.y() < player->abilData.minTargetPositionY)
+			if (targetPosition.y() < player->GetStateMachine()->minTargetPositionY)
 			{
-				float distance = player->abilData.minTargetPositionY - targetPosition.y();
+				float distance = player->GetStateMachine()->minTargetPositionY - targetPosition.y();
 				targetPosition.y() += distance;
 			}
 
 			// targetPosition.y가 max를 넘으면 조정
-			if (targetPosition.y() > player->abilData.maxTargetPositionY)
+			if (targetPosition.y() > player->GetStateMachine()->maxTargetPositionY)
 			{
-				float distance = player->abilData.maxTargetPositionY - targetPosition.y();
+				float distance = player->GetStateMachine()->maxTargetPositionY - targetPosition.y();
 				targetPosition.y() += distance;
 			}
 		}
@@ -1121,8 +1131,8 @@ namespace Phyzzle
 	{
 		using namespace Eigen;
 		
-		const float zeta = player->abilData.linearSpringDamping;
-		const float omega = player->abilData.linearSpringFrequency;
+		const float zeta = player->GetStateMachine()->linearSpringDamping;
+		const float omega = player->GetStateMachine()->linearSpringFrequency;
 		const float timeStep = PurahEngine::TimeController::GetInstance().GetDeltaTime();
 
 		UpdateTargetPosition();
@@ -1139,17 +1149,17 @@ namespace Phyzzle
 		//	linearSpringForce = (worldTargetPosition - currPos) / 0.01f;
 		//}
 
-		if (linearSpringForce.norm() > player->abilData.linearMaxVelocity)
+		if (linearSpringForce.norm() > player->GetStateMachine()->linearMaxVelocity)
 		{
-			linearSpringForce = linearSpringForce.normalized() * player->abilData.linearMaxVelocity;
+			linearSpringForce = linearSpringForce.normalized() * player->GetStateMachine()->linearMaxVelocity;
 		}
 	}
 
 	void AttachHoldState::CalculateSpringRotation()
 	{
 		// constexpr float zeta0 = 0.05f;
-		const float zeta = player->abilData.angularSpringDamping;
-		const float omega = player->abilData.angularSpringFrequency;
+		const float zeta = player->GetStateMachine()->angularSpringDamping;
+		const float omega = player->GetStateMachine()->angularSpringFrequency;
 		const float timeStep = PurahEngine::TimeController::GetInstance().GetDeltaTime();
 
 		Eigen::Quaternionf currRot = selectBody->GetRotation();
@@ -1198,9 +1208,9 @@ namespace Phyzzle
 
 		quatSpring.UpdateVelocity(currRot, angularSpringForce, targetRot.normalized(), zeta, omega, timeStep);
 
-		if (angularSpringForce.norm() > player->abilData.angularMaxVelocity)
+		if (angularSpringForce.norm() > player->GetStateMachine()->angularMaxVelocity)
 		{
-			angularSpringForce = angularSpringForce.normalized() * player->abilData.angularMaxVelocity;
+			angularSpringForce = angularSpringForce.normalized() * player->GetStateMachine()->angularMaxVelocity;
 		}
 	}
 
@@ -1221,14 +1231,14 @@ namespace Phyzzle
 		const float timeStep = PurahEngine::TimeController::GetInstance().GetDeltaTime();
 
 		// 최대 회전 각도
-		const float angleAtRadiusOne = player->abilData.holdRotateAngle;
+		const float angleAtRadiusOne = player->GetStateMachine()->holdRotateAngle;
 
 		// 반지름이 1일 때의 호의 길이 계산
 		const float arcLength = 1.0f * angleAtRadiusOne;
 
 		// targetPosition.z의 길이로 회전 각도 계산
 		const float targetRadius = targetPosition.z();
-		const float angle = (arcLength / targetRadius) * player->abilData.arcRatio;
+		const float angle = (arcLength / targetRadius) * player->GetStateMachine()->arcRatio;
 		const float finalAngle = angle * _factor * timeStep;
 
 		const Eigen::Vector3f axis = Eigen::Vector3f::UnitY();
@@ -1245,10 +1255,10 @@ namespace Phyzzle
 		float distance = direction.norm();
 		direction.normalize();
 
-		if (distance > player->abilData.targetPositionOffset)
+		if (distance > player->GetStateMachine()->targetPositionOffset)
 		{
 			// distance가 targetPositionOffset보다 크다면, targetPositionOffset 정도까지만 회전
-			Eigen::Vector3f offsetWorldTargetPosition = objectPosition + direction * player->abilData.targetPositionOffset;
+			Eigen::Vector3f offsetWorldTargetPosition = objectPosition + direction * player->GetStateMachine()->targetPositionOffset;
 			Eigen::Vector3f playerToTarget = offsetWorldTargetPosition - playerPosition;
 			playerToTarget.y() = 0.f;
 			playerToTarget.normalize();
@@ -1270,7 +1280,7 @@ namespace Phyzzle
 		const float timeStep = PurahEngine::TimeController::GetInstance().GetDeltaTime();
 
 		Eigen::Vector3f newTargetPosition = targetPosition;
-		newTargetPosition.y() += (player->abilData.targetPositionYSpeed * _factor * timeStep);
+		newTargetPosition.y() += (player->GetStateMachine()->targetPositionYSpeed * _factor * timeStep);
 
 		// 플레이어의 월드 위치와 회전
 		const Eigen::Vector3f playerPosition = player->data.modelCore->GetWorldPosition();
@@ -1283,9 +1293,9 @@ namespace Phyzzle
 		float distance = direction.norm();
 		direction.normalize();
 
-		if (distance > player->abilData.targetPositionOffset)
+		if (distance > player->GetStateMachine()->targetPositionOffset)
 		{
-			worldTargetPosition = objectPosition + direction * player->abilData.targetPositionOffset;
+			worldTargetPosition = objectPosition + direction * player->GetStateMachine()->targetPositionOffset;
 			Eigen::Vector3f localTargetPosition = playerRotation.inverse() * (worldTargetPosition - playerPosition);
 			localTargetPosition.x() = 0.f;
 			targetPosition = localTargetPosition;
@@ -1348,37 +1358,20 @@ namespace Phyzzle
 		return AttachSystem::Instance()->Dettach(attachble);
 	}
 
-	void AttachHoldState::EnableOutline(bool _value) const
-	{
-		if (!selectBody || !attachble)
-			return;
-
-		if (_value)
-		{
-			AttachSystem::Instance()->EnableOutline(attachble, &player->color0, &player->color1);
-			AttachSystem::Instance()->EnableDShadow(attachble);
-		}
-		else
-		{
-			AttachSystem::Instance()->DisableOutline(attachble);
-			AttachSystem::Instance()->DisableDShadow(attachble);
-		}
-	}
-
 	bool AttachHoldState::SearchAround()
 	{
 		using namespace Eigen;
 
-		float radius = player->abilData.searchAroundDistance;
-		Eigen::Affine3f parentMatrix(player->data.cameraArm->GetWorldMatrix());
-		Eigen::Vector3f corePosition = player->data.cameraCore->GetLocalPosition();
+		float radius = player->GetStateMachine()->searchAroundDistance;
+		Eigen::Affine3f parentMatrix(player->GetCameraArmTrnasform()->GetWorldMatrix());
+		Eigen::Vector3f corePosition = player->GetCameraCoreTrnasform()->GetLocalPosition();
 		corePosition.z() = 0.f;
 		Eigen::Vector3f position = parentMatrix * corePosition;
 		Quaternionf rotation = Quaternionf::Identity();
-		int layer = player->abilData.attachRaycastLayers;
+		int layer = player->GetStateMachine()->attachRaycastLayers;
 		ZonaiPhysics::ZnQueryInfo info;
-		info.actors.resize(player->abilData.searchAroundbufferSize);
-		info.shapes.resize(player->abilData.searchAroundbufferSize);
+		info.actors.resize(player->GetStateMachine()->searchAroundbufferSize);
+		info.shapes.resize(player->GetStateMachine()->searchAroundbufferSize);
 
 		bool hit = PurahEngine::Physics::SphereOverlap(radius, position, rotation, layer, info);
 
@@ -1507,10 +1500,28 @@ namespace Phyzzle
 
 		return true;
 	}
+#pragma endregion Content
+
+	void AttachHoldState::EnableOutline(bool _value) const
+	{
+		if (!selectBody || !attachble)
+			return;
+
+		if (_value)
+		{
+			// AttachSystem::Instance()->EnableOutline(attachble, /*&player->color0, &player->color1*/);
+			AttachSystem::Instance()->EnableDShadow(attachble);
+		}
+		else
+		{
+			AttachSystem::Instance()->DisableOutline(attachble);
+			AttachSystem::Instance()->DisableDShadow(attachble);
+		}
+	}
 
 	void AttachHoldState::AttachTouchUIRender(bool _value)
 	{
-		player->uiData.Stick_B->SetEnable(_value);
+		player->GetUIManager()->Stick_B->SetEnable(_value);
 	}
 
 	void AttachHoldState::AttachRotateUIRender(bool _value)
@@ -1519,11 +1530,11 @@ namespace Phyzzle
 
 		if (count == 1)
 		{
-			player->uiData.Rotation_NoneStick->SetEnable(_value);
+			// player->uiData.Rotation_NoneStick->SetEnable(_value);
 		}
 		else
 		{
-			player->uiData.Rotation_Stick->SetEnable(_value);
+			 // player->uiData.Rotation_Stick->SetEnable(_value);
 		}
 	}
 
@@ -1533,30 +1544,28 @@ namespace Phyzzle
 
 		if (count == 1)
 		{
-			player->uiData.Attach_Hold_NoneStick->SetEnable(_value);
+			 // player->uiData.Attach_Hold_NoneStick->SetEnable(_value);
 		}
 		else
 		{
-			player->uiData.Attach_Hold_Stick->SetEnable(_value);
+			// player->uiData.Attach_Hold_Stick->SetEnable(_value);
 		}
 
 	}
 
 	void AttachHoldState::RotationArowRender(bool _value)
 	{
-		player->data.rotationArow->SetEnable(_value);
+		// player->data.rotationArow->SetEnable(_value);
 	}
 
 	void AttachHoldState::UIDisable()
 	{
-		player->uiData.Attach_Hold_NoneStick->SetEnable(false);
-		player->uiData.Attach_Hold_Stick->SetEnable(false);
-		player->uiData.Rotation_NoneStick->SetEnable(false);
-		player->uiData.Rotation_Stick->SetEnable(false);
-		player->uiData.Stick_B->SetEnable(false);
+		// player->uiData.Attach_Hold_NoneStick->SetEnable(false);
+		// player->uiData.Attach_Hold_Stick->SetEnable(false);
+		// player->uiData.Rotation_NoneStick->SetEnable(false);
+		// player->uiData.Rotation_Stick->SetEnable(false);
+		// player->uiData.Stick_B->SetEnable(false);
 	}
-
-#pragma endregion Content
 
 #pragma region Debug
 	void AttachHoldState::SearchDebugDraw()

@@ -1,5 +1,7 @@
 #include "LockState.h"
 
+#include "EnumPlayerState.h"
+#include "Player.h"
 
 namespace Phyzzle
 {
@@ -74,7 +76,7 @@ namespace Phyzzle
 
 	void LockState::Cancel() const
 	{
-		player->ChangeAbilityState(Player::AbilityState::DEFAULT);
+		player->ChangeAbilityState(AbilityState::DEFAULT);
 	}
 	void LockState::StateCancel()
 	{

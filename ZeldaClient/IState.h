@@ -1,7 +1,9 @@
 #pragma once
 #include <coroutine>
+#include <numbers>
 #include "ePad.h"
-#include "Player.h"
+#include "PurahEngine.h"
+
 
 namespace Phyzzle
 {
@@ -11,11 +13,11 @@ namespace Phyzzle
 	{
 	public:
 		IState() = delete;
-		IState(Player* _player) : player(_player) {}
+		IState(Phyzzle::Player* _player) : player(_player) {}
 		virtual ~IState() = default;
 
 	protected:
-		Player* player;
+		Phyzzle::Player* player;
 
 	public:
 		virtual void StateEnter() = 0;

@@ -1,8 +1,15 @@
 #pragma once
 #include "IState.h"
 
+namespace PurahEngine
+{
+	class RigidBody;
+}
+
 namespace Phyzzle
 {
+	class PzObject;
+
 	class LockState final : public IState
 	{
 	public:
@@ -27,7 +34,7 @@ namespace Phyzzle
 #pragma region Content
 	private:
 		PurahEngine::RigidBody* result = nullptr;
-		PzObject* pzObject = nullptr;
+		Phyzzle::PzObject* pzObject = nullptr;
 
 	private:
 		void CameraAround();

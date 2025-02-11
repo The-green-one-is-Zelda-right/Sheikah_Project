@@ -38,50 +38,50 @@ namespace Phyzzle
 
 	private:
 		// ID 생성 삭제
-		IslandID					CreateIslandID();
-		void						RemoveIslandID(IslandID _id);
+		IslandID CreateIslandID();
+		void RemoveIslandID(IslandID _id);
 
 		// 섬 생성 삭제
-		IslandID					CreateIsland(const std::vector<PzObject*>& _arr);
-		void						RemoveIsland(IslandID _id);
+		IslandID CreateIsland(const std::vector<PzObject*>& _arr);
+		void RemoveIsland(IslandID _id);
 
 	public:
-		void						Clear();
+		void Clear();
 
-		void						SelectBody(PzObject* _body);
-		void						DeselectBody(PzObject* _body);
+		void SelectBody(PzObject* _body);
+		void DeselectBody(PzObject* _body);
 
-		void						SetOutlineColor(Eigen::Vector4f* const _color0, Eigen::Vector4f* const _color1, Eigen::Vector4f* const _color2);
-		void						ApplyOutlineSettings(PzObject* obj, bool value, Eigen::Vector4f* const color);
-		void						ApplyDShadowSettings(PzObject* obj, bool value);
-		void						EnableOutline(PzObject*, Eigen::Vector4f* const _targetColor, Eigen::Vector4f* const _subColor = nullptr);
-		void						DisableOutline(PzObject*);
-		void						EnableDShadow(PzObject* _obj);
-		void						DisableDShadow(PzObject* _obj);
+		void SetOutlineColor(Eigen::Vector4f* const _color0, Eigen::Vector4f* const _color1, Eigen::Vector4f* const _color2);
+		void ApplyOutlineSettings(PzObject* obj, bool value, Eigen::Vector4f* const color);
+		void ApplyDShadowSettings(PzObject* obj, bool value);
+		void EnableOutline(PzObject*, Eigen::Vector4f* const _targetColor, Eigen::Vector4f* const _subColor = nullptr);
+		void DisableOutline(PzObject*);
+		void EnableDShadow(PzObject* _obj);
+		void DisableDShadow(PzObject* _obj);
 
-		bool						IsTouching(PzObject* _base);
-		bool						TryAttach(PzObject* _base);
-		bool						Attach(PzObject* _base, PzObject* _other);
-		bool						Dettach(PzObject* _base);
+		bool IsTouching(PzObject* _base);
+		bool TryAttach(PzObject* _base);
+		bool Attach(PzObject* _base, PzObject* _other);
+		bool Dettach(PzObject* _base);
 
-		void						ConnectNode(PzObject* _base, PzObject* _other, PurahEngine::FixedJoint* _joint);
-		void						DisconnectNode(PzObject* _base, PzObject* _other);
+		void ConnectNode(PzObject* _base, PzObject* _other, PurahEngine::FixedJoint* _joint);
+		void DisconnectNode(PzObject* _base, PzObject* _other);
 
 		PurahEngine::FixedJoint*	CreateJoint(PzObject* _base, PzObject* _other);
-		void						BreakJoint(PzObject* _base, PzObject* _other);
+		void BreakJoint(PzObject* _base, PzObject* _other);
 
-		bool						HasAttachIsland(const IslandID& _id, AttachIsland& _island);
-		void						RebuildIsland(PzObject* _base, PzObject* _other);
+		bool HasAttachIsland(const IslandID& _id, AttachIsland& _island);
+		void RebuildIsland(PzObject* _base, PzObject* _other);
 
-		uint32_t					GetCountInIsland(PzObject* _obj);
+		uint32_t GetCountInIsland(PzObject* _obj);
 
-		void						CalculateLocalAnchor(
-										const Eigen::Vector3f& _anchorP, 
-										const Eigen::Quaternionf& _anchorQ,
-										const PzObject* _base,
-										Eigen::Vector3f& _outP, 
-										Eigen::Quaternionf& _outQ
-									);
+		void CalculateLocalAnchor(
+			const Eigen::Vector3f& _anchorP, 
+			const Eigen::Quaternionf& _anchorQ,
+			const PzObject* _base,
+			Eigen::Vector3f& _outP,
+			Eigen::Quaternionf& _outQ
+		);
 
 		/// <summary>
 		/// 섬의 바운딩 박스를 구하는 함수
@@ -89,8 +89,8 @@ namespace Phyzzle
 		/// <param name="_base">attachable pointer</param>
 		/// <param name="_mat">world matrix</param>
 		/// <returns></returns>
-		ZonaiPhysics::ZnBound3		ComputeBoundingBox(PzObject* const _base, const Eigen::Matrix4f& _mat);
-		ZonaiPhysics::ZnBound3		ComputeBoundingBoxAtTransform(PzObject* const _base, const Eigen::Matrix4f& _mat);
+		ZonaiPhysics::ZnBound3 ComputeBoundingBox(PzObject* const _base, const Eigen::Matrix4f& _mat);
+		ZonaiPhysics::ZnBound3 ComputeBoundingBoxAtTransform(PzObject* const _base, const Eigen::Matrix4f& _mat);
 
 	public:
 		Eigen::Vector4f color0;

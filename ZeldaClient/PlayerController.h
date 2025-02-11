@@ -1,54 +1,52 @@
 #pragma once
 #include "PurahEngine.h"
+#include "PlayerInputData.h"
 
+class PurahEngine::IGamePad;
 
-namespace  Phyzzle
+namespace Phyzzle
 {
-	class PlayerController final : public PurahEngine::Component
+	class Player;
+
+	class PlayerController
 	{
 	public:
-		~PlayerController() override;
+		explicit PlayerController(Player* player);
 
-		void Start() override;
-		void Update() override;
+		void HandleDebugToggle();
 
-	public:
-		void Move(const Eigen::Vector3f& _dir, float _speed);
-		void LookTo(const Eigen::Vector3f& _worldDirection);
-		void LookAt(const Eigen::Vector3f& _worldPosition);
-		void Jump();
+		void HandleInput();  // 입력 처리
+		void HandleGamePadInput();
+		void HandleKeyboardInput();
 
-		Eigen::Vector3f ComputeDirectionToSlope(const Eigen::Vector3f& _direction);
-
-		void SetSlopeDegLimiit(float _angle);
-
-		bool CanJump() const;
-		bool IsSlopeLimit();
-		bool IsGround();
-		bool IsWall();
-		bool IsObstacle();
-
-	public:
-		void OnCollisionEnter(const ZonaiPhysics::ZnCollision&, const PurahEngine::Collider*) override;
-		void OnCollisionStay(const ZonaiPhysics::ZnCollision&, const PurahEngine::Collider*) override;
-		void OnCollisionExit(const ZonaiPhysics::ZnCollision&, const PurahEngine::Collider*) override;
-
-	protected:
-		void PreSerialize(json& jsonData) const override {}
-		void PreDeserialize(const json& jsonData) override {}
-		void PostSerialize(json& jsonData) const override {}
-		void PostDeserialize(const json& jsonData) override {}
-
+		Phyzzle::PlayerInput GetPlayerInputData();
+		
 	private:
-		PurahEngine::RigidBody* body;
-		PurahEngine::Transform* model;
+		friend Player;
 
-	private:
-		float jumpPower = 0.f;
-		bool jumping = false;
-		float slopeLimit;
+		friend class IState;
+		friend class DefaultState;
+		friend class AttachSelectState;
+		friend class AttachHoldState;
+		friend class RewindState;
+		friend class LockState;
 
-		ZonaiPhysics::ZnQueryDesc groundCheck;
+		void HandleStickInput();
+		void HandleTriggerInput();
+		void HandleButtonInput();
+		void HandleButton(
+			PurahEngine::ePad button, 
+			void (Phyzzle::IState::* clickFunc)(), 
+			void (Phyzzle::IState::* pressingFunc)(), 
+			void (Phyzzle::IState::* upFunc)());
+
+		void HandleMovementInput();
+		void HandleCameraRotationInput();
+		void HandleActionInput();
+		void HandleAbilityInput();
+
+		Phyzzle::Player* player;
+		Phyzzle::PlayerInput currInput;
+		PurahEngine::IGamePad* gamePad;
 	};
 }
-

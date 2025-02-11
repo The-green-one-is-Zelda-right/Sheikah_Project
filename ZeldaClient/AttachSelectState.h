@@ -3,12 +3,14 @@
 
 namespace Phyzzle
 {
-	class AttachSelectState final : public IState
+	class PzObject;
+
+	class AttachSelectState final : public Phyzzle::IState
 	{
 	public:
 		AttachSelectState() = delete;
-		explicit AttachSelectState(Player* _player)
-			: IState(_player)
+		explicit AttachSelectState(Phyzzle::Player* _player)
+			: Phyzzle::IState(_player)
 		{}
 		~AttachSelectState() override;
 
@@ -46,8 +48,8 @@ namespace Phyzzle
 		bool around = false;
 		bool select = false;
 		PurahEngine::RigidBody* seleteBody = nullptr;
-		std::vector<PzObject*> aroundObject;
-		PzObject* selectObject = nullptr;
+		std::vector<Phyzzle::PzObject*> aroundObject;
+		Phyzzle::PzObject* selectObject = nullptr;
 
 	private:
 		void PlayerMove(float _speed) const;

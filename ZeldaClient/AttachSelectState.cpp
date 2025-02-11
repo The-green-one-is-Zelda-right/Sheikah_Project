@@ -1,6 +1,16 @@
 #include "AttachSelectState.h"
-#include "PzObject.h"
 
+#include "EnumPlayerState.h"
+#include "Player.h"
+
+#include "PlayerController.h"
+#include "PlayerStateMachine.h"
+#include "PlayerMovement.h"
+#include "PlayerAnimation.h"
+#include "PlayerCamera.h"
+#include "PlayerUIManager.h"
+
+#include "PzObject.h"
 #include "AttachSystem.h"
 
 namespace Phyzzle
@@ -15,11 +25,11 @@ namespace Phyzzle
 		{
 			using namespace Eigen;
 
-			auto p = player->camData.coreDefaultPosition;
+			auto p = player->GetCamera()->coreDefaultPosition;
 			p.x() += 0.5f;
 			p.y() += 0.5f;
 
-			player->SetCameraCoreLocalTargetPosition(p);
+			player->GetCamera()->SetCameraCoreLocalTargetPosition(p);
 		}
 
 		CrossHeadRender(true);
@@ -30,7 +40,7 @@ namespace Phyzzle
 	void AttachSelectState::StateExit()
 	{
 		{
-			player->SetCameraCoreLocalTargetPosition(player->camData.coreDefaultPosition);
+			player->GetCamera()->SetCameraCoreLocalTargetPosition(player->GetCamera()->coreDefaultPosition);
 		}
 
 		EnableOutline(false);
@@ -126,7 +136,7 @@ namespace Phyzzle
 			// »óÅÂ ¹Ù²Þ
 			player->data.holdObject = selectObject;
 			player->data.holdObjectBody = seleteBody;
-			player->ChangeAbilityState(Player::ATTACH_HOLD);
+			player->ChangeAbilityState(AbilityState::ATTACH_HOLD);
 		}
 	}
 
@@ -152,33 +162,33 @@ namespace Phyzzle
 #pragma region Content
 	void AttachSelectState::PlayerMove(float _speed) const
 	{
-		if (player->TryPlayerMove(_speed))
+		if (player->GetMovement()->TryPlayerMove(_speed))
 		{
-			player->ChangePlayerAnimationState(Player::WALK);
+			player->GetAnimation()->ChangePlayerAnimationState(AnimationState::WALK);
 		}
 		else
 		{
-			player->ChangePlayerAnimationState(Player::IDLE);
+			player->GetAnimation()->ChangePlayerAnimationState(AnimationState::IDLE);
 		}
 	}
 
 	void AttachSelectState::CameraUpdate() const
 	{
-		player->UpdateSelectCamera();
+		player->GetCamera()->UpdateSelectCamera();
 	}
 
 	void AttachSelectState::Cancel()
 	{
 		EnableOutline(false);
 		CrossHeadRender(false);
-		player->ChangeAbilityState(Player::AbilityState::DEFAULT);
+		player->GetStateMachine()->SetAbilityState(AbilityState::DEFAULT);
 	}
 
 	void AttachSelectState::Jump() const
 	{
-		if (player->TryJump())
+		if (player->GetMovement()->TryJump())
 		{
-			player->ChangePlayerAnimationState(Player::JUMP);
+			player->GetAnimation()->ChangePlayerAnimationState(AnimationState::JUMP);
 		}
 	}
 
@@ -194,11 +204,11 @@ namespace Phyzzle
 
 	bool AttachSelectState::Search()
 	{
-		Eigen::Vector3f from = player->data.cameraCore->GetWorldPosition();
-		Eigen::Matrix3f rotate = player->data.cameraCore->GetWorldRotation().toRotationMatrix();
+		Eigen::Vector3f from = player->GetCameraCoreTrnasform()->GetWorldPosition();
+		Eigen::Matrix3f rotate = player->GetCameraCoreTrnasform()->GetWorldRotation().toRotationMatrix();
 		Eigen::Vector3f to = rotate * Eigen::Vector3f{ 0.f, 0.f, 1.f };
-		float distance = player->abilData.attachRaycastDistance + std::fabs(player->data.cameraCore->GetLocalPosition().z());
-		unsigned int layers = player->abilData.searchAroundLayers;
+		float distance = player->GetStateMachine()->attachRaycastDistance + std::fabs(player->GetCameraCoreTrnasform()->GetLocalPosition().z());
+		unsigned int layers = player->GetStateMachine()->searchAroundLayers;
 		ZonaiPhysics::ZnQueryInfo info;
 
 		const bool block = PurahEngine::Physics::Raycast(from, to, distance, layers, info);
@@ -239,16 +249,16 @@ namespace Phyzzle
 	{
 		using namespace Eigen;
 
-		float radius = player->abilData.searchAroundDistance;
-		Eigen::Affine3f parentMatrix(player->data.cameraArm->GetWorldMatrix());
-		Eigen::Vector3f corePosition = player->data.cameraCore->GetLocalPosition();
+		float radius = player->GetStateMachine()->searchAroundDistance;
+		Eigen::Affine3f parentMatrix(player->GetCameraArmTrnasform()->GetWorldMatrix());
+		Eigen::Vector3f corePosition = player->GetCameraCoreTrnasform()->GetLocalPosition();
 		corePosition.z() = 0.f;
 		Eigen::Vector3f position = parentMatrix * corePosition;
 		Quaternionf rotation = Quaternionf::Identity();
-		int layer = player->abilData.searchAroundLayers;
+		int layer = player->GetStateMachine()->searchAroundLayers;
 		ZonaiPhysics::ZnQueryInfo info;
-		info.actors.resize(player->abilData.searchAroundbufferSize);
-		info.shapes.resize(player->abilData.searchAroundbufferSize);
+		info.actors.resize(player->GetStateMachine()->searchAroundbufferSize);
+		info.shapes.resize(player->GetStateMachine()->searchAroundbufferSize);
 
 		bool hit = PurahEngine::Physics::SphereOverlap(radius, position, rotation, layer, info);
 
@@ -304,7 +314,7 @@ namespace Phyzzle
 
 		if (_value)
 		{
-			AttachSystem::Instance()->EnableOutline(selectObject, &player->color0, &player->color1);
+			// AttachSystem::Instance()->EnableOutline(selectObject, /*&player->color0, &player->color1*/);
 		}
 		else
 		{
@@ -314,22 +324,23 @@ namespace Phyzzle
 	
 	void AttachSelectState::CrossHeadRender(bool _value)
 	{
-		player->data.crossHead01->SetEnable(_value);
+		// player->data.crossHead01->SetEnable(_value);
+		player->GetUIManager()->ShowAttachDefaultUI();
 	}
 
 	void AttachSelectState::CrossHeadSelectRender(bool _value)
 	{
-		player->data.crossHead02->SetEnable(_value);
+		// player->data.crossHead02->SetEnable(_value);
 	}
 
 	void AttachSelectState::SearchUIRender(bool _value)
 	{
-		player->uiData.Attach_Default->SetEnable(_value);
+		// player->uiData.Attach_Default->SetEnable(_value);
 	}
 
 	void AttachSelectState::SearchCatchUIRender(bool _value)
 	{
-		player->uiData.Catch_B->SetEnable(_value);
+		// player->uiData.Catch_B->SetEnable(_value);
 	}
 
 #pragma endregion Content

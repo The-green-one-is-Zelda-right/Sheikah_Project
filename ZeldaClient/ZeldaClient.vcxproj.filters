@@ -42,14 +42,11 @@
     <ClCompile Include="RewindSystem.cpp">
       <Filter>KH\System</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>KH\PLAYER\player</Filter>
-    </ClCompile>
     <ClCompile Include="Controller.cpp">
       <Filter>KH\PLAYER\Controller</Filter>
     </ClCompile>
     <ClCompile Include="Holder.cpp">
-      <Filter>KH\PLAYER\player</Filter>
+      <Filter>KH\PLAYER\Player</Filter>
     </ClCompile>
     <ClCompile Include="PzObject.cpp">
       <Filter>KH\Object</Filter>
@@ -80,12 +77,6 @@
     </ClCompile>
     <ClCompile Include="IslandID.cpp">
       <Filter>KH\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraController.cpp">
-      <Filter>KH\PLAYER\Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerController.cpp">
-      <Filter>KH\PLAYER\Controller</Filter>
     </ClCompile>
     <ClCompile Include="IObject.cpp">
       <Filter>KH\DontUse</Filter>
@@ -124,7 +115,7 @@
       <Filter>Device\Electrical Device</Filter>
     </ClCompile>
     <ClCompile Include="GroundCheck.cpp">
-      <Filter>KH\PLAYER\player</Filter>
+      <Filter>KH\PLAYER\Player</Filter>
     </ClCompile>
     <ClCompile Include="PauseGame.cpp">
       <Filter>DH\Pause</Filter>
@@ -156,8 +147,38 @@
     <ClCompile Include="GameManager.cpp">
       <Filter>KH\SCENE</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationController.cpp">
-      <Filter>KH\PLAYER\Controller</Filter>
+    <ClCompile Include="PlayerController.cpp">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAnimation.cpp">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerCamera.cpp">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerMovement.cpp">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Player0.cpp">
+      <Filter>KH\PLAYER\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerStateMachine.cpp">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerAbility.cpp">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="AttachSystem2.cpp">
+      <Filter>KH\PLAYER\Player\System</Filter>
+    </ClCompile>
+    <ClCompile Include="RewindSystem2.cpp">
+      <Filter>KH\PLAYER\Player\System</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerUIManager.cpp">
+      <Filter>KH\PLAYER\Player\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,9 +233,6 @@
     <ClInclude Include="RewindSystem.h">
       <Filter>KH\System</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>KH\PLAYER\player</Filter>
-    </ClInclude>
     <ClInclude Include="Controller.h">
       <Filter>KH\PLAYER\Controller</Filter>
     </ClInclude>
@@ -222,10 +240,10 @@
       <Filter>KH\PLAYER\State\0. Base</Filter>
     </ClInclude>
     <ClInclude Include="Holder.h">
-      <Filter>KH\PLAYER\player</Filter>
+      <Filter>KH\PLAYER\Player</Filter>
     </ClInclude>
     <ClInclude Include="Hold.h">
-      <Filter>KH\PLAYER\player</Filter>
+      <Filter>KH\PLAYER\Player</Filter>
     </ClInclude>
     <ClInclude Include="PzObject.h">
       <Filter>KH\Object</Filter>
@@ -262,12 +280,6 @@
     </ClInclude>
     <ClInclude Include="IslandID.h">
       <Filter>KH\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraController.h">
-      <Filter>KH\PLAYER\Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerController.h">
-      <Filter>KH\PLAYER\Controller</Filter>
     </ClInclude>
     <ClInclude Include="eObjectProperty.h">
       <Filter>KH\DontUse</Filter>
@@ -321,7 +333,7 @@
       <Filter>Device\Electrical Device</Filter>
     </ClInclude>
     <ClInclude Include="GroundCheck.h">
-      <Filter>KH\PLAYER\player</Filter>
+      <Filter>KH\PLAYER\Player</Filter>
     </ClInclude>
     <ClInclude Include="PauseGame.h">
       <Filter>DH\Pause</Filter>
@@ -353,8 +365,44 @@
     <ClInclude Include="GameManager.h">
       <Filter>KH\SCENE</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationController.h">
-      <Filter>KH\PLAYER\Controller</Filter>
+    <ClInclude Include="PlayerController.h">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAnimation.h">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerCamera.h">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerMovement.h">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Player0.h">
+      <Filter>KH\PLAYER\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerStateMachine.h">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAbility.h">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="AttachSystem2.h">
+      <Filter>KH\PLAYER\Player\System</Filter>
+    </ClInclude>
+    <ClInclude Include="RewindSystem2.h">
+      <Filter>KH\PLAYER\Player\System</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerUIManager.h">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumPlayerState.h">
+      <Filter>KH\PLAYER\Player\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerInputData.h">
+      <Filter>KH\PLAYER\Player\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -400,9 +448,6 @@
     <Filter Include="KH\PLAYER\State">
       <UniqueIdentifier>{6452ba17-f6c7-4808-9efa-26bba6abd277}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KH\PLAYER\player">
-      <UniqueIdentifier>{47d937ba-85a6-4d65-82a3-edc8a443434f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scene">
       <UniqueIdentifier>{f699f263-adde-4526-b6b9-8c1a94fd71bf}</UniqueIdentifier>
     </Filter>
@@ -435,6 +480,15 @@
     </Filter>
     <Filter Include="DH\Pause">
       <UniqueIdentifier>{ecb40c42-4a2d-485c-93ec-363cd98270e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KH\PLAYER\Player">
+      <UniqueIdentifier>{47d937ba-85a6-4d65-82a3-edc8a443434f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KH\PLAYER\Player\Core">
+      <UniqueIdentifier>{78d91295-7a71-4a76-b1e5-9900c54f5f72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="KH\PLAYER\Player\System">
+      <UniqueIdentifier>{886fb283-22e0-4f40-a59e-e8433fdb8e69}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
