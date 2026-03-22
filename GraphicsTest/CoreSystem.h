@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <Windows.h>
 
@@ -63,7 +63,7 @@ private:
 	bool isRun;
 	RunningState runningState;
 
-	// �ػ�
+	// 해상도
 	unsigned int resolutionX;
 	unsigned int resolutionY;
 	unsigned int lastWidth;

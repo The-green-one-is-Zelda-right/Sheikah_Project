@@ -1,4 +1,4 @@
-#include "ModelingData.h"
+﻿#include "ModelingData.h"
 
 ZNode::ZNode() :
 	transformMatrix(DirectX::XMMatrixIdentity()),

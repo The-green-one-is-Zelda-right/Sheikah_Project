@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Component.h"
 
@@ -26,7 +26,7 @@ namespace Phyzzle
 		std::vector<std::pair<PurahEngine::GameObject*, bool>> onOffEventList;
 
 	private:
-		// ComponentÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// Componentì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void PreSerialize(json& jsonData) const override;
 		void PreDeserialize(const json& jsonData) override;
 		void PostSerialize(json& jsonData) const override;

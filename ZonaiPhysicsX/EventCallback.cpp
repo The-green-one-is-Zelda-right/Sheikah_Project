@@ -1,4 +1,4 @@
-#include <cassert>
+ï»¿#include <cassert>
 
 #include <PxShape.h>
 
@@ -80,14 +80,14 @@ namespace ZonaiPhysics
 			}
 		}
 
-		// ÇöÀç ÇÁ·¹ÀÓÀÇ Æ®¸®°Å »óÅÂ¸¦ ÀÌÀü ÇÁ·¹ÀÓÀÇ »óÅÂ·Î ¾÷µ¥ÀÌÆ®
+		// í˜„ì¬ í”„ë ˆì„ì˜ íŠ¸ë¦¬ê±° ìƒíƒœë¥¼ ì´ì „ í”„ë ˆì„ì˜ ìƒíƒœë¡œ ì—…ë°ì´íŠ¸
 		prevTriggerBuffer = std::move(currTriggerBuffer);
 		currTriggerBuffer.clear();
 	}
 
 	void EventCallback::onConstraintBreak(physx::PxConstraintInfo* constraints, physx::PxU32 count)
 	{
-		// ÆÄ±«µÈ Á¦¾àÀÇ Á¤º¸¸¦ ³Ñ°ÜÁÜ
+		// íŒŒê´´ëœ ì œì•½ì˜ ì •ë³´ë¥¼ ë„˜ê²¨ì¤Œ
 		for (physx::PxU32 i = 0; i < count; i++)
 		{
 			auto constrain = constraints[i];
@@ -139,11 +139,11 @@ namespace ZonaiPhysics
 
 		for (physx::PxU32 i = 0; i < nbPairs; i++)
 		{
-			// Á¢ÃË Æä¾î¿¡¼­ Á¢ÃËÁ¡µéÀ» °¡Á®¿È
+			// ì ‘ì´‰ í˜ì–´ì—ì„œ ì ‘ì´‰ì ë“¤ì„ ê°€ì ¸ì˜´
 			const PxContactPair& cp = pairs[i];
 			PxContactStreamIterator itr(cp.contactPatches, cp.contactPoints, cp.getInternalFaceIndices(), cp.patchCount, cp.contactCount);
 
-			// Ãæ°İ·®ÀÇ ¹è¿­
+			// ì¶©ê²©ëŸ‰ì˜ ë°°ì—´
 			const float* impulses = cp.contactImpulses;
 			const bool hasImpulse = cp.flags.isSet(PxContactPairFlag::eINTERNAL_HAS_IMPULSES);
 			const bool hasPostVelocities = !cp.flags.isSet(PxContactPairFlag::eACTOR_PAIR_LOST_TOUCH);
@@ -239,7 +239,7 @@ namespace ZonaiPhysics
 				currTriggerBuffer.emplace_back(trigger, other, eCallback::eTriggerExit);
 			}
 
-			// ÇöÀç ÇÁ·¹ÀÓ¿¡¼­ÀÇ Æ®¸®°Å »óÅÂ¸¦ ÀÌÀü ÇÁ·¹ÀÓ°ú ºñ±³ÇÏ¿© eTriggerStay ÀÌº¥Æ® Ã³¸®
+			// í˜„ì¬ í”„ë ˆì„ì—ì„œì˜ íŠ¸ë¦¬ê±° ìƒíƒœë¥¼ ì´ì „ í”„ë ˆì„ê³¼ ë¹„êµí•˜ì—¬ eTriggerStay ì´ë²¤íŠ¸ ì²˜ë¦¬
 			auto it = std::find(prevTriggerBuffer.begin(), prevTriggerBuffer.end(), TriggerEventBuffer{ trigger, other });
 			if (it != prevTriggerBuffer.end() && !(tp.status & PxPairFlag::eNOTIFY_TOUCH_LOST))
 			{
@@ -251,7 +251,7 @@ namespace ZonaiPhysics
 	void EventCallback::onAdvance(const physx::PxRigidBody* const* bodyBuffer, const physx::PxTransform* poseBuffer,
 		const physx::PxU32 count)
 	{
-		// ±¸Çö ¾È ÇÔ
+		// êµ¬í˜„ ì•ˆ í•¨
 	}
 
 	ZnCollider* EventCallback::GetCollider(physx::PxShape* _shape)

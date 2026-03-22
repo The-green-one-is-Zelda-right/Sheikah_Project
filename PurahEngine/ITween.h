@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "EasingFunc.h"
 
 namespace PurahEngine

@@ -1,4 +1,4 @@
-#include "ZnCollider.h"
+ï»¿#include "ZnCollider.h"
 #include "ZnCollision.h"
 
 #include "Component.h"
@@ -17,7 +17,7 @@ void PurahEngine::GameObject::PostInitializeEvent(std::queue<std::pair<Component
 			{
 				if (componentList[i]->GetState() == Component::ComponentState::CREATE)
 				{
-					// eventQueue¿¡ ÀÌ°Ô ÀÖ´Â°¡? ¾øÀ¸¸é push ÀÖÀ¸¸é ½ºÅµ
+					// eventQueueì— ì´ê²Œ ìˆëŠ”ê°€? ì—†ìœ¼ë©´ push ìˆìœ¼ë©´ ìŠ¤í‚µ
 					eventQueue.push({ componentList[i], (&Component::PostInitialize) });
 				}
 			}
@@ -44,7 +44,7 @@ void PurahEngine::GameObject::PostInitializeEvent(std::queue<std::pair<Component
 			{
 				if (componentList[i]->GetState() == Component::ComponentState::CREATE)
 				{
-					// eventQueue¿¡ ÀÌ°Ô ÀÖ´Â°¡? ¾øÀ¸¸é push ÀÖÀ¸¸é ½ºÅµ
+					// eventQueueì— ì´ê²Œ ìˆëŠ”ê°€? ì—†ìœ¼ë©´ push ìˆìœ¼ë©´ ìŠ¤í‚µ
 					eventQueue.push({ componentList[i], (&Component::PostInitialize) });
 				}
 			}
@@ -81,7 +81,7 @@ void PurahEngine::GameObject::AwakeEvent(std::queue<std::pair<Component*, std::f
 			{
 				if (componentList[i]->GetState() == Component::ComponentState::CREATE)
 				{
-					// eventQueue¿¡ ÀÌ°Ô ÀÖ´Â°¡? ¾øÀ¸¸é push ÀÖÀ¸¸é ½ºÅµ
+					// eventQueueì— ì´ê²Œ ìˆëŠ”ê°€? ì—†ìœ¼ë©´ push ìˆìœ¼ë©´ ìŠ¤í‚µ
 					eventQueue.push({ componentList[i], (&Component::Awake) });
 				}
 			}
@@ -108,7 +108,7 @@ void PurahEngine::GameObject::AwakeEvent(std::queue<std::pair<Component*, std::f
 			{
 				if (componentList[i]->GetState() == Component::ComponentState::CREATE)
 				{
-					// eventQueue¿¡ ÀÌ°Ô ÀÖ´Â°¡? ¾øÀ¸¸é push ÀÖÀ¸¸é ½ºÅµ
+					// eventQueueì— ì´ê²Œ ìˆëŠ”ê°€? ì—†ìœ¼ë©´ push ìˆìœ¼ë©´ ìŠ¤í‚µ
 					eventQueue.push({ componentList[i], (&Component::Awake) });
 				}
 			}
@@ -797,5 +797,5 @@ PurahEngine::Component* PurahEngine::GameObject::AddComponentToString(std::strin
 	component->gameObject = this;
 	component->Initialize();
 
-	return component; // Ãß°¡µÈ ÄÄÆ÷³ÍÆ® Æ÷ÀÎÅÍ¸¦ ¹İÈ¯
+	return component; // ì¶”ê°€ëœ ì»´í¬ë„ŒíŠ¸ í¬ì¸í„°ë¥¼ ë°˜í™˜
 }

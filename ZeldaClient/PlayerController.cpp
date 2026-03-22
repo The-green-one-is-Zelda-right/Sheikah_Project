@@ -1,4 +1,4 @@
-#include "PlayerController.h"
+ï»¿#include "PlayerController.h"
 
 
 namespace Phyzzle
@@ -27,23 +27,23 @@ namespace Phyzzle
 	{
 		const Eigen::Vector3f movement = _dir * _speed;
 
-		// sweepÇØ¼­ °¥ ¼ö ÀÖ´Â °÷ÀÎÁö ¾Æ´ÑÁö Ã¼Å©
+		// sweepí•´ì„œ ê°ˆ ìˆ˜ ìžˆëŠ” ê³³ì¸ì§€ ì•„ë‹Œì§€ ì²´í¬
 	}
 
 	void PlayerController::LookTo(const Eigen::Vector3f& _worldDirection)
 	{
 		assert(!_worldDirection.isZero());
 
-		// ÇÃ·¹ÀÌ¾îÀÇ ¿ùµå È¸ÀüÀ» ±¸ÇÔ
+		// í”Œë ˆì´ì–´ì˜ ì›”ë“œ íšŒì „ì„ êµ¬í•¨
 		const Eigen::Quaternionf parentWorld = gameObject->GetTransform()->GetWorldRotation();
 
-		// ModelÀÇ ·ÎÄÃ ¹æÇâÀ» ±¸ÇÔ.
+		// Modelì˜ ë¡œì»¬ ë°©í–¥ì„ êµ¬í•¨.
 		const Eigen::Vector3f localDirection = parentWorld.conjugate() * _worldDirection;
 
-		// ·ÎÄÃ Z¿Í Local Direction »çÀÌÀÇ ÄõÅÍ´Ï¾ðÀ» ±¸ÇÔ.
+		// ë¡œì»¬ Zì™€ Local Direction ì‚¬ì´ì˜ ì¿¼í„°ë‹ˆì–¸ì„ êµ¬í•¨.
 		const Eigen::Quaternionf targetRotation = Eigen::Quaternionf::FromTwoVectors(Eigen::Vector3f::UnitZ(), localDirection);
 
-		// ModelÀ» È¸Àü½ÃÅ´
+		// Modelì„ íšŒì „ì‹œí‚´
 		model->SetLocalRotation(targetRotation);
 	}
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "ForceType.h"
 #include "FreezeFlag.h"
 #include "ZnObject.h"
@@ -18,23 +18,23 @@ namespace ZonaiPhysics
 
 	public:
 		/**
-		¼ö¸é »óÅÂÀÇ °­Ã¼¸¦ ±ú¿ò
+		ìˆ˜ë©´ ìƒíƒœì˜ ê°•ì²´ë¥¼ ê¹¨ì›€
 		*/
 		virtual void			WakeUp() = 0;
 		
 		/**
-		¼ö¸é ¿©ºÎ¸¦ ¹İÈ¯ÇÔ
+		ìˆ˜ë©´ ì—¬ë¶€ë¥¼ ë°˜í™˜í•¨
 		*/
 		virtual bool			IsSleeping() const = 0;
 
 		/**
-		Áß·ÂÀÇ ¿µÇâÀ» ¹Ş´Â°¡? 
+		ì¤‘ë ¥ì˜ ì˜í–¥ì„ ë°›ëŠ”ê°€? 
 		*/
 		virtual void			UseGravity(bool) = 0;
 		virtual bool			HasGravity() const = 0;
 
 		/**
-		Å°³×¸¶Æ½ ¼³Á¤
+		í‚¤ë„¤ë§ˆí‹± ì„¤ì •
 		*/
 		virtual void			SetKinematic(bool) = 0;
 		virtual bool			IsKinematic() const = 0;
@@ -42,7 +42,7 @@ namespace ZonaiPhysics
 		virtual void			Disable(bool) const = 0;
 
 		/**
-		°­Ã¼ÀÇ ¿òÁ÷ÀÓÀ» Á¦ÇÑÇÏ´Â ÇÃ·¡±×
+		ê°•ì²´ì˜ ì›€ì§ì„ì„ ì œí•œí•˜ëŠ” í”Œë˜ê·¸
 		*/
 		virtual uint8_t			GetDynamicLockFlags() const = 0;
 		virtual void			SetDynamicLockFlag(FreezeFlag flag, bool) = 0;
@@ -50,10 +50,10 @@ namespace ZonaiPhysics
 
 	public:
 		/**
-		Áú·®
+		ì§ˆëŸ‰
 
-		¹°Ã¼ÀÇ Áú·®.
-		0ÀÌ¸é ¹«ÇÑÇÑ Áú·®À¸·Î Ãë±ŞÇÔ.
+		ë¬¼ì²´ì˜ ì§ˆëŸ‰.
+		0ì´ë©´ ë¬´í•œí•œ ì§ˆëŸ‰ìœ¼ë¡œ ì·¨ê¸‰í•¨.
 		*/
 		virtual float			GetMass() const = 0;
 		virtual void			SetMass(float) = 0;
@@ -65,58 +65,58 @@ namespace ZonaiPhysics
 		virtual void			SetInertiaTensor(const Eigen::Vector3f& tensor) = 0;
 
 		/**
-		¼±Çü °¨¼è °è¼ö
+		ì„ í˜• ê°ì‡  ê³„ìˆ˜
 
-		ÀúÇ×ÀÌ³ª ¿©·¯°¡Áö ¿ä¼Ò¿¡ ÀÇÇØ ¹°Ã¼°¡ ¼­¼­È÷ Á¤ÁöÇÔ.
+		ì €í•­ì´ë‚˜ ì—¬ëŸ¬ê°€ì§€ ìš”ì†Œì— ì˜í•´ ë¬¼ì²´ê°€ ì„œì„œíˆ ì •ì§€í•¨.
 		*/
 		virtual float			GetLinearDamping() const = 0;
 		virtual void			SetLinearDamping(float _damping) = 0;
 
 		/**
-		È¸Àü °¨¼è °è¼ö
+		íšŒì „ ê°ì‡  ê³„ìˆ˜
 
-		ÀúÇ×ÀÌ³ª ¿©·¯°¡Áö ¿ä¼Ò¿¡ ÀÇÇØ ¹°Ã¼°¡ ¼­¼­È÷ Á¤ÁöÇÔ
+		ì €í•­ì´ë‚˜ ì—¬ëŸ¬ê°€ì§€ ìš”ì†Œì— ì˜í•´ ë¬¼ì²´ê°€ ì„œì„œíˆ ì •ì§€í•¨
 		*/
 		virtual float			GetAngularDamping() const = 0;
 		virtual void			SetAngularDamping(float _damping) = 0;
 		
 		/**
-		¼±¼Óµµ
+		ì„ ì†ë„
 		*/
 		virtual Eigen::Vector3f	GetLinearVelocity() const = 0;
 		virtual void			SetLinearVelocity(const Eigen::Vector3f& _velocity) = 0;
 		
 		/**
-		°¢¼Óµµ
+		ê°ì†ë„
 		*/
 		virtual Eigen::Vector3f	GetAngularVelocity() const = 0;
 		virtual void			SetAngularVelocity(const Eigen::Vector3f& _velocity) = 0;
 		
 		/**
-		¼±¼Óµµ Á¦ÇÑ
+		ì„ ì†ë„ ì œí•œ
 		*/
 		virtual float			GetMaxLinearVelocity() const = 0;
 		virtual void			SetMaxLinearVelocity(const float&) = 0;
 
 		/**
-		°¢¼Óµµ Á¦ÇÑ
+		ê°ì†ë„ ì œí•œ
 		*/
 		virtual float			GetMaxAngularVelocity() const = 0;
 		virtual void			SetMaxAngularVelocity(const float&) = 0;
 
 		/**
-		¹°Ã¼¿¡ ÈûÀ» °¡ÇÏ°Å³ª Áö¿ò
+		ë¬¼ì²´ì— í˜ì„ ê°€í•˜ê±°ë‚˜ ì§€ì›€
 		*/
 		virtual void			AddForce(const Eigen::Vector3f& _force, ForceType _type = ForceType::Force) = 0;
 		virtual void			ClearForce() = 0;
 
 		/**
-		¹°Ã¼¿¡ ÅäÅ©¸¦ °¡ÇÏ°Å³ª Áö¿ò
+		ë¬¼ì²´ì— í† í¬ë¥¼ ê°€í•˜ê±°ë‚˜ ì§€ì›€
 		*/
 		virtual void			AddTorque(const Eigen::Vector3f& _torque, ForceType _type = ForceType::Force) = 0;
 		virtual void			ClearTorque() = 0;
 
-		// ÁÖ¾îÁø Ãà¿¡
+		// ì£¼ì–´ì§„ ì¶•ì—
 		virtual ZnBound3		GetBoundingBox(const Eigen::Vector3f& _pos, const Eigen::Quaternionf& _rot) = 0;
 		virtual ZnBound3		ComputeBoundingBoxAtTransform(const Eigen::Vector3f& _pos, const Eigen::Quaternionf& _rot) = 0;
 	};

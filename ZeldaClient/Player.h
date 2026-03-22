@@ -1,6 +1,4 @@
-#pragma once
-#include <set>
-
+ï»¿#pragma once
 #include "PurahEngine.h"
 
 namespace ZonaiPhysics
@@ -16,6 +14,7 @@ namespace Phyzzle
 	class Holder;
 	class IState;
 	class GroundCheck;
+	class PlayerAbilityComponent;
 
 	class Player final : public PurahEngine::Component
 	{
@@ -41,11 +40,11 @@ namespace Phyzzle
 
 		enum AbilityState
 		{
-			ATTACH_HOLD = -1,	// ¹°°ÇÀ» µç »óÅÂ
+			ATTACH_HOLD = -1,	// ë¬¼ê±´ì„ ë“  ìƒíƒœ
 
-			DEFAULT = 0,	// ±âº» »óÅÂ
-			ATTACH_SELECT = 1,	// ¹°°ÇÀ» ºÎÂøÇÏ·Á´Â »óÅÂ
-			REWIND_SELECT = 2,	// ¹°°ÇÀ» µÇµ¹¸®·Á´Â »óÅÂ
+			DEFAULT = 0,	// ê¸°ë³¸ ìƒíƒœ
+			ATTACH_SELECT = 1,	// ë¬¼ê±´ì„ ë¶€ì°©í•˜ë ¤ëŠ” ìƒíƒœ
+			REWIND_SELECT = 2,	// ë¬¼ê±´ì„ ë˜ëŒë¦¬ë ¤ëŠ” ìƒíƒœ
 			LOCK_SELECT = 3
 		};
 #pragma endregion Enum
@@ -99,7 +98,7 @@ namespace Phyzzle
 			PurahEngine::Transform* attachHighCamera0;
 			PurahEngine::Transform* attachHighCamera1;
 
-			float cameraLerpTime = 0.5f;			// º¸°£ ½Ã°£
+			float cameraLerpTime = 0.5f;			// ë³´ê°„ ì‹œê°„
 			float cameraLerpTime0 = 1.0f;
 
 			Eigen::Vector3f		coreDefaultPosition;
@@ -116,9 +115,9 @@ namespace Phyzzle
 			Eigen::Vector3f armTargetPosition;
 			Eigen::Quaternionf	armTargetRotation;
 
-			float xAngle = 0.f;					// ÇöÀç ¾Ş±Û
-			const float limitHighAngle = 80.f;	// ÇÏÀÌ ¾Ş±Û
-			const float limitLowAngle = -70.f;	// ·Î¿ì ¾Ş±Û
+			float xAngle = 0.f;					// í˜„ì¬ ì•µê¸€
+			const float limitHighAngle = 80.f;	// í•˜ì´ ì•µê¸€
+			const float limitLowAngle = -70.f;	// ë¡œìš° ì•µê¸€
 
 			unsigned int cameraCollisionLayers = 0;
 			float cameraCollisionRadius = 5.f;
@@ -142,10 +141,10 @@ namespace Phyzzle
 			float height = 1.f;
 			float radius = 0.5f;
 
-			float moveSpeed = 10.f;				// ±âº» ¼Óµµ
-			float holdSpeed = 5.f;				// ¾îÅÂÄ¡·Î ¹°°Ç µé°í ÀÖÀ» ¶§ ¿òÁ÷ÀÌ´Â ¼Óµµ
-			float sensitivity = 90.f;			// Ä«¸Ş¶ó È¸Àü ¼Óµµ
-			float jumpPower = 10.f;				// Á¡ÇÁ Èû
+			float moveSpeed = 10.f;				// ê¸°ë³¸ ì†ë„
+			float holdSpeed = 5.f;				// ì–´íƒœì¹˜ë¡œ ë¬¼ê±´ ë“¤ê³  ìˆì„ ë•Œ ì›€ì§ì´ëŠ” ì†ë„
+			float sensitivity = 90.f;			// ì¹´ë©”ë¼ íšŒì „ ì†ë„
+			float jumpPower = 10.f;				// ì í”„ í˜
 			float jumpCooldown = 0.1f;
 			
 			bool isGrounded = false;
@@ -156,7 +155,7 @@ namespace Phyzzle
 
 			Eigen::Vector3f onPlatformVelocity;
 
-			float slopeLimit = 36.f;			// °æ»ç °¢µµ
+			float slopeLimit = 36.f;			// ê²½ì‚¬ ê°ë„
 			float slideFriction = 0.3f;
 #pragma endregion Player Variable
 
@@ -290,9 +289,10 @@ namespace Phyzzle
 
 #pragma region Initialize
 		void InitializeGamePad();
+		void ResolveGamePadBinding();
 		void InitializeDefaultPositions();
 		void InitializeLerpFunctions();
-		void InitializeAbilitySystem();
+		void EnsureRuntimeComponents();
 		void InitializeStateSystem();
 		void AddAnimationState(
 			std::map<PlayerState, std::function<void()>>& stateMap,
@@ -308,11 +308,14 @@ namespace Phyzzle
 		void DebugDraw();
 		void DrawStateInfo() const;
 		std::wstring GetStateString(AbilityState state) const;
+		std::wstring GetAbilityLabel(AbilityState state) const;
 		void DrawJumpInfo() const;
+		void DrawSelectedAbilityUI() const;
 #pragma endregion Debug
 
 	public:
 #pragma region Event
+		void OnDataLoadComplete() override;
 		void Start() override;
 		void FixedUpdate() override;
 		void Update() override;
@@ -326,13 +329,14 @@ namespace Phyzzle
 
 	private:
 #pragma region Update
-		bool UpdateAbilitChangeyState();
-		void UpdateAbilityStayState();
-		void PostUpdateAbilityState();
 		void UpdatePlayerAnimationState();
 #pragma endregion Update
 
 		void ChangeAbilityState(AbilityState);
+		void SelectAbility(AbilityState);
+		void SelectNextAbility();
+		void SelectPreviousAbility();
+		void UseSelectedAbility();
 		void ChangePlayerAnimationState(PlayerState);
 
 
@@ -340,17 +344,9 @@ namespace Phyzzle
 		void HandleInput();
 		void HandleDebugToggle();
 
-		void HandleGamePadInput();
-		void HandleStickInput();
-		void HandleTriggerInput();
-		void HandleButtonInput();
-		void HandleButton(PurahEngine::ePad button, void (IState::* clickFunc)(), void (IState::* pressingFunc)(), void (IState::* upFunc)());
-
 		void HandleKeyboardInput();
 		void HandleMovementInput();
 		void HandleCameraRotationInput();
-		void HandleActionInput();
-		void HandleAbilityInput();
 #pragma endregion Input
 
 #pragma region Player
@@ -370,25 +366,25 @@ namespace Phyzzle
 		void LookInLocalDirection(const Eigen::Vector3f& _localDirection) const;
 
 #pragma region Camera
-		void UpdateDefaultCamera();					// Ä«¸Ş¶ó ¾÷µ¥ÀÌÆ®
-		void UpdateSelectCamera();					// Ä«¸Ş¶ó ¾÷µ¥ÀÌÆ®
+		void UpdateDefaultCamera();					// ì¹´ë©”ë¼ ì—…ë°ì´íŠ¸
+		void UpdateSelectCamera();					// ì¹´ë©”ë¼ ì—…ë°ì´íŠ¸
 
-		void UpdateDefaultCameraCore();							// Ä«¸Ş¶ó ÄÚ¾î ¾÷µ¥ÀÌÆ®
-		void UpdateSelectCameraCore();							// Ä«¸Ş¶ó ÄÚ¾î ¾÷µ¥ÀÌÆ®
+		void UpdateDefaultCameraCore();							// ì¹´ë©”ë¼ ì½”ì–´ ì—…ë°ì´íŠ¸
+		void UpdateSelectCameraCore();							// ì¹´ë©”ë¼ ì½”ì–´ ì—…ë°ì´íŠ¸
 
 		/// <summary>
-		/// Camera Core À§Ä¡ °è»ê
+		/// Camera Core ìœ„ì¹˜ ê³„ì‚°
 		/// 
-		/// Ä«¸Ş¶ó À§Ä¡´Â ArmÀÇ °¢µµ¿¡ ÀÇÇØ °è»êµÊ
+		/// ì¹´ë©”ë¼ ìœ„ì¹˜ëŠ” Armì˜ ê°ë„ì— ì˜í•´ ê³„ì‚°ë¨
 		/// </summary>
-		/// <returns>Ä«¸Ş¶ó ÄÚ¾î ·ÎÄÃ ÁÂÇ¥</returns>
-		void CalculateDefaultCameraCorePosition(Eigen::Vector3f& localOut, Eigen::Vector3f& worldOut, bool _isSelect);	// Ä«¸Ş¶ó À§Ä¡ ¾÷µ¥ÀÌÆ®
+		/// <returns>ì¹´ë©”ë¼ ì½”ì–´ ë¡œì»¬ ì¢Œí‘œ</returns>
+		void CalculateDefaultCameraCorePosition(Eigen::Vector3f& localOut, Eigen::Vector3f& worldOut, bool _isSelect);	// ì¹´ë©”ë¼ ìœ„ì¹˜ ì—…ë°ì´íŠ¸
 
 		/// <summary>
-		/// Ä«¸Ş¶ó°¡ ÁöÇü Áö¹°¿¡ Ãæµ¹ µÇ´ÂÁö Ã¼Å©ÇÏ°í À§Ä¡¸¦ º¯°æÇÔ
+		/// ì¹´ë©”ë¼ê°€ ì§€í˜• ì§€ë¬¼ì— ì¶©ëŒ ë˜ëŠ”ì§€ ì²´í¬í•˜ê³  ìœ„ì¹˜ë¥¼ ë³€ê²½í•¨
 		/// </summary>
-		/// <param name="pos">Ä«¸Ş¶ó ÄÚ¾î ·ÎÄÃ ÁÂÇ¥</param>
-		/// <returns>ÁöÇü Áö¹°¿¡ ºÎµúÄ¡¸é true</returns>
+		/// <param name="pos">ì¹´ë©”ë¼ ì½”ì–´ ë¡œì»¬ ì¢Œí‘œ</param>
+		/// <returns>ì§€í˜• ì§€ë¬¼ì— ë¶€ë”ªì¹˜ë©´ true</returns>
 		bool ResolveCameraCollision(Eigen::Vector3f& localIn, Eigen::Vector3f& worldIn);
 
 		void UpdateCameraPositionLerp();
@@ -398,81 +394,81 @@ namespace Phyzzle
 		void CharacterDisable();
 
 		/// <summary>
-		/// Ä«¸Ş¶ó ÄÚ¾îÀÇ ¸ñÇ¥ ·ÎÄÃ ÁÂÇ¥¸¦ ¼³Á¤ÇÔ
+		/// ì¹´ë©”ë¼ ì½”ì–´ì˜ ëª©í‘œ ë¡œì»¬ ì¢Œí‘œë¥¼ ì„¤ì •í•¨
 		/// 
-		/// ÇöÀç ÁÂÇ¥¸¦ ÀúÀåÇÏ°í ¸ñÇ¥ ÁÂÇ¥·Î º¸°£ÇÔ
+		/// í˜„ì¬ ì¢Œí‘œë¥¼ ì €ì¥í•˜ê³  ëª©í‘œ ì¢Œí‘œë¡œ ë³´ê°„í•¨
 		/// </summary>
-		/// <param name="_worldPosision">ÄÚ¾îÀÇ ·ÎÄÃ ÁÂÇ¥</param>
+		/// <param name="_worldPosision">ì½”ì–´ì˜ ë¡œì»¬ ì¢Œí‘œ</param>
 		void SetCameraCoreLocalTargetPosition(const Eigen::Vector3f& _localPosision);
 		void SetCameraCoreLocalTargetRotation(const Eigen::Quaternionf& _localRotation);
 
 		/// <summary>
-		/// Ä«¸Ş¶ó ÄÚ¾îÀÇ ¸ñÇ¥ ¿ùµå ÁÂÇ¥¸¦ ¼³Á¤ÇÔ
+		/// ì¹´ë©”ë¼ ì½”ì–´ì˜ ëª©í‘œ ì›”ë“œ ì¢Œí‘œë¥¼ ì„¤ì •í•¨
 		/// 
-		/// ÇöÀç ÁÂÇ¥¸¦ ÀúÀåÇÏ°í ¸ñÇ¥ ÁÂÇ¥·Î º¸°£ÇÔ
+		/// í˜„ì¬ ì¢Œí‘œë¥¼ ì €ì¥í•˜ê³  ëª©í‘œ ì¢Œí‘œë¡œ ë³´ê°„í•¨
 		/// </summary>
-		/// <param name="_worldPosision">ÄÚ¾îÀÇ ¿ùµå ÁÂÇ¥</param>
+		/// <param name="_worldPosision">ì½”ì–´ì˜ ì›”ë“œ ì¢Œí‘œ</param>
 		void SetCameraCoreWorldTargetPosition(const Eigen::Vector3f& _worldPosision);
 		void SetCameraCoreWorldTargetRotation(const Eigen::Quaternionf& _worldRotation);
 
 		/// <summary>
-		/// Ä«¸Ş¶ó ÄÚ¾î°¡ XY, XZÆò¸éÀÇ ¾îµğ¸¦ º¸°í ÀÖ´ÂÁö °è»ê
+		/// ì¹´ë©”ë¼ ì½”ì–´ê°€ XY, XZí‰ë©´ì˜ ì–´ë””ë¥¼ ë³´ê³  ìˆëŠ”ì§€ ê³„ì‚°
 		/// </summary>
-		/// <param name="cameraPos">Ä«¸Ş¶ó ÄÚ¾îÀÇ ·ÎÄÃ ÁÂÇ¥</param>
-		/// <param name="direction">Ä«¸Ş¶ó ÄÚ¾îÀÇ ·ÎÄÃ ¹æÇâ º¤ÅÍ</param>
-		/// <returns>Ä«¸Ş¶ó ÄÚ¾îÀÇ ·ÎÄÃ XY, XZ Æò¸éÀÇ ÇÑ Á¡</returns>
+		/// <param name="cameraPos">ì¹´ë©”ë¼ ì½”ì–´ì˜ ë¡œì»¬ ì¢Œí‘œ</param>
+		/// <param name="direction">ì¹´ë©”ë¼ ì½”ì–´ì˜ ë¡œì»¬ ë°©í–¥ ë²¡í„°</param>
+		/// <returns>ì¹´ë©”ë¼ ì½”ì–´ì˜ ë¡œì»¬ XY, XZ í‰ë©´ì˜ í•œ ì </returns>
 		Eigen::Vector3f CalculateCameraFocusPosition(const Eigen::Vector3f& cameraPos, const Eigen::Vector3f direction);
 
 		/// <summary>
-		/// Ä«¸Ş¶ó ÄÚ¾î°¡ º¸°í ÀÖ´Â ·ÎÄÃ XY Æò¸éÀÇ ÁÂÇ¥¸¦ °è»êÇÏ´Â ÇÔ¼ö
+		/// ì¹´ë©”ë¼ ì½”ì–´ê°€ ë³´ê³  ìˆëŠ” ë¡œì»¬ XY í‰ë©´ì˜ ì¢Œí‘œë¥¼ ê³„ì‚°í•˜ëŠ” í•¨ìˆ˜
 		/// </summary>
-		/// <param name="cameraPos">Ä«¸Ş¶ó ÄÚ¾î ·ÎÄÃ ÁÂÇ¥</param>
-		/// <param name="direction">Ä«¸Ş¶ó ÄÚ¾î ·ÎÄÃ ¹æÇâ º¤ÅÍ</param>
-		/// <param name="out">°è»êµÈ ·ÎÄÃ XY Æò¸éÀÇ ÁÂÇ¥</param>
-		/// <returns>XY Æò¸é°ú ÆòÇàÇÏ¸é false</returns>
+		/// <param name="cameraPos">ì¹´ë©”ë¼ ì½”ì–´ ë¡œì»¬ ì¢Œí‘œ</param>
+		/// <param name="direction">ì¹´ë©”ë¼ ì½”ì–´ ë¡œì»¬ ë°©í–¥ ë²¡í„°</param>
+		/// <param name="out">ê³„ì‚°ëœ ë¡œì»¬ XY í‰ë©´ì˜ ì¢Œí‘œ</param>
+		/// <returns>XY í‰ë©´ê³¼ í‰í–‰í•˜ë©´ false</returns>
 		bool IntersectXYPlane(const Eigen::Vector3f& cameraPos, const Eigen::Vector3f direction, Eigen::Vector3f& out);
 
 		/// <summary>
-		/// Ä«¸Ş¶ó ÄÚ¾î°¡ º¸°í ÀÖ´Â ·ÎÄÃ XZ Æò¸éÀÇ ÁÂÇ¥¸¦ °è»êÇÏ´Â ÇÔ¼ö
+		/// ì¹´ë©”ë¼ ì½”ì–´ê°€ ë³´ê³  ìˆëŠ” ë¡œì»¬ XZ í‰ë©´ì˜ ì¢Œí‘œë¥¼ ê³„ì‚°í•˜ëŠ” í•¨ìˆ˜
 		/// </summary>
-		/// <param name="cameraPos">Ä«¸Ş¶ó ÄÚ¾î ·ÎÄÃ ÁÂÇ¥</param>
-		/// <param name="direction">Ä«¸Ş¶ó ÄÚ¾î ·ÎÄÃ ¹æÇâ º¤ÅÍ</param>
-		/// <param name="out">°è»êµÈ ·ÎÄÃ XZ Æò¸éÀÇ ÁÂÇ¥</param>
-		/// <returns>Æò¸é°ú ÆòÇàÇÏ¸é false</returns>
+		/// <param name="cameraPos">ì¹´ë©”ë¼ ì½”ì–´ ë¡œì»¬ ì¢Œí‘œ</param>
+		/// <param name="direction">ì¹´ë©”ë¼ ì½”ì–´ ë¡œì»¬ ë°©í–¥ ë²¡í„°</param>
+		/// <param name="out">ê³„ì‚°ëœ ë¡œì»¬ XZ í‰ë©´ì˜ ì¢Œí‘œ</param>
+		/// <returns>í‰ë©´ê³¼ í‰í–‰í•˜ë©´ false</returns>
 		bool IntersectXZPlane(const Eigen::Vector3f& cameraPos, const Eigen::Vector3f direction, Eigen::Vector3f& out);
 
 		/// <summary>
-		/// Ä«¸Ş¶ó ¾Ï°ú Ä«¸Ş¶ó ÄÚ¾îÀÇ Æ®·£½ºÆûÀ» ÃÊ±âÈ­ ÇÔ
+		/// ì¹´ë©”ë¼ ì•”ê³¼ ì¹´ë©”ë¼ ì½”ì–´ì˜ íŠ¸ëœìŠ¤í¼ì„ ì´ˆê¸°í™” í•¨
 		/// </summary>
 		void ResetCameraArmAndCameraCore();
 		void ResetCameraCoreTarget();
-		void ResetCamera();							// Ä«¸Ş¶ó À§Ä¡ ÃÊ±âÈ­
-		void ResetCameraArm();						// Ä«¸Ş¶ó ¾Ï À§Ä¡ ÃÊ±âÈ­
-		void ResetCameraCore();						// Ä«¸Ş¶ó ÄÚ¾î À§Ä¡ ÃÊ±âÈ­
+		void ResetCamera();							// ì¹´ë©”ë¼ ìœ„ì¹˜ ì´ˆê¸°í™”
+		void ResetCameraArm();						// ì¹´ë©”ë¼ ì•” ìœ„ì¹˜ ì´ˆê¸°í™”
+		void ResetCameraCore();						// ì¹´ë©”ë¼ ì½”ì–´ ìœ„ì¹˜ ì´ˆê¸°í™”
 
 		void SetCameraArmFoward(const Eigen::Vector3f& _direction);
-		void RotateCameraArm();							// Ä«¸Ş¶ó ¾Ï È¸Àü
-		void RotateCameraArmYaw(float yawAngle);		// Ä«¸Ş¶ó ¾Ï yaw È¸Àü
-		void RotateCameraArmPitch(float pitchAngle);	// Ä«¸Ş¶ó ¾Ï pitch È¸Àü
+		void RotateCameraArm();							// ì¹´ë©”ë¼ ì•” íšŒì „
+		void RotateCameraArmYaw(float yawAngle);		// ì¹´ë©”ë¼ ì•” yaw íšŒì „
+		void RotateCameraArmPitch(float pitchAngle);	// ì¹´ë©”ë¼ ì•” pitch íšŒì „
 
 		void CameraLookTo(const Eigen::Vector3f& _direction);
 		void CameraLookAt(const Eigen::Vector3f& _position);
 #pragma endregion Camera
 
 	public:
-#pragma region Á÷·ÄÈ­
+#pragma region ì§ë ¬í™”
 		void PreSerialize(json& jsonData) const override;
 		void PreDeserialize(const json& jsonData) override;
 		void PostSerialize(json& jsonData) const override;
 		void PostDeserialize(const json& jsonData) override;
-#pragma endregion Á÷·ÄÈ­
+#pragma endregion ì§ë ¬í™”
 
-#pragma region ÇÃ·¹ÀÌ¾îSFX
+#pragma region í”Œë ˆì´ì–´SFX
 	public:
 		void PlayFootStep();
 		void PlayJumping();
 		void PlayLanding();
-#pragma endregion ÇÃ·¹ÀÌ¾îSFX
+#pragma endregion í”Œë ˆì´ì–´SFX
 
 	private:
 		friend class IState;
@@ -481,21 +477,19 @@ namespace Phyzzle
 		friend class AttachHoldState;
 		friend class RewindState;
 		friend class LockState;
+		friend class PlayerAbilityComponent;
 
-		std::unordered_map<AbilityState, IState*> stateSystem;
-		std::set<AbilityState> stateChange;
 		std::map<PlayerState, std::wstring> animationString;
 		std::map<PlayerState, std::function<void()>> animationState;
 		std::map<PlayerState, std::function<void(float)>> animationSpeedController;
-
-		AbilityState prevState = DEFAULT;
-		AbilityState currState = DEFAULT;
-		AbilityState nextState = DEFAULT;
 
 		PlayerState prevPlayerState = IDLE;
 		PlayerState currPlayerState = IDLE;
 
 		PurahEngine::IGamePad* gamePad;
+		int gamePadSlot = -1;
+		int lastLoggedGamePadSlot = -2;
+		PlayerAbilityComponent* abilityComponent = nullptr;
 		PlayerInput currInput;
 		PlayerInput prevInput;
 

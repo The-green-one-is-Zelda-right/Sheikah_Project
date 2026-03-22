@@ -1,4 +1,4 @@
-#include "ModelRenderer.h"
+ï»¿#include "ModelRenderer.h"
 
 #include "GraphicsManager.h"
 #include "GameObject.h"
@@ -31,18 +31,18 @@ namespace PurahEngine
 
 	void ModelRenderer::Render(IZeldaRenderer* renderer)
 	{
-		// °ÔÀÓ¿ÀºêÁ§Æ®°¡ È°¼ºÈ­ µÇ¾î ÀÖ´Â °æ¿ì¿¡¸¸ ÀÛµ¿ÇÑ´Ù.
+		// ê²Œì„ì˜¤ë¸Œì íŠ¸ê°€ í™œì„±í™” ë˜ì–´ ìˆëŠ” ê²½ìš°ì—ë§Œ ì‘ë™í•œë‹¤.
 		if (GetGameObject()->IsRootEnable())
 		{
 			Eigen::Matrix4f worldTM = GetGameObject()->GetTransform()->GetWorldMatrix();
 			ModelID modelID = GetModelID(modelName);
 
-			// Animator°¡ ¾ø´Â °æ¿ì DrawModelÇÔ¼ö¸¦ ÀÌ¿ëÇÑ´Ù.
+			// Animatorê°€ ì—†ëŠ” ê²½ìš° DrawModelí•¨ìˆ˜ë¥¼ ì´ìš©í•œë‹¤.
 			if (animator == nullptr)
 			{
 				renderer->DrawModel(worldTM, modelID, wireFrame, dShadow, shadow, fastOutLine, outLine, { outLineR, outLineG, outLineB, outLineA });
 			}
-			// Animator°¡ ÀÖ´Â °æ¿ì DrawAnimation, DrawChangingAnimation ÇÔ¼ö¸¦ ÀÌ¿ëÇÑ´Ù.
+			// Animatorê°€ ìˆëŠ” ê²½ìš° DrawAnimation, DrawChangingAnimation í•¨ìˆ˜ë¥¼ ì´ìš©í•œë‹¤.
 			else
 			{
 				if (isBlending)

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Component.h"
 #include <functional>
 
@@ -26,31 +26,31 @@ namespace PurahEngine
 		virtual void				GetRigidbody(RigidBody*& _obj0, RigidBody*& _obj1) const noexcept = 0;
 
 		/**
-		¿ÀºêÁ§Æ®ÀÇ Æ÷Áö¼Ç
+		ì˜¤ë¸Œì íŠ¸ì˜ í¬ì§€ì…˜
 		*/
 		virtual void				SetLocalPosition(int _index, const Eigen::Vector3f& _localPos) = 0;
 		virtual Eigen::Vector3f		GetLocalPosition(int _index) const = 0;
 
 		/**
-		¿ÀºêÁ§Æ®ÀÇ ·ÎÅ×ÀÌ¼Ç
+		ì˜¤ë¸Œì íŠ¸ì˜ ë¡œí…Œì´ì…˜
 		*/
 		virtual void				SetLocalQuaternion(int _index, const Eigen::Quaternionf& _localQuat) = 0;
 		virtual Eigen::Quaternionf	GetLocalQuaternion(int _index) const = 0;
 
 		/**
-		¿ÀºêÁ§Æ®0À» ±âÁØÀ¸·Î ¿ÀºêÁ§Æ®1ÀÇ »ó´ë ¼Óµµ¸¦ ¹İÈ¯ÇÔ.
+		ì˜¤ë¸Œì íŠ¸0ì„ ê¸°ì¤€ìœ¼ë¡œ ì˜¤ë¸Œì íŠ¸1ì˜ ìƒëŒ€ ì†ë„ë¥¼ ë°˜í™˜í•¨.
 		*/
 		virtual Eigen::Vector3f		GetRelativeLinearVelocity() const = 0;
 		virtual Eigen::Vector3f		GetRelativeAngularVelocity() const = 0;
 
 		/**
-		Á¶ÀÎÆ® ÆÄ±« ÈûÀ» ¼³Á¤ÇÔ
+		ì¡°ì¸íŠ¸ íŒŒê´´ í˜ì„ ì„¤ì •í•¨
 		*/
 		virtual void				SetBreakForce(float _force, float _torque) = 0;
 		virtual void				GetBreakForce(float& _force, float& _torque) const = 0;
 
 		/**
-		¿¬°áµÈ °­Ã¼³¢¸® Ãæµ¹ÇÒÁö ¿©ºÎ
+		ì—°ê²°ëœ ê°•ì²´ë¼ë¦¬ ì¶©ëŒí• ì§€ ì—¬ë¶€
 		*/
 		virtual void		EnableCollision(bool) = 0;
 		virtual void		EnablePreprocessing(bool) = 0;

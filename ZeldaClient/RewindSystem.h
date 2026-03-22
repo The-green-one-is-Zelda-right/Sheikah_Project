@@ -1,28 +1,57 @@
-#pragma once
-#include "Singleton.h"
+癤�#pragma once
+#include <unordered_map>
+#include <vector>
+
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 
 namespace Phyzzle
 {
-	struct Snapshot;
-	class Rewindable;
+	class PzObject;
 
-	class RewindSystem : public Singleton<RewindSystem>
+	class RewindSystem
 	{
 	public:
-		void SetRewindableTime(float _step);
+		static RewindSystem& Instance()
+		{
+			static RewindSystem instance;
+			return instance;
+		}
 
-		void Rewind(Rewindable* _target);	// 되돌리기 실행
-		void Cancel();						// 능력을 취소함
-
-		void Store(Rewindable* _object, Snapshot* _snapshot);
+		void SaveState(PzObject* inObject);
+		void StartRewind(PzObject* inObject);
+		void UpdateRewind(float inDeltaTime);
+		void EndRewind();
+		bool CanUseRewind(PzObject* inObject) const;
+		bool IsRewinding() const { return _isRewinding; }
+		void ClearHistory(PzObject* inObject);
 
 	private:
-		static Rewindable* target;
+		RewindSystem() = default;
+		~RewindSystem() = default;
+		RewindSystem(const RewindSystem&) = delete;
+		RewindSystem& operator=(const RewindSystem&) = delete;
+
+		struct RewindSnapshot
+		{
+			Eigen::Vector3f position = Eigen::Vector3f::Zero();
+			Eigen::Quaternionf rotation = Eigen::Quaternionf::Identity();
+			Eigen::Vector3f velocity = Eigen::Vector3f::Zero();
+			Eigen::Vector3f angularVelocity = Eigen::Vector3f::Zero();
+		};
+
+		using RewindHistory = std::vector<RewindSnapshot>;
 
 	private:
-		float rewindableTime = 10.f;
+		std::unordered_map<PzObject*, RewindHistory> _objectHistories;
+		const size_t MAX_HISTORY_SIZE = 300;
+		const float REWIND_DURATION = 5.0f;
+		const float REWIND_SAMPLE_INTERVAL = 1.0f / 60.0f;
 
-		using SnapshotList = std::pair<float, std::list<Snapshot*>>;
-		std::unordered_map<Rewindable*, SnapshotList> histories;
+		float _rewindTimer = 0.0f;
+		float _rewindStepAccumulator = 0.0f;
+		size_t _currentHistoryIndex = 0;
+		bool _isRewinding = false;
+		PzObject* _currentRewindObject = nullptr;
 	};
 }

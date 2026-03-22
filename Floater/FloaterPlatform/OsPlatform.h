@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifdef FLT_WINDOWS
 #include "OsWindows.h"

@@ -1,4 +1,4 @@
-#include "D1SpringFlexJoint.h"
+ï»¿#include "D1SpringFlexJoint.h"
 #include <assert.h>
 #include "PxConstraint.h"
 
@@ -86,47 +86,47 @@ static PxU32 solverPrep(Px1DConstraint* constraints,
 
 	const D1SpringFlexJoint::CustomSpringJointData& data = *reinterpret_cast<const D1SpringFlexJoint::CustomSpringJointData*>(constantBlock);
 
-	// ¾ÈÀü °Ë»ç
+	// ì•ˆì „ ê²€ì‚¬
 	// if (!isFinite(data.stiffness) || !isFinite(data.damping) || !isFinite(data.minDistance) || !isFinite(data.maxDistance)) {
 	// 	return 0;
 	// }
 
 	// physx::Ext::joint::ConstraintHelper ch(constraints, invMassScale, cA2w, cB2w, body0WorldOffset, data, bA2w, bB2w);
 
-	// µÎ ¹°Ã¼ÀÇ ·ÎÄÃ ÇÁ·¹ÀÓÀ» ¿ùµå ÇÁ·¹ÀÓÀ¸·Î º¯È¯
+	// ë‘ ë¬¼ì²´ì˜ ë¡œì»¬ í”„ë ˆìž„ì„ ì›”ë“œ í”„ë ˆìž„ìœ¼ë¡œ ë³€í™˜
 	PxTransform cA2w = bA2w.transform(data.c2b[0]);
 	PxTransform cB2w = bB2w.transform(data.c2b[1]);
 
-	// °á°ú¸¦ Ãâ·Â º¯¼ö¿¡ ÀúÀå
+	// ê²°ê³¼ë¥¼ ì¶œë ¥ ë³€ìˆ˜ì— ì €ìž¥
 	cA2wOut = cA2w.p;
 	cB2wOut = cB2w.p;
 
-	// ¿ùµå ¿ÀÇÁ¼Â °è»ê
+	// ì›”ë“œ ì˜¤í”„ì…‹ ê³„ì‚°
 	body0WorldOffset = cB2w.p - bA2w.p;
 
-	// ¼±Çü ¹æÇâ ¹× °Å¸® °è»ê
+	// ì„ í˜• ë°©í–¥ ë° ê±°ë¦¬ ê³„ì‚°
 	PxVec3 linearDirection = cB2w.p - cA2w.p;
 	const PxReal linearDistance = linearDirection.normalize();
 
-	// È¸Àü Â÷ÀÌ °è»ê
+	// íšŒì „ ì°¨ì´ ê³„ì‚°
 	PxQuat relativeRotation = cB2w.q.getConjugate() * cA2w.q;
 	PxVec3 angularAxis;
 	PxReal angularAngle;
 	relativeRotation.toRadiansAndUnitAxis(angularAngle, angularAxis);
 
-	// ¿À·ù °ª ¼³Á¤
+	// ì˜¤ë¥˜ ê°’ ì„¤ì •
 	PxReal linearError = -linearDistance;
 	PxReal angularError = -angularAngle;
 
 	PxU32 constraintCount = 0;
 	Px1DConstraint* c = constraints;
 
-	// ¼±Çü ½ºÇÁ¸µ ¼³Á¤
+	// ì„ í˜• ìŠ¤í”„ë§ ì„¤ì •
 	setupLinearSpring(c, linearDirection, cA2w, bA2w, cB2w, bB2w, data.stiffness, data.damping, linearError);
 	++c;
 	++constraintCount;
 
-	// ÃÖ´ë °Å¸® Á¦¾à ¼³Á¤
+	// ìµœëŒ€ ê±°ë¦¬ ì œì•½ ì„¤ì •
 	// if (linearDistance > data.maxDistance) 
 	// {
 	// 	setupHardConstraint(c, linearDirection, cA2w, bA2w, cB2w, bB2w, linearDistance - data.maxDistance);
@@ -134,7 +134,7 @@ static PxU32 solverPrep(Px1DConstraint* constraints,
 	// 	++constraintCount;
 	// }
 	// 
-	// // ÃÖ¼Ò °Å¸® Á¦¾à ¼³Á¤
+	// // ìµœì†Œ ê±°ë¦¬ ì œì•½ ì„¤ì •
 	// if (linearDistance < data.minDistanwce) 
 	// {
 	// 	setupHardConstraint(c, -linearDirection, cA2w, bA2w, cB2w, bB2w, data.minDistance - linearDistance);
@@ -142,11 +142,11 @@ static PxU32 solverPrep(Px1DConstraint* constraints,
 	// 	++constraintCount;
 	// }
 
-	// È¸Àü ½ºÇÁ¸µ ¼³Á¤
+	// íšŒì „ ìŠ¤í”„ë§ ì„¤ì •
 	setupAngularSpring(c, angularAxis, data.stiffness, data.damping, angularError);
 	++constraintCount;
 
-	return constraintCount; // »ý¼ºµÈ Á¦¾à Á¶°ÇÀÇ ¼ö ¹ÝÈ¯
+	return constraintCount; // ìƒì„±ëœ ì œì•½ ì¡°ê±´ì˜ ìˆ˜ ë°˜í™˜
 }
 
 static void visualize(PxConstraintVisualizer& viz,

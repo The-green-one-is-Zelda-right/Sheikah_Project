@@ -1,4 +1,4 @@
-#include "RespawnSystem.h"
+ï»¿#include "RespawnSystem.h"
 
 #include "RespawnTrigger.h"
 #include "AttachSystem.h"
@@ -96,7 +96,7 @@ namespace Phyzzle
 			}
 		}
 
-		// ¼Óµµ Á¦°Å
+		// ì†ë„ ì œê±°
 		PurahEngine::RigidBody* targetRigid = targetObject->GetComponent<PurahEngine::RigidBody>();
 
 		targetRigid->SetLinearVelocity(Eigen::Vector3f::Zero());

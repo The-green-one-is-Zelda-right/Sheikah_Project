@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 #include "ePad.h"
 #include "PurahEngineAPI.h"
@@ -8,7 +8,7 @@ namespace PurahEngine
 	class PURAHENGINE_API IGamePad
 	{
 	public:
-		/// ≈∞ ¿‘∑¬
+		/// ÌÇ§ ÏûÖÎ†•
 		virtual bool		GetKey(ePad _input) = 0;
 		virtual bool		IsKeyDown(ePad _input) = 0;
 		virtual bool		IsKeyPressed(ePad _input) = 0;
@@ -16,14 +16,14 @@ namespace PurahEngine
 		virtual bool		IsKeyReleased(ePad _input) = 0;
 		virtual ePadState	IsKeyValue(ePad _input) = 0;
 
-		/// ∆Æ∏Æ∞≈ ∞™
+		/// Ìä∏Î¶¨Í±∞ Í∞í
 		virtual int			GetTriggerRawValue(ePadTrigger _index) const = 0;
 		virtual float		GetTriggerRatio(ePadTrigger _index) const = 0;
 
 		virtual int			GetStickValue(ePadStick _index, int&, int&) const = 0;
 		virtual float		GetStickRatio(ePadStick _index, float& _outX, float& _outY) const = 0;
 
-		/// ¡¯µø
+		/// ÏßÑÎèô
 		virtual bool		VibrateRatio(float _left, float _right) const = 0;
 		virtual void		VibrateRatio(float _left, float _right, float _time) = 0;
 
@@ -31,11 +31,11 @@ namespace PurahEngine
 		virtual void		VibrateResume() = 0;
 		virtual void		VibrateOff() const = 0;
 
-		/// µ•µÂ¡∏ º≥¡§
+		/// Îç∞ÎìúÏ°¥ ÏÑ§Ï†ï
 		virtual void		SetDeadZone(unsigned int) = 0;
 		virtual void		SetDeadZoneRatio(float _ratio) = 0;
 
-		/// ø¨∞· ø©∫Œ
+		/// Ïó∞Í≤∞ Ïó¨Î∂Ä
 		virtual bool		IsConnected() = 0;
 	};
 }

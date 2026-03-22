@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 namespace ZonaiPhysics
 {
@@ -15,13 +15,13 @@ namespace ZonaiPhysics
 	public:
 		virtual ~ZnSimulationCallback() = default;
 
-		// ÀÏ¾î³²
+		// ì¼ì–´ë‚¨
 		virtual void OnWake(ZnRigidBody const*) = 0;
 
-		// ¼ö¸é
+		// ìˆ˜ë©´
 		virtual void OnSleep(ZnRigidBody const*) = 0;
 
-		// Á¦¾à ÆÄ±«
+		// ì œì•½ íŒŒê´´
 		virtual void OnConstraintBreak(ZnJoint*) = 0;
 
 		virtual void OnTriggerEnter(ZnCollider const*, ZnCollider const*) = 0;
@@ -35,7 +35,7 @@ namespace ZonaiPhysics
 }
 
 /**
- * Èì
+ * í 
  * 
  * 
  * 

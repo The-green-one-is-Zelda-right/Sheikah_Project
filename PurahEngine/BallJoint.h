@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngineAPI.h"
 #include "JointT.h"
 #include "ZnSphericalJoint.h"
@@ -22,7 +22,7 @@ namespace PurahEngine
 
 		void LimitEnable(bool _value) const;
 
-		// È¸Àü '°¢µµ' Á¦ÇÑ
+		// íšŒì „ 'ê°ë„' ì œí•œ
 		void SetLimitAngle(float _yAngle, float _zAngle) const;
 		void SetLimitRadian(float _yAngle, float _zAngle) const;
 		void SetSpringArg(float _stiffness, float _damping) const;

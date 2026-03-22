@@ -1,4 +1,4 @@
-#include <cassert>
+ï»¿#include <cassert>
 #include "../ZonaiPhysicsBase/ZnPhysicsBase.h"
 
 #include "EventCallbackSystem.h"
@@ -25,7 +25,7 @@ namespace PurahEngine
 
 		if (ZonaiPhysicsXDLL == nullptr)
 		{
-			// DLL ·Îµå ½ÇÆĞ
+			// DLL ë¡œë“œ ì‹¤íŒ¨
 			PHYSCIS_CAUTUON(PhysicsSystem, DLL not found!)
 			assert(0);
 		}
@@ -36,7 +36,7 @@ namespace PurahEngine
 
 		if (createZonaiPhysics == nullptr)
 		{
-			// DLL ÇÔ¼ö¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.
+			// DLL í•¨ìˆ˜ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.
 			PHYSCIS_CAUTUON(PhysicsSystem, Physcis DLL Initialize Function Load Failed!)
 			assert(0);
 		}
@@ -48,7 +48,7 @@ namespace PurahEngine
 			PHYSCIS_CAUTUON(PhysicsSystem, Physcis DLL Finalize Function Load Failed!)
 			assert(0);
 		}
-		// DLL ÇÔ¼ö¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.
+		// DLL í•¨ìˆ˜ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.
 
 		physics = createZonaiPhysics();
 
@@ -167,8 +167,8 @@ namespace PurahEngine
 
 	void PhysicsSystem::Finalize()
 	{
-		// °­Á¦ Á¾·á µÇ´Â °æ¿ì ¾Æ´Ï¸é
-		// ¿©±â¼­ ÄÄÆ÷³ÍÆ®¸¦ »èÁ¦ÇÏ´Â ÀÏÀº ¾øÀ» °ÍÀÓ.
+		// ê°•ì œ ì¢…ë£Œ ë˜ëŠ” ê²½ìš° ì•„ë‹ˆë©´
+		// ì—¬ê¸°ì„œ ì»´í¬ë„ŒíŠ¸ë¥¼ ì‚­ì œí•˜ëŠ” ì¼ì€ ì—†ì„ ê²ƒì„.
 		//for (auto& joint : joints)
 		//{
 		//		delete joint;
@@ -199,7 +199,7 @@ namespace PurahEngine
 
 		physics->Finalize();
 
-		/// Release ÇÔ¼ö
+		/// Release í•¨ìˆ˜
 		releaseFuntion();
 
 		FreeLibrary(ZonaiPhysicsXDLL);
@@ -245,30 +245,30 @@ namespace PurahEngine
 
 		bool hasSame = convexNameTable.contains(_path);
 
-		// Áßº¹ ¾Æ´Ô
+		// ì¤‘ë³µ ì•„ë‹˜
 		if (!hasSame)
 		{
 			result = physics->ConvexMeshLoadFromPath(_path);
 
 			BindConvex(_path, result, _make);
 		}
-		// Áßº¹ÀÌ¸é »õ·Î ¸¸µë
+		// ì¤‘ë³µì´ë©´ ìƒˆë¡œ ë§Œë“¬
 		else if (hasSame && _make)
 		{
-			// ±âÁ¸°Ô Áö¿öÁü?
+			// ê¸°ì¡´ê²Œ ì§€ì›Œì§?
 			if (ReleaseConvexMesh(convexNameTable[_path]))
 			{
 				result = physics->ConvexMeshLoadFromPath(_path);
 
 				BindConvex(_path, result, _make);
 			}
-			// ¸øÁö¿ì¸é »õ·Î ¸¸µå´Â°Ç ½ÇÆĞÇÑ °ÅÀÓ
+			// ëª»ì§€ìš°ë©´ ìƒˆë¡œ ë§Œë“œëŠ”ê±´ ì‹¤íŒ¨í•œ ê±°ì„
 			else
 			{
 				result = ZonaiPhysics::ZnConvexID::None;
 			}
 		}
-		// Áßº¹ÀÌ¸é ±âÁ¸ °ÍÀ» ¹İÈ¯ÇÔ
+		// ì¤‘ë³µì´ë©´ ê¸°ì¡´ ê²ƒì„ ë°˜í™˜í•¨
 		else if (hasSame && !_make)
 		{
 			result = convexNameTable[_path];
@@ -286,30 +286,30 @@ namespace PurahEngine
 
 		bool hasSame = meshNameTable.contains(_path);
 
-		// Áßº¹ ¾Æ´Ô
+		// ì¤‘ë³µ ì•„ë‹˜
 		if (!hasSame)
 		{
 			result = physics->TriangleMeshLoadFromPath(_path);
 
 			BindMesh(_path, result, _make);
 		}
-		// Áßº¹ÀÌ¸é »õ·Î ¸¸µë
+		// ì¤‘ë³µì´ë©´ ìƒˆë¡œ ë§Œë“¬
 		else if (hasSame && _make)
 		{
-			// ±âÁ¸°Ô Áö¿öÁü?
+			// ê¸°ì¡´ê²Œ ì§€ì›Œì§?
 			if (ReleaseTriangleMesh(meshNameTable[_path]))
 			{
 				result = physics->TriangleMeshLoadFromPath(_path);
 
 				BindMesh(_path, result, _make);
 			}
-			// ¸øÁö¿ì¸é »õ·Î ¸¸µå´Â°Ç ½ÇÆĞÇÑ °ÅÀÓ
+			// ëª»ì§€ìš°ë©´ ìƒˆë¡œ ë§Œë“œëŠ”ê±´ ì‹¤íŒ¨í•œ ê±°ì„
 			else
 			{
 				result = ZonaiPhysics::ZnMeshID::None;
 			}
 		}
-		// Áßº¹ÀÌ¸é ±âÁ¸ °ÍÀ» ¹İÈ¯ÇÔ
+		// ì¤‘ë³µì´ë©´ ê¸°ì¡´ ê²ƒì„ ë°˜í™˜í•¨
 		else if (hasSame && !_make)
 		{
 			result = meshNameTable[_path];
@@ -332,7 +332,7 @@ namespace PurahEngine
 	{
 		bool hasSame = materialNameTable.contains(_name);
 
-		// Áßº¹À» Çã¿ëÇÏÁö ¾ÊÀ½.
+		// ì¤‘ë³µì„ í—ˆìš©í•˜ì§€ ì•ŠìŒ.
 		if (hasSame && !_make)
 			return false;
 
@@ -344,7 +344,7 @@ namespace PurahEngine
 	{
 		bool hasSame = convexNameTable.contains(_name);
 
-		// Áßº¹À» Çã¿ëÇÏÁö ¾ÊÀ½.
+		// ì¤‘ë³µì„ í—ˆìš©í•˜ì§€ ì•ŠìŒ.
 		if (hasSame && !_make)
 			return false;
 
@@ -356,11 +356,11 @@ namespace PurahEngine
 	{
 		bool hasSame = meshNameTable.contains(_name);
 		
-		// Áßº¹À» Çã¿ëÇÏÁö ¾ÊÀ½.
+		// ì¤‘ë³µì„ í—ˆìš©í•˜ì§€ ì•ŠìŒ.
 		if (hasSame && !_make)
 			return false;
 
-		// Áßº¹À» Çã¶ôÇÔ.
+		// ì¤‘ë³µì„ í—ˆë½í•¨.
 		meshNameTable.insert({ _name, _id });
 		return true;
 	}

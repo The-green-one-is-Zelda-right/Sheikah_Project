@@ -1,4 +1,4 @@
-#include "NaDong.h"
+ï»¿#include "NaDong.h"
 #include <cassert>
 
 #include "PurahEngine.h"
@@ -14,22 +14,22 @@ using namespace PurahEngine;
 void NaDong::Run()
 {
 	Eigen::Vector3f pos = { 0.0f, 0.0f, -10.0f };
-	//// Ä«¸Þ¶ó »ý¼º
+	//// ì¹´ë©”ë¼ ìƒì„±
 	GameObject* mainCameraObject = SceneManager::GetInstance().CreateGameObject(L"MainCamera");
 	Camera* mainCamera = mainCameraObject->AddComponent<Camera>();
 	mainCameraObject->GetTransform()->SetLocalPosition(pos);
 	mainCameraObject->AddComponent<AudioListener>();
 
-	//// ¸ÞÀÎ Ä«¸Þ¶ó·Î ¼³Á¤
+	//// ë©”ì¸ ì¹´ë©”ë¼ë¡œ ì„¤ì •
 	SceneManager::GetInstance().SetMainCamera(mainCamera);
 
-	//// ¶óÀÌÆ® »ý¼º
+	//// ë¼ì´íŠ¸ ìƒì„±
 	GameObject* lightObject = SceneManager::GetInstance().CreateGameObject(L"Light");
 	DirectionalLight* light = lightObject->AddComponent<DirectionalLight>();
 	
-	//// ¶óÀÌÆ®ÀÇ ¹æÇâÀ» ¿ÞÂÊ À§¿¡¼­ µé¿©´Ù º¸´Â ¹æÇâÀ¸·Î ¼³Á¤
+	//// ë¼ì´íŠ¸ì˜ ë°©í–¥ì„ ì™¼ìª½ ìœ„ì—ì„œ ë“¤ì—¬ë‹¤ ë³´ëŠ” ë°©í–¥ìœ¼ë¡œ ì„¤ì •
 
-	//// Å¥ºê »ý¼º
+	//// íë¸Œ ìƒì„±
 	GameObject* cubeObject = SceneManager::GetInstance().CreateGameObject(L"Cube");
 	MeshRenderer* cube = cubeObject->AddComponent<MeshRenderer>();
 
@@ -37,8 +37,8 @@ void NaDong::Run()
 
 	cubeObject->AddComponent<AudioSource>();
 
-	//// MeshRendererÀÇ Å¸ÀÔÀ» Cube·Î ¼³Á¤ÇÑ´Ù.
-	//// ±âº»°ªÀº NoneÀ¸·Î ÀÌ °æ¿ì ¾Æ¹«°Íµµ È­¸é¿¡ ¶ßÁö ¾Ê´Â´Ù.(Debug ¸ðµåÀÇ °æ¿ì ·±Å¸ÀÓ ¿¡·¯¸¦ ¹ß»ý½ÃÅ²´Ù.)
+	//// MeshRendererì˜ íƒ€ìž…ì„ Cubeë¡œ ì„¤ì •í•œë‹¤.
+	//// ê¸°ë³¸ê°’ì€ Noneìœ¼ë¡œ ì´ ê²½ìš° ì•„ë¬´ê²ƒë„ í™”ë©´ì— ëœ¨ì§€ ì•ŠëŠ”ë‹¤.(Debug ëª¨ë“œì˜ ê²½ìš° ëŸ°íƒ€ìž„ ì—ëŸ¬ë¥¼ ë°œìƒì‹œí‚¨ë‹¤.)
 	cube->SetMesh(MeshRenderer::MeshType::Cube);
 
 	//GameObject* object1 = SceneManager::GetInstance().CreateGameObject(L"1");

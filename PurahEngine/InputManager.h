@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngineAPI.h"
 
 #include <unordered_map>
@@ -15,29 +15,29 @@ namespace PurahEngine
 		InputManager();
 		~InputManager();
 		InputManager(const InputManager& ref) = delete;
-		// Å¬·¡½º¸¦ »ı¼ºÇÏ°Ô µÉ °æ¿ì, ±âº»ÀûÀ¸·Î = ¿¡ ´ëÇÑ ¿¬»êÀÚ ¿À¹ö·ÎµùÀÌ »ı¼ºµÈ´Ù.
-		// ½Ì±ÛÅÏÀº °´Ã¼°¡ ÇÏ³ª¿©¾ß ÇÏ¹Ç·Î ±×°ÍÀ» ¹æÁöÇÏ±â À§ÇØ, ¸í½ÃÀûÀ¸·Î delete¸¦ »ç¿ëÇÏ¿© »ç¿ëÀ» ¸·´Â´Ù.
+		// í´ë˜ìŠ¤ë¥¼ ìƒì„±í•˜ê²Œ ë  ê²½ìš°, ê¸°ë³¸ì ìœ¼ë¡œ = ì— ëŒ€í•œ ì—°ì‚°ì ì˜¤ë²„ë¡œë”©ì´ ìƒì„±ëœë‹¤.
+		// ì‹±ê¸€í„´ì€ ê°ì²´ê°€ í•˜ë‚˜ì—¬ì•¼ í•˜ë¯€ë¡œ ê·¸ê²ƒì„ ë°©ì§€í•˜ê¸° ìœ„í•´, ëª…ì‹œì ìœ¼ë¡œ deleteë¥¼ ì‚¬ìš©í•˜ì—¬ ì‚¬ìš©ì„ ë§‰ëŠ”ë‹¤.
 		InputManager& operator=(const InputManager& ref) = delete;
 
 	public:
 		void Initialize(HWND hwnd, eKey* _inputArr, UINT _size);
 
-		// Update¸¦ µ¹¸ç Å°ÀÇ ÀÔ·Â°ªÀ» °è¼Ó Ã¼Å©ÇÑ´Ù.
+		// Updateë¥¼ ëŒë©° í‚¤ì˜ ì…ë ¥ê°’ì„ ê³„ì† ì²´í¬í•œë‹¤.
 		void Update();
 		
-		/// Å°º¸µå
-		// Å°°¡ ¹æ±İ ´­·È´Â°¡?
+		/// í‚¤ë³´ë“œ
+		// í‚¤ê°€ ë°©ê¸ˆ ëˆŒë ¸ëŠ”ê°€?
 		bool IsKeyDown(eKey keycode);
-		// Å°¸¦ ´­¸®°í ÀÖ´Â°¡?
+		// í‚¤ë¥¼ ëˆŒë¦¬ê³  ìˆëŠ”ê°€?
 		bool IsKeyPressed(eKey keycode);
-		// Å°¸¦ ¹æ±İ ¶Ã´Â°¡?
+		// í‚¤ë¥¼ ë°©ê¸ˆ ë—ëŠ”ê°€?
 		bool IsKeyUp(eKey keycode);
-		// Å°¸¦ ¶¼°í ÀÖ´Â°¡?
+		// í‚¤ë¥¼ ë–¼ê³  ìˆëŠ”ê°€?
 		bool IsKeyReleased(eKey keycode);
-		// Å° ÀÔ·ÂÀÌ ÀÖ´Â°¡?
+		// í‚¤ ì…ë ¥ì´ ìˆëŠ”ê°€?
 		bool GetKey(eKey keycode);
 
-		/// ¸¶¿ì½º
+		/// ë§ˆìš°ìŠ¤
 
 	private:
 		std::vector<eKey> keys;
@@ -59,14 +59,14 @@ namespace PurahEngine
 }
 
 
-// /// ÆĞµå ½ºÆ½ Å°
-//x = state.Gamepad.sThumbLX;	// ¿ŞÂÊ ½ºÆ½ XÃà
-//y = state.Gamepad.sThumbLY;	// ¿ŞÂÊ ½ºÆ½ YÃà
-//state.Gamepad.sThumbRX;	// ¿À¸¥ÂÊ ½ºÆ½ XÃà
-//state.Gamepad.sThumbRY;	// ¿À¸¥ÂÊ ½ºÆ½ YÃà
+// /// íŒ¨ë“œ ìŠ¤í‹± í‚¤
+//x = state.Gamepad.sThumbLX;	// ì™¼ìª½ ìŠ¤í‹± Xì¶•
+//y = state.Gamepad.sThumbLY;	// ì™¼ìª½ ìŠ¤í‹± Yì¶•
+//state.Gamepad.sThumbRX;	// ì˜¤ë¥¸ìª½ ìŠ¤í‹± Xì¶•
+//state.Gamepad.sThumbRY;	// ì˜¤ë¥¸ìª½ ìŠ¤í‹± Yì¶•
 
-/// Å°ÄÚµå È®ÀÎ¿ë
-// ÆĞµå Á¶ÀÛÅ°
+/// í‚¤ì½”ë“œ í™•ì¸ìš©
+// íŒ¨ë“œ ì¡°ì‘í‚¤
 //#define XINPUT_GAMEPAD_DPAD_UP          0x0001
 //#define XINPUT_GAMEPAD_DPAD_DOWN        0x0002
 //#define XINPUT_GAMEPAD_DPAD_LEFT        0x0004

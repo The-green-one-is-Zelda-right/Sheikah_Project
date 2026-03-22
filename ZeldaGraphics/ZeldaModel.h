@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <d3d11.h>
 #include <DirectXMath.h>
@@ -54,8 +54,8 @@ private:
 
 	struct Animation
 	{
-		double duration; // Æ½´ç ½Ã°£
-		double tickPerSecond; // ½Ã°£´ç Æ½
+		double duration; // í‹±ë‹¹ ì‹œê°„
+		double tickPerSecond; // ì‹œê°„ë‹¹ í‹±
 
 		// key: nodeName
 		// value: map<time, Matrix> 
@@ -104,13 +104,13 @@ private:
 	ZeldaModel(ID3D11Device* device, FBXLoader::Model* fbxModel);
 	ZeldaModel(const ZeldaModel& zeldaModel) = delete;
 
-	// ÃÊ´ç ¾Ö´Ï¸ŞÀÌ¼Ç Æ½ÀÌ targetTPS°¡ µÇµµ·Ï ¾Ö´Ï¸ŞÀÌ¼Ç tickÀ» º¸°£ÇÏ¿© µ¥ÀÌÅÍ¸¦ »ı¼ºÇÑ´Ù.
+	// ì´ˆë‹¹ ì• ë‹ˆë©”ì´ì…˜ í‹±ì´ targetTPSê°€ ë˜ë„ë¡ ì• ë‹ˆë©”ì´ì…˜ tickì„ ë³´ê°„í•˜ì—¬ ë°ì´í„°ë¥¼ ìƒì„±í•œë‹¤.
 	void CreateAnimationResourceView(ID3D11Device* device);
 	void SetAnimationTexture(ID3D11DeviceContext* deviceContext, unsigned int animationID);
 
-	// ±âº» »óÅÂÀÇ °¢ º»ÀÇ matrix¸¦ ±¸ÇÏ¿© Node.worldMatrix¿¡ ´ã´Â´Ù.
+	// ê¸°ë³¸ ìƒíƒœì˜ ê° ë³¸ì˜ matrixë¥¼ êµ¬í•˜ì—¬ Node.worldMatrixì— ë‹´ëŠ”ë‹¤.
 	void CalculateIdleBoneTM();
-	// Æ¯Á¤ ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ boneTMÀ» °è»êÇÏ¿© Node.FinalTM¿¡ ´ã´Â´Ù.
+	// íŠ¹ì • ì• ë‹ˆë©”ì´ì…˜ì˜ boneTMì„ ê³„ì‚°í•˜ì—¬ Node.FinalTMì— ë‹´ëŠ”ë‹¤.
 	void CalculateAnimationBoneTM(Animation* animation, float tickTime);
 
 	void CopyNode(Node* node, FBXLoader::Bone* bone, std::map<std::wstring, Node*>& nodeTable);
@@ -118,15 +118,15 @@ private:
 	Node* root;
 	std::vector<Node*> bones;
 	std::vector<ZeldaMesh*> meshes;
-	std::vector<unsigned int> materialIndex; // meshes[0]Àº materials[materialIndex[0]]À» °¡Áü
+	std::vector<unsigned int> materialIndex; // meshes[0]ì€ materials[materialIndex[0]]ì„ ê°€ì§
 	std::vector<ZeldaMaterial*> materials;
-	std::map<std::wstring, Animation*> animationTable; // mapÀ» »ç¿ëÇØ¼­ Á¤·ÄÀÌ µÇµµ·Ï ÇØ¾ßÇÑ´Ù.
+	std::map<std::wstring, Animation*> animationTable; // mapì„ ì‚¬ìš©í•´ì„œ ì •ë ¬ì´ ë˜ë„ë¡ í•´ì•¼í•œë‹¤.
 
 
-	// animationTable¿¡¼­ÀÇ ¼ø¼­´ë·Î ID¸¦ 1ºÎÅÍ ºÎ¿©ÇÑ´Ù. (0Àº ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ Àû¿ëµÇÁö ¾ÊÀº »óÅÂ)
+	// animationTableì—ì„œì˜ ìˆœì„œëŒ€ë¡œ IDë¥¼ 1ë¶€í„° ë¶€ì—¬í•œë‹¤. (0ì€ ì• ë‹ˆë©”ì´ì…˜ì´ ì ìš©ë˜ì§€ ì•Šì€ ìƒíƒœ)
 	std::unordered_map<std::wstring, unsigned int> animationIDTable;
 	std::unordered_map<unsigned int, std::wstring> animationNameTable;
-	// °¢ ¾Ö´Ï¸ŞÀÌ¼ÇÀ» ÅØ½ºÃÄÈ­ ½ÃÅ² µ¥ÀÌÅÍÀÇ TickPerSecond¸¦ ÀúÀåÇÏ´Â ÄÁÅ×ÀÌ³Ê
+	// ê° ì• ë‹ˆë©”ì´ì…˜ì„ í…ìŠ¤ì³í™” ì‹œí‚¨ ë°ì´í„°ì˜ TickPerSecondë¥¼ ì €ì¥í•˜ëŠ” ì»¨í…Œì´ë„ˆ
 	std::unordered_map<unsigned int, float> animationTPSTable;
 
 

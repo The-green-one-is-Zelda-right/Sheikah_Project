@@ -1,9 +1,9 @@
-#include "ZeldaGraphicsDefine.h"
+ï»¿#include "ZeldaGraphicsDefine.h"
 
-// VertexTypeÀÌ º¯°æµÉ °æ¿ì º¯°æÇØ¾ß ÇÔ
+// VertexTypeì´ ë³€ê²½ë  ê²½ìš° ë³€ê²½í•´ì•¼ í•¨
 const unsigned int VertexType::size = 6;
 
-// ¼¼¸àÆ½ ¸ñ·Ï
+// ì„¸ë©˜í‹± ëª©ë¡
 // https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-semantics
 
 const D3D11_INPUT_ELEMENT_DESC VertexType::layout[] =
@@ -18,7 +18,7 @@ const D3D11_INPUT_ELEMENT_DESC VertexType::layout[] =
 
 
 
-// InstancingVertexTypeÀÌ º¯°æµÉ °æ¿ì º¯°æÇØ¾ß ÇÔ
+// InstancingVertexTypeì´ ë³€ê²½ë  ê²½ìš° ë³€ê²½í•´ì•¼ í•¨
 const unsigned int InstancingVertexType::size = 7;
 
 const D3D11_INPUT_ELEMENT_DESC InstancingVertexType::layout[] =

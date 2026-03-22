@@ -1,4 +1,4 @@
-#include "EasingFunc.h"
+﻿#include "EasingFunc.h"
 
 namespace PurahEngine
 {

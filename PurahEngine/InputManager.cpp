@@ -1,4 +1,4 @@
-#include "InputManager.h"
+ï»¿#include "InputManager.h"
 
 #include "TimeController.h"
 
@@ -50,13 +50,13 @@ namespace PurahEngine
 				PrevKeyState[e] = NowKeyState[e];
 				NowKeyState[e] = GetAsyncKeyState(static_cast<int>(e));
 
-				// Å°°¡ ¹æ±İ ´­·È´Ù¸é Å°°¡ ´­¸°½Ã°£À» ÃÊ±âÈ­ ÇÑ´Ù.
+				// í‚¤ê°€ ë°©ê¸ˆ ëˆŒë ¸ë‹¤ë©´ í‚¤ê°€ ëˆŒë¦°ì‹œê°„ì„ ì´ˆê¸°í™” í•œë‹¤.
 				if (!(PrevKeyState[e] & 0x8000) && (NowKeyState[e] & 0x8000))
 				{
 					keyDownElapsed[e] = 0.0f;
 					keyState[e] = true;
 				}
-				// Å°°¡ ´­·È´Ù¸é ½Ã°£À» ´©ÀûÇÑ´Ù.
+				// í‚¤ê°€ ëˆŒë ¸ë‹¤ë©´ ì‹œê°„ì„ ëˆ„ì í•œë‹¤.
 				else if (NowKeyState[e] & 0x8000)
 				{
 					keyDownElapsed[e] += deltaTime;
@@ -70,19 +70,19 @@ namespace PurahEngine
 		}
 	}
 
-	// Å°¸¦ ¹æ±İ ´­·¶´Â°¡
+	// í‚¤ë¥¼ ë°©ê¸ˆ ëˆŒë €ëŠ”ê°€
 	bool InputManager::IsKeyDown(eKey keycode)
 	{
 		return !(PrevKeyState[keycode] & 0x8000) && (NowKeyState[keycode] & 0x8000);
 	}
 
-	// Å°¸¦ ´­¸®°í ÀÖ´Â°¡
+	// í‚¤ë¥¼ ëˆŒë¦¬ê³  ìˆëŠ”ê°€
 	bool InputManager::IsKeyPressed(eKey keycode)
 	{
 		return (PrevKeyState[keycode] & 0x8000) && (NowKeyState[keycode] & 0x8000);
 	}
 
-	// Å°¸¦ ¶Ã´Â°¡
+	// í‚¤ë¥¼ ë—ëŠ”ê°€
 	bool InputManager::IsKeyUp(eKey keycode)
 	{
 		return (PrevKeyState[keycode] & 0x8000) && !(NowKeyState[keycode] & 0x8000);

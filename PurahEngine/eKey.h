@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 namespace PurahEngine
@@ -26,13 +26,13 @@ namespace PurahEngine
 
 		eKEY_SPACE			= 0x20,
 
-		// ½ÊÀÚÅ°
+		// ì‹­ìí‚¤
 		eKEY_LEFT			= 0x25,
 		eKEY_UP				= 0x26,
 		eKEY_RIGHT			= 0x27,
 		eKEY_DOWN			= 0x28,
 
-		// ¼ıÀÚÅ°
+		// ìˆ«ìí‚¤
 		eKEY_0				= 0x30,
 		eKEY_1				= 0x31,
 		eKEY_2				= 0x32,
@@ -44,7 +44,7 @@ namespace PurahEngine
 		eKEY_8				= 0x38,
 		eKEY_9				= 0x39,
 
-		// ¾ËÆÄºª
+		// ì•ŒíŒŒë²³
 		eKEY_A				= 0x41 ,
 		eKEY_B				= 0x42 ,
 		eKEY_C				= 0x43 ,
@@ -72,7 +72,7 @@ namespace PurahEngine
 		eKEY_Y				= 0x59 ,
 		eKEY_Z				= 0x5A ,
 
-		// ¼ıÀÚ Å°ÆĞµå
+		// ìˆ«ì í‚¤íŒ¨ë“œ
 		eKEY_NUM0			= 0x60 ,
 		eKEY_NUM1			= 0x61 ,
 		eKEY_NUM2			= 0x62 ,
@@ -84,7 +84,7 @@ namespace PurahEngine
 		eKEY_NUM8			= 0x68 ,
 		eKEY_NUM9			= 0x69 ,
 
-		// Function Å°
+		// Function í‚¤
 		eKEY_F1				= 0x70 ,
 		eKEY_F2				= 0x71 ,
 		eKEY_F3				= 0x72 ,

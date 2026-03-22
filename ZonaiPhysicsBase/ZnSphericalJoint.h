@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "ZnJoint.h"
 #include <Eigen/Dense>
 
@@ -18,7 +18,7 @@ namespace ZonaiPhysics
 
 		virtual void LimitEnable(bool) = 0;
 
-		// È¸Àü '°¢µµ' Á¦ÇÑ
+		// íšŒì „ 'ê°ë„' ì œí•œ
 		virtual void SetLimitAngle(float _yAngle, float _zAngle) = 0;
 		virtual void SetLimitRadian(float _yRadian, float _zRadian) = 0;
 

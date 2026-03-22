@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PurahEngine.h"
 
@@ -14,9 +14,9 @@ namespace Phyzzle
 	public:
 		void Update() override;
 
-		// Æ®¸®°Å°¡ Ãæµ¹ÇßÀ» ¶§ È£Ãâ
+		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒí–ˆì„ ë•Œ í˜¸ì¶œ
 		virtual void OnTriggerEnter(const PurahEngine::Collider* other) override;
-		// Æ®¸®°Å°¡ Ãæµ¹À» ¹ş¾î³µÀ» ¶§ È£Ãâ
+		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒì„ ë²—ì–´ë‚¬ì„ ë•Œ í˜¸ì¶œ
 		virtual void OnTriggerExit(const PurahEngine::Collider* other) override;
 
 	private:

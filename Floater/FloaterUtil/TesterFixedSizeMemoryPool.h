@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "./include/FixedSizeMemoryPool.h"
 #include "./include/ITester.h"
 

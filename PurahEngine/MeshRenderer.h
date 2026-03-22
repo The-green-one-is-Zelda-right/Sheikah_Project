@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Renderer.h"
 
@@ -15,7 +15,7 @@ namespace PurahEngine
 			Cube
 		};
 
-		// RendererÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// Rendererì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void Render(IZeldaRenderer* renderer) override;
 
 		void SetTexture(const std::wstring& textureName);

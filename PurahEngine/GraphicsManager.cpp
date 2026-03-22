@@ -1,4 +1,4 @@
-#include "GraphicsManager.h"
+ï»¿#include "GraphicsManager.h"
 
 #include "GameObject.h"
 #include "Transform.h"
@@ -31,7 +31,7 @@ void PurahEngine::GraphicsManager::Initialize(HWND hWnd)
 	OutputDebugStringW(std::to_wstring(GetLastError()).c_str());
 	if (zeldaGraphicsDLL == nullptr)
 	{
-		// DLL ·Îµå ½ÇÆĞ
+		// DLL ë¡œë“œ ì‹¤íŒ¨
 		assert(0);
 		return;
 	}
@@ -39,7 +39,7 @@ void PurahEngine::GraphicsManager::Initialize(HWND hWnd)
 
 	if (createZeldaRenderer == nullptr)
 	{
-		// DLL ÇÔ¼ö¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.
+		// DLL í•¨ìˆ˜ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.
 		assert(0);
 		return;
 	}
@@ -53,7 +53,7 @@ void PurahEngine::GraphicsManager::Initialize(HWND hWnd)
 	graphicsModule->Initialize(1920, 1080, false, hWnd, false);
 	resourceManager = new GraphicsResourceManager(graphicsModule);
 
-	// ¸ğµ¨¸µ ÆÄÀÏ ¹Ì¸® ·Îµå
+	// ëª¨ë¸ë§ íŒŒì¼ ë¯¸ë¦¬ ë¡œë“œ
 	std::vector<std::wstring> preloadmodels = setting.GetPreLoadModels();
 	for (int i = 0; i < preloadmodels.size(); i++)
 	{
@@ -63,7 +63,7 @@ void PurahEngine::GraphicsManager::Initialize(HWND hWnd)
 
 void PurahEngine::GraphicsManager::Finalize()
 {
-	// ¸®¼Ò½º ¸Å´ÏÀú°¡ ¸ÕÀú ÇØÁ¦µÈ ÈÄ¿¡, graphicsModuleÀÌ ÇØÁ¦µÇ¾î¾ßÇÑ´Ù.
+	// ë¦¬ì†ŒìŠ¤ ë§¤ë‹ˆì €ê°€ ë¨¼ì € í•´ì œëœ í›„ì—, graphicsModuleì´ í•´ì œë˜ì–´ì•¼í•œë‹¤.
 	if (resourceManager != nullptr)
 	{
 		delete resourceManager;
@@ -77,7 +77,7 @@ void PurahEngine::GraphicsManager::Finalize()
 	auto releaseZeldaRenderer = reinterpret_cast<void(*)(IZeldaRenderer*)>(GetProcAddress(zeldaGraphicsDLL, "ReleaseZeldaRenderer"));
 	if (releaseZeldaRenderer == nullptr)
 	{
-		// DLL ÇÔ¼ö¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.
+		// DLL í•¨ìˆ˜ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.
 		assert(0);
 	}
 

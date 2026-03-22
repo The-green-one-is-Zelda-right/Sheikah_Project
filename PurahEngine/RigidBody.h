@@ -1,5 +1,5 @@
-#pragma once
-/// ZonaiPhysicsÀÇ RigidBody¸¦ ·¡ÇÎÇØÁØ´Ù.
+ï»¿#pragma once
+/// ZonaiPhysicsì˜ RigidBodyë¥¼ ë˜í•‘í•´ì¤€ë‹¤.
 #include "PurahEngineAPI.h"
 #include "Component.h"
 #include <Eigen/Dense>
@@ -36,17 +36,17 @@ namespace PurahEngine
 
 	public:
 		/**
-		¼ö¸é »óÅÂÀÇ °­Ã¼¸¦ ±ú¿ò
+		ìˆ˜ë©´ ìƒíƒœì˜ ê°•ì²´ë¥¼ ê¹¨ì›€
 		*/
 		void		WakeUp() noexcept;
 
 		/**
-		¼ö¸é ¿©ºÎ¸¦ ¹İÈ¯ÇÔ
+		ìˆ˜ë©´ ì—¬ë¶€ë¥¼ ë°˜í™˜í•¨
 		*/
 		bool		IsSleeping() const noexcept;
 
 		/**
-		°­Ã¼ÀÇ ¿òÁ÷ÀÓÀ» Á¦ÇÑÇÏ´Â ÇÃ·¡±×
+		ê°•ì²´ì˜ ì›€ì§ì„ì„ ì œí•œí•˜ëŠ” í”Œë˜ê·¸
 		*/
 		uint8_t		GetDynamicLockFlags() const noexcept;
 		void		SetDynamicLockFlag(ZonaiPhysics::FreezeFlag flag, bool) noexcept;
@@ -54,10 +54,10 @@ namespace PurahEngine
 
 	public:
 		/**
-		Áú·®
+		ì§ˆëŸ‰
 
-		¹°Ã¼ÀÇ Áú·®.
-		0ÀÌ¸é ¹«ÇÑÇÑ Áú·®À¸·Î Ãë±ŞÇÔ.
+		ë¬¼ì²´ì˜ ì§ˆëŸ‰.
+		0ì´ë©´ ë¬´í•œí•œ ì§ˆëŸ‰ìœ¼ë¡œ ì·¨ê¸‰í•¨.
 		*/
 		float		GetMass() const noexcept;
 		void		SetMass(float) noexcept;
@@ -68,53 +68,53 @@ namespace PurahEngine
 		void			SetInertiaTensor(const Eigen::Vector3f& tensor);
 
 		/**
-		¼±Çü °¨¼è °è¼ö
+		ì„ í˜• ê°ì‡  ê³„ìˆ˜
 
-		ÀúÇ×ÀÌ³ª ¿©·¯°¡Áö ¿ä¼Ò¿¡ ÀÇÇØ ¹°Ã¼°¡ ¼­¼­È÷ Á¤ÁöÇÔ.
+		ì €í•­ì´ë‚˜ ì—¬ëŸ¬ê°€ì§€ ìš”ì†Œì— ì˜í•´ ë¬¼ì²´ê°€ ì„œì„œíˆ ì •ì§€í•¨.
 		*/
 		float		GetLinearDamping() const noexcept;
 		void		SetLinearDamping(float _damping) noexcept;
 
 		/**
-		È¸Àü °¨¼è °è¼ö
+		íšŒì „ ê°ì‡  ê³„ìˆ˜
 
-		ÀúÇ×ÀÌ³ª ¿©·¯°¡Áö ¿ä¼Ò¿¡ ÀÇÇØ ¹°Ã¼°¡ ¼­¼­È÷ Á¤ÁöÇÔ
+		ì €í•­ì´ë‚˜ ì—¬ëŸ¬ê°€ì§€ ìš”ì†Œì— ì˜í•´ ë¬¼ì²´ê°€ ì„œì„œíˆ ì •ì§€í•¨
 		*/
 		float		GetAngularDamping() const noexcept;
 		void		SetAngularDamping(float _damping) noexcept;
 
 		/**
-		¼±¼Óµµ
+		ì„ ì†ë„
 		*/
 		Eigen::Vector3f	GetLinearVelocity() const noexcept;
 		void		SetLinearVelocity(const Eigen::Vector3f& _velocity) noexcept;
 
 		/**
-		°¢¼Óµµ
+		ê°ì†ë„
 		*/
 		Eigen::Vector3f	GetAngularVelocity() const noexcept;
 		void		SetAngularVelocity(const Eigen::Vector3f& _velocity) noexcept;
 
 		/**
-		¼±¼Óµµ Á¦ÇÑ
+		ì„ ì†ë„ ì œí•œ
 		*/
 		// float		GetMaxLinearVelocity() const noexcept;
 		void		SetMaxLinearVelocity(const float&) noexcept;
 
 		/**
-		°¢¼Óµµ Á¦ÇÑ
+		ê°ì†ë„ ì œí•œ
 		*/
 		// float		GetMaxAngularVelocity() const noexcept;
 		void		SetMaxAngularVelocity(const float&) noexcept;
 
 		/**
-		¹°Ã¼¿¡ ÈûÀ» °¡ÇÏ°Å³ª Áö¿ò
+		ë¬¼ì²´ì— í˜ì„ ê°€í•˜ê±°ë‚˜ ì§€ì›€
 		*/
 		void		AddForce(const Eigen::Vector3f& _force, ZonaiPhysics::ForceType _type = ZonaiPhysics::ForceType::Force) noexcept;
 		void		ClearForce() noexcept;
 
 		/**
-		¹°Ã¼¿¡ ÅäÅ©¸¦ °¡ÇÏ°Å³ª Áö¿ò
+		ë¬¼ì²´ì— í† í¬ë¥¼ ê°€í•˜ê±°ë‚˜ ì§€ì›€
 		*/
 		void		AddTorque(const Eigen::Vector3f& _torque, ZonaiPhysics::ForceType _type = ZonaiPhysics::ForceType::Force) noexcept;
 		void		ClearTorque() noexcept;
@@ -126,12 +126,12 @@ namespace PurahEngine
 		bool		HasGravity() const;
 
 		/**
-		¿ÀºêÁ§Æ®ÀÇ ¹Ù¿îµù ¹Ú½º¸¦ °è»êÇÔ
+		ì˜¤ë¸Œì íŠ¸ì˜ ë°”ìš´ë”© ë°•ìŠ¤ë¥¼ ê³„ì‚°í•¨
 
-		¸Å°³º¯¼ö¸¦ ÀÔ·ÂÇÏÁö ¾ÊÀ¸¸é
-		¿ÀºêÁ§Æ®ÀÇ À§Ä¡¿Í È¸ÀüÀ» ±â¹İÀ¸·Î ¹Ù¿îµù ¹Ú½º¸¦ °è»êÇØÁÜ
+		ë§¤ê°œë³€ìˆ˜ë¥¼ ì…ë ¥í•˜ì§€ ì•Šìœ¼ë©´
+		ì˜¤ë¸Œì íŠ¸ì˜ ìœ„ì¹˜ì™€ íšŒì „ì„ ê¸°ë°˜ìœ¼ë¡œ ë°”ìš´ë”© ë°•ìŠ¤ë¥¼ ê³„ì‚°í•´ì¤Œ
 
-		¸Å°³ º¯¼ö´Â °è»êµÉ ±âÀú¸¦ °áÁ¤ÇÏ´Â À§Ä¡¿Í È¸Àü
+		ë§¤ê°œ ë³€ìˆ˜ëŠ” ê³„ì‚°ë  ê¸°ì €ë¥¼ ê²°ì •í•˜ëŠ” ìœ„ì¹˜ì™€ íšŒì „
 		*/
 		ZonaiPhysics::ZnBound3 GetBoundingBox(
 			const Eigen::Vector3f& _pos = Eigen::Vector3f::Zero(), 

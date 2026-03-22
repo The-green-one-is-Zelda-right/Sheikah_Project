@@ -1,4 +1,4 @@
-#pragma warning(push)
+ï»¿#pragma warning(push)
 #pragma warning(disable: 33010 26495 4819)
 #include "PxPhysicsAPI.h"
 #pragma warning (pop)
@@ -63,8 +63,8 @@ namespace ZonaiPhysics
 	}
 
 	/// <summary>
-	/// ÀÌ°Ç °­Ã¼ÀÇ À§Ä¡¸¦ ¹Ù²Ù´Â°Çµ¥...
-	/// ÀÌ°Ô ¸ÂÀ»±î?
+	/// ì´ê±´ ê°•ì²´ì˜ ìœ„ì¹˜ë¥¼ ë°”ê¾¸ëŠ”ê±´ë°...
+	/// ì´ê²Œ ë§ì„ê¹Œ?
 	/// </summary>
 	Eigen::Vector3f Collider::GetPosition() const
 	{

@@ -1,4 +1,4 @@
-#include "GraphicsResourceManager.h"
+ï»¿#include "GraphicsResourceManager.h"
 
 #include <fstream>
 
@@ -31,7 +31,7 @@ namespace PurahEngine
 	{
 		auto iter = textureTable.find(textureName);
 		
-		// textureNameÀÌ textureTable¿¡ Á¸ÀçÇÏÁö ¾ÊÀ½
+		// textureNameì´ textureTableì— ì¡´ì¬í•˜ì§€ ì•ŠìŒ
 		if (iter == textureTable.end())
 		{
 			TextureID id = graphicsModule->CreateTexture(textureName);
@@ -48,7 +48,7 @@ namespace PurahEngine
 	{
 		auto iter = modelTable.find(modelName);
 
-		// modelNameÀÌ modelTable¿¡ Á¸ÀçÇÏÁö ¾ÊÀ½
+		// modelNameì´ modelTableì— ì¡´ì¬í•˜ì§€ ì•ŠìŒ
 		if (iter == modelTable.end())
 		{
 			ModelID id = graphicsModule->CreateModel(modelName);
@@ -60,19 +60,19 @@ namespace PurahEngine
 			return iter->second;
 		}
 
-		// ¸ğµ¨¸µ ÆÄÀÏ Á¤º¸ ¼öÁı¿ë ÄÚµå
-		//static std::vector<std::wstring> modelList; // ¸ğµ¨ ÀÌ¸§À» ÀúÀåÇÒ º¤ÅÍ
+		// ëª¨ë¸ë§ íŒŒì¼ ì •ë³´ ìˆ˜ì§‘ìš© ì½”ë“œ
+		//static std::vector<std::wstring> modelList; // ëª¨ë¸ ì´ë¦„ì„ ì €ì¥í•  ë²¡í„°
 
 		//auto iter = modelTable.find(modelName);
 
-		//// modelNameÀÌ modelTable¿¡ Á¸ÀçÇÏÁö ¾ÊÀ½
+		//// modelNameì´ modelTableì— ì¡´ì¬í•˜ì§€ ì•ŠìŒ
 		//if (iter == modelTable.end())
 		//{
 		//	ModelID id = graphicsModule->CreateModel(modelName);
 		//	modelTable[modelName] = id;
-		//	modelList.push_back(modelName); // ¸ğµ¨ ÀÌ¸§À» º¤ÅÍ¿¡ Ãß°¡
+		//	modelList.push_back(modelName); // ëª¨ë¸ ì´ë¦„ì„ ë²¡í„°ì— ì¶”ê°€
 
-		//	// º¤ÅÍ ³»¿ëÀ» ÆÄÀÏ¿¡ ÀúÀå
+		//	// ë²¡í„° ë‚´ìš©ì„ íŒŒì¼ì— ì €ì¥
 		//	std::ofstream outFile("ModelNames.txt");
 		//	for (const auto& name : modelList)
 		//	{

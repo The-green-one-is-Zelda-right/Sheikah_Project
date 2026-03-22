@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <vector>
 
 #pragma warning(push)
@@ -44,7 +44,7 @@ namespace ZonaiPhysics
 		void				SetUserData(void*) override;
 
 	public:
-		// Áú·®
+		// ì§ˆëŸ‰
 		float				GetMass() const override;
 		void				SetMass(float) override;
 		void				SetDensity(float) override;
@@ -60,7 +60,7 @@ namespace ZonaiPhysics
 		void				SetAngularDamping(float) override;
 		
 	public:
-		// ¼Óµµ
+		// ì†ë„
 		Eigen::Vector3f		GetLinearVelocity() const override;
 		void				SetLinearVelocity(const Eigen::Vector3f&) override;
 

@@ -1,11 +1,11 @@
-#include "PurahMath.h"
+ï»¿#include "PurahMath.h"
 
 namespace PurahEngine
 {
 	float PurahMath::CalculateRotationLength(const Eigen::Quaternionf& quatA, const Eigen::Quaternionf& quatB)
 	{
 		float dotProduct = quatA.dot(quatB);
-		dotProduct = std::clamp(dotProduct, -1.0f, 1.0f); // dotProduct°¡ [-1, 1] ¹üÀ§¿¡ ÀÖÀ½À» º¸Àå
+		dotProduct = std::clamp(dotProduct, -1.0f, 1.0f); // dotProductê°€ [-1, 1] ë²”ìœ„ì— ìˆìŒì„ ë³´ì¥
 		return 2.0f * std::acos(dotProduct);
 	}
 
@@ -60,20 +60,20 @@ namespace PurahEngine
 			target = minusBRotation;
 		}
 
-		// µÎ º¯È¯ Çà·ÄÀÇ È¸Àü ºÎºĞÀ» ÄõÅÍ´Ï¾ğÀ¸·Î º¯È¯ÇÕ´Ï´Ù.
+		// ë‘ ë³€í™˜ í–‰ë ¬ì˜ íšŒì „ ë¶€ë¶„ì„ ì¿¼í„°ë‹ˆì–¸ìœ¼ë¡œ ë³€í™˜í•©ë‹ˆë‹¤.
 		//Eigen::Quaternionf quatA(A.block<3, 3>(0, 0));
 		//Eigen::Quaternionf quatB(B.block<3, 3>(0, 0));
 
-		// µÎ ÄõÅÍ´Ï¾ğÀ» Slerp·Î º¸°£ÇÕ´Ï´Ù.
+		// ë‘ ì¿¼í„°ë‹ˆì–¸ì„ Slerpë¡œ ë³´ê°„í•©ë‹ˆë‹¤.
 		// Eigen::Quaternionf quatInterpolated = aRotation.slerp(t, target);
 		Eigen::Quaternionf quatInterpolated = aRotation.slerp(t, target);
 
-		// µÎ º¯È¯ Çà·ÄÀÇ º¯È¯(translation) ºÎºĞÀ» ¼±Çü º¸°£ÇÕ´Ï´Ù.
+		// ë‘ ë³€í™˜ í–‰ë ¬ì˜ ë³€í™˜(translation) ë¶€ë¶„ì„ ì„ í˜• ë³´ê°„í•©ë‹ˆë‹¤.
 		Eigen::Vector3f translationA = A.block<3, 1>(0, 3);
 		Eigen::Vector3f translationB = B.block<3, 1>(0, 3);
 		Eigen::Vector3f translationInterpolated = (1 - t) * translationA + t * translationB;
 
-		// º¸°£µÈ È¸Àü°ú º¯È¯À» °áÇÕÇÏ¿© ÃÖÁ¾ º¯È¯ Çà·ÄÀ» ¸¸µì´Ï´Ù.
+		// ë³´ê°„ëœ íšŒì „ê³¼ ë³€í™˜ì„ ê²°í•©í•˜ì—¬ ìµœì¢… ë³€í™˜ í–‰ë ¬ì„ ë§Œë“­ë‹ˆë‹¤.
 		Eigen::Matrix4f result = Eigen::Matrix4f::Identity();
 		result.block<3, 3>(0, 0) = quatInterpolated.toRotationMatrix();
 		result.block<3, 1>(0, 3) = translationInterpolated;

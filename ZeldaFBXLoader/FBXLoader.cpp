@@ -1,4 +1,4 @@
-#include "FBXLoader.h"
+ï»¿#include "FBXLoader.h"
 
 #include <filesystem>
 
@@ -32,7 +32,7 @@ namespace FBXLoader
 			aiProcess_SortByPType | aiProcess_LimitBoneWeights;
 		//*/
 
-		// aiProcess_FlipWindingOrder -> aiProcess_ConvertToLeftHanded¿¡ Æ÷ÇÔµÊ
+		// aiProcess_FlipWindingOrder -> aiProcess_ConvertToLeftHandedì— í¬í•¨ë¨
 		// aiProcess_PreTransformVertices
 
 		const aiScene* scene = importer.ReadFile(multibyteFilePath, DEFAULT_LOAD_FLAG);
@@ -180,7 +180,7 @@ namespace FBXLoader
 							}
 							else
 							{
-								// ÇÏ³ªÀÇ ¹öÅØ½º°¡ 4°³ ÀÌ»óÀÇ º»¿¡ ¿µÇâÀ» ¹ŞÀ½
+								// í•˜ë‚˜ì˜ ë²„í…ìŠ¤ê°€ 4ê°œ ì´ìƒì˜ ë³¸ì— ì˜í–¥ì„ ë°›ìŒ
 								assert(l < 3);
 								continue;
 							}
@@ -228,7 +228,7 @@ namespace FBXLoader
 
 				std::map<double, AnimationKeyInfo> keys;
 
-				// Å° °³¼ö´Â ¸ğµÎ °°¾Æ¾ßÇÑ´Ù.
+				// í‚¤ ê°œìˆ˜ëŠ” ëª¨ë‘ ê°™ì•„ì•¼í•œë‹¤.
 				assert(aibone->mNumScalingKeys == aibone->mNumRotationKeys && aibone->mNumScalingKeys == aibone->mNumPositionKeys);
 
 				for (int k = 0; k < aibone->mNumScalingKeys; k++)
@@ -237,7 +237,7 @@ namespace FBXLoader
 					aiQuatKey rotationKey = aibone->mRotationKeys[k];
 					aiVectorKey positionKey = aibone->mPositionKeys[k];
 
-					// timeÀÌ ÀÏÄ¡ÇÏÁö ¾Ê´Â µ¥ÀÌÅÍ°¡ ÀÖ´Ù¸é Áß´Ü
+					// timeì´ ì¼ì¹˜í•˜ì§€ ì•ŠëŠ” ë°ì´í„°ê°€ ìˆë‹¤ë©´ ì¤‘ë‹¨
 					assert(scalingKey.mTime == rotationKey.mTime && scalingKey.mTime == positionKey.mTime);
 					double time = scalingKey.mTime;
 
@@ -280,7 +280,7 @@ namespace FBXLoader
 
 	void FBXLoader::ReleaseModel(Model* model)
 	{
-		// root¿¡¼­ ºÎÅÍ ¸ğµç ³ëµå¸¦ Å¸°í°¡¸ç ÇØÁ¦
+		// rootì—ì„œ ë¶€í„° ëª¨ë“  ë…¸ë“œë¥¼ íƒ€ê³ ê°€ë©° í•´ì œ
 		std::queue<Bone*> q;
 		if (model->root != nullptr)
 		{
@@ -337,7 +337,7 @@ namespace FBXLoader
 			bone->meshes.push_back(ainode->mMeshes[i]);
 		}
 
-		// ¿ÀÇÁ¼Â ÃÊ±âÈ­
+		// ì˜¤í”„ì…‹ ì´ˆê¸°í™”
 		bone->offsetMatrix = Eigen::Matrix4f::Identity();
 
 		bone->transformMatrix <<
@@ -414,7 +414,7 @@ namespace FBXLoader
 
 		if (assimpMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, baseColor) == AI_SUCCESS)
 		{
-			// Base Color¸¦ °¡Áø°æ¿ì
+			// Base Colorë¥¼ ê°€ì§„ê²½ìš°
 		}
 
 		materialData->baseColor.r = baseColor.r;

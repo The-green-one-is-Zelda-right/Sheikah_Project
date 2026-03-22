@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <Eigen/Dense>
 #include <string>
 
@@ -6,9 +6,9 @@ namespace ZonaiPhysics
 {
 	struct ZnQueryInfo
 	{
-		void* bodyData;					// ¿ÀºêÁ§Æ® Æ÷ÀÎÅÍ
-		void* colliderData;				// Äİ¶óÀÌ´õ Æ÷ÀÎÅÍ
-		Eigen::Vector3f position;	// Ãæµ¹ À§Ä¡
-		float distance;				// Ãæµ¹ °Å¸®
+		void* bodyData;					// ì˜¤ë¸Œì íŠ¸ í¬ì¸í„°
+		void* colliderData;				// ì½œë¼ì´ë” í¬ì¸í„°
+		Eigen::Vector3f position;	// ì¶©ëŒ ìœ„ì¹˜
+		float distance;				// ì¶©ëŒ ê±°ë¦¬
 	};
 }

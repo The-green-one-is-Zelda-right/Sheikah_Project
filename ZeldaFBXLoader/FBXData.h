@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <string>
 #include <vector>
@@ -125,15 +125,15 @@ namespace FBXLoader
 	{
 		std::wstring name;
 
-		double duration; // Æ½´ç ½Ã°£
-		double tickPerSecond; // ½Ã°£´ç Æ½
+		double duration; // í‹±ë‹¹ ì‹œê°„
+		double tickPerSecond; // ì‹œê°„ë‹¹ í‹±
 
 		// key: boneIndex
 		// value: map<time, Matrix>
-		// °ªÀ» Ã¤¿ì´Â °úÁ¤¿¡¼­
-		// ÀüºÎ identity·Î ÃÊ±âÈ­ÇÑ ÈÄ¿¡ time°ªÀ» index·Î ´ëÀÔÇÑ´Ù
-		// ÀĞ¾îº» »ùÇÃ¿¡¼­´Â ¹ß°ßÇÏÁö ¸øÇßÁö¸¸ °Ç³Ê¶Ù´Â index°ªÀÌ ÀÖ´Ù¸é
-		// identity°¡ ¾Æ´Ñ ±× ÀÌÀüÀÇ °ªÀ¸·Î ¹Ù²ã¾ßÇÒÁöµµ ¸ğ¸¥´Ù.
+		// ê°’ì„ ì±„ìš°ëŠ” ê³¼ì •ì—ì„œ
+		// ì „ë¶€ identityë¡œ ì´ˆê¸°í™”í•œ í›„ì— timeê°’ì„ indexë¡œ ëŒ€ì…í•œë‹¤
+		// ì½ì–´ë³¸ ìƒ˜í”Œì—ì„œëŠ” ë°œê²¬í•˜ì§€ ëª»í–ˆì§€ë§Œ ê±´ë„ˆë›°ëŠ” indexê°’ì´ ìˆë‹¤ë©´
+		// identityê°€ ì•„ë‹Œ ê·¸ ì´ì „ì˜ ê°’ìœ¼ë¡œ ë°”ê¿”ì•¼í• ì§€ë„ ëª¨ë¥¸ë‹¤.
 		std::map<std::wstring, std::map<double , AnimationKeyInfo>> animationKey;
 	};
 }

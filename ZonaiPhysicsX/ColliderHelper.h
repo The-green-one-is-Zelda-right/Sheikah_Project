@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <cstdint>
 #pragma warning(push)
 #pragma warning(disable: 33010 26495 4819)

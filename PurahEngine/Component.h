@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngineAPI.h"
 #include "SerializableDefine.h"
 #include "ZnCollider.h"
@@ -6,7 +6,7 @@
 
 namespace ZonaiPhysics
 {
-	class ZnCollision;
+	struct ZnCollision;
 	class ZnCollider;
 }
 
@@ -43,42 +43,42 @@ namespace PurahEngine
 		virtual void OnDestroy();
 
 		/// Update
-		// ¹°¸® °ü·Ã ¾÷µ¥ÀÌÆ®
+		// ë¬¼ë¦¬ ê´€ë ¨ ì—…ë°ì´íŠ¸
 		virtual void FixedUpdate();
-		// ±âÁ¸ ¾÷µ¥ÀÌÆ®
+		// ê¸°ì¡´ ì—…ë°ì´íŠ¸
 		virtual void Update();
 
-		// ¹°¸® °ü·Ã ¾÷µ¥ÀÌÆ® 2Á¾ Ãß°¡¿¹Á¤
+		// ë¬¼ë¦¬ ê´€ë ¨ ì—…ë°ì´íŠ¸ 2ì¢… ì¶”ê°€ì˜ˆì •
 
-		// Upate ÈÄ¿¡ ÇÑ¹ø ´õ ¾÷µ¥ÀÌÆ® (ÁÖ·Î Ä«¸Ş¶ó °ü·Ã¿¡¼­ »ç¿ëÇÑ´Ù°í ÇÑ´Ù)
+		// Upate í›„ì— í•œë²ˆ ë” ì—…ë°ì´íŠ¸ (ì£¼ë¡œ ì¹´ë©”ë¼ ê´€ë ¨ì—ì„œ ì‚¬ìš©í•œë‹¤ê³  í•œë‹¤)
 		virtual void LateUpdate();
 
 		/// OnCollision
-			// Ãæµ¹Ã¼°¡ Ãæµ¹ÇßÀ» ¶§ È£Ãâ
+			// ì¶©ëŒì²´ê°€ ì¶©ëŒí–ˆì„ ë•Œ í˜¸ì¶œ
 		virtual void OnCollisionEnter(const ZonaiPhysics::ZnCollision&, const Collider*);
-		// Ãæµ¹Ã¼°¡ Ãæµ¹À» À¯ÁöÇÒ ¶§ È£Ãâ
+		// ì¶©ëŒì²´ê°€ ì¶©ëŒì„ ìœ ì§€í•  ë•Œ í˜¸ì¶œ
 		virtual void OnCollisionStay(const ZonaiPhysics::ZnCollision&, const Collider*);
-		// Ãæµ¹Ã¼°¡ Ãæµ¹À» ¹ş¾î³µÀ» ¶§ È£Ãâ
+		// ì¶©ëŒì²´ê°€ ì¶©ëŒì„ ë²—ì–´ë‚¬ì„ ë•Œ í˜¸ì¶œ
 		virtual void OnCollisionExit(const ZonaiPhysics::ZnCollision&, const Collider*);
 
 		/// OnTrigger
-		// Æ®¸®°Å°¡ Ãæµ¹ÇßÀ» ¶§ È£Ãâ
+		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒí–ˆì„ ë•Œ í˜¸ì¶œ
 		virtual void OnTriggerEnter(const Collider*);
-		// Æ®¸®°Å°¡ Ãæµ¹À² À¯ÁöÇÒ ¶§ È£Ãâ
+		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒìœ¨ ìœ ì§€í•  ë•Œ í˜¸ì¶œ
 		virtual void OnTriggerStay(const Collider*);
-		// Æ®¸®°Å°¡ Ãæµ¹À» ¹ş¾î³µÀ» ¶§ È£Ãâ
+		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒì„ ë²—ì–´ë‚¬ì„ ë•Œ í˜¸ì¶œ
 		virtual void OnTriggerExit(const Collider*);
 
 		/// OnMouse
-		// ¸¶¿ì½º°¡ ¿ÀºêÁ§Æ® À§¿¡ ¿Ã¶ó°¬À» ¶§ È£Ãâ
+		// ë§ˆìš°ìŠ¤ê°€ ì˜¤ë¸Œì íŠ¸ ìœ„ì— ì˜¬ë¼ê°”ì„ ë•Œ í˜¸ì¶œ
 		virtual void OnMouseEnter();
-		// ¸¶¿ì½º°¡ ¿ÀºêÁ§Æ® À§¿¡¼­ À¯ÁöÇÒ ¶§ È£Ãâ
+		// ë§ˆìš°ìŠ¤ê°€ ì˜¤ë¸Œì íŠ¸ ìœ„ì—ì„œ ìœ ì§€í•  ë•Œ í˜¸ì¶œ
 		virtual void OnMouseStay();
-		// ¸¶¿ì½º°¡ ¿ÀºêÁ§Æ®¿¡¼­ ¹ş¾î³µÀ» ¶§ È£Ãâ
+		// ë§ˆìš°ìŠ¤ê°€ ì˜¤ë¸Œì íŠ¸ì—ì„œ ë²—ì–´ë‚¬ì„ ë•Œ í˜¸ì¶œ
 		virtual void OnMouseExit();
 
-		// °ÔÀÓ¿ÀºêÁ§Æ® »ı¼º ÈÄ¿¡ ÃÊ±âÈ­¸¦ ÇÏ±âÀ§ÇÑ ÇÔ¼ö.
-		// °Á »ı¼ºÀÚ ´ë¿ëÀÌ´Ù ¶ó°í »ı°¢ÇÏÀÚ.
+		// ê²Œì„ì˜¤ë¸Œì íŠ¸ ìƒì„± í›„ì— ì´ˆê¸°í™”ë¥¼ í•˜ê¸°ìœ„í•œ í•¨ìˆ˜.
+		// ê± ìƒì„±ì ëŒ€ìš©ì´ë‹¤ ë¼ê³  ìƒê°í•˜ì.
 		virtual void PreInitialize();
 		virtual void Initialize();
 		virtual void PostInitialize();

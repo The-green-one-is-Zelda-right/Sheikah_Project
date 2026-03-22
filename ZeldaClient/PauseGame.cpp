@@ -1,4 +1,4 @@
-#include "PauseGame.h"
+ï»¿#include "PauseGame.h"
 #include "TimeController.h"
 #include "GameObject.h"
 #include "UnifiedInputManager.h"
@@ -11,7 +11,7 @@ namespace Phyzzle
 
 	PauseGame::~PauseGame()
 	{
-		if (previousIsPause) // ÀÌÀü »óÅÂ°¡ trueÀÏ ¶§¸¸ È£Ãâ
+		if (previousIsPause) // ì´ì „ ìƒíƒœê°€ trueì¼ ë•Œë§Œ í˜¸ì¶œ
 		{
 			TimeController::GetInstance().ResumeAll();
 		}
@@ -19,7 +19,7 @@ namespace Phyzzle
 
 	void PauseGame::OnDestroy()
 	{
-		if (previousIsPause) // ÀÌÀü »óÅÂ°¡ trueÀÏ ¶§¸¸ È£Ãâ
+		if (previousIsPause) // ì´ì „ ìƒíƒœê°€ trueì¼ ë•Œë§Œ í˜¸ì¶œ
 		{
 			player->SetStopUpdate(false);
 		}
@@ -65,7 +65,7 @@ namespace Phyzzle
 	{
 		if (isPause)
 		{
-			if (!previousIsPause) // ÀÌÀü »óÅÂ°¡ falseÀÏ ¶§¸¸ È£Ãâ
+			if (!previousIsPause) // ì´ì „ ìƒíƒœê°€ falseì¼ ë•Œë§Œ í˜¸ì¶œ
 			{
 				TimeController::GetInstance().PauseAll();
 				player->SetStopUpdate(true);
@@ -73,14 +73,14 @@ namespace Phyzzle
 		}
 		else
 		{
-			if (previousIsPause) // ÀÌÀü »óÅÂ°¡ trueÀÏ ¶§¸¸ È£Ãâ
+			if (previousIsPause) // ì´ì „ ìƒíƒœê°€ trueì¼ ë•Œë§Œ í˜¸ì¶œ
 			{
 				TimeController::GetInstance().ResumeAll();
 				player->SetStopUpdate(false);
 			}
 		}
 
-		previousIsPause = isPause; // ÇöÀç »óÅÂ¸¦ ÀúÀå
+		previousIsPause = isPause; // í˜„ì¬ ìƒíƒœë¥¼ ì €ì¥
 	}
 
 	void PauseGame::PreSerialize(json& jsonData) const

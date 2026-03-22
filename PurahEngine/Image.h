@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Renderer.h"
 
@@ -14,7 +14,7 @@ namespace PurahEngine
 
 		void Awake() override;
 
-		// RendererÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// Rendererì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void Render(IZeldaRenderer* renderer) override;
 
 		void SetTexture(const std::wstring& fileName);
@@ -35,7 +35,7 @@ namespace PurahEngine
 		float elapsedTime;
 
 	private:
-		// ComponentÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// Componentì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void PreSerialize(json& jsonData) const override;
 		void PreDeserialize(const json& jsonData) override;
 		void PostSerialize(json& jsonData) const override;

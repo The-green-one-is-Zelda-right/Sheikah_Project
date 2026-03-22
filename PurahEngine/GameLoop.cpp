@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+ï»¿#define _CRT_SECURE_NO_WARNINGS
 
 #include "GameLoop.h"
 #include "SceneManager.h"
@@ -16,7 +16,7 @@
 #include <iostream>
 
 /// <summary>
-///  ÀÓ½Ã
+///  ì„ì‹œ
 /// </summary>
 #include "GamePadManager.h"
 #include "../ZonaiPhysicsBase/ZnCollider.h"
@@ -42,12 +42,12 @@ void PurahEngine::GameLoop::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gameNam
 {
 	SetUnhandledExceptionFilter(UnhandledExceptionFilter);
 
-	// ³»°¡ ¾µ À©µµ¿ì¸¦ µî·Ï
+	// ë‚´ê°€ ì“¸ ìœˆë„ìš°ë¥¼ ë“±ë¡
 	WNDCLASSEXW wcex;
 	wcex.cbSize = sizeof(WNDCLASSEX);
 
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = WndProc; // ÇÁ·Î½ÃÀú
+	wcex.lpfnWndProc = WndProc; // í”„ë¡œì‹œì €
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = hInstance;
@@ -60,13 +60,13 @@ void PurahEngine::GameLoop::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gameNam
 
 	RegisterClassExW(&wcex);
 
-	// ±× À©µµ¿ì¸¦ »ı¼º
+	// ê·¸ ìœˆë„ìš°ë¥¼ ìƒì„±
 	hWnd = CreateWindowW(gameName, gameName, WS_OVERLAPPEDWINDOW,
 		0, 0, width, height, NULL, NULL, hInstance, NULL);
 
 #ifdef _DEBUG
 	{
-		// ÄÜ¼ÖÃ¢ »ı¼º
+		// ì½˜ì†”ì°½ ìƒì„±
 		AllocConsole();
 		freopen("CONOUT$", "w", stdout);
 	}
@@ -74,16 +74,16 @@ void PurahEngine::GameLoop::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gameNam
 
 	SetMenu(hWnd, NULL);
 
-	// Engine Setting ÃÊ±âÈ­ (GraphicsManager, Physics ManagerÀÇ ÃÊ±âÈ­º¸´Ù ¸ÕÀú µÇ¾î¾ß ÇÑ´Ù.)
+	// Engine Setting ì´ˆê¸°í™” (GraphicsManager, Physics Managerì˜ ì´ˆê¸°í™”ë³´ë‹¤ ë¨¼ì € ë˜ì–´ì•¼ í•œë‹¤.)
 	EngineSetting::GetInstance().Initialize();
 
-	// ½Ã°£°ü¸®ÀÚ ÃÊ±âÈ­
+	// ì‹œê°„ê´€ë¦¬ì ì´ˆê¸°í™”
 	PurahEngine::TimeController::GetInstance().Initialize(timeInit);
 
-	// Graphics dll ÃÊ±âÈ­(º¯°æ °¡´É¼º ³óÈÄ)
+	// Graphics dll ì´ˆê¸°í™”(ë³€ê²½ ê°€ëŠ¥ì„± ë†í›„)
 	PurahEngine::GraphicsManager::GetInstance().Initialize(hWnd);
 
-	// InputManager ÃÊ±âÈ­
+	// InputManager ì´ˆê¸°í™”
 	eKey key[] =
 	{
 		eKey::eKEY_W,
@@ -134,22 +134,22 @@ void PurahEngine::GameLoop::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gameNam
 	PurahEngine::GamePadManager::Instance().Initialize(hWnd, nullptr, 0);
 	UnifiedInputManager::Getinstance().Initialize();
 
-	// SceneManager ÃÊ±âÈ­
+	// SceneManager ì´ˆê¸°í™”
 	PurahEngine::SceneManager::GetInstance().Initialize();
 
-	// PhysicsSysyem ÃÊ±âÈ­
+	// PhysicsSysyem ì´ˆê¸°í™”
 	PurahEngine::PhysicsSystem::GetInstance().Initialize();
 
-	// SoundManager ÃÊ±âÈ­
+	// SoundManager ì´ˆê¸°í™”
 	PurahEngine::SoundManager::GetInstance().Initialize();
 
-	// 0¹ø ¾À ·Îµå
+	// 0ë²ˆ ì”¬ ë¡œë“œ
 	SceneManager::GetInstance().LoadScene(EngineSetting::GetInstance().GetScene(0));
 }
 
 void PurahEngine::GameLoop::Run(_In_ int nCmdShow)
 {
-	// À©µµ¿ì ÇÚµéÀÌ °¡Àå Áß¿ä
+	// ìœˆë„ìš° í•¸ë“¤ì´ ê°€ì¥ ì¤‘ìš”
 	if (!hWnd)
 	{
 		return;
@@ -158,7 +158,7 @@ void PurahEngine::GameLoop::Run(_In_ int nCmdShow)
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 
-	// ¹«ÇÑ·çÇÁ (¾È¿¡ ¸Ş½ÃÁö ·çÇÁ¿Í °ÔÀÓ ·çÇÁ µîÀÌ Æ÷ÇÔµÊ)
+	// ë¬´í•œë£¨í”„ (ì•ˆì— ë©”ì‹œì§€ ë£¨í”„ì™€ ê²Œì„ ë£¨í”„ ë“±ì´ í¬í•¨ë¨)
 	MSG msg;
 
 	while (TRUE)
@@ -170,7 +170,7 @@ void PurahEngine::GameLoop::Run(_In_ int nCmdShow)
 		}
 		else
 		{
-			// ¿£Áø µ¿ÀÛ
+			// ì—”ì§„ ë™ì‘
 			run();
 		}
 	}
@@ -202,7 +202,7 @@ void PurahEngine::GameLoop::run()
 
 	InputManager::Getinstance().Update();
 	GamePadManager::Instance().Update();
-	// InputManager, GamePadManager ÀÌÈÄ¿¡ ½ÇÇàÇØ¾ßÇÑ´Ù.
+	// InputManager, GamePadManager ì´í›„ì— ì‹¤í–‰í•´ì•¼í•œë‹¤.
 	UnifiedInputManager::Getinstance().Update();
 
 	Timer::Update();

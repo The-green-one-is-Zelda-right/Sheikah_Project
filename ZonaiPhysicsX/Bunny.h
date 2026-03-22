@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "foundation/Px.h"
 #include "foundation/PxSimpleTypes.h"
 

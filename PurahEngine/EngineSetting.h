@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <queue>
 
 #include "PurahEngineAPI.h"
@@ -42,7 +42,7 @@ namespace PurahEngine
 		const std::vector<std::tuple<std::wstring, float, float, float, int, int>>& GetPhysicsMaterials() const;
 
 	private:
-		// °ÔÀÓ ½ÇÇàÀü¿¡ ¿Ï·áµÇ¾î¾ß ÇÏ´Â ¼³Á¤
+		// ê²Œì„ ì‹¤í–‰ì „ì— ì™„ë£Œë˜ì–´ì•¼ í•˜ëŠ” ì„¤ì •
 		std::unordered_map<std::wstring, int> tagTable;
 		std::unordered_map<int, std::wstring> tagIDTable;
 		unsigned int tagSize;
@@ -61,7 +61,7 @@ namespace PurahEngine
 		std::vector<std::wstring> preLoadModels;
 		std::vector<std::wstring> scenes;
 
-		// °ÔÀÓ ½ÇÇà ÈÄ¿¡µµ º¯°æµÉ ¼ö ÀÖ´Â ¼³Á¤
+		// ê²Œì„ ì‹¤í–‰ í›„ì—ë„ ë³€ê²½ë  ìˆ˜ ìˆëŠ” ì„¤ì •
 		std::vector<std::vector<bool>> collisionSetting;
 
 		float shadowMapDepthBias;
@@ -81,8 +81,8 @@ namespace PurahEngine
 		EngineSetting();
 		~EngineSetting();
 		EngineSetting(const EngineSetting& ref) = delete;
-		// Å¬·¡½º¸¦ »ı¼ºÇÏ°Ô µÉ °æ¿ì, ±âº»ÀûÀ¸·Î = ¿¡ ´ëÇÑ ¿¬»êÀÚ ¿À¹ö·ÎµùÀÌ »ı¼ºµÈ´Ù.
-		// ½Ì±ÛÅÏÀº °´Ã¼°¡ ÇÏ³ª¿©¾ß ÇÏ¹Ç·Î ±×°ÍÀ» ¹æÁöÇÏ±â À§ÇØ, ¸í½ÃÀûÀ¸·Î delete¸¦ »ç¿ëÇÏ¿© »ç¿ëÀ» ¸·´Â´Ù.
+		// í´ë˜ìŠ¤ë¥¼ ìƒì„±í•˜ê²Œ ë  ê²½ìš°, ê¸°ë³¸ì ìœ¼ë¡œ = ì— ëŒ€í•œ ì—°ì‚°ì ì˜¤ë²„ë¡œë”©ì´ ìƒì„±ëœë‹¤.
+		// ì‹±ê¸€í„´ì€ ê°ì²´ê°€ í•˜ë‚˜ì—¬ì•¼ í•˜ë¯€ë¡œ ê·¸ê²ƒì„ ë°©ì§€í•˜ê¸° ìœ„í•´, ëª…ì‹œì ìœ¼ë¡œ deleteë¥¼ ì‚¬ìš©í•˜ì—¬ ì‚¬ìš©ì„ ë§‰ëŠ”ë‹¤.
 		EngineSetting& operator=(const EngineSetting& ref) = delete;
 	};
 }

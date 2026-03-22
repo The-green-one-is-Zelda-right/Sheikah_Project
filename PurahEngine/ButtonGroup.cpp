@@ -1,4 +1,4 @@
-#include "ButtonGroup.h"
+ï»¿#include "ButtonGroup.h"
 
 #include "UnifiedInputManager.h"
 
@@ -19,7 +19,7 @@ namespace PurahEngine
 	{
 		bool existSelected = false;
 
-		// ¼±ÅÃµÈ ¹öÆ°ÀÇ ¹øÈ£¸¦ Ã£°í, ¸¸¾à ¿©·¯°³ÀÇ ¹öÆ°ÀÌ ÄÑÁ®ÀÖ´Ù¸é ¸ÕÀú ³ª¿Â ¹öÆ°À» Á¦¿ÜÇÑ ³ª¸ÓÁö¸¦ ²ö´Ù.
+		// ì„ íƒëœ ë²„íŠ¼ì˜ ë²ˆí˜¸ë¥¼ ì°¾ê³ , ë§Œì•½ ì—¬ëŸ¬ê°œì˜ ë²„íŠ¼ì´ ì¼œì ¸ìˆë‹¤ë©´ ë¨¼ì € ë‚˜ì˜¨ ë²„íŠ¼ì„ ì œì™¸í•œ ë‚˜ë¨¸ì§€ë¥¼ ëˆë‹¤.
 		for (size_t i = 0; i < contents.size(); i++)
 		{
 			if (contents[i]->IsSelected())
@@ -56,8 +56,8 @@ namespace PurahEngine
 		{
 			case PurahEngine::ButtonGroup::LayoutType::Vertical:
 			{
-				// µ¿½Ã ÀÔ·Â ºÒ°¡´É
-				// VerticalÀº Up, Down ¿ì¼±
+				// ë™ì‹œ ì…ë ¥ ë¶ˆê°€ëŠ¥
+				// Verticalì€ Up, Down ìš°ì„ 
 				if (deltaV != 0)
 				{
 					int result = selected + deltaV;
@@ -93,8 +93,8 @@ namespace PurahEngine
 			}
 			case PurahEngine::ButtonGroup::LayoutType::Horizontal:
 			{
-				// µ¿½Ã ÀÔ·Â ºÒ°¡´É
-				// HorizontalÀº Left, Right ¿ì¼±
+				// ë™ì‹œ ì…ë ¥ ë¶ˆê°€ëŠ¥
+				// Horizontalì€ Left, Right ìš°ì„ 
 				if (deltaH != 0)
 				{
 					int result = selected + deltaH;
@@ -144,7 +144,7 @@ namespace PurahEngine
 
 	void ButtonGroup::Select(int idx)
 	{
-		// ¼±ÅÃµÈ ±×·ìÀ» ´Ù½Ã ¼±ÅÃÇÔ
+		// ì„ íƒëœ ê·¸ë£¹ì„ ë‹¤ì‹œ ì„ íƒí•¨
 		assert(selected == -1);
 
 		int selectIdx = std::min(std::max(0, idx), static_cast<int>(contents.size() - 1));

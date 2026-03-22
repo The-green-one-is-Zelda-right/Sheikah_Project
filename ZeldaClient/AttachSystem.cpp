@@ -1,4 +1,4 @@
-#include "AttachSystem.h"
+ï»¿#include "AttachSystem.h"
 
 #include <numbers>
 
@@ -12,7 +12,7 @@ namespace Phyzzle
 	AttachSystem::~AttachSystem()
 		= default;
 
-	// ID »ı¼º
+	// ID ìƒì„±
 	IslandID AttachSystem::CreateIslandID()
 	{
 		while (!removedIndex.empty())
@@ -20,8 +20,8 @@ namespace Phyzzle
 			auto result = removedIndex.front();
 			removedIndex.pop();
 
-			// »èÁ¦µÈ ÀÎµ¦½º°¡ ÀÖ´Ù¸é
-			// ±×°É ÀçÈ°¿ë ÇÔ.
+			// ì‚­ì œëœ ì¸ë±ìŠ¤ê°€ ìˆë‹¤ë©´
+			// ê·¸ê±¸ ì¬í™œìš© í•¨.
 			return result;
 		}
 
@@ -30,17 +30,17 @@ namespace Phyzzle
 		return { Identifier++ };
 	}
 
-	// ID »èÁ¦
+	// ID ì‚­ì œ
 	void AttachSystem::RemoveIslandID(IslandID _id)
 	{
 		if (!attachIsland.contains(_id))
 			return;
 
 		attachIsland.erase(_id);
-		removedIndex.push(_id);						// »èÁ¦µÈ ID¸¦ Å¥¿¡ ³ÖÀ½
+		removedIndex.push(_id);						// ì‚­ì œëœ IDë¥¼ íì— ë„£ìŒ
 	}
 
-	// ¼¶ »ı¼º
+	// ì„¬ ìƒì„±
 	IslandID AttachSystem::CreateIsland(const AttachIsland& _arr)
 	{
 		if (_arr.size() < 2)
@@ -60,7 +60,7 @@ namespace Phyzzle
 		return newID;
 	}
 
-	// ¼¶ »èÁ¦
+	// ì„¬ ì‚­ì œ
 	void AttachSystem::RemoveIsland(IslandID _id)
 	{
 		if (_id == nullptr || !attachIsland.contains(_id))
@@ -86,7 +86,7 @@ namespace Phyzzle
 		std::swap(removedIndex, emptyQueue);
 	}
 
-	// ¹°Ã¼ ¼±ÅÃ
+	// ë¬¼ì²´ ì„ íƒ
 	void AttachSystem::SelectBody(PzObject* _body)
 	{
 		const IslandID id = _body->GetIslandID();
@@ -102,7 +102,7 @@ namespace Phyzzle
 		}
 	}
 
-	// ¹°Ã¼ ¼±ÅÃ ÇØÁ¦
+	// ë¬¼ì²´ ì„ íƒ í•´ì œ
 	void AttachSystem::DeselectBody(PzObject* _body)
 	{
 		const IslandID id = _body->GetIslandID();
@@ -305,7 +305,7 @@ namespace Phyzzle
 
 	bool AttachSystem::IsTouching(PzObject* _base)
 	{
-		// ¼±ÅÃÇÑ ¿ÀºêÁ§Æ®°¡ ¼¶À» °¡Áö°í ÀÖ´ÂÁö ¾Æ´ÑÁö Ã¼Å©
+		// ì„ íƒí•œ ì˜¤ë¸Œì íŠ¸ê°€ ì„¬ì„ ê°€ì§€ê³  ìˆëŠ”ì§€ ì•„ë‹Œì§€ ì²´í¬
 		const IslandID obj0ID = _base->GetIslandID();
 		AttachIsland island0;
 
@@ -323,10 +323,10 @@ namespace Phyzzle
 		return false;
 	}
 
-	// ¹°Ã¼ ºÎÂø
+	// ë¬¼ì²´ ë¶€ì°©
 	bool AttachSystem::TryAttach(PzObject* _object)
 	{
-		// ¼±ÅÃÇÑ ¿ÀºêÁ§Æ®°¡ ¼¶À» °¡Áö°í ÀÖ´ÂÁö ¾Æ´ÑÁö Ã¼Å©
+		// ì„ íƒí•œ ì˜¤ë¸Œì íŠ¸ê°€ ì„¬ì„ ê°€ì§€ê³  ìˆëŠ”ì§€ ì•„ë‹Œì§€ ì²´í¬
 		const IslandID obj0ID = _object->GetIslandID();
 		AttachIsland island0;
 
@@ -349,7 +349,7 @@ namespace Phyzzle
 
 	bool AttachSystem::Attach(PzObject* _base, PzObject* _other)
 	{
-		// Á¶ÀÎÆ®·Î ¿¬°áÇØÁÖ°í ³ëµåµµ ¿¬°áÇØÁÜ
+		// ì¡°ì¸íŠ¸ë¡œ ì—°ê²°í•´ì£¼ê³  ë…¸ë“œë„ ì—°ê²°í•´ì¤Œ
 		const auto joint = CreateJoint(_base, _other);
 		if (!joint)
 		{
@@ -359,7 +359,7 @@ namespace Phyzzle
 
 		ConnectNode(_base, _other, joint);
 
-		// ¼¶ ´Ù½Ã ¸¸µë
+		// ì„¬ ë‹¤ì‹œ ë§Œë“¬
 		RebuildIsland(_base, _other);
 
 		return true;
@@ -367,21 +367,21 @@ namespace Phyzzle
 
 	bool AttachSystem::Dettach(PzObject* _object)
 	{
-		// ¿¬°áµÈ°Ô ¾øÀ¸¸é ¾Æ¹«°Íµµ ¸øÇÔ.
+		// ì—°ê²°ëœê²Œ ì—†ìœ¼ë©´ ì•„ë¬´ê²ƒë„ ëª»í•¨.
 		if (_object->connectedObjects.empty())
 			return false;
 
 		RemoveIsland(_object->islandID);
 		AttachIsland temp = _object->connectedObjects;
 
-		// ¿¬°áµÈ °´Ã¼ ¼øÈ¸ÇÏ¸é¼­ ¿¬°áÀ» ²÷¾îÁÜ
+		// ì—°ê²°ëœ ê°ì²´ ìˆœíšŒí•˜ë©´ì„œ ì—°ê²°ì„ ëŠì–´ì¤Œ
 		for (auto& _other : temp)
 		{
 			DisconnectNode(_object, _other);
 			BreakJoint(_object, _other);
 		}
 
-		// ¿¬°áµÆ¾ú´ø °´Ã¼µé ¼øÈ¸ÇÏ¸é¼­ Island¸¦ ¸¸µé¾îÁÜ.
+		// ì—°ê²°ëì—ˆë˜ ê°ì²´ë“¤ ìˆœíšŒí•˜ë©´ì„œ Islandë¥¼ ë§Œë“¤ì–´ì¤Œ.
 		for (auto& _other : temp)
 		{
 			AttachIsland island;
@@ -393,13 +393,13 @@ namespace Phyzzle
 				auto obj = search.front();
 				search.pop();
 
-				// ¼±ÅÃ ÇØÁ¦
+				// ì„ íƒ í•´ì œ
 				obj->ValiantRetrieve();
 				island.emplace_back(obj);
 
 				for (auto& e : obj->connectedObjects)
 				{
-					// ¿¬°áµÈ ¾ÖµéÁß¿¡ ¼±ÅÃ µÇ¾îÀÖ´Â Ä£±¸µéÀ» Å¥¿¡ ³Ö°í Å½»ö
+					// ì—°ê²°ëœ ì• ë“¤ì¤‘ì— ì„ íƒ ë˜ì–´ìˆëŠ” ì¹œêµ¬ë“¤ì„ íì— ë„£ê³  íƒìƒ‰
 					if (e->select)
 						search.push(e);
 				}
@@ -436,7 +436,7 @@ namespace Phyzzle
 
 	PurahEngine::FixedJoint* AttachSystem::CreateJoint(PzObject* _base, PzObject* _other)
 	{
-		// Á¶ÀÎÆ® ¸¸µé¾îÁÖ°í
+		// ì¡°ì¸íŠ¸ ë§Œë“¤ì–´ì£¼ê³ 
 		const auto joint = _base->GetGameObject()->AddComponent<PurahEngine::FixedJoint>();
 
 		const auto baseBody = _base->GetGameObject()->GetComponent<PurahEngine::RigidBody>();
@@ -446,7 +446,7 @@ namespace Phyzzle
 		const Eigen::Vector3f worldP = _base->worldAnchor;
 		const Eigen::Quaternionf worldQ = Eigen::Quaternionf::Identity();
 
-		// °¢ÀÚÀÇ ·ÎÄÃ ¾ŞÄ¿ °è»êÇØÁÖ°í
+		// ê°ìì˜ ë¡œì»¬ ì•µì»¤ ê³„ì‚°í•´ì£¼ê³ 
 		Eigen::Vector3f baseP;
 		Eigen::Quaternionf baseQ;
 		CalculateLocalAnchor(worldP, worldQ, _base, baseP, baseQ);
@@ -455,7 +455,7 @@ namespace Phyzzle
 		Eigen::Quaternionf otherQ;
 		CalculateLocalAnchor(worldP, worldQ, _other, otherP, otherQ);
 
-		// ¾ŞÄ¿ Àû¿ë
+		// ì•µì»¤ ì ìš©
 		joint->SetAnchor(baseP, baseQ, otherP, otherQ);
 
 		return joint;
@@ -500,14 +500,14 @@ namespace Phyzzle
 
 	bool AttachSystem::HasAttachIsland(const IslandID& _id, AttachIsland& _outIsland)
 	{
-		// ¼¶À» °¡Áö°í ÀÖÁö ¾ÊÀ¸¸é
+		// ì„¬ì„ ê°€ì§€ê³  ìˆì§€ ì•Šìœ¼ë©´
 		if (_id == nullptr)
 		{
 			return false;
 		}
 		else
 		{
-			// ¼¶ ID¸¦ »èÁ¦
+			// ì„¬ IDë¥¼ ì‚­ì œ
 			_outIsland = attachIsland[_id];
 			return true;
 		}
@@ -521,15 +521,15 @@ namespace Phyzzle
 		AttachIsland island0;
 		AttachIsland island1;
 
-		// ¼¶ÀÌ ¾øÀ¸¸é ÀÓ½Ã ¹è¿­À» ¸¸µë
+		// ì„¬ì´ ì—†ìœ¼ë©´ ì„ì‹œ ë°°ì—´ì„ ë§Œë“¬
 		if (!HasAttachIsland(obj0ID, island0))
 			island0.push_back(_base);
 
-		// ¼¶ÀÌ ¾øÀ¸¸é ÀÓ½Ã ¹è¿­À» ¸¸µë
+		// ì„¬ì´ ì—†ìœ¼ë©´ ì„ì‹œ ë°°ì—´ì„ ë§Œë“¬
 		if (!HasAttachIsland(obj1ID, island1))
 			island1.push_back(_other);
 
-		// »õ·Î¿î ID¸¦ ºÎ¿©
+		// ìƒˆë¡œìš´ IDë¥¼ ë¶€ì—¬
 		island0.insert(island0.end(), island1.begin(), island1.end());
 		RemoveIslandID(obj0ID);
 		RemoveIslandID(obj1ID);
@@ -574,7 +574,7 @@ namespace Phyzzle
 	{
 		using namespace Eigen;
 
-		// ¸ŞÆ®¸¯½º¿¡¼­ Æ÷Áö¼ÇÀÌ¶û ·ÎÅ×ÀÌ¼ÇÀ» ±¸ÇÔ
+		// ë©”íŠ¸ë¦­ìŠ¤ì—ì„œ í¬ì§€ì…˜ì´ë‘ ë¡œí…Œì´ì…˜ì„ êµ¬í•¨
 		Transform<float, 3, Eigen::Affine> transform{ _mat };
 		const Vector3f pos{ transform.translation() };
 		const Quaternionf rot{ transform.rotation() };
@@ -607,7 +607,7 @@ namespace Phyzzle
 	{
 		using namespace Eigen;
 
-		// ¸ŞÆ®¸¯½º¿¡¼­ Æ÷Áö¼ÇÀÌ¶û ·ÎÅ×ÀÌ¼ÇÀ» ±¸ÇÔ
+		// ë©”íŠ¸ë¦­ìŠ¤ì—ì„œ í¬ì§€ì…˜ì´ë‘ ë¡œí…Œì´ì…˜ì„ êµ¬í•¨
 		Transform<float, 3, Eigen::Affine> transform{ _mat };
 		const Vector3f pos{ transform.translation() };
 		const Quaternionf rot{ transform.rotation() };

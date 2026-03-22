@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngine.h"
 
 namespace Phyzzle
@@ -19,7 +19,7 @@ namespace Phyzzle
 		void OnTriggerStay(const PurahEngine::Collider*) override;
 		void OnTriggerExit(const PurahEngine::Collider*) override;
 
-		// ComponentÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// Componentì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void PreSerialize(json& jsonData) const override;
 		void PreDeserialize(const json& jsonData) override;
 		void PostSerialize(json& jsonData) const override;

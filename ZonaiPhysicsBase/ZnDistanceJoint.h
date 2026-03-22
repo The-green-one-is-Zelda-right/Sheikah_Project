@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "ZnJoint.h"
 
 namespace ZonaiPhysics
@@ -11,36 +11,36 @@ namespace ZonaiPhysics
 
 
 	public:
-		// ÇöÀç Á¶ÀÎÆ® °Å¸®
+		// í˜„ì¬ ì¡°ì¸íŠ¸ ê±°ë¦¬
 		virtual float	GetDistance() const = 0;
 
-		// Á¶ÀÎÆ® ÃÖ¼Ò °Å¸®
+		// ì¡°ì¸íŠ¸ ìµœì†Œ ê±°ë¦¬
 		virtual void	SetMinDistance(float _distance) = 0;
 		virtual float	GetMinDistance() const = 0;
 
-		// Á¶ÀÎÆ® ÃÖ´ë °Å¸®
+		// ì¡°ì¸íŠ¸ ìµœëŒ€ ê±°ë¦¬
 		virtual void	SetMaxDistance(float _distance) = 0;
 		virtual float	GetMaxDistance() const = 0;
 
-		// Çã¿ë ¹üÀ§¸¦ ¹ş¾î³­ °Å¸®
-		// Á¶ÀÎÆ®°¡ È°¼ºÈ­ µÇ´Â ÁöÁ¡
+		// í—ˆìš© ë²”ìœ„ë¥¼ ë²—ì–´ë‚œ ê±°ë¦¬
+		// ì¡°ì¸íŠ¸ê°€ í™œì„±í™” ë˜ëŠ” ì§€ì 
 		virtual void	SetTolerance(float _tolerance) = 0;
 		virtual float	GetTolerance() const = 0;
 		
-		// ½ºÇÁ¸µ °­µµ
-		// ±âº»°ª 0.f
+		// ìŠ¤í”„ë§ ê°•ë„
+		// ê¸°ë³¸ê°’ 0.f
 		virtual void	SetStiffness(float _stiffness) = 0;
 		virtual float	GetStiffness() const = 0;
 		
-		// ½ºÇÁ¸µ °¨¼è
-		// ±âº»°ª 0.f
+		// ìŠ¤í”„ë§ ê°ì‡ 
+		// ê¸°ë³¸ê°’ 0.f
 		virtual void	SetDamping(float _damping) = 0;
 		virtual float	GetDamping() const = 0;
 
-		// ½ºÇÁ¸µ °ü·Ã º¯¼ö
+		// ìŠ¤í”„ë§ ê´€ë ¨ ë³€ìˆ˜
 		virtual void	SetSpringArg(float _stiffness, float _damping) = 0;
 
-		// Á¶ÀÎÆ® ÇÃ·¡±×
+		// ì¡°ì¸íŠ¸ í”Œë˜ê·¸
 		virtual void	SetMinDistanceEnable(bool _value) = 0;
 		virtual void	SetMaxDistanceEnable(bool _value) = 0;
 		virtual void	SetSpringEnable(bool _value) = 0;

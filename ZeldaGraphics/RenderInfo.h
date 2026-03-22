@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "GraphicsResourceID.h"
 #include "ZeldaGraphicsDefine.h"
@@ -39,7 +39,7 @@ struct InstancingKey
 	TextureID textureID;
 	ModelID modelID;
 	LightID lightID;
-	unsigned int animationID; // ±âÁ¸ÀÇ animationNameÀ» Model class¸¦ ÅëÇØ id·Î º¯È¯ÇØ¼­ ÀúÀåÇÏµµ·Ï ÇÏÀÚ
+	unsigned int animationID; // ê¸°ì¡´ì˜ animationNameì„ Model classë¥¼ í†µí•´ idë¡œ ë³€í™˜í•´ì„œ ì €ì¥í•˜ë„ë¡ í•˜ì
 
 	InstancingKey() :
 		meshID(MeshID::ID_NULL),

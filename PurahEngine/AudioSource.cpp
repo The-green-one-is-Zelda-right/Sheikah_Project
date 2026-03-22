@@ -1,4 +1,4 @@
-#include "AudioSource.h"
+ï»¿#include "AudioSource.h"
 
 #include "GameObject.h"
 
@@ -37,7 +37,7 @@ void PurahEngine::AudioSource::Initialize()
 
 void PurahEngine::AudioSource::OnDataLoadComplete()
 {
-	// ÆÄÀÏ ÀÌ¸§À» map¿¡ ³Ö°í, value·Î audioclipÀ» »ı¼º
+	// íŒŒì¼ ì´ë¦„ì„ mapì— ë„£ê³ , valueë¡œ audioclipì„ ìƒì„±
 	for (auto sound : soundFile)
 	{
 		std::wstring name = std::wstring(sound.name.begin(), sound.name.end());

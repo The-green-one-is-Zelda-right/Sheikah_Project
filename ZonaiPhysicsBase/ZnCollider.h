@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "ZnObject.h"
 #include "ZnBound3.h"
 #include <Eigen/Dense>
@@ -17,24 +17,24 @@ namespace ZonaiPhysics
 	public:
 		virtual void				Disable(bool) = 0;
 
-		// Äõ¸®¿¡¼­ Á¦¿Ü
+		// ì¿¼ë¦¬ì—ì„œ ì œì™¸
 		virtual void				DisableQuery(bool) = 0;
 
-		// Ãæµ¹ ¼³Á¤
-		// (¸®Áöµå ¹Ùµğ¸¦ ´Ş¾Æ³õ°í ½Ã¹Ä·¹ÀÌ¼ÇÀ» ²ô¸é )
+		// ì¶©ëŒ ì„¤ì •
+		// (ë¦¬ì§€ë“œ ë°”ë””ë¥¼ ë‹¬ì•„ë†“ê³  ì‹œë®¬ë ˆì´ì…˜ì„ ë„ë©´ )
 		virtual void				DisableSimulation(bool) = 0;
 
-		// Æ®¸®°Å ¼³Á¤
+		// íŠ¸ë¦¬ê±° ì„¤ì •
 		virtual void				SetTrigger(bool) = 0;
 
-		// ·¹ÀÌ¾î ¼³Á¤
+		// ë ˆì´ì–´ ì„¤ì •
 		virtual void				SetLayerData(const uint32_t&) = 0;
 
-		// Äİ¶óÀÌ´õ À§Ä¡ ¿ÀÇÁ¼Â
+		// ì½œë¼ì´ë” ìœ„ì¹˜ ì˜¤í”„ì…‹
 		virtual Eigen::Vector3f		GetLocalPosition() const = 0;
 		virtual void				SetLocalPosition(const Eigen::Vector3f&) = 0;
 
-		// Äİ¶óÀÌ´õ È¸Àü ¿ÀÇÁ¼Â
+		// ì½œë¼ì´ë” íšŒì „ ì˜¤í”„ì…‹
 		virtual Eigen::Quaternionf	GetLocalQuaternion() const = 0;
 		virtual void				SetLocalQuaternion(const Eigen::Quaternionf&) = 0;
 

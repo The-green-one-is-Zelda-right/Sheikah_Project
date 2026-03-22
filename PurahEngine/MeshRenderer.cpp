@@ -1,4 +1,4 @@
-#include "MeshRenderer.h"
+ï»¿#include "MeshRenderer.h"
 
 #include "GameObject.h"
 #include "Transform.h"
@@ -15,7 +15,7 @@ namespace PurahEngine
 
 	void MeshRenderer::Render(IZeldaRenderer* renderer)
 	{
-		// °ÔÀÓ¿ÀºêÁ§Æ®°¡ È°¼ºÈ­ µÇ¾î ÀÖ´Â °æ¿ì¿¡¸¸ ÀÛµ¿ÇÑ´Ù.
+		// ê²Œìž„ì˜¤ë¸Œì íŠ¸ê°€ í™œì„±í™” ë˜ì–´ ìžˆëŠ” ê²½ìš°ì—ë§Œ ìž‘ë™í•œë‹¤.
 		if (GetGameObject()->IsRootEnable())
 		{
 			Eigen::Matrix4f worldTM = GetGameObject()->GetTransform()->GetWorldMatrix();

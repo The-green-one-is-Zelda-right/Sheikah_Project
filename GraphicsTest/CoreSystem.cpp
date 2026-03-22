@@ -1,4 +1,4 @@
-#include "CoreSystem.h"
+ï»¿#include "CoreSystem.h"
 
 #include <fstream>
 #include <cassert>
@@ -9,7 +9,7 @@
 
 #include "GraphicsResourceID.h"
 
-// ¾Ï½ÃÀû ¸µÅ© »ç¿ë
+// ì•”ì‹œì  ë§í¬ ì‚¬ìš©
 //#define ZELDA_GRAPHICS_IMPLICIT_LINK
 
 #ifdef ZELDA_GRAPHICS_IMPLICIT_LINK
@@ -19,12 +19,12 @@
 
 void CoreSystem::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gamename, unsigned int width, unsigned int height, bool screenresizeable, bool notitlebar, bool minimizable, bool maximizable)
 {
-	// ³»°¡ ¾µ À©µµ¿ì¸¦ µî·Ï
+	// ë‚´ê°€ ì“¸ ìœˆë„ìš°ë¥¼ ë“±ë¡
 	WNDCLASSEXW wcex;
 	wcex.cbSize = sizeof(WNDCLASSEX);
 
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = WndProc; // ÇÁ·Î½ÃÀú
+	wcex.lpfnWndProc = WndProc; // í”„ë¡œì‹œì €
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = hInstance;
@@ -37,7 +37,7 @@ void CoreSystem::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gamename, unsigned
 
 	RegisterClassExW(&wcex);
 
-	// ±× À©µµ¿ì¸¦ »ı¼º
+	// ê·¸ ìœˆë„ìš°ë¥¼ ìƒì„±
 	hWnd = CreateWindowW(
 		gamename,
 		gamename,
@@ -67,9 +67,9 @@ void CoreSystem::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gamename, unsigned
 	zeldaGraphicsDLL = LoadLibrary(L"ZeldaGraphics.dll");
 	if (zeldaGraphicsDLL == nullptr)
 	{
-		// DLL ·Îµå ½ÇÆĞ
+		// DLL ë¡œë“œ ì‹¤íŒ¨
 		assert(0);
-		OutputDebugString(L"DLL ·Îµå ½ÇÆĞ\n");
+		OutputDebugString(L"DLL ë¡œë“œ ì‹¤íŒ¨\n");
 		DWORD err = GetLastError();
 		OutputDebugString((L"ErrorCode: " + std::to_wstring(err) + L"\n").c_str());
 		return;
@@ -78,9 +78,9 @@ void CoreSystem::Initialize(_In_ HINSTANCE hInstance, LPCWSTR gamename, unsigned
 	auto createZeldaRenderer = reinterpret_cast<IZeldaRenderer * (*)()>(GetProcAddress(zeldaGraphicsDLL, "CreateZeldaRenderer"));
 	if (createZeldaRenderer == nullptr)
 	{
-		// DLL ÇÔ¼ö¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.
+		// DLL í•¨ìˆ˜ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.
 		assert(0);
-		OutputDebugString(L"DLL ÇÔ¼ö¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.\n");
+		OutputDebugString(L"DLL í•¨ìˆ˜ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n");
 		return;
 	}
 
@@ -101,7 +101,7 @@ void CoreSystem::Finalize()
 	auto releaseZeldaRenderer = reinterpret_cast<void(*)(IZeldaRenderer*)>(GetProcAddress(zeldaGraphicsDLL, "ReleaseZeldaRenderer"));
 	if (releaseZeldaRenderer == nullptr)
 	{
-		// DLL ÇÔ¼ö¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.
+		// DLL í•¨ìˆ˜ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.
 		assert(0);
 		return;
 	}
@@ -114,7 +114,7 @@ void CoreSystem::Finalize()
 
 void CoreSystem::Run(_In_ int nCmdShow)
 {
-	// À©µµ¿ì ÇÚµéÀÌ °¡Àå Áß¿ä
+	// ìœˆë„ìš° í•¸ë“¤ì´ ê°€ì¥ ì¤‘ìš”
 	if (!hWnd)
 	{
 		return;
@@ -123,7 +123,7 @@ void CoreSystem::Run(_In_ int nCmdShow)
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 
-	// ¹«ÇÑ·çÇÁ (¾È¿¡ ¸Ş½ÃÁö ·çÇÁ¿Í °ÔÀÓ ·çÇÁ µîÀÌ Æ÷ÇÔµÊ)
+	// ë¬´í•œë£¨í”„ (ì•ˆì— ë©”ì‹œì§€ ë£¨í”„ì™€ ê²Œì„ ë£¨í”„ ë“±ì´ í¬í•¨ë¨)
 	MSG msg;
 
 	isRun = true;
@@ -137,7 +137,7 @@ void CoreSystem::Run(_In_ int nCmdShow)
 		}
 		else
 		{
-			// ¿£Áø µ¿ÀÛ
+			// ì—”ì§„ ë™ì‘
 			run();
 		}
 	}
@@ -460,10 +460,10 @@ void CoreSystem::run()
 		0, 0, 0.1, 30,
 		0, 0, 0, 1;
 
-	// ¾Ö´Ï¸ŞÀÌ¼Ç Å×½ºÆ® ÄÚµå
+	// ì• ë‹ˆë©”ì´ì…˜ í…ŒìŠ¤íŠ¸ ì½”ë“œ
 	const static int repeatPlay = 5;
-	const static float cutTime = 0.0f; // cutTime¿¡¼­ ¾Ö´Ï¸ŞÀÌ¼ÇÀ» ÁßÁöÇÏ°í ´Ù½Ã ½ÃÀÛÇÕ´Ï´Ù. 0º¸´Ù ÀÛ°Å³ª °°Àº °ªÀÌ¶ó¸é ¿ø·¡½Ã°£±îÁö ÀüºÎ Àç»ıÇÕ´Ï´Ù.
-	const static float resetTime = 3.0f; // Ã³À½ »óÅÂ·Î µ¹¾Æ°¡´Âµ¥ °É¸®´Â ½Ã°£À» ¼³Á¤ÇÕ´Ï´Ù. 0º¸´Ù ÀÛ°Å³ª °°´Ù¸é Áï½Ã µÇµ¹¾Æ°©´Ï´Ù.
+	const static float cutTime = 0.0f; // cutTimeì—ì„œ ì• ë‹ˆë©”ì´ì…˜ì„ ì¤‘ì§€í•˜ê³  ë‹¤ì‹œ ì‹œì‘í•©ë‹ˆë‹¤. 0ë³´ë‹¤ ì‘ê±°ë‚˜ ê°™ì€ ê°’ì´ë¼ë©´ ì›ë˜ì‹œê°„ê¹Œì§€ ì „ë¶€ ì¬ìƒí•©ë‹ˆë‹¤.
+	const static float resetTime = 3.0f; // ì²˜ìŒ ìƒíƒœë¡œ ëŒì•„ê°€ëŠ”ë° ê±¸ë¦¬ëŠ” ì‹œê°„ì„ ì„¤ì •í•©ë‹ˆë‹¤. 0ë³´ë‹¤ ì‘ê±°ë‚˜ ê°™ë‹¤ë©´ ì¦‰ì‹œ ë˜ëŒì•„ê°‘ë‹ˆë‹¤.
 
 	static float animationTime = 0.0f;
 	static int animationNumber = 0;
@@ -720,11 +720,11 @@ void CoreSystem::run()
 
 	//float yspeed = 50.0f;
 
-	//// ·£´ı ¿£ÁøÀ» ÃÊ±âÈ­ÇÕ´Ï´Ù.
-	//static std::random_device rd;  // ½Ãµå »ı¼ºÀ» À§ÇÑ random_device
-	//static std::mt19937 gen(rd()); // Mersenne Twister ¿£ÁøÀ» ½Ãµå·Î ÃÊ±âÈ­
+	//// ëœë¤ ì—”ì§„ì„ ì´ˆê¸°í™”í•©ë‹ˆë‹¤.
+	//static std::random_device rd;  // ì‹œë“œ ìƒì„±ì„ ìœ„í•œ random_device
+	//static std::mt19937 gen(rd()); // Mersenne Twister ì—”ì§„ì„ ì‹œë“œë¡œ ì´ˆê¸°í™”
 
-	//// -1¿¡¼­ 1 »çÀÌÀÇ ½Ç¼ö °ªÀ» »ı¼ºÇÏ±â À§ÇÑ ºĞÆ÷¸¦ Á¤ÀÇÇÕ´Ï´Ù.
+	//// -1ì—ì„œ 1 ì‚¬ì´ì˜ ì‹¤ìˆ˜ ê°’ì„ ìƒì„±í•˜ê¸° ìœ„í•œ ë¶„í¬ë¥¼ ì •ì˜í•©ë‹ˆë‹¤.
 	//static std::uniform_real_distribution<float> dis(0.0f, 1.0f);
 
 	//static std::vector<std::vector<float>> randomPos(50, { 0.0, 0.0f, 0.0f });
@@ -773,7 +773,7 @@ LRESULT CoreSystem::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		{
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hWnd, &ps);
-			// TODO: ¿©±â¿¡ hdc¸¦ »ç¿ëÇÏ´Â ±×¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù...
+			// TODO: ì—¬ê¸°ì— hdcë¥¼ ì‚¬ìš©í•˜ëŠ” ê·¸ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤...
 			EndPaint(hWnd, &ps);
 			break;
 		}

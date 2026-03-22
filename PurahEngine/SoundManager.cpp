@@ -1,4 +1,4 @@
-#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+ï»¿#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 #include "SoundManager.h"
 #include "Transform.h"
 
@@ -86,7 +86,7 @@ void PurahEngine::SoundManager::CreateBGMSound(std::wstring name, FMOD::Sound** 
 	std::wstring filePath = L"Sound/BGM/" + name;
 #endif
 
-	// wstringÀ» stringÀ¸·Î º¯È¯ÇÏ´Â ¹æ¹ı
+	// wstringì„ stringìœ¼ë¡œ ë³€í™˜í•˜ëŠ” ë°©ë²•
 	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
 	std::string str = converter.to_bytes(filePath);
 
@@ -104,7 +104,7 @@ void PurahEngine::SoundManager::CreateSfxSound(std::wstring name, FMOD::Sound** 
 	std::wstring filePath = L"Sound/SFX/" + name;
 #endif
 
-	// wstringÀ» stringÀ¸·Î º¯È¯ÇÏ´Â ¹æ¹ı
+	// wstringì„ stringìœ¼ë¡œ ë³€í™˜í•˜ëŠ” ë°©ë²•
 	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
 	std::string str = converter.to_bytes(filePath);
 	
@@ -122,7 +122,7 @@ void PurahEngine::SoundManager::CreateUISound(std::wstring name, FMOD::Sound** s
 	std::wstring filePath = L"Sound/UI/" + name;
 #endif
 
-	// wstringÀ» stringÀ¸·Î º¯È¯ÇÏ´Â ¹æ¹ı
+	// wstringì„ stringìœ¼ë¡œ ë³€í™˜í•˜ëŠ” ë°©ë²•
 	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
 	std::string str = converter.to_bytes(filePath);
 
@@ -232,10 +232,6 @@ void PurahEngine::SoundManager::Update()
 	bgmChannelGroup->setVolume(bgmVolume);
 	sfxChannelGroup->setVolume(sfxVolume);
 
-#ifdef _DEBUG
-	std::cout << "bgm : " << bgmVolume << std::endl;
-	std::cout << "sfx : " << sfxVolume << std::endl;
-#endif
 }
 
 void PurahEngine::SoundManager::Set3DListenerAttributes(FMOD_VECTOR pos, FMOD_VECTOR forward, FMOD_VECTOR up)

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PurahEngineAPI.h"
 
@@ -47,7 +47,7 @@ namespace PurahEngine
 		void Initialize(HWND hWnd);
 		void Finalize();
 
-		// ÀÚÁÖ »ç¿ëµÉ ¸ğµ¨¸µ ÆÄÀÏÀ» ¹Ì¸® µî·ÏÇÑ´Ù.
+		// ìì£¼ ì‚¬ìš©ë  ëª¨ë¸ë§ íŒŒì¼ì„ ë¯¸ë¦¬ ë“±ë¡í•œë‹¤.
 		void RegisterDefaultModelFile(const std::wstring& fileName);
 
 		void UpdateAnimator(float deltaTime);

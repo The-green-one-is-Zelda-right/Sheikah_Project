@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <d3d11.h>
 #include "../FloaterRendererCommon/include/IBuilder.h"
 #include "../FloaterRendererCommon/include/Resource.h"

@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 #pragma warning(push)
 #pragma warning(disable: 33010 26495 4819)
 #include <Eigen/Dense>
@@ -38,7 +38,7 @@ namespace ZonaiPhysics
 		void						SetLayerData(const uint32_t&) final;
 
 		/**
-		¿ßƒ°
+		ÏúÑÏπò
 		*/
 		Eigen::Vector3f				GetPosition() const final;
 		void						SetPosition(const Eigen::Vector3f& _position, bool _wakeup) final;
@@ -46,7 +46,7 @@ namespace ZonaiPhysics
 		void						SetLocalPosition(const Eigen::Vector3f& _position) final;
 
 		/**
-		»∏¿¸
+		ÌöåÏ†Ñ
 		*/
 		Eigen::Quaternionf			GetQuaternion() const final;
 		void						SetQuaternion(const Eigen::Quaternionf& _quaternion, bool _wakeup) final;
@@ -54,7 +54,7 @@ namespace ZonaiPhysics
 		void						SetLocalQuaternion(const Eigen::Quaternionf& _quaternion) override;
 
 		/**
-		¿Ø¿˙ µ•¿Ã≈Õ
+		Ïú†Ï†Ä Îç∞Ïù¥ÌÑ∞
 		*/
 		void*						GetUserData() const final;
 		void						SetUserData(void* _userData) final;

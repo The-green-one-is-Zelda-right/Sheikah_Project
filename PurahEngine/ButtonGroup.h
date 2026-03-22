@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PurahEngineAPI.h"
 
@@ -53,7 +53,7 @@ namespace PurahEngine
 		int neighborGroupSelect[4];
 
 	private:
-		// ComponentÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// Componentì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void PreSerialize(json& jsonData) const override;
 		void PreDeserialize(const json& jsonData) override;
 		void PostSerialize(json& jsonData) const override;

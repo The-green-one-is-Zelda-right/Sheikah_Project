@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "ZnPhysicsBase.h"
 
 #pragma warning(push)
@@ -36,7 +36,7 @@ namespace ZonaiPhysics
 	class Joint;
 	class FixedJoint;
 
-	class ZnTransform;
+	struct ZnTransform;
 
 	struct ZnQueryInfo;
 

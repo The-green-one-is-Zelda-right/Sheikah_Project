@@ -1,4 +1,4 @@
-#include "FilterCallback.h"
+ï»¿#include "FilterCallback.h"
 
 #include "ZnLayer.h"
 #include "ZnPhysicsX.h"
@@ -68,7 +68,7 @@ namespace ZonaiPhysics
 			return physx::PxFilterFlag::eKILL;
 		}
 
-		// Ãæµ¹ ÇÑ °Í Áß¿¡ ÇÏ³ª¶óµµ Æ®¸®°Å°¡ ÀÖÀ¸¸é
+		// ì¶©ëŒ í•œ ê²ƒ ì¤‘ì— í•˜ë‚˜ë¼ë„ íŠ¸ë¦¬ê±°ê°€ ìˆìœ¼ë©´
 		if (physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
 		{
 			pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
@@ -78,7 +78,7 @@ namespace ZonaiPhysics
 			return physx::PxFilterFlag::eDEFAULT;
 		}
 
-		// Å°³×¸¶Æ½ ¾×ÅÍ¿¡ ´ëÇÑ ÀÌº¥Æ®¸¦ Àü¼ÛÇÏµÇ, Á¢ÃËÀ» ÇØ°á ¾È ÇÔ.
+		// í‚¤ë„¤ë§ˆí‹± ì•¡í„°ì— ëŒ€í•œ ì´ë²¤íŠ¸ë¥¼ ì „ì†¡í•˜ë˜, ì ‘ì´‰ì„ í•´ê²° ì•ˆ í•¨.
 		if (physx::PxFilterObjectIsKinematic(attributes0) && physx::PxFilterObjectIsKinematic(attributes1))
 		{
 			return physx::PxFilterFlag::eSUPPRESS;

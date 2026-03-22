@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <coroutine>
 #include <exception>
 #include <optional>
@@ -59,25 +59,25 @@ struct WaitForSeconds
 
 	bool await_ready() const noexcept
 	{
-		// ÄÚ·çÆ¾ÀÌ ÁØºñ°¡ µÆ´ÂÁö Ã¼Å©
-		// true´Â await_resume¸¦ È£ÃâÇÏ°í ÄÚ·çÆ¾À» Àç°³ÇÔ
-		// false´Â await_suspend¸¦ È£ÃâÇÏ°í ÄÚ·çÆ¾À» Á¾·áÇÔ
+		// ì½”ë£¨í‹´ì´ ì¤€ë¹„ê°€ ëëŠ”ì§€ ì²´í¬
+		// trueëŠ” await_resumeë¥¼ í˜¸ì¶œí•˜ê³  ì½”ë£¨í‹´ì„ ì¬ê°œí•¨
+		// falseëŠ” await_suspendë¥¼ í˜¸ì¶œí•˜ê³  ì½”ë£¨í‹´ì„ ì¢…ë£Œí•¨
 		return false;
 	}
 
-	// ÄÚ·çÆ¾À» Áß´ÜÇÏ°í È£ÃâÀÚ¿¡°Ô µ¹¾Æ°¨
+	// ì½”ë£¨í‹´ì„ ì¤‘ë‹¨í•˜ê³  í˜¸ì¶œìì—ê²Œ ëŒì•„ê°
 	// void await_suspend(std::coroutine_handle<> _handle) const {}
 
-	// ¹İÈ¯ °ª¿¡ µû¶ó °áÁ¤µÊ
-	// true ÄÚ·çÆ¾À» Áß´ÜÇÏ°í È£ÃâÀÚ¿¡°Ô µ¹¾Æ°¨
-	// false ÄÚ·çÆ¾À» Àç°³ÇÔ
+	// ë°˜í™˜ ê°’ì— ë”°ë¼ ê²°ì •ë¨
+	// true ì½”ë£¨í‹´ì„ ì¤‘ë‹¨í•˜ê³  í˜¸ì¶œìì—ê²Œ ëŒì•„ê°
+	// false ì½”ë£¨í‹´ì„ ì¬ê°œí•¨
 	// bool await_suspend(std::coroutine_handle<> _handle) const { return true; }
 
-	// ¹İÈ¯ÇÏ´Â ÇÚµé·Î Á¦¾î±ÇÀ» ³Ñ±è
+	// ë°˜í™˜í•˜ëŠ” í•¸ë“¤ë¡œ ì œì–´ê¶Œì„ ë„˜ê¹€
 	std::coroutine_handle<> await_suspend(std::coroutine_handle<> _handle) const
 	{
-		_handle.address();
-		return std::noop_coroutine(); // È£ÃâÀÚ·Î µ¹¾Æ°¨.
+		static_cast<void>(_handle);
+		return std::noop_coroutine(); // í˜¸ì¶œìë¡œ ëŒì•„ê°.
 	}
 
 	void await_resume() const noexcept

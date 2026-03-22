@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngineAPI.h"
 #include "Component.h"
 
@@ -34,9 +34,9 @@ namespace PurahEngine
 		void Update();
 
 
-		void PlayAudio(std::wstring name); // Àç»ıÇÒ ÆÄÀÏ ÀÌ¸§
-		void PlayAudio(int i); // Àç»ıÇÒ ÆÄÀÏ ¼ø¼­
-		void PlayAudio(); // ±âº»ÀûÀ¸·Î Ã¹¹øÂ° ÆÄÀÏÀ» Àç»ı
+		void PlayAudio(std::wstring name); // ì¬ìƒí•  íŒŒì¼ ì´ë¦„
+		void PlayAudio(int i); // ì¬ìƒí•  íŒŒì¼ ìˆœì„œ
+		void PlayAudio(); // ê¸°ë³¸ì ìœ¼ë¡œ ì²«ë²ˆì§¸ íŒŒì¼ì„ ì¬ìƒ
 
 	public:
 		void PreSerialize(json& jsonData) const override;
@@ -52,5 +52,5 @@ namespace PurahEngine
 	};
 }
 
-// AudioSource´Â AudioClipÀ» °ü¸®¸¸ ÇØ¾ßÇÑ´Ù. ¿©±â¼­ ±¸Á¶Ã¼¿¡ À½¿øÀ» µî·ÏÇÏ°ÔµÇ¸é
-// ¿©·¯°³ÀÇ À½¿øÀ» °ü¸®ÇÏ´Â AudioSource°¡ ÀÏÃ³¸®¸¦ Á¦´ë·Î ¸øÇÒ °Í °°´Ù.
+// AudioSourceëŠ” AudioClipì„ ê´€ë¦¬ë§Œ í•´ì•¼í•œë‹¤. ì—¬ê¸°ì„œ êµ¬ì¡°ì²´ì— ìŒì›ì„ ë“±ë¡í•˜ê²Œë˜ë©´
+// ì—¬ëŸ¬ê°œì˜ ìŒì›ì„ ê´€ë¦¬í•˜ëŠ” AudioSourceê°€ ì¼ì²˜ë¦¬ë¥¼ ì œëŒ€ë¡œ ëª»í•  ê²ƒ ê°™ë‹¤.

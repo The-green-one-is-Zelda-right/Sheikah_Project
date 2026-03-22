@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 #include "PurahEngineAPI.h"
 #include <string>
 #include <map>
@@ -15,7 +15,7 @@ namespace PurahEngine
 		template<typename T>
 		void RegisterComponent(const std::string componentName)
 		{
-			// ¿Ã∏ß, ∞¥√º
+			// Ïù¥Î¶Ñ, Í∞ùÏ≤¥
 			componentFactory[componentName] = []()
 				{
 					T* component = new T;

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "SoundManager.h"
 
 namespace PurahEngine
@@ -36,5 +36,5 @@ namespace PurahEngine
 	};
 }
 
-// AudioClip¿¡¼­ ±¸Á¶Ã¼¸¦ °¡Áö°í, ½ÇÇà, µî·ÏÀ» ÇÏÀÚ.
-// AudioSource´Â µî·ÏµÈ AudioClipÀ» °ü¸®ÇÏ´Â ¿ªÇÒ·Î¸¸ ÇÏ´Â°Ô ¸ÂÀ» °Í °°´Ù.
+// AudioClipì—ì„œ êµ¬ì¡°ì²´ë¥¼ ê°€ì§€ê³ , ì‹¤í–‰, ë“±ë¡ì„ í•˜ì.
+// AudioSourceëŠ” ë“±ë¡ëœ AudioClipì„ ê´€ë¦¬í•˜ëŠ” ì—­í• ë¡œë§Œ í•˜ëŠ”ê²Œ ë§ì„ ê²ƒ ê°™ë‹¤.

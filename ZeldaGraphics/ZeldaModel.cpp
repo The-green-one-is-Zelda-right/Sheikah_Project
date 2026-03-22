@@ -1,4 +1,4 @@
-#include "ZeldaModel.h"
+ï»¿#include "ZeldaModel.h"
 
 #include "MathConverter.h"
 #include "ZeldaMesh.h"
@@ -21,7 +21,7 @@ constexpr unsigned int ID_NO_ANIMATION = 0;
 
 ZeldaModel::~ZeldaModel()
 {
-	// root ºÎÅÍ Æ®¸®Å¸°í ÀüºÎ Á¦°Å
+	// root ë¶€í„° íŠ¸ë¦¬íƒ€ê³  ì „ë¶€ ì œê±°
 	std::queue<Node*> q;
 	if (root != nullptr)
 	{
@@ -43,21 +43,21 @@ ZeldaModel::~ZeldaModel()
 
 	root = nullptr;
 
-	// meshes Á¦°Å (ZeldaMesh)
+	// meshes ì œê±° (ZeldaMesh)
 	for (int i = 0; i < meshes.size(); i++)
 	{
 		delete meshes[i];
 	}
 	meshes.clear();
 
-	// material Á¦°Å (ZeldaMaterial)
+	// material ì œê±° (ZeldaMaterial)
 	for (int i = 0; i < materials.size(); i++)
 	{
 		delete materials[i];
 	}
 	materials.clear();
 
-	// Animation Á¦°Å
+	// Animation ì œê±°
 	for (auto iter = animationTable.begin(); iter != animationTable.end(); iter++)
 	{
 		Animation* animation = iter->second;
@@ -65,7 +65,7 @@ ZeldaModel::~ZeldaModel()
 	}
 	animationTable.clear();
 
-	// Shader Resource View ÇØÁ¦
+	// Shader Resource View í•´ì œ
 	for (auto iter = animationResourceViewTable.begin(); iter != animationResourceViewTable.end(); iter++)
 	{
 		ID3D11ShaderResourceView* srv = iter->second;
@@ -103,7 +103,7 @@ void ZeldaModel::Render(
 
 	ZeldaCamera* currentcamera = ResourceManager::GetInstance().GetCamera(ZeldaCamera::GetMainCamera());
 
-	// ¼ÎÀÌ´õ¿¡ ³Ñ±â´Â Çà·ÄÀ» ÀüÄ¡¸¦ ÇÑ ÈÄ ³Ñ°Ü¾ß ÇÑ´Ù.
+	// ì…°ì´ë”ì— ë„˜ê¸°ëŠ” í–‰ë ¬ì„ ì „ì¹˜ë¥¼ í•œ í›„ ë„˜ê²¨ì•¼ í•œë‹¤.
 	matrixConstBuffer->SetData({ XMMatrixTranspose(worldMatrix), XMMatrixTranspose(currentcamera->GetViewMatrix()), XMMatrixTranspose(currentcamera->GetProjMatrix()) });
 	animationConstBuffer->SetData(animationData);
 
@@ -111,7 +111,7 @@ void ZeldaModel::Render(
 	objectIDBufferType.objectID = drawID;
 	objectIDPSConstBuffer->SetData(objectIDBufferType);
 
-	// ¸ğµç ¸Ş½¬ ±×¸®±â
+	// ëª¨ë“  ë©”ì‰¬ ê·¸ë¦¬ê¸°
 	for (int i = 0; i < meshes.size(); i++)
 	{
 		ZeldaMesh* currentMesh = meshes[i];
@@ -155,7 +155,7 @@ void ZeldaModel::RenderInstanced(
 
 	ZeldaCamera* currentcamera = ResourceManager::GetInstance().GetCamera(ZeldaCamera::GetMainCamera());
 
-	// ¼ÎÀÌ´õ¿¡ ³Ñ±â´Â Çà·ÄÀ» ÀüÄ¡¸¦ ÇÑ ÈÄ ³Ñ°Ü¾ß ÇÑ´Ù.
+	// ì…°ì´ë”ì— ë„˜ê¸°ëŠ” í–‰ë ¬ì„ ì „ì¹˜ë¥¼ í•œ í›„ ë„˜ê²¨ì•¼ í•œë‹¤.
 	MatrixBufferType matrixBuffer;
 	matrixBuffer.view = XMMatrixTranspose(currentcamera->GetViewMatrix());
 	matrixBuffer.projection = XMMatrixTranspose(currentcamera->GetProjMatrix());
@@ -171,17 +171,17 @@ void ZeldaModel::RenderInstanced(
 		DirectX::XMMATRIX worldMatrix = renderInfo[i]->instancingValue.worldMatrix;
 		unsigned int drawID = renderInfo[i]->drawID;
 
-		// ¼ÎÀÌ´õ¿¡ ³Ñ±â´Â Çà·ÄÀ» ÀüÄ¡¸¦ ÇÑ ÈÄ ³Ñ°Ü¾ß ÇÑ´Ù.
+		// ì…°ì´ë”ì— ë„˜ê¸°ëŠ” í–‰ë ¬ì„ ì „ì¹˜ë¥¼ í•œ í›„ ë„˜ê²¨ì•¼ í•œë‹¤.
 		instacingMatrix->instancingWorldMatrix[i % INSTANCING_MAX] = XMMatrixTranspose(worldMatrix);
 		instacingData->instancingValue0[i % INSTANCING_MAX].x = animationTime * tps;
 
-		// ÀÎ½ºÅÏ½Ì °¡´ÉÇÑ ÃÖ´ë °¹¼ö·Î ²÷¾î¼­ ±×¸®±â
+		// ì¸ìŠ¤í„´ì‹± ê°€ëŠ¥í•œ ìµœëŒ€ ê°¯ìˆ˜ë¡œ ëŠì–´ì„œ ê·¸ë¦¬ê¸°
 		if (((i % INSTANCING_MAX) + 1 == INSTANCING_MAX) || (i == renderInfo.size() - 1))
 		{
 			instancingMatrixConstBuffer->SetData(*instacingMatrix);
 			instancingDataConstBuffer->SetData(*instacingData);
 
-			// ¸ğµç ¸Ş½¬ ±×¸®±â
+			// ëª¨ë“  ë©”ì‰¬ ê·¸ë¦¬ê¸°
 			for (size_t meshNum = 0; meshNum < meshes.size(); meshNum++)
 			{
 				ZeldaMesh* currentMesh = meshes[meshNum];
@@ -245,7 +245,7 @@ void ZeldaModel::RenderBlendingAnimation(
 		float tickTime1 = firstAnimationTime * animation1->tickPerSecond;
 		float tickTime2 = secondAnimationTime * animation2->tickPerSecond;
 
-		// ¾Ö´Ï¸ŞÀÌ¼Ç ½Ã°£¿¡ µû¶ó BoneÁ¤º¸ º¯°æ
+		// ì• ë‹ˆë©”ì´ì…˜ ì‹œê°„ì— ë”°ë¼ Boneì •ë³´ ë³€ê²½
 		std::queue<std::pair<Node*, DirectX::XMMATRIX>> nodeQueue;
 
 		nodeQueue.push({ root, root->transformMatrix });
@@ -293,10 +293,10 @@ void ZeldaModel::RenderBlendingAnimation(
 						float endTime = static_cast<float>(upperIter->first);
 						float currentTime = static_cast<float>(static_cast<double>(tickTime1));
 
-						// ½Ã°£¿¡ ´ëÇÑ º¸°£ °è¼ö °è»ê
+						// ì‹œê°„ì— ëŒ€í•œ ë³´ê°„ ê³„ìˆ˜ ê³„ì‚°
 						float t = (currentTime - beginTime) / (endTime - beginTime);
 
-						// ¼±Çü º¸°£À» »ç¿ëÇÏ¿© Çà·Ä º¸°£
+						// ì„ í˜• ë³´ê°„ì„ ì‚¬ìš©í•˜ì—¬ í–‰ë ¬ ë³´ê°„
 						AnimationKeyInfo lowerKey = lowerIter->second;
 						AnimationKeyInfo upperKey = upperIter->second;
 
@@ -339,10 +339,10 @@ void ZeldaModel::RenderBlendingAnimation(
 						float endTime = static_cast<float>(upperIter->first);
 						float currentTime = static_cast<float>(static_cast<double>(tickTime2));
 
-						// ½Ã°£¿¡ ´ëÇÑ º¸°£ °è¼ö °è»ê
+						// ì‹œê°„ì— ëŒ€í•œ ë³´ê°„ ê³„ìˆ˜ ê³„ì‚°
 						float t = (currentTime - beginTime) / (endTime - beginTime);
 
-						// ¼±Çü º¸°£À» »ç¿ëÇÏ¿© Çà·Ä º¸°£
+						// ì„ í˜• ë³´ê°„ì„ ì‚¬ìš©í•˜ì—¬ í–‰ë ¬ ë³´ê°„
 						AnimationKeyInfo lowerKey = lowerIter->second;
 						AnimationKeyInfo upperKey = upperIter->second;
 
@@ -394,14 +394,14 @@ void ZeldaModel::RenderBlendingAnimation(
 
 	ZeldaCamera* currentcamera = ResourceManager::GetInstance().GetCamera(ZeldaCamera::GetMainCamera());
 
-	// ¼ÎÀÌ´õ¿¡ ³Ñ±â´Â Çà·ÄÀ» ÀüÄ¡¸¦ ÇÑ ÈÄ ³Ñ°Ü¾ß ÇÑ´Ù.
+	// ì…°ì´ë”ì— ë„˜ê¸°ëŠ” í–‰ë ¬ì„ ì „ì¹˜ë¥¼ í•œ í›„ ë„˜ê²¨ì•¼ í•œë‹¤.
 	matrixConstBuffer->SetData({ XMMatrixTranspose(worldMatrix), XMMatrixTranspose(currentcamera->GetViewMatrix()), XMMatrixTranspose(currentcamera->GetProjMatrix()) });
 
 	ObjectIDBufferType objectIDBufferType;
 	objectIDBufferType.objectID = drawID;
 	objectIDPSConstBuffer->SetData(objectIDBufferType);
 
-	// ¸ğµç ¸Ş½¬ ±×¸®±â
+	// ëª¨ë“  ë©”ì‰¬ ê·¸ë¦¬ê¸°
 	for (int i = 0; i < meshes.size(); i++)
 	{
 		ZeldaMesh* currentMesh = meshes[i];
@@ -604,7 +604,7 @@ void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 
 	std::vector<std::vector<XMMATRIX>> animationData(animationCount, std::vector<XMMATRIX>(boneCountMax * animationTickMax, XMMatrixIdentity()));
 
-	// ±âº» »óÅÂ¿¡ ´ëÇÑ µ¥ÀÌÅÍ »ı¼º
+	// ê¸°ë³¸ ìƒíƒœì— ëŒ€í•œ ë°ì´í„° ìƒì„±
 	CalculateIdleBoneTM();
 
 	for (size_t i = 0ull; i < bones.size(); i++)
@@ -618,15 +618,15 @@ void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 	}
 
 	animationIDTable.clear();
-	animationIDTable[L""] = 0u; // ±âº»»óÅÂÀÇ AnimationID
+	animationIDTable[L""] = 0u; // ê¸°ë³¸ìƒíƒœì˜ AnimationID
 
 	animationNameTable.clear();
 	animationNameTable[0u] = L"";
 
 	animationTPSTable.clear();
-	animationTPSTable[0u] = 0.0f; // ±âº»»óÅÂÀÇ TPS
+	animationTPSTable[0u] = 0.0f; // ê¸°ë³¸ìƒíƒœì˜ TPS
 
-	// ÄÁÅ×ÀÌ³Êµé »ı¼º
+	// ì»¨í…Œì´ë„ˆë“¤ ìƒì„±
 	int cnt = 0;
 	for (auto animIter = animationTable.begin(); animIter != animationTable.end(); animIter++)
 	{
@@ -634,15 +634,15 @@ void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 
 		Animation* currentAnimation = animIter->second;
 
-		// animationIDTableÀ» Ã¤¿î´Ù.
+		// animationIDTableì„ ì±„ìš´ë‹¤.
 		animationIDTable[animIter->first] = currentAnimationID;
-		// animationNameTableÀ» Ã¤¿î´Ù.
+		// animationNameTableì„ ì±„ìš´ë‹¤.
 		animationNameTable[currentAnimationID] = animIter->first;
 
 		cnt += 1;
 	}
 
-	// ´ÜÀÏ ¾Ö´Ï¸ŞÀÌ¼Ç¿¡ ´ëÇÑ µ¥ÀÌÅÍ »ı¼º
+	// ë‹¨ì¼ ì• ë‹ˆë©”ì´ì…˜ì— ëŒ€í•œ ë°ì´í„° ìƒì„±
 	for (auto animIter = animationTable.begin(); animIter != animationTable.end(); animIter++)
 	{
 		Animation* currentAnimation = animIter->second;
@@ -683,7 +683,7 @@ void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 			{
 				assert(tick != 0);
 
-				// ÀÌÀü Æ½ÀÇ µ¥ÀÌÅÍ ³Ö±â
+				// ì´ì „ í‹±ì˜ ë°ì´í„° ë„£ê¸°
 				for (size_t i = 0ull; i < bones.size(); i++)
 				{
 					if (bones[i] == nullptr) continue;
@@ -697,13 +697,13 @@ void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 
 	for (size_t i = 0; i < animationCount; i++)
 	{
-		// °è»êµÈ ¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍ·Î ÅØ½ºÃÄ »ı¼ºÇÏ¿© ¼ÎÀÌ´õ ¸®¼Ò½º ºä »ı¼º
+		// ê³„ì‚°ëœ ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ë¡œ í…ìŠ¤ì³ ìƒì„±í•˜ì—¬ ì…°ì´ë” ë¦¬ì†ŒìŠ¤ ë·° ìƒì„±
 		ID3D11Texture2D* tex2d = nullptr;
 
-		// ÅØ½ºÃ³ »ı¼º
+		// í…ìŠ¤ì²˜ ìƒì„±
 		D3D11_TEXTURE2D_DESC textureDesc = {};
-		textureDesc.Width = 4 * boneCountMax;		// ÅØ½ºÃ³ °¡·Î Å©±â (Matrix¸¦ ÀÌ·ç´Â VectorÀÇ ¼ö) x (º» ÃÖ´ëÄ¡)
-		textureDesc.Height = animationTickMax;	// ÅØ½ºÃ³ ¼¼·Î Å©±â (ÇÁ·¹ÀÓ ÃÖ´ëÄ¡)
+		textureDesc.Width = 4 * boneCountMax;		// í…ìŠ¤ì²˜ ê°€ë¡œ í¬ê¸° (Matrixë¥¼ ì´ë£¨ëŠ” Vectorì˜ ìˆ˜) x (ë³¸ ìµœëŒ€ì¹˜)
+		textureDesc.Height = animationTickMax;	// í…ìŠ¤ì²˜ ì„¸ë¡œ í¬ê¸° (í”„ë ˆì„ ìµœëŒ€ì¹˜)
 		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
 		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -714,7 +714,7 @@ void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 
 		D3D11_SUBRESOURCE_DATA initData;
 		initData.pSysMem = animationData[i].data();
-		initData.SysMemPitch = 16 * 4 * boneCountMax; // ¹ÙÀÌÆ® ´ÜÀ§ÀÎ°Å °°´Ù...
+		initData.SysMemPitch = 16 * 4 * boneCountMax; // ë°”ì´íŠ¸ ë‹¨ìœ„ì¸ê±° ê°™ë‹¤...
 		initData.SysMemSlicePitch = 16 * 4 * boneCountMax * animationTickMax;
 
 		HRESULT hr = device->CreateTexture2D(&textureDesc, &initData, &tex2d);
@@ -724,7 +724,7 @@ void ZeldaModel::CreateAnimationResourceView(ID3D11Device* device)
 			assert(0);
 		}
 
-		// ¼ÎÀÌ´õ ¸®¼Ò½º ºä »ı¼º
+		// ì…°ì´ë” ë¦¬ì†ŒìŠ¤ ë·° ìƒì„±
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 		srvDesc.Format = textureDesc.Format;
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
@@ -788,7 +788,7 @@ void ZeldaModel::CalculateIdleBoneTM()
 
 void ZeldaModel::CalculateAnimationBoneTM(Animation* animation, float tickTime)
 {
-	// ¾Ö´Ï¸ŞÀÌ¼Ç ½Ã°£¿¡ µû¶ó BoneÁ¤º¸ º¯°æ
+	// ì• ë‹ˆë©”ì´ì…˜ ì‹œê°„ì— ë”°ë¼ Boneì •ë³´ ë³€ê²½
 	std::queue<std::pair<Node*, DirectX::XMMATRIX>> nodeQueue;
 
 	nodeQueue.push({ root, root->transformMatrix });
@@ -830,10 +830,10 @@ void ZeldaModel::CalculateAnimationBoneTM(Animation* animation, float tickTime)
 					float endTime = static_cast<float>(upperIter->first);
 					float currentTime = static_cast<float>(static_cast<double>(tickTime));
 
-					// ½Ã°£¿¡ ´ëÇÑ º¸°£ °è¼ö °è»ê
+					// ì‹œê°„ì— ëŒ€í•œ ë³´ê°„ ê³„ìˆ˜ ê³„ì‚°
 					float t = (currentTime - beginTime) / (endTime - beginTime);
 
-					// ¼±Çü º¸°£À» »ç¿ëÇÏ¿© Çà·Ä º¸°£
+					// ì„ í˜• ë³´ê°„ì„ ì‚¬ìš©í•˜ì—¬ í–‰ë ¬ ë³´ê°„
 					AnimationKeyInfo lowerKey = lowerIter->second;
 					AnimationKeyInfo upperKey = upperIter->second;
 
@@ -841,7 +841,7 @@ void ZeldaModel::CalculateAnimationBoneTM(Animation* animation, float tickTime)
 					XMVECTOR rotation = XMQuaternionSlerp(lowerKey.rotation, upperKey.rotation, t);
 					XMVECTOR position = XMVectorLerp(lowerKey.position, upperKey.position, t);
 
-					// º¸°£µÈ Çà·Ä ±¸¼º
+					// ë³´ê°„ëœ í–‰ë ¬ êµ¬ì„±
 					XMMATRIX scaleMatrix = XMMatrixScalingFromVector(scale);
 					XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(rotation);
 					XMMATRIX translationMatrix = XMMatrixTranslationFromVector(position);

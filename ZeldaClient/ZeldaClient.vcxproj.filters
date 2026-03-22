@@ -54,6 +54,9 @@
     <ClCompile Include="PzObject.cpp">
       <Filter>KH\Object</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerAbilityComponent.cpp">
+      <Filter>KH\PLAYER\player</Filter>
+    </ClCompile>
     <ClCompile Include="ButtonDevice.cpp">
       <Filter>Device\Electrical Device</Filter>
     </ClCompile>
@@ -153,12 +156,6 @@
     <ClCompile Include="LinearMotor.cpp">
       <Filter>Device\Electrical Device</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>KH\SCENE</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimationController.cpp">
-      <Filter>KH\PLAYER\Controller</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraMovement.h" />
@@ -213,6 +210,9 @@
       <Filter>KH\System</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
+      <Filter>KH\PLAYER\player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerAbilityComponent.h">
       <Filter>KH\PLAYER\player</Filter>
     </ClInclude>
     <ClInclude Include="Controller.h">
@@ -349,12 +349,6 @@
     </ClInclude>
     <ClInclude Include="LinearMotor.h">
       <Filter>Device\Electrical Device</Filter>
-    </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>KH\SCENE</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationController.h">
-      <Filter>KH\PLAYER\Controller</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

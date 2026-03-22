@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PurahEngine.h"
 
@@ -18,9 +18,9 @@ namespace Phyzzle
 		
 		enum class TimerType : int
 		{
-			Hold,		// ÀÏÁ¤½Ã°£µ¿¾È ´©¸£¸é, ±× ÀÌÈÄ °è¼Ó È°¼ºÈ­
-			Push,		// ´©¸¥ ÈÄ ÀÏÁ¤½Ã°£µ¿¾È È°¼ºÈ­
-			Release		// ´­·¶´Ù ¶¾ ÈÄ, ÀÏÁ¤½Ã°£µ¿¾È È°¼ºÈ­
+			Hold,		// ì¼ì •ì‹œê°„ë™ì•ˆ ëˆ„ë¥´ë©´, ê·¸ ì´í›„ ê³„ì† í™œì„±í™”
+			Push,		// ëˆ„ë¥¸ í›„ ì¼ì •ì‹œê°„ë™ì•ˆ í™œì„±í™”
+			Release		// ëˆŒë €ë‹¤ ë—€ í›„, ì¼ì •ì‹œê°„ë™ì•ˆ í™œì„±í™”
 		};
 
 	public:
@@ -33,7 +33,7 @@ namespace Phyzzle
 		void TargetPowerOff();
 
 	private:
-		void FastenButton(); // ¹öÆ°À» ÇöÀç À§Ä¡¿¡ °íÁ¤½ÃÅ²´Ù.
+		void FastenButton(); // ë²„íŠ¼ì„ í˜„ì¬ ìœ„ì¹˜ì— ê³ ì •ì‹œí‚¨ë‹¤.
 
 		void TimerButtonUpdate();
 

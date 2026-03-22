@@ -1,4 +1,4 @@
-#include "GameObject.h"
+ï»¿#include "GameObject.h"
 #include "GamePadManager.h"
 
 
@@ -137,7 +137,7 @@ namespace Phyzzle
 
 		const float deltaTime = time.GetDeltaTime();
 
-		// Ä«¸Þ¶óÀÇ Àü¹æ º¤ÅÍ¸¦ °è»ê
+		// ì¹´ë©”ë¼ì˜ ì „ë°© ë²¡í„°ë¥¼ ê³„ì‚°
 		const Eigen::Vector3f front = transform->GetFront();
 		const Eigen::Vector3f right = transform->GetRight();
 		const Eigen::Vector3f up = transform->GetUp();
@@ -152,14 +152,14 @@ namespace Phyzzle
 
 		const float deltaTime = time.GetDeltaTime();
 
-		// ½ºÆ½ ±â¿ï±â¿¡ µû¶ó È¸Àü °¢µµ¸¦ °è»ê
+		// ìŠ¤í‹± ê¸°ìš¸ê¸°ì— ë”°ë¼ íšŒì „ ê°ë„ë¥¼ ê³„ì‚°
 		const float yawAngle = RstickX * sensitivity * deltaTime * RstickSize;
 		{
-			// ¿ùµå up ±âÁØÀ¸·Î Ä«¸Þ¶ó¸¦ È¸Àü
+			// ì›”ë“œ up ê¸°ì¤€ìœ¼ë¡œ ì¹´ë©”ë¼ë¥¼ íšŒì „
 			transform->Rotate(Eigen::Vector3f(0.f, 1.f, 0.f), yawAngle);
 		}
 
-		// ½ºÆ½ ±â¿ï±â¿¡ µû¶ó È¸Àü °¢µµ¸¦ °è»ê
+		// ìŠ¤í‹± ê¸°ìš¸ê¸°ì— ë”°ë¼ íšŒì „ ê°ë„ë¥¼ ê³„ì‚°
 		const float pitchAngle = -RstickY * sensitivity * deltaTime * RstickSize;
 		{
 			float deltaAngle = 0.f;
@@ -181,10 +181,10 @@ namespace Phyzzle
 				deltaAngle = pitchAngle;
 			}
 
-			// Ä«¸Þ¶ó Right º¤ÅÍ¸¦ ±âÁØÀ¸·Î È¸ÀüÇÏ±â À§ÇØ¼­ Ä«¸Þ¶óÀÇ ¿ùµå right¸¦ ±¸ÇÔ.
+			// ì¹´ë©”ë¼ Right ë²¡í„°ë¥¼ ê¸°ì¤€ìœ¼ë¡œ íšŒì „í•˜ê¸° ìœ„í•´ì„œ ì¹´ë©”ë¼ì˜ ì›”ë“œ rightë¥¼ êµ¬í•¨.
 			const Eigen::Vector3f cameraRight = transform->GetWorldRotation() * Eigen::Vector3f::UnitX();
 
-			// Ä«¸Þ¶óÀÇ right ±âÁØÀ¸·Î Ä«¸Þ¶ó¸¦ È¸Àü
+			// ì¹´ë©”ë¼ì˜ right ê¸°ì¤€ìœ¼ë¡œ ì¹´ë©”ë¼ë¥¼ íšŒì „
 			transform->Rotate(cameraRight, deltaAngle);
 		}
 	}

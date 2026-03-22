@@ -1,4 +1,4 @@
-#include "ZeldaLight.h"
+ï»¿#include "ZeldaLight.h"
 
 #include "ZeldaCamera.h"
 
@@ -102,22 +102,22 @@ DirectX::XMMATRIX ZeldaLight::GetViewMatrix(ZeldaCamera* maincamera)
 			}
 			else
 			{
-				// µÎ º¤ÅÍÀÇ ³»ÀûÀ» °è»êÇÏ¿© ÄÚ»çÀÎ °¢µµ¸¦ ±¸ÇÔ
+				// ë‘ ë²¡í„°ì˜ ë‚´ì ì„ ê³„ì‚°í•˜ì—¬ ì½”ì‚¬ì¸ ê°ë„ë¥¼ êµ¬í•¨
 				float cosTheta = DirectX::XMVector4Dot(zVector, lightDirection).m128_f32[0];
 
-				// v1°ú targetV°¡ ÆòÇàÇÏ°Å³ª ¹Ý´ë ¹æÇâÀÎ °æ¿ì ¾Æ¹«·± È¸Àüµµ ÇÊ¿äÇÏÁö ¾ÊÀ½
+				// v1ê³¼ targetVê°€ í‰í–‰í•˜ê±°ë‚˜ ë°˜ëŒ€ ë°©í–¥ì¸ ê²½ìš° ì•„ë¬´ëŸ° íšŒì „ë„ í•„ìš”í•˜ì§€ ì•ŠìŒ
 				if (cosTheta >= 0.999999f || cosTheta <= -0.999999f) {
 					worldMatrix = DirectX::XMMatrixIdentity();
 				}
 				else
 				{
-					// °¢µµ¸¦ °è»ê
+					// ê°ë„ë¥¼ ê³„ì‚°
 					float theta = std::acos(cosTheta);
 
-					// È¸Àü ÃàÀ» °è»ê
+					// íšŒì „ ì¶•ì„ ê³„ì‚°
 					DirectX::XMVECTOR rotationAxis = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(zVector, lightDirection));
 
-					// È¸Àü Çà·Ä »ý¼º
+					// íšŒì „ í–‰ë ¬ ìƒì„±
 					worldMatrix = DirectX::XMMatrixRotationAxis(rotationAxis, theta);
 				}
 			}
@@ -161,10 +161,10 @@ void ZeldaLight::CreatePointLightViewAndProjMatrices(DirectX::XMMATRIX viewMatri
 	const float nearPlane = 0.0001f;
 	const float farPlane = range;
 
-	// ¶óÀÌÆ®ÀÇ À§Ä¡
+	// ë¼ì´íŠ¸ì˜ ìœ„ì¹˜
 	XMVECTOR lightPosition = XMVectorSet(position.x, position.y, position.z, 1.0f);
 
-	// °¢ ¹æÇâÀÇ up º¤ÅÍ¿Í lookAt º¤ÅÍ
+	// ê° ë°©í–¥ì˜ up ë²¡í„°ì™€ lookAt ë²¡í„°
 	XMVECTOR upVectors[6] = {
 		XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f),  // Right (positive X)
 		XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f),  // Left (negative X)
@@ -183,13 +183,13 @@ void ZeldaLight::CreatePointLightViewAndProjMatrices(DirectX::XMMATRIX viewMatri
 		XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f)  // Backward (negative Z)
 	};
 
-	// 6°³ÀÇ ºä Çà·Ä »ý¼º
+	// 6ê°œì˜ ë·° í–‰ë ¬ ìƒì„±
 	for (int i = 0; i < 6; ++i)
 	{
 		viewMatrices[i] = XMMatrixLookToLH(lightPosition, lookAtVectors[i], upVectors[i]);
 	}
 
-	// Åõ¿µ Çà·Ä »ý¼º (90µµ ½Ã¾ß°¢, 1:1 Á¾È¾ºñ, nearPlane, farPlane)
+	// íˆ¬ì˜ í–‰ë ¬ ìƒì„± (90ë„ ì‹œì•¼ê°, 1:1 ì¢…íš¡ë¹„, nearPlane, farPlane)
 	projMatrix = XMMatrixPerspectiveFovLH(XM_PIDIV2, 1.0f, nearPlane, farPlane);
 }
 
@@ -278,7 +278,7 @@ DirectX::XMMATRIX ZeldaLight::GetWorldMatrix()
 	{
 		case LightType::Directional:
 		{
-			// Directional Light´Â WorldMatrix¸¦ »ç¿ëÇÒ ÇÊ¿ä°¡ ¾ø±â ¶§¹®¿¡ ±×³É Àû´çÈ÷ ³Ñ°ÜÁØ´Ù.
+			// Directional LightëŠ” WorldMatrixë¥¼ ì‚¬ìš©í•  í•„ìš”ê°€ ì—†ê¸° ë•Œë¬¸ì— ê·¸ëƒ¥ ì ë‹¹ížˆ ë„˜ê²¨ì¤€ë‹¤.
 			return DirectX::XMMatrixIdentity();
 			break;
 		}

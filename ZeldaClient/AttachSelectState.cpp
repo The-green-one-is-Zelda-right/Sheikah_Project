@@ -1,4 +1,4 @@
-#include "AttachSelectState.h"
+ï»¿#include "AttachSelectState.h"
 #include "PzObject.h"
 
 #include "AttachSystem.h"
@@ -9,7 +9,7 @@ namespace Phyzzle
 		= default;
 
 #pragma region StateEvent
-	// »óÅÂ µé¾î¿À±â
+	// ìƒíƒœ ë“¤ì–´ì˜¤ê¸°
 	void AttachSelectState::StateEnter()
 	{
 		{
@@ -26,7 +26,7 @@ namespace Phyzzle
 		SearchUIRender(true);
 	}
 
-	// »óÅÂ ³ª°¡±â
+	// ìƒíƒœ ë‚˜ê°€ê¸°
 	void AttachSelectState::StateExit()
 	{
 		{
@@ -92,10 +92,10 @@ namespace Phyzzle
 #pragma endregion StateEvent
 
 #pragma region Input
-	// ÀÌµ¿
+	// ì´ë™
 	void AttachSelectState::Stick_L()
 	{
-		// ÀÌµ¿ ¹æÇâÀ¸·Î Ä³¸¯ÅÍ¸¦ È¸Àü ½ÃÅ´
+		// ì´ë™ ë°©í–¥ìœ¼ë¡œ ìºë¦­í„°ë¥¼ íšŒì „ ì‹œí‚´
 		PlayerMove(player->data.moveSpeed);
 		auto velocity = player->data.playerRigidbody->GetLinearVelocity();
 		velocity.y() = 0.f;
@@ -105,44 +105,44 @@ namespace Phyzzle
 		}
 	}
 
-	// Ä«¸Þ¶ó È¸Àü
+	// ì¹´ë©”ë¼ íšŒì „
 	void AttachSelectState::Stick_R()
 	{
 
 	}
 
-	// Ãë¼Ò
+	// ì·¨ì†Œ
 	void AttachSelectState::Click_A()
 	{
 		Cancel();
 	}
 
-	// ¼±ÅÃ
+	// ì„ íƒ
 	void AttachSelectState::Click_B()
 	{
-		// ·¹ÀÌÄ³½ºÆÃ
+		// ë ˆì´ìºìŠ¤íŒ…
 		if (select)
 		{ 
-			// »óÅÂ ¹Ù²Þ
+			// ìƒíƒœ ë°”ê¿ˆ
 			player->data.holdObject = selectObject;
 			player->data.holdObjectBody = seleteBody;
 			player->ChangeAbilityState(Player::ATTACH_HOLD);
 		}
 	}
 
-	// Ãë¼Ò
+	// ì·¨ì†Œ
 	void AttachSelectState::Click_X()
 	{
 		Cancel();
 	}
 
-	// Ãë¼Ò
+	// ì·¨ì†Œ
 	void AttachSelectState::Click_Y()
 	{
 		Cancel();
 	}
 
-	// Ãë¼Ò
+	// ì·¨ì†Œ
 	void AttachSelectState::Click_LB()
 	{
 		Cancel();

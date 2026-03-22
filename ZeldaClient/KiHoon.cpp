@@ -1,4 +1,4 @@
-#include "KiHoon.h"
+ï»¿#include "KiHoon.h"
 #include <cassert>
 
 #include "PurahEngine.h"
@@ -30,8 +30,8 @@ void KiHoon::Run()
 		collider->SetDynamic(true);
 	}
 
-	// ÇÃ·¹ÀÌ¾î´Â
-	// ÇÃ·¹ÀÌ¾îÀÇ ÀÚ½Ä °´Ã¼·Î Body¿Í Camera°¡ ÀÖÀ» ¿¹Á¤
+	// í”Œë ˆì´ì–´ëŠ”
+	// í”Œë ˆì´ì–´ì˜ ìžì‹ ê°ì²´ë¡œ Bodyì™€ Cameraê°€ ìžˆì„ ì˜ˆì •
 	GameObject* player = SceneManager::GetInstance().CreateGameObject(L"Player");
 	{
 		Transform* trans = player->GetTransform();

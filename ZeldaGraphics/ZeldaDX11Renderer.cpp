@@ -1,4 +1,4 @@
-#include "ZeldaDX11Renderer.h"
+ï»¿#include "ZeldaDX11Renderer.h"
 
 #include <cassert>
 
@@ -55,37 +55,37 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 	D3D11_RASTERIZER_DESC cubeMapRasterDesc;
 	D3D11_RASTERIZER_DESC shadowRasterDesc;
 
-	// vsync(¼öÁ÷µ¿±âÈ­) ¼³Á¤ ÀúÀå.
+	// vsync(ìˆ˜ì§ë™ê¸°í™”) ì„¤ì • ì €ì¥.
 	bVsyncEnabled = vsync;
 
-	// DirectX ±×·¡ÇÈ½º ÀÎÅÍÆäÀÌ½ºÀÎ IDXGIFactory »ı¼º.
+	// DirectX ê·¸ë˜í”½ìŠ¤ ì¸í„°í˜ì´ìŠ¤ì¸ IDXGIFactory ìƒì„±.
 	result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
 	if (FAILED(result)) return false;
 
-	// Factory °´Ã¼¸¦ »ç¿ëÇÏ¿© ±âº»À¸·Î ¼³Á¤µÈ ±×·¡ÇÈ½º ÀÎÅÍÆäÀÌ½º¸¦ À§ÇÑ ¾î´ğÅÍ »ı¼º(ºñµğ¿À Ä«µå¸¦ ¸»ÇÔ).
+	// Factory ê°ì²´ë¥¼ ì‚¬ìš©í•˜ì—¬ ê¸°ë³¸ìœ¼ë¡œ ì„¤ì •ëœ ê·¸ë˜í”½ìŠ¤ ì¸í„°í˜ì´ìŠ¤ë¥¼ ìœ„í•œ ì–´ëŒ‘í„° ìƒì„±(ë¹„ë””ì˜¤ ì¹´ë“œë¥¼ ë§í•¨).
 	result = factory->EnumAdapters(0, &adapter);
 	if (FAILED(result)) return false;
 
-	// ±âº»À¸·Î ¼³Á¤µÈ ¾î´ğÅÍ Ãâ·Â(¸ğ´ÏÅÍ)¸¦ ¿­°ÅÇÑ´Ù.
+	// ê¸°ë³¸ìœ¼ë¡œ ì„¤ì •ëœ ì–´ëŒ‘í„° ì¶œë ¥(ëª¨ë‹ˆí„°)ë¥¼ ì—´ê±°í•œë‹¤.
 	result = adapter->EnumOutputs(0, &adapterOutput);
 	if (FAILED(result)) return false;
 
-	// ¾î´ğÅÍ Ãâ·Â(¸ğ´ÏÅÍ)ÀÇ DXGI_FORMAT_R8G8B8A8_UNORM È­¸é Æ÷¸Ë¿¡ ¸Â´Â ¸ğµåÀÇ °³¼ö¸¦ ±¸ÇÑ´Ù. 
+	// ì–´ëŒ‘í„° ì¶œë ¥(ëª¨ë‹ˆí„°)ì˜ DXGI_FORMAT_R8G8B8A8_UNORM í™”ë©´ í¬ë§·ì— ë§ëŠ” ëª¨ë“œì˜ ê°œìˆ˜ë¥¼ êµ¬í•œë‹¤. 
 	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM,
 		DXGI_ENUM_MODES_INTERLACED, &numModes, nullptr);
 	if (FAILED(result)) return false;
 
-	// ÇØ´ç ¸ğ´ÏÅÍ/ºñµğ¿À Ä«µå Á¶ÇÕÀ¸·Î °¡´ÉÇÑ ¸ğµç µğ½ºÇÃ·¹ÀÌ ¸ğµåÀÇ ¸®½ºÆ® »ı¼º.
+	// í•´ë‹¹ ëª¨ë‹ˆí„°/ë¹„ë””ì˜¤ ì¹´ë“œ ì¡°í•©ìœ¼ë¡œ ê°€ëŠ¥í•œ ëª¨ë“  ë””ìŠ¤í”Œë ˆì´ ëª¨ë“œì˜ ë¦¬ìŠ¤íŠ¸ ìƒì„±.
 	displayModeList = new DXGI_MODE_DESC[numModes];
 	if (!displayModeList) return false;
 
-	// È­¸é ¸ğµå ¸®½ºÆ®¸¦ Ã¤¿î´Ù.
+	// í™”ë©´ ëª¨ë“œ ë¦¬ìŠ¤íŠ¸ë¥¼ ì±„ìš´ë‹¤.
 	result = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED,
 		&numModes, displayModeList);
 	if (FAILED(result)) return false;
 
-	// ÀÌÁ¦ ¸ğµç µğ½ºÇÃ·¹ÀÌ ¸ğµå¸¦ »ìÆìº¸°í È­¸é ³Êºñ ¹× ³ôÀÌ¿Í ÀÏÄ¡ÇÏ´Â ¸ğµå¸¦ Ã£´Â´Ù.
-	// ÀÏÄ¡ÇÏ´Â Ç×¸ñÀ» Ã£À¸¸é ÇØ´ç ¸ğ´ÏÅÍ ÁÖ»çÀ²ÀÇ ºĞ¸ğ°ª°ú ºĞÀÚ°ªÀ» ÀúÀåÇÑ´Ù.
+	// ì´ì œ ëª¨ë“  ë””ìŠ¤í”Œë ˆì´ ëª¨ë“œë¥¼ ì‚´í´ë³´ê³  í™”ë©´ ë„ˆë¹„ ë° ë†’ì´ì™€ ì¼ì¹˜í•˜ëŠ” ëª¨ë“œë¥¼ ì°¾ëŠ”ë‹¤.
+	// ì¼ì¹˜í•˜ëŠ” í•­ëª©ì„ ì°¾ìœ¼ë©´ í•´ë‹¹ ëª¨ë‹ˆí„° ì£¼ì‚¬ìœ¨ì˜ ë¶„ëª¨ê°’ê³¼ ë¶„ìê°’ì„ ì €ì¥í•œë‹¤.
 	for (unsigned int i = 0; i < numModes; i++)
 	{
 		if (displayModeList[i].Width == screenWidth)
@@ -97,29 +97,29 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 			}
 		}
 	}
-	// ¾î´ğÅÍÀÇ descriptionÀ» ¾ò¾î¿Â´Ù.
+	// ì–´ëŒ‘í„°ì˜ descriptionì„ ì–»ì–´ì˜¨ë‹¤.
 	result = adapter->GetDesc(&adapterDesc);
 	if (FAILED(result)) return false;
 
-	// ºñµğ¿À Ä«µå ¸Ş¸ğ¸®¸¦ MB´ÜÀ§·Î ÀúÀå.
-	// Á¤º¸°¡ Á¦´ë·Î ÀúÀåµÇÁö ¾Ê´Â´Ù¸é ÁÖ¼®ÇÑ ´ÙÀ½ ÁÙÀÇ ÇÔ¼ö¸¦ »ç¿ëÇØ º¼ °Í.
+	// ë¹„ë””ì˜¤ ì¹´ë“œ ë©”ëª¨ë¦¬ë¥¼ MBë‹¨ìœ„ë¡œ ì €ì¥.
+	// ì •ë³´ê°€ ì œëŒ€ë¡œ ì €ì¥ë˜ì§€ ì•ŠëŠ”ë‹¤ë©´ ì£¼ì„í•œ ë‹¤ìŒ ì¤„ì˜ í•¨ìˆ˜ë¥¼ ì‚¬ìš©í•´ ë³¼ ê²ƒ.
 	mVideoCardMemory = (unsigned int)adapterDesc.DedicatedVideoMemory / 1024 / 1024;
 	//mVideoCardMemory = (unsigned int)adapterDesc.DedicatedSystemMemory / 1024 / 1024;
 
-	// ºñµğ¿À Ä«µåÀÇ ÀÌ¸§À» ¹è¿­¿¡ ÀúÀå.
+	// ë¹„ë””ì˜¤ ì¹´ë“œì˜ ì´ë¦„ì„ ë°°ì—´ì— ì €ì¥.
 	error = wcstombs_s(&stringLength, mVideoCardDescription, 128, adapterDesc.Description, 128);
 	if (error != 0) return false;
 
-	// µğ½ºÇÃ·¹ÀÌ ¸ğµå ¸®½ºÆ®¸¦ ÇØÁ¦.
+	// ë””ìŠ¤í”Œë ˆì´ ëª¨ë“œ ë¦¬ìŠ¤íŠ¸ë¥¼ í•´ì œ.
 	delete[] displayModeList;
 	displayModeList = 0;
-	// adapterOutput °´Ã¼ ÇØÁ¦.
+	// adapterOutput ê°ì²´ í•´ì œ.
 	adapterOutput->Release();
 	adapterOutput = 0;
-	// adapter °´Ã¼ ÇØÁ¦.
+	// adapter ê°ì²´ í•´ì œ.
 	adapter->Release();
 	adapter = 0;
-	// Factory °´Ã¼ ÇØÁ¦.
+	// Factory ê°ì²´ í•´ì œ.
 	factory->Release();
 	factory = 0;
 
@@ -174,7 +174,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
-		D3D11_CREATE_DEVICE_BGRA_SUPPORT, // D3D11_CREATE_DEVICE_BGRA_SUPPORT: Direct3D ¸®¼Ò½º¿ÍÀÇ Direct2D »óÈ£ ¿î¿ë¼º¿¡ ÇÊ¿äÇÕ´Ï´Ù. by MSDN
+		D3D11_CREATE_DEVICE_BGRA_SUPPORT, // D3D11_CREATE_DEVICE_BGRA_SUPPORT: Direct3D ë¦¬ì†ŒìŠ¤ì™€ì˜ Direct2D ìƒí˜¸ ìš´ìš©ì„±ì— í•„ìš”í•©ë‹ˆë‹¤. by MSDN
 		&featureLevel,
 		1,
 		D3D11_SDK_VERSION, &swapChainDesc, &mSwapChain, &mDevice, nullptr, &mDeviceContext);
@@ -412,7 +412,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 
 	ID3D11Texture2D* renderTargetTextures[Deferred::BufferCount];
 
-	// Texture2D »ı¼º
+	// Texture2D ìƒì„±
 	for (int i = 0; i < Deferred::BufferCount; i++)
 	{
 		result = mDevice->CreateTexture2D(&textureDesc, NULL, &renderTargetTextures[i]);
@@ -425,7 +425,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-	// RenderTargetView »ı¼º
+	// RenderTargetView ìƒì„±
 	for (int i = 0; i < Deferred::BufferCount; i++)
 	{
 		result = mDevice->CreateRenderTargetView(renderTargetTextures[i], &renderTargetViewDesc, &deferredRenderTargets[i]);
@@ -439,7 +439,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 	shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-	// Shader Resource View »ı¼º
+	// Shader Resource View ìƒì„±
 	for (int i = 0; i < Deferred::BufferCount; i++)
 	{
 		result = mDevice->CreateShaderResourceView(renderTargetTextures[i], &shaderResourceViewDesc, &deferredShaderResources[i]);
@@ -475,7 +475,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 
 #pragma region Shadow Mapping
 
-	// Texture »ı¼º
+	// Texture ìƒì„±
 	D3D11_TEXTURE2D_DESC shadowTextureDesc;
 	ZeroMemory(&shadowTextureDesc, sizeof(shadowTextureDesc));
 
@@ -499,7 +499,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 		if (FAILED(result)) return false;
 	}
 
-	// Depth Stencil View »ı¼º
+	// Depth Stencil View ìƒì„±
 	D3D11_DEPTH_STENCIL_VIEW_DESC shadowDepthStencilViewDesc;
 	shadowDepthStencilViewDesc.Flags = 0;
 	shadowDepthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -534,12 +534,12 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 	}
 
 	{
-		// ±íÀÌ ½ºÅÙ½Ç ½ºÅ×ÀÌÆ® »ı¼º
+		// ê¹Šì´ ìŠ¤í…ì‹¤ ìŠ¤í…Œì´íŠ¸ ìƒì„±
 		D3D11_DEPTH_STENCIL_DESC directionalShadowDepthStencilDesc = {};
 		directionalShadowDepthStencilDesc.DepthEnable = TRUE;
 		directionalShadowDepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 		directionalShadowDepthStencilDesc.DepthFunc = D3D11_COMPARISON_GREATER;
-		directionalShadowDepthStencilDesc.StencilEnable = FALSE; // ½ºÅÙ½Ç Å×½ºÆ®¸¦ ºñÈ°¼ºÈ­ÇÕ´Ï´Ù.
+		directionalShadowDepthStencilDesc.StencilEnable = FALSE; // ìŠ¤í…ì‹¤ í…ŒìŠ¤íŠ¸ë¥¼ ë¹„í™œì„±í™”í•©ë‹ˆë‹¤.
 
 		mDevice->CreateDepthStencilState(&directionalShadowDepthStencilDesc, &directionalShadowDepthStencilState);
 	}
@@ -567,7 +567,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 
 		ID3D11Texture2D* renderTargetTextures;
 
-		// Texture2D »ı¼º
+		// Texture2D ìƒì„±
 		result = mDevice->CreateTexture2D(&textureDesc, NULL, &renderTargetTextures);
 		if (FAILED(result)) return false;
 
@@ -577,7 +577,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 		renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-		// Render Target »ı¼º
+		// Render Target ìƒì„±
 		result = mDevice->CreateRenderTargetView(renderTargetTextures, &renderTargetViewDesc, &idMapRenderTarget);
 		if (FAILED(result)) return false;
 
@@ -588,7 +588,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 		shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 		shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-		// Shader Resource View »ı¼º
+		// Shader Resource View ìƒì„±
 		result = mDevice->CreateShaderResourceView(renderTargetTextures, &shaderResourceViewDesc, &idMapShaderResource);
 		if (FAILED(result)) return false;
 
@@ -613,7 +613,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 
 		ID3D11Texture2D* renderTargetTextures;
 
-		// Texture2D »ı¼º
+		// Texture2D ìƒì„±
 		result = mDevice->CreateTexture2D(&textureDesc, NULL, &renderTargetTextures);
 		if (FAILED(result)) return false;
 
@@ -623,7 +623,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 		renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-		// Render Target »ı¼º
+		// Render Target ìƒì„±
 		result = mDevice->CreateRenderTargetView(renderTargetTextures, &renderTargetViewDesc, &outlineMapRenderTarget);
 		if (FAILED(result)) return false;
 
@@ -634,7 +634,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 		shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 		shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-		// Shader Resource View »ı¼º
+		// Shader Resource View ìƒì„±
 		result = mDevice->CreateShaderResourceView(renderTargetTextures, &shaderResourceViewDesc, &outlineMapShaderResource);
 		if (FAILED(result)) return false;
 
@@ -644,28 +644,28 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 #pragma endregion outline
 
 	{
-		// ±íÀÌ ½ºÅÙ½Ç ½ºÅ×ÀÌÆ® »ı¼º
+		// ê¹Šì´ ìŠ¤í…ì‹¤ ìŠ¤í…Œì´íŠ¸ ìƒì„±
 		D3D11_DEPTH_STENCIL_DESC cubeMapDepthStencilDesc = {};
-		cubeMapDepthStencilDesc.DepthEnable = TRUE; // ±íÀÌ Å×½ºÆ®¸¦ È°¼ºÈ­ÇÕ´Ï´Ù.
-		cubeMapDepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; // ±íÀÌ ¹öÆÛ¿¡ ¾²±â¸¦ ²ü´Ï´Ù.
-		cubeMapDepthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL; // ±íÀÌ Å×½ºÆ® ÇÔ¼ö¸¦ ¼³Á¤ÇÕ´Ï´Ù. ¿©±â¼­´Â ±íÀÌ°¡ ÀÛÀº °ªÀÏ ¶§¸¸ Åë°úÇÏµµ·Ï ¼³Á¤Çß½À´Ï´Ù.
-		cubeMapDepthStencilDesc.StencilEnable = FALSE; // ½ºÅÙ½Ç Å×½ºÆ®¸¦ ºñÈ°¼ºÈ­ÇÕ´Ï´Ù.
+		cubeMapDepthStencilDesc.DepthEnable = TRUE; // ê¹Šì´ í…ŒìŠ¤íŠ¸ë¥¼ í™œì„±í™”í•©ë‹ˆë‹¤.
+		cubeMapDepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO; // ê¹Šì´ ë²„í¼ì— ì“°ê¸°ë¥¼ ë•ë‹ˆë‹¤.
+		cubeMapDepthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL; // ê¹Šì´ í…ŒìŠ¤íŠ¸ í•¨ìˆ˜ë¥¼ ì„¤ì •í•©ë‹ˆë‹¤. ì—¬ê¸°ì„œëŠ” ê¹Šì´ê°€ ì‘ì€ ê°’ì¼ ë•Œë§Œ í†µê³¼í•˜ë„ë¡ ì„¤ì •í–ˆìŠµë‹ˆë‹¤.
+		cubeMapDepthStencilDesc.StencilEnable = FALSE; // ìŠ¤í…ì‹¤ í…ŒìŠ¤íŠ¸ë¥¼ ë¹„í™œì„±í™”í•©ë‹ˆë‹¤.
 
 		mDevice->CreateDepthStencilState(&cubeMapDepthStencilDesc, &particleDepthStencilState);
 	}
 
 	{
-		// ±íÀÌ ½ºÅÙ½Ç ½ºÅ×ÀÌÆ® »ı¼º
+		// ê¹Šì´ ìŠ¤í…ì‹¤ ìŠ¤í…Œì´íŠ¸ ìƒì„±
 		D3D11_DEPTH_STENCIL_DESC cubeMapDepthStencilDesc = {};
-		cubeMapDepthStencilDesc.DepthEnable = TRUE; // ±íÀÌ Å×½ºÆ®¸¦ È°¼ºÈ­ÇÕ´Ï´Ù.
-		cubeMapDepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL; // ±íÀÌ ¹öÆÛ¿¡ ¾²±â¸¦ Çã¿ëÇÕ´Ï´Ù.
-		cubeMapDepthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL; // ±íÀÌ Å×½ºÆ® ÇÔ¼ö¸¦ ¼³Á¤ÇÕ´Ï´Ù. ¿©±â¼­´Â ±íÀÌ°¡ ÀÛÀº °ªÀÏ ¶§¸¸ Åë°úÇÏµµ·Ï ¼³Á¤Çß½À´Ï´Ù.
-		cubeMapDepthStencilDesc.StencilEnable = FALSE; // ½ºÅÙ½Ç Å×½ºÆ®¸¦ ºñÈ°¼ºÈ­ÇÕ´Ï´Ù.
+		cubeMapDepthStencilDesc.DepthEnable = TRUE; // ê¹Šì´ í…ŒìŠ¤íŠ¸ë¥¼ í™œì„±í™”í•©ë‹ˆë‹¤.
+		cubeMapDepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL; // ê¹Šì´ ë²„í¼ì— ì“°ê¸°ë¥¼ í—ˆìš©í•©ë‹ˆë‹¤.
+		cubeMapDepthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL; // ê¹Šì´ í…ŒìŠ¤íŠ¸ í•¨ìˆ˜ë¥¼ ì„¤ì •í•©ë‹ˆë‹¤. ì—¬ê¸°ì„œëŠ” ê¹Šì´ê°€ ì‘ì€ ê°’ì¼ ë•Œë§Œ í†µê³¼í•˜ë„ë¡ ì„¤ì •í–ˆìŠµë‹ˆë‹¤.
+		cubeMapDepthStencilDesc.StencilEnable = FALSE; // ìŠ¤í…ì‹¤ í…ŒìŠ¤íŠ¸ë¥¼ ë¹„í™œì„±í™”í•©ë‹ˆë‹¤.
 
 		mDevice->CreateDepthStencilState(&cubeMapDepthStencilDesc, &cubeMapDepthStencilState);
 	}
 
-	// ºí·»µå »óÅÂ Á¤ÀÇ
+	// ë¸”ë Œë“œ ìƒíƒœ ì •ì˜
 	{
 		D3D11_BLEND_DESC blendDesc;
 		ZeroMemory(&blendDesc, sizeof(blendDesc));
@@ -680,27 +680,27 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-		// ºí·»µå ½ºÅ×ÀÌÆ® »ı¼º
+		// ë¸”ë Œë“œ ìŠ¤í…Œì´íŠ¸ ìƒì„±
 		result = mDevice->CreateBlendState(&blendDesc, &alphaBlendState);
 		if (FAILED(result)) return false;
 	}
 
 	{
-		// ºí·»µå »óÅÂ Á¤ÀÇ
+		// ë¸”ë Œë“œ ìƒíƒœ ì •ì˜
 		D3D11_BLEND_DESC blendDesc;
 		ZeroMemory(&blendDesc, sizeof(blendDesc));
 		blendDesc.AlphaToCoverageEnable = false;
 		blendDesc.IndependentBlendEnable = false;
-		blendDesc.RenderTarget[0].BlendEnable = TRUE; // ºí·»µùÀ» È°¼ºÈ­
-		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA; // ¼Ò½º »ö»óÀÇ ¾ËÆÄ °ª »ç¿ë
-		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA; // ´ë»ó »ö»óÀÇ ¾ËÆÄ °ª »ç¿ë
-		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD; // ºí·»µù ¿¬»ê: ¼Ò½º »ö»ó * ¼Ò½º ¾ËÆÄ + (1 - ¼Ò½º ¾ËÆÄ) * ´ë»ó »ö»ó
+		blendDesc.RenderTarget[0].BlendEnable = TRUE; // ë¸”ë Œë”©ì„ í™œì„±í™”
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA; // ì†ŒìŠ¤ ìƒ‰ìƒì˜ ì•ŒíŒŒ ê°’ ì‚¬ìš©
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA; // ëŒ€ìƒ ìƒ‰ìƒì˜ ì•ŒíŒŒ ê°’ ì‚¬ìš©
+		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD; // ë¸”ë Œë”© ì—°ì‚°: ì†ŒìŠ¤ ìƒ‰ìƒ * ì†ŒìŠ¤ ì•ŒíŒŒ + (1 - ì†ŒìŠ¤ ì•ŒíŒŒ) * ëŒ€ìƒ ìƒ‰ìƒ
 		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
 		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-		// ºí·»µå ½ºÅ×ÀÌÆ® »ı¼º
+		// ë¸”ë Œë“œ ìŠ¤í…Œì´íŠ¸ ìƒì„±
 		result = mDevice->CreateBlendState(&blendDesc, &spriteBlendState);
 		if (FAILED(result)) return false;
 	}
@@ -711,7 +711,7 @@ bool ZeldaDX11Renderer::Initialize(unsigned int screenWidth, unsigned int screen
 	rendererMode = RendererMode::None;
 	rendererModeBuffer = RendererMode::None;
 
-	// D2D ÃÊ±âÈ­
+	// D2D ì´ˆê¸°í™”
 	result = InitializeD2D();
 	if (FAILED(result)) return false;
 
@@ -1042,7 +1042,7 @@ void ZeldaDX11Renderer::Finalize()
 	}
 	if (currentRasterState)
 	{
-		// ¾ê´Â defaultRasterState, wireFrameRasterState¸¦ ¹Ş¾ÆµÎ±â¸¸ ÇÏ±â ¶§¹®¿¡ ÇØÁ¦ ÇÊ¿ä¾øÀ½
+		// ì–˜ëŠ” defaultRasterState, wireFrameRasterStateë¥¼ ë°›ì•„ë‘ê¸°ë§Œ í•˜ê¸° ë•Œë¬¸ì— í•´ì œ í•„ìš”ì—†ìŒ
 		currentRasterState = nullptr;
 	}
 
@@ -1051,7 +1051,7 @@ void ZeldaDX11Renderer::Finalize()
 
 void ZeldaDX11Renderer::Resize(unsigned int screenWidth, unsigned int screenHeight)
 {
-	// D2D°ü·ÃµÈ °ÍµéÀ» ´Ù½Ã ¸¸µé¾î¾ß ÇÒ ¼öµµ ÀÖ´Ù.
+	// D2Dê´€ë ¨ëœ ê²ƒë“¤ì„ ë‹¤ì‹œ ë§Œë“¤ì–´ì•¼ í•  ìˆ˜ë„ ìˆë‹¤.
 
 	this->screenWidth = screenWidth;
 	this->screenHeight = screenHeight;
@@ -1129,7 +1129,7 @@ void ZeldaDX11Renderer::Resize(unsigned int screenWidth, unsigned int screenHeig
 
 	ID3D11Texture2D* renderTargetTextures[Deferred::BufferCount];
 
-	// Texture2D »ı¼º
+	// Texture2D ìƒì„±
 	for (int i = 0; i < Deferred::BufferCount; i++)
 	{
 		result = mDevice->CreateTexture2D(&textureDesc, NULL, &renderTargetTextures[i]);
@@ -1141,7 +1141,7 @@ void ZeldaDX11Renderer::Resize(unsigned int screenWidth, unsigned int screenHeig
 	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-	// RenderTargetView »ı¼º
+	// RenderTargetView ìƒì„±
 	for (int i = 0; i < Deferred::BufferCount; i++)
 	{
 		result = mDevice->CreateRenderTargetView(renderTargetTextures[i], &renderTargetViewDesc, &deferredRenderTargets[i]);
@@ -1154,7 +1154,7 @@ void ZeldaDX11Renderer::Resize(unsigned int screenWidth, unsigned int screenHeig
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 	shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-	// Shader Resource View »ı¼º
+	// Shader Resource View ìƒì„±
 	for (int i = 0; i < Deferred::BufferCount; i++)
 	{
 		result = mDevice->CreateShaderResourceView(renderTargetTextures[i], &shaderResourceViewDesc, &deferredShaderResources[i]);
@@ -1176,7 +1176,7 @@ void ZeldaDX11Renderer::Resize(unsigned int screenWidth, unsigned int screenHeig
 void ZeldaDX11Renderer::SetExtraInitOption(float shadowAreaRange, float shadowAreaOffset, unsigned int shadowMapSize)
 {
 #ifdef USE_INIT_FLAG
-	// ÀÌ ÇÔ¼ö´Â Initialize ÀÌÈÄ¿¡ È£ÃâÇÏ¸é ¿¹»óÄ¡ ¸øÇÑ ¿À·ù¸¦ ÀÏÀ¸Å³ ¼ö ÀÖ´Ù.
+	// ì´ í•¨ìˆ˜ëŠ” Initialize ì´í›„ì— í˜¸ì¶œí•˜ë©´ ì˜ˆìƒì¹˜ ëª»í•œ ì˜¤ë¥˜ë¥¼ ì¼ìœ¼í‚¬ ìˆ˜ ìˆë‹¤.
 	assert(initflag == false);
 #endif
 
@@ -1204,7 +1204,7 @@ void ZeldaDX11Renderer::SetRendererMode(RendererMode mode)
 void ZeldaDX11Renderer::BeginDraw(float deltaTime)
 {
 #ifdef USE_BEGIN_FLAG
-	// ÀÌ¹Ì BeginDraw¸¦ È£ÃâÇÔ
+	// ì´ë¯¸ BeginDrawë¥¼ í˜¸ì¶œí•¨
 	assert(beginflag == false);
 	beginflag = true;
 #endif
@@ -1219,7 +1219,7 @@ void ZeldaDX11Renderer::BeginDraw(float deltaTime)
 void ZeldaDX11Renderer::EndDraw()
 {
 #ifdef USE_BEGIN_FLAG
-	// ÀÌ¹Ì EndDraw¸¦ È£ÃâÇÔ
+	// ì´ë¯¸ EndDrawë¥¼ í˜¸ì¶œí•¨
 	assert(beginflag == true);
 	beginflag = false;
 #endif
@@ -1496,7 +1496,7 @@ void ZeldaDX11Renderer::DrawBillBoardParticle(const Eigen::Matrix4f& worldMatrix
 			DirectX::XMVECTOR t;
 			DirectX::XMMatrixDecompose(&s, &r, &t, matrixSRT);
 
-			// Å©±â¸¦ Á¶Á¤ÇÏ°í È¸ÀüÇÏÁö ¾ÊÀº »óÅÂÀÇ Çà·Ä·Î °¡°øÇÏ¿© ÀúÀåÇÑ´Ù.
+			// í¬ê¸°ë¥¼ ì¡°ì •í•˜ê³  íšŒì „í•˜ì§€ ì•Šì€ ìƒíƒœì˜ í–‰ë ¬ë¡œ ê°€ê³µí•˜ì—¬ ì €ì¥í•œë‹¤.
 			instancingValue.particleMatrix = DirectX::XMMatrixScalingFromVector(s) * DirectX::XMMatrixTranslationFromVector(t);
 		}
 		else
@@ -1508,7 +1508,7 @@ void ZeldaDX11Renderer::DrawBillBoardParticle(const Eigen::Matrix4f& worldMatrix
 			DirectX::XMVECTOR t;
 			DirectX::XMMatrixDecompose(&s, &r, &t, matrixSRT);
 
-			// È¸ÀüÇÏÁö ¾ÊÀº »óÅÂÀÇ Çà·Ä·Î °¡°øÇÏ¿© ÀúÀåÇÑ´Ù.
+			// íšŒì „í•˜ì§€ ì•Šì€ ìƒíƒœì˜ í–‰ë ¬ë¡œ ê°€ê³µí•˜ì—¬ ì €ì¥í•œë‹¤.
 			instancingValue.particleMatrix = DirectX::XMMatrixScalingFromVector(s) * DirectX::XMMatrixTranslationFromVector(t);
 		}
 
@@ -1552,7 +1552,7 @@ void ZeldaDX11Renderer::DrawBillBoard(const Eigen::Matrix4f& worldMatrix, Textur
 		DirectX::XMVECTOR t;
 		DirectX::XMMatrixDecompose(&s, &r, &t, matrixSRT);
 
-		// Å©±â¸¦ Á¶Á¤ÇÏ°í È¸ÀüÇÏÁö ¾ÊÀº »óÅÂÀÇ Çà·Ä·Î °¡°øÇÏ¿© ÀúÀåÇÑ´Ù.
+		// í¬ê¸°ë¥¼ ì¡°ì •í•˜ê³  íšŒì „í•˜ì§€ ì•Šì€ ìƒíƒœì˜ í–‰ë ¬ë¡œ ê°€ê³µí•˜ì—¬ ì €ì¥í•œë‹¤.
 		instancingValue.worldMatrix = DirectX::XMMatrixScalingFromVector(s) * DirectX::XMMatrixTranslationFromVector(t);
 	}
 	else
@@ -1564,7 +1564,7 @@ void ZeldaDX11Renderer::DrawBillBoard(const Eigen::Matrix4f& worldMatrix, Textur
 		DirectX::XMVECTOR t;
 		DirectX::XMMatrixDecompose(&s, &r, &t, matrixSRT);
 
-		// È¸ÀüÇÏÁö ¾ÊÀº »óÅÂÀÇ Çà·Ä·Î °¡°øÇÏ¿© ÀúÀåÇÑ´Ù.
+		// íšŒì „í•˜ì§€ ì•Šì€ ìƒíƒœì˜ í–‰ë ¬ë¡œ ê°€ê³µí•˜ì—¬ ì €ì¥í•œë‹¤.
 		instancingValue.worldMatrix = DirectX::XMMatrixScalingFromVector(s) * DirectX::XMMatrixTranslationFromVector(t);
 	}
 
@@ -1597,7 +1597,7 @@ void ZeldaDX11Renderer::DrawSprite(const Eigen::Matrix4f& worldMatrix, TextureID
 		DirectX::XMMATRIX sizeMatrix = DirectX::XMMatrixScaling(static_cast<float>(textureInstance->GetWidth()) / Texture::UnitSize, static_cast<float>(textureInstance->GetHeight()) / Texture::UnitSize, 1.0f);
 		DirectX::XMMATRIX matrixSRT = sizeMatrix * MathConverter::EigenMatrixToXMMatrix(worldMatrix);
 
-		// Å©±â¸¦ Á¶Á¤ÇÏ¿© ÀúÀåÇÑ´Ù.
+		// í¬ê¸°ë¥¼ ì¡°ì •í•˜ì—¬ ì €ì¥í•œë‹¤.
 		instancingValue.worldMatrix = matrixSRT;
 	}
 	else
@@ -1696,7 +1696,7 @@ void ZeldaDX11Renderer::DrawDeferred()
 
 
 
-	// Default Rasterizer State »ç¿ë
+	// Default Rasterizer State ì‚¬ìš©
 	mDeviceContext->RSSetState(defaultRasterState);
 
 	DrawDeferredRenderInfo();
@@ -1731,7 +1731,7 @@ void ZeldaDX11Renderer::DrawDeferred()
 
 
 #pragma region Draw Deferred Final
-	// ´ÙÀ½ ±×¸®±â¿¡ ¿µÇâÀ» ÁÖÁö ¾Ê±â À§ÇØ µª½º½ºÅÙ½ÇÀ» ºñ¿ö³õÀ½
+	// ë‹¤ìŒ ê·¸ë¦¬ê¸°ì— ì˜í–¥ì„ ì£¼ì§€ ì•Šê¸° ìœ„í•´ ëìŠ¤ìŠ¤í…ì‹¤ì„ ë¹„ì›Œë†“ìŒ
 	mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, nullptr);
 	mDeviceContext->PSSetShaderResources(Deferred::SlotBegin + 0, 1, deferredShaderResources + Deferred::Object::Albedo);
 	mDeviceContext->PSSetShaderResources(Deferred::SlotBegin + 1, 2, deferredShaderResources + Deferred::Light::Begin);
@@ -1804,7 +1804,7 @@ void ZeldaDX11Renderer::DrawDebugInfo()
 			spriteBatch->Draw(deferredShaderResources[i], RECT{ ((1920l - fullsize) / 2) + (i) * (wsize + space), 100, ((1920l - fullsize) / 2) + (i) * (wsize + space) + wsize, 100 + hsize });
 		}
 
-		// ÀÓ½Ã µğ¹ö±ë, ÀÌ ÄÚµå¸¦ ¾ø¾Ù ¶§ À§ÀÇ DebugInfoCount¿¡ +1À» ÇÑ °Íµµ Áö¿ï °Í
+		// ì„ì‹œ ë””ë²„ê¹…, ì´ ì½”ë“œë¥¼ ì—†ì•¨ ë•Œ ìœ„ì˜ DebugInfoCountì— +1ì„ í•œ ê²ƒë„ ì§€ìš¸ ê²ƒ
 		{
 			int i = Deferred::BufferCount;
 			spriteBatch->Draw(shadowShaderResource[0], RECT{((1920l - fullsize) / 2) + (i) * (wsize + space), 100, ((1920l - fullsize) / 2) + (i) * (wsize + space) + wsize, 100 + wsize});
@@ -1815,7 +1815,7 @@ void ZeldaDX11Renderer::DrawDebugInfo()
 	spriteBatch->End();
 
 	ID3D11ShaderResourceView* nullSRV = nullptr;
-	// Sprite Batch¿¡¼­ »ç¿ëÇÏ´Â 0¹ø ½½·ÔÀÇ ¸®¼Ò½º¸¦ ÇØÁ¦ÇÑ´Ù.
+	// Sprite Batchì—ì„œ ì‚¬ìš©í•˜ëŠ” 0ë²ˆ ìŠ¬ë¡¯ì˜ ë¦¬ì†ŒìŠ¤ë¥¼ í•´ì œí•œë‹¤.
 	mDeviceContext->PSSetShaderResources(0, 1, &nullSRV);
 	mDeviceContext->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
 	mDeviceContext->RSSetState(defaultRasterState);
@@ -1858,7 +1858,7 @@ void ZeldaDX11Renderer::DrawSpriteRenderInfo()
 	}
 
 	ID3D11ShaderResourceView* nullSRV = nullptr;
-	// Sprite Batch¿¡¼­ »ç¿ëÇÏ´Â 0¹ø ½½·ÔÀÇ ¸®¼Ò½º¸¦ ÇØÁ¦ÇÑ´Ù.
+	// Sprite Batchì—ì„œ ì‚¬ìš©í•˜ëŠ” 0ë²ˆ ìŠ¬ë¡¯ì˜ ë¦¬ì†ŒìŠ¤ë¥¼ í•´ì œí•œë‹¤.
 	mDeviceContext->PSSetShaderResources(0, 1, &nullSRV);
 	mDeviceContext->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
 	mDeviceContext->RSSetState(defaultRasterState);
@@ -1917,7 +1917,7 @@ void ZeldaDX11Renderer::DrawBillBoardRenderInfo()
 		DirectX::XMMATRIX worldMT = XMMatrixTranslationFromVector(worldT);
 
 		MatrixBufferType matrixBuffer;
-		// 2DÈ¸ÀüÀ» ÇÑ ÈÄ, Ä«¸Ş¶ó°¡ ¹Ù¶óº¸´Â ¹æÇâ°ú °°Àº ¹æÇâÀ¸·Î È¸ÀüÇÑ »óÅÂ·Î °¡°øÇÏ¿© ÀúÀåÇÑ´Ù.
+		// 2DíšŒì „ì„ í•œ í›„, ì¹´ë©”ë¼ê°€ ë°”ë¼ë³´ëŠ” ë°©í–¥ê³¼ ê°™ì€ ë°©í–¥ìœ¼ë¡œ íšŒì „í•œ ìƒíƒœë¡œ ê°€ê³µí•˜ì—¬ ì €ì¥í•œë‹¤.
 		matrixBuffer.world = XMMatrixTranspose(worldMS * XMMatrixRotationZ(value->instancingValue.ccwRadianAngle) * XMMatrixRotationQuaternion(cameraR) * worldMT);
 		matrixBuffer.view = XMMatrixTranspose(currentcamera->GetViewMatrix());
 		matrixBuffer.projection = XMMatrixTranspose(currentcamera->GetProjMatrix());
@@ -1942,7 +1942,7 @@ void ZeldaDX11Renderer::DrawBillBoardRenderInfo()
 	}
 
 	ID3D11ShaderResourceView* nullSRV = nullptr;
-	// Sprite Batch¿¡¼­ »ç¿ëÇÏ´Â 0¹ø ½½·ÔÀÇ ¸®¼Ò½º¸¦ ÇØÁ¦ÇÑ´Ù.
+	// Sprite Batchì—ì„œ ì‚¬ìš©í•˜ëŠ” 0ë²ˆ ìŠ¬ë¡¯ì˜ ë¦¬ì†ŒìŠ¤ë¥¼ í•´ì œí•œë‹¤.
 	mDeviceContext->PSSetShaderResources(0, 1, &nullSRV);
 	mDeviceContext->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
 	mDeviceContext->RSSetState(defaultRasterState);
@@ -1996,7 +1996,7 @@ void ZeldaDX11Renderer::DrawBillBoardParticleRenderInfo()
 		DirectX::XMMATRIX worldMR = XMMatrixRotationQuaternion(worldR);
 		DirectX::XMMATRIX worldMT = XMMatrixTranslationFromVector(worldT);
 
-		// 2DÈ¸ÀüÀ» ÇÑ ÈÄ, Ä«¸Ş¶ó°¡ ¹Ù¶óº¸´Â ¹æÇâ°ú °°Àº ¹æÇâÀ¸·Î È¸ÀüÇÑ »óÅÂ·Î °¡°øÇÏ¿© ÀúÀåÇÑ´Ù.
+		// 2DíšŒì „ì„ í•œ í›„, ì¹´ë©”ë¼ê°€ ë°”ë¼ë³´ëŠ” ë°©í–¥ê³¼ ê°™ì€ ë°©í–¥ìœ¼ë¡œ íšŒì „í•œ ìƒíƒœë¡œ ê°€ê³µí•˜ì—¬ ì €ì¥í•œë‹¤.
 		instancingMatrix->instancingWorldMatrix[instanceCount % INSTANCING_MAX] = XMMatrixTranspose(worldMS * XMMatrixRotationZ(value->instancingValue.ccwRadianAngle) * XMMatrixRotationQuaternion(cameraR) * worldMT);
 		instancingData->instancingValue0[instanceCount % INSTANCING_MAX].x = value->instancingValue.color.r;
 		instancingData->instancingValue0[instanceCount % INSTANCING_MAX].y = value->instancingValue.color.g;
@@ -2044,7 +2044,7 @@ void ZeldaDX11Renderer::DrawBillBoardParticleRenderInfo()
 
 	mDeviceContext->OMSetDepthStencilState(mDepthStencilState, 1);
 	ID3D11ShaderResourceView* nullSRV = nullptr;
-	// Sprite Batch¿¡¼­ »ç¿ëÇÏ´Â 0¹ø ½½·ÔÀÇ ¸®¼Ò½º¸¦ ÇØÁ¦ÇÑ´Ù.
+	// Sprite Batchì—ì„œ ì‚¬ìš©í•˜ëŠ” 0ë²ˆ ìŠ¬ë¡¯ì˜ ë¦¬ì†ŒìŠ¤ë¥¼ í•´ì œí•œë‹¤.
 	mDeviceContext->PSSetShaderResources(0, 1, &nullSRV);
 	mDeviceContext->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
 	mDeviceContext->RSSetState(defaultRasterState);
@@ -2130,7 +2130,7 @@ void ZeldaDX11Renderer::DrawFastOutLine()
 {
 	ID3D11ShaderResourceView* nullSRV = nullptr;
 
-	// ´ÙÀ½ ±×¸®±â¿¡ ¿µÇâÀ» ÁÖÁö ¾Ê±â À§ÇØ µª½º½ºÅÙ½ÇÀ» ºñ¿ö³õÀ½
+	// ë‹¤ìŒ ê·¸ë¦¬ê¸°ì— ì˜í–¥ì„ ì£¼ì§€ ì•Šê¸° ìœ„í•´ ëìŠ¤ìŠ¤í…ì‹¤ì„ ë¹„ì›Œë†“ìŒ
 	mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, nullptr);
 
 	mDeviceContext->PSSetShaderResources(Texture::Slot::IDMap, 1, &idMapShaderResource);
@@ -2155,7 +2155,7 @@ void ZeldaDX11Renderer::DrawFastOutLine()
 
 			instancingData->instancingValue2[instanceCount % INSTANCING_MAX].x = iter->second[i]->drawID;
 
-			// ÀÎ½ºÅÏ½Ì °¡´ÉÇÑ ÃÖ´ë °¹¼ö·Î ²÷¾î¼­ ±×¸®±â
+			// ì¸ìŠ¤í„´ì‹± ê°€ëŠ¥í•œ ìµœëŒ€ ê°¯ìˆ˜ë¡œ ëŠì–´ì„œ ê·¸ë¦¬ê¸°
 			if (((instanceCount % INSTANCING_MAX) + 1 == INSTANCING_MAX) || ((std::next(iter) == fastOutLineRenderInfo.end()) && (instanceCount == iter->second.size() - 1)))
 			{
 				instancingDataConstBuffer->SetData(*instancingData);
@@ -2186,10 +2186,10 @@ void ZeldaDX11Renderer::DrawOutLine()
 
 	for (int i = 0; i < outLineRenderInfo.size(); i++)
 	{
-		// ·»´õÅ¸°Ù ÃÊ±âÈ­
+		// ë Œë”íƒ€ê²Ÿ ì´ˆê¸°í™”
 		mDeviceContext->ClearRenderTargetView(outlineMapRenderTarget, initColor);
 
-		// ´ÜÀÏ ¿ÀºêÁ§Æ®¸¦ ±×¸°´Ù.
+		// ë‹¨ì¼ ì˜¤ë¸Œì íŠ¸ë¥¼ ê·¸ë¦°ë‹¤.
 		mDeviceContext->OMSetRenderTargets(1, &outlineMapRenderTarget, nullptr);
 
 		RenderType renderType = outLineRenderInfo[i]->renderType;
@@ -2255,9 +2255,9 @@ void ZeldaDX11Renderer::DrawOutLine()
 			}
 		}
 
-		// OutLineÀ» ±×¸°´Ù.
+		// OutLineì„ ê·¸ë¦°ë‹¤.
 
-		// ·»´õÅ¸°ÙÀ» º¯°æ
+		// ë Œë”íƒ€ê²Ÿì„ ë³€ê²½
 		mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, nullptr);
 
 		mDeviceContext->PSSetShaderResources(Texture::Slot::IDMap, 1, &idMapShaderResource);
@@ -2338,7 +2338,7 @@ void ZeldaDX11Renderer::DrawMeshRenderInfo(const std::vector<RenderInfo*>& rende
 
 		for (size_t i = 0ull; i < renderInfo.size(); i++)
 		{
-			// ¼ÎÀÌ´õ¿¡ ³Ñ±â´Â Çà·ÄÀ» ÀüÄ¡¸¦ ÇÑ ÈÄ ³Ñ°Ü¾ß ÇÑ´Ù.
+			// ì…°ì´ë”ì— ë„˜ê¸°ëŠ” í–‰ë ¬ì„ ì „ì¹˜ë¥¼ í•œ í›„ ë„˜ê²¨ì•¼ í•œë‹¤.
 			instancingMatrix->instancingWorldMatrix[i % INSTANCING_MAX] = XMMatrixTranspose(renderInfo[i]->instancingValue.worldMatrix);
 			instancingData->instancingValue1[i % INSTANCING_MAX] =
 			{
@@ -2348,7 +2348,7 @@ void ZeldaDX11Renderer::DrawMeshRenderInfo(const std::vector<RenderInfo*>& rende
 				renderInfo[i]->instancingValue.color.a
 			};
 
-			// ÀÎ½ºÅÏ½Ì °¡´ÉÇÑ ÃÖ´ë °¹¼ö·Î ²÷¾î¼­ ±×¸®±â
+			// ì¸ìŠ¤í„´ì‹± ê°€ëŠ¥í•œ ìµœëŒ€ ê°¯ìˆ˜ë¡œ ëŠì–´ì„œ ê·¸ë¦¬ê¸°
 			if (((i % INSTANCING_MAX) + 1 == INSTANCING_MAX) || (i == renderInfo.size() - 1))
 			{
 				instancingMatrixVsConstBuffer->SetData(*instancingMatrix);
@@ -2479,10 +2479,10 @@ void ZeldaDX11Renderer::DrawMeshShadow(const std::vector<RenderInfo*>& renderInf
 		{
 			auto& instancingInfo = renderInfo[i];
 
-			// ¼ÎÀÌ´õ¿¡ ³Ñ±â´Â Çà·ÄÀ» ÀüÄ¡¸¦ ÇÑ ÈÄ ³Ñ°Ü¾ß ÇÑ´Ù.
+			// ì…°ì´ë”ì— ë„˜ê¸°ëŠ” í–‰ë ¬ì„ ì „ì¹˜ë¥¼ í•œ í›„ ë„˜ê²¨ì•¼ í•œë‹¤.
 			instancingMatrix->instancingWorldMatrix[i % INSTANCING_MAX] = XMMatrixTranspose(renderInfo[i]->instancingValue.worldMatrix);
 
-			// ÀÎ½ºÅÏ½Ì °¡´ÉÇÑ ÃÖ´ë °¹¼ö·Î ²÷¾î¼­ ±×¸®±â
+			// ì¸ìŠ¤í„´ì‹± ê°€ëŠ¥í•œ ìµœëŒ€ ê°¯ìˆ˜ë¡œ ëŠì–´ì„œ ê·¸ë¦¬ê¸°
 			if (((i % INSTANCING_MAX) + 1 == INSTANCING_MAX) || (i == renderInfo.size() - 1))
 			{
 				instancingMatrixVsConstBuffer->SetData(*instancingMatrix);
@@ -2498,7 +2498,7 @@ void ZeldaDX11Renderer::DrawMeshShadow(const std::vector<RenderInfo*>& renderInf
 	{
 		meshInstance->Render(mDeviceContext);
 
-		// ¼ÎÀÌ´õ¿¡ ³Ñ±â´Â Çà·ÄÀ» ÀüÄ¡¸¦ ÇÑ ÈÄ ³Ñ°Ü¾ß ÇÑ´Ù.
+		// ì…°ì´ë”ì— ë„˜ê¸°ëŠ” í–‰ë ¬ì„ ì „ì¹˜ë¥¼ í•œ í›„ ë„˜ê²¨ì•¼ í•œë‹¤.
 		matrixVsConstBuffer->SetData({ XMMatrixTranspose(renderInfo[0]->instancingValue.worldMatrix), XMMatrixTranspose(currentcamera->GetViewMatrix()), XMMatrixTranspose(currentcamera->GetProjMatrix()) });
 
 		ConstantBufferManager::GetInstance().SetBuffer();
@@ -2621,13 +2621,13 @@ void ZeldaDX11Renderer::CreateShadowMap(ZeldaLight* light)
 	{
 		case LightType::Directional:
 		{
-			// Rasterizer State ¼³Á¤ - (Áö±İÀº ¼ÎÀÌ´õ¿¡¼­ biasÃ³¸®¸¦ ÇÏ±â ¶§¹®¿¡ defaultRasterState¸¦ »ç¿ëÇÑ´Ù)
+			// Rasterizer State ì„¤ì • - (ì§€ê¸ˆì€ ì…°ì´ë”ì—ì„œ biasì²˜ë¦¬ë¥¼ í•˜ê¸° ë•Œë¬¸ì— defaultRasterStateë¥¼ ì‚¬ìš©í•œë‹¤)
 			mDeviceContext->RSSetState(directionalLightRasterState);
-			// Shadow DepthStencilView ºñ¿ì±â
+			// Shadow DepthStencilView ë¹„ìš°ê¸°
 			mDeviceContext->ClearDepthStencilView(shadowDepthStencilView[0], D3D11_CLEAR_DEPTH, 1.0f, 0);
-			// RenderTargetÀ» ºñ¿ì°í DepthStencilView¸¦ ¼³Á¤
+			// RenderTargetì„ ë¹„ìš°ê³  DepthStencilViewë¥¼ ì„¤ì •
 			mDeviceContext->OMSetRenderTargets(0, nullptr, shadowDepthStencilView[0]);
-			// ViewPort ¼³Á¤
+			// ViewPort ì„¤ì •
 			D3D11_VIEWPORT viewport = { 0.0f, 0.0f, static_cast<float>(ShadowMap::Size), static_cast<float>(ShadowMap::Size), 0.0f, 1.0f };
 			mDeviceContext->RSSetViewports(1, &viewport);
 
@@ -2644,7 +2644,7 @@ void ZeldaDX11Renderer::CreateShadowMap(ZeldaLight* light)
 				RenderType renderType = value[0]->renderType;
 
 
-				// ±×¸²ÀÚÀÇ ±úÁüÀ» ÁÙÀÌ±â À§ÇØ ½¦µµ¿ì¸ÊÀ» ¸¸µé ¶§ ±×¸®´Â Å©±â¸¦ Á¶Á¤ÇÑ´Ù.
+				// ê·¸ë¦¼ìì˜ ê¹¨ì§ì„ ì¤„ì´ê¸° ìœ„í•´ ì‰ë„ìš°ë§µì„ ë§Œë“¤ ë•Œ ê·¸ë¦¬ëŠ” í¬ê¸°ë¥¼ ì¡°ì •í•œë‹¤.
 				constexpr float shadowSclae = 0.9f;
 				constexpr float shadowSclaeInverse = 1.0f / shadowSclae;
 
@@ -2680,16 +2680,16 @@ void ZeldaDX11Renderer::CreateShadowMap(ZeldaLight* light)
 					}
 				}
 
-				// Render Info¸¦ ¿ø·¡´ë·Î µ¹·Á³õ´Â´Ù. ÀÌ ÀÛ¾÷À» ÇÏÁö ¾ÊÀ¸¸é ¿Ü°û¼± ±×¸®±â µî¿¡¼­ Å©±â°¡ ¹Ù²î¾î ³ª¿Ã ¼ö ÀÖ´Ù.
+				// Render Infoë¥¼ ì›ë˜ëŒ€ë¡œ ëŒë ¤ë†“ëŠ”ë‹¤. ì´ ì‘ì—…ì„ í•˜ì§€ ì•Šìœ¼ë©´ ì™¸ê³½ì„  ê·¸ë¦¬ê¸° ë“±ì—ì„œ í¬ê¸°ê°€ ë°”ë€Œì–´ ë‚˜ì˜¬ ìˆ˜ ìˆë‹¤.
 				for (auto& renderInfo : value)
 				{
 					renderInfo->instancingValue.worldMatrix = DirectX::XMMatrixScaling(shadowSclaeInverse, shadowSclaeInverse, shadowSclaeInverse) * renderInfo->instancingValue.worldMatrix;
 				}
 			}
 
-			// Á¾·á ÈÄ ViewPort¸¦ µÇµ¹·Á ³õ´Â´Ù.
+			// ì¢…ë£Œ í›„ ViewPortë¥¼ ë˜ëŒë ¤ ë†“ëŠ”ë‹¤.
 			mDeviceContext->RSSetViewports(1, &defaultViewPort);
-			// Rasterizer State¸¦ µÇµ¹·Á ³õÀ½
+			// Rasterizer Stateë¥¼ ë˜ëŒë ¤ ë†“ìŒ
 			mDeviceContext->RSSetState(defaultRasterState);
 
 			break;
@@ -2701,16 +2701,16 @@ void ZeldaDX11Renderer::CreateShadowMap(ZeldaLight* light)
 
 			light->CreatePointLightViewAndProjMatrices(lightViewMatrix, lightProjMatrix);
 
-			// 6¹æÇâÀÇ ÅØ½ºÃÄ¸¦ ¸¸µé¾î¾ß ÇÑ´Ù.
+			// 6ë°©í–¥ì˜ í…ìŠ¤ì³ë¥¼ ë§Œë“¤ì–´ì•¼ í•œë‹¤.
 			for (int dirNum = 0; dirNum < 6; dirNum++)
 			{
-				// Rasterizer State ¼³Á¤ - (Áö±İÀº ¼ÎÀÌ´õ¿¡¼­ biasÃ³¸®¸¦ ÇÏ±â ¶§¹®¿¡ defaultRasterState¸¦ »ç¿ëÇÑ´Ù)
+				// Rasterizer State ì„¤ì • - (ì§€ê¸ˆì€ ì…°ì´ë”ì—ì„œ biasì²˜ë¦¬ë¥¼ í•˜ê¸° ë•Œë¬¸ì— defaultRasterStateë¥¼ ì‚¬ìš©í•œë‹¤)
 				mDeviceContext->RSSetState(defaultRasterState);
-				// Shadow DepthStencilView ºñ¿ì±â
+				// Shadow DepthStencilView ë¹„ìš°ê¸°
 				mDeviceContext->ClearDepthStencilView(shadowDepthStencilView[dirNum], D3D11_CLEAR_DEPTH, 1.0f, 0);
-				// RenderTargetÀ» ºñ¿ì°í DepthStencilView¸¦ ¼³Á¤
+				// RenderTargetì„ ë¹„ìš°ê³  DepthStencilViewë¥¼ ì„¤ì •
 				mDeviceContext->OMSetRenderTargets(0, nullptr, shadowDepthStencilView[dirNum]);
-				// ViewPort ¼³Á¤
+				// ViewPort ì„¤ì •
 				D3D11_VIEWPORT viewport = { 0.0f, 0.0f, static_cast<float>(ShadowMap::Size), static_cast<float>(ShadowMap::Size), 0.0f, 1.0f };
 				mDeviceContext->RSSetViewports(1, &viewport);
 
@@ -2750,9 +2750,9 @@ void ZeldaDX11Renderer::CreateShadowMap(ZeldaLight* light)
 					}
 				}
 
-				// Á¾·á ÈÄ ViewPort¸¦ µÇµ¹·Á ³õ´Â´Ù.
+				// ì¢…ë£Œ í›„ ViewPortë¥¼ ë˜ëŒë ¤ ë†“ëŠ”ë‹¤.
 				mDeviceContext->RSSetViewports(1, &defaultViewPort);
-				// Rasterizer State¸¦ µÇµ¹·Á ³õÀ½
+				// Rasterizer Stateë¥¼ ë˜ëŒë ¤ ë†“ìŒ
 				mDeviceContext->RSSetState(defaultRasterState);
 			}
 
@@ -2775,7 +2775,7 @@ void ZeldaDX11Renderer::DrawDeferredLight(ZeldaLight* light, unsigned int lightI
 {
 	ZeldaCamera* currentcamera = ResourceManager::GetInstance().GetCamera(ZeldaCamera::GetMainCamera());
 
-	// ´ÙÀ½ ±×¸®±â¿¡ ¿µÇâÀ» ÁÖÁö ¾Ê±â À§ÇØ µª½º½ºÅÙ½ÇÀ» ºñ¿ö³õÀ½
+	// ë‹¤ìŒ ê·¸ë¦¬ê¸°ì— ì˜í–¥ì„ ì£¼ì§€ ì•Šê¸° ìœ„í•´ ëìŠ¤ìŠ¤í…ì‹¤ì„ ë¹„ì›Œë†“ìŒ
 	mDeviceContext->OMSetRenderTargets(Deferred::Light::Count, deferredRenderTargets + Deferred::Light::Begin, nullptr);
 	mDeviceContext->PSSetShaderResources(Deferred::SlotBegin, 2, deferredShaderResources + Deferred::Object::Begin);
 	mDeviceContext->PSSetShaderResources(Deferred::SlotBegin + 2u, 1, &shadowShaderResource[0]);
@@ -2833,7 +2833,7 @@ void ZeldaDX11Renderer::DrawDeferredLight(ZeldaLight* light, unsigned int lightI
 	}
 	else if (lightType == LightType::Spot)
 	{
-		// Spot Light Mesh Ãß°¡ ÇÊ¿ä
+		// Spot Light Mesh ì¶”ê°€ í•„ìš”
 
 		mDeviceContext->RSSetState(defaultRasterState);
 
@@ -3036,7 +3036,7 @@ void ZeldaDX11Renderer::DrawCubeMapRenderInfo()
 
 	if (cubeMapRenderInfo == nullptr || cubeMapRenderInfo->instancingKey.textureID == TextureID::ID_NULL)
 	{
-		// CubeMapÀ» ±×¸®Áö ¾ÊÀ½
+		// CubeMapì„ ê·¸ë¦¬ì§€ ì•ŠìŒ
 		return;
 	}
 
@@ -3053,7 +3053,7 @@ void ZeldaDX11Renderer::DrawCubeMapRenderInfo()
 	ZeldaTexture* texture = ResourceManager::GetInstance().GetTexture(cubeMapRenderInfo->instancingKey.textureID);
 	texture->SetCubeMapShaderResource(mDeviceContext);
 
-	// ÀüÄ¡ÇØ¾ßÇÑ´Ù.
+	// ì „ì¹˜í•´ì•¼í•œë‹¤.
 	MatrixBufferType matrixBuffer;
 	matrixBuffer.world = XMMatrixTranspose(currentcamera->GetTransformMatrix());
 	matrixBuffer.view = XMMatrixTranspose(currentcamera->GetViewMatrix());
@@ -3089,31 +3089,31 @@ void ZeldaDX11Renderer::DrawStringRenderInfo()
 		float b = renderInfo->instancingValue.color.b;
 		float a = renderInfo->instancingValue.color.a;
 
-		// ÅØ½ºÆ® ·»´õ¸µ ÁØºñ
+		// í…ìŠ¤íŠ¸ ë Œë”ë§ ì¤€ë¹„
 		ID2D1SolidColorBrush* textBrush = nullptr;
 		d2dRenderTarget->CreateSolidColorBrush(D2D1::ColorF(r, g, b, a), &textBrush);
 
-		// ÅØ½ºÆ® Æ÷¸Ë »ı¼º
+		// í…ìŠ¤íŠ¸ í¬ë§· ìƒì„±
 		IDWriteTextFormat* textFormat = nullptr;
 		writeFactory->CreateTextFormat(
-			L"Consolas", // ÆùÆ® ÀÌ¸§
-			nullptr, // ÆùÆ® ÄÃ·º¼Ç
+			L"Consolas", // í°íŠ¸ ì´ë¦„
+			nullptr, // í°íŠ¸ ì»¬ë ‰ì…˜
 			DWRITE_FONT_WEIGHT_NORMAL,
 			DWRITE_FONT_STYLE_NORMAL,
 			DWRITE_FONT_STRETCH_NORMAL,
-			fontSize, // ±ÛÀÚ Å©±â
-			L"", // ·ÎÄÉÀÏ
+			fontSize, // ê¸€ì í¬ê¸°
+			L"", // ë¡œì¼€ì¼
 			&textFormat
 		);
 
 
-		// ÅØ½ºÆ® ·»´õ¸µ
+		// í…ìŠ¤íŠ¸ ë Œë”ë§
 		d2dRenderTarget->DrawTextW(
-			str.c_str(), // ÅØ½ºÆ® ³»¿ë
-			wcslen(str.c_str()), // ÅØ½ºÆ® ±æÀÌ
-			textFormat, // ÅØ½ºÆ® Æ÷¸Ë
-			D2D1::RectF(x, y, x + width, y + height), // ÅØ½ºÆ®°¡ ±×·ÁÁú »ç°¢Çü
-			textBrush // ºê·¯½Ã
+			str.c_str(), // í…ìŠ¤íŠ¸ ë‚´ìš©
+			wcslen(str.c_str()), // í…ìŠ¤íŠ¸ ê¸¸ì´
+			textFormat, // í…ìŠ¤íŠ¸ í¬ë§·
+			D2D1::RectF(x, y, x + width, y + height), // í…ìŠ¤íŠ¸ê°€ ê·¸ë ¤ì§ˆ ì‚¬ê°í˜•
+			textBrush // ë¸ŒëŸ¬ì‹œ
 		);
 
 		textFormat->Release();

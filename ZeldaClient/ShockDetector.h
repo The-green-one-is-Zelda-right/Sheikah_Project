@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PurahEngine.h"
 
@@ -23,7 +23,7 @@ namespace Phyzzle
 		void Update() override;
 		void LateUpdate() override;
 
-		// Ãæµ¹Ã¼°¡ Ãæµ¹ÇßÀ» ¶§ È£Ãâ
+		// ì¶©ëŒì²´ê°€ ì¶©ëŒí–ˆì„ ë•Œ í˜¸ì¶œ
 		virtual void OnCollisionEnter(const ZonaiPhysics::ZnCollision& collision, const PurahEngine::Collider* other) override;
 
 	private:

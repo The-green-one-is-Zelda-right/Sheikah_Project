@@ -1,37 +1,88 @@
-#define NOMINMAX
+ï»¿#define NOMINMAX
 #include <algorithm>
 #include <iostream>
+#include <cstdio>
 
-#include "IState.h"
-#include "DefaultState.h"
-#include "AttachHoldState.h"
-#include "AttachSelectState.h"
-#include "RewindState.h"
-#include "LockState.h"
 #include "PzObject.h"
 #include "Rewindable.h"
+#include "RewindSystem.h"
 #include "AttachSystem.h"
 #include "GroundCheck.h"
 
 #include "Player.h"
+#include "PlayerAbilityComponent.h"
 
 #include "../GraphicsTest/CoreSystem.h"
 
 namespace Phyzzle
 {
+	namespace
+	{
+		void LogPlayerGamePadBinding(int slot)
+		{
+			char buffer[160] = {};
+			if (slot >= 0)
+			{
+				sprintf_s(buffer, "[Player] bound to XInput slot %d\n", slot);
+			}
+			else
+			{
+				sprintf_s(buffer, "[Player] no connected XInput slot found. Falling back to keyboard.\n");
+			}
+			OutputDebugStringA(buffer);
+		}
+	}
+
 	Player::~Player()
 	{
-		for (auto& [key, State] : stateSystem)
-		{
-			delete State;
-			State = nullptr;
-		}
+		delete abilityComponent;
+		abilityComponent = nullptr;
 	}
 
 #pragma region Initialize
 	void Player::InitializeGamePad()
 	{
-		gamePad = PurahEngine::GamePadManager::GetGamePad(0);
+		ResolveGamePadBinding();
+	}
+
+	void Player::ResolveGamePadBinding()
+	{
+		if (gamePad != nullptr && gamePadSlot >= 0 && gamePad->IsConnected())
+		{
+			if (lastLoggedGamePadSlot != gamePadSlot)
+			{
+				LogPlayerGamePadBinding(gamePadSlot);
+				lastLoggedGamePadSlot = gamePadSlot;
+			}
+			return;
+		}
+
+		for (int i = 0; i < 4; ++i)
+		{
+			PurahEngine::IGamePad* candidate = PurahEngine::GamePadManager::GetGamePad(i);
+			if (candidate != nullptr && candidate->IsConnected())
+			{
+				PurahEngine::GamePadManager::AddGamePad(i);
+				candidate->SetDeadZone(XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
+				gamePad = candidate;
+				gamePadSlot = i;
+
+				if (lastLoggedGamePadSlot != gamePadSlot)
+				{
+					LogPlayerGamePadBinding(gamePadSlot);
+					lastLoggedGamePadSlot = gamePadSlot;
+				}
+				return;
+			}
+		}
+
+		gamePad = nullptr;
+		gamePadSlot = -1;
+		if (lastLoggedGamePadSlot != -1)
+		{
+			LogPlayerGamePadBinding(-1);
+			lastLoggedGamePadSlot = -1;
+		}
 	}
 
 	void Player::InitializeDefaultPositions()
@@ -65,25 +116,23 @@ namespace Phyzzle
 			};
 	}
 
-	void Player::InitializeAbilitySystem()
+	void Player::EnsureRuntimeComponents()
 	{
-		stateSystem = {
-			{DEFAULT,		new DefaultState(this)},
-			{ATTACH_SELECT, new AttachSelectState(this)},
-			{ATTACH_HOLD,	new AttachHoldState(this)}
-			// {REWIND_SELECT, new RewindState(this)},
-			// {LOCK_SELECT, new LockState(this)}
-		};
+		if (abilityComponent == nullptr)
+		{
+			abilityComponent = new PlayerAbilityComponent();
+		}
 
-		stateChange.insert(ATTACH_SELECT);
-		// stateChange.insert(REWIND_SELECT);
-		// stateChange.insert(LOCK_SELECT);
+		if (abilityComponent != nullptr)
+		{
+			abilityComponent->BindPlayer(this);
+		}
 	}
 
 	void Player::InitializeStateSystem()
 	{
 		{
-			// ¾Ö´Ï¸ŞÀÌ¼Ç ¹®ÀÚ¿­ ¸Ê ÃÊ±âÈ­
+			// ì• ë‹ˆë©”ì´ì…˜ ë¬¸ìì—´ ë§µ ì´ˆê¸°í™”
 			animationString = {
 				{IDLE, animData.idleAnimation},
 				{WALK, animData.walkingAnimation},
@@ -100,7 +149,7 @@ namespace Phyzzle
 		}
 
 		{
-			// ¾Ö´Ï¸ŞÀÌ¼Ç »óÅÂ ¹× ¼Óµµ ÄÁÆ®·Ñ·¯ ¸Ê ÃÊ±âÈ­
+			// ì• ë‹ˆë©”ì´ì…˜ ìƒíƒœ ë° ì†ë„ ì»¨íŠ¸ë¡¤ëŸ¬ ë§µ ì´ˆê¸°í™”
 			for (const auto& [type, animation] : animationString)
 			{
 				AddAnimationState(animationState, type, animation, data.animator);
@@ -116,7 +165,7 @@ namespace Phyzzle
 		}
 	}
 
-	// °øÅëµÈ ¾Ö´Ï¸ŞÀÌ¼Ç »óÅÂ Ãß°¡ ÇÔ¼ö
+	// ê³µí†µëœ ì• ë‹ˆë©”ì´ì…˜ ìƒíƒœ ì¶”ê°€ í•¨ìˆ˜
 	void Player::AddAnimationState(
 		std::map<PlayerState, std::function<void()>>& stateMap,
 		PlayerState type, const std::wstring& animation,
@@ -128,7 +177,7 @@ namespace Phyzzle
 			};
 	}
 
-	// °øÅëµÈ ¾Ö´Ï¸ŞÀÌ¼Ç ¼Óµµ ÄÁÆ®·Ñ·¯ Ãß°¡ ÇÔ¼ö
+	// ê³µí†µëœ ì• ë‹ˆë©”ì´ì…˜ ì†ë„ ì»¨íŠ¸ë¡¤ëŸ¬ ì¶”ê°€ í•¨ìˆ˜
 	void Player::AddAnimationSpeedController(
 		std::map<PlayerState, std::function<void(float)>>& speedMap,
 		PlayerState type, const std::wstring& animation,
@@ -164,8 +213,13 @@ namespace Phyzzle
 
 	void Player::DrawStateInfo() const
 	{
-		std::wstring str = GetStateString(data.state);
-		std::wstring str0 = GetStateString(currState);
+		std::wstring str = GetAbilityLabel(data.state);
+		AbilityState currentState = DEFAULT;
+		if (abilityComponent != nullptr)
+		{
+			currentState = abilityComponent->GetCurrentState();
+		}
+		std::wstring str0 = GetStateString(currentState);
 
 		PurahEngine::GraphicsManager::GetInstance().DrawString(L"SELETE STATE : " + str, 100, 100, 300, 100, 15, 255, 255, 255, 255);
 		PurahEngine::GraphicsManager::GetInstance().DrawString(L"PLAYER STATE : " + str0, 100, 200, 400, 100, 15, 255, 255, 255, 255);
@@ -183,19 +237,55 @@ namespace Phyzzle
 		}
 	}
 
+	std::wstring Player::GetAbilityLabel(AbilityState state) const
+	{
+		switch (state)
+		{
+		case ATTACH_SELECT:
+		case ATTACH_HOLD:
+			return L"ATTACH";
+		case REWIND_SELECT:
+			return L"REWIND";
+		case LOCK_SELECT:
+			return L"LOCK";
+		default:
+			return L"NONE";
+		}
+	}
+
 	void Player::DrawJumpInfo() const
 	{
 		std::wstring jumpStatus = data.isGrounded ? L"Jumping" : L"can Jump";
 		PurahEngine::GraphicsManager::GetInstance().DrawString(jumpStatus, 500, 200, 400, 200, 15, 255, 255, 255, 255);
 	}
+
+	void Player::DrawSelectedAbilityUI() const
+	{
+		PurahEngine::GraphicsManager::GetInstance().DrawString(
+			L"Selected Ability : " + GetAbilityLabel(data.state),
+			40, 40,
+			360, 60,
+			22,
+			255, 255, 255, 255
+		);
+	}
 #pragma endregion Debug
 
 #pragma region Event
+	void Player::OnDataLoadComplete()
+	{
+		EnsureRuntimeComponents();
+	}
+
 	void Player::Start()
 	{
 		InitializeGamePad();
 		InitializeDefaultPositions();
-		InitializeAbilitySystem();
+		EnsureRuntimeComponents();
+		if (abilityComponent != nullptr)
+		{
+			abilityComponent->InitializeRuntime();
+		}
 		InitializeStateSystem();
 		InitializeLerpFunctions();
 		AttachSystem::Instance()->SetOutlineColor(&color0, &color1, &color2);
@@ -212,25 +302,33 @@ namespace Phyzzle
 	{
 		using namespace Eigen;
 
-		data.isGrounded = data.groundCheck->IsGrounded();	// ¹â°íÀÖ´Â °Í Ã¼Å©
-		data.isStandableSlope = SlopeCheck();				// ¹â°íÀÖ´Â °Í ±â¿ï±â Ã¼Å©
+		EnsureRuntimeComponents();
+		if (abilityComponent != nullptr)
+		{
+			abilityComponent->InitializeRuntime();
+		}
+
+		RewindSystem::Instance().UpdateRewind(PurahEngine::TimeController::GetInstance().GetDeltaTime());
+
+		data.isGrounded = data.groundCheck->IsGrounded();	// ë°Ÿê³ ìˆëŠ” ê²ƒ ì²´í¬
+		data.isStandableSlope = SlopeCheck();				// ë°Ÿê³ ìˆëŠ” ê²ƒ ê¸°ìš¸ê¸° ì²´í¬
 		
 		ApplyImpulse();
 		PlayerFlyingUpdate();
 
-		if (!data.isGrounded)
+		if (!data.isGrounded && abilityComponent != nullptr)
 		{
-			stateSystem[currState]->StateCancel();		// ¶¥ÀÌ ¾Æ´Ï¸é ´É·Â Äµ½½µÊ
+			abilityComponent->CancelCurrentState();
 		}
 
-		data.stateChange = UpdateAbilitChangeyState();	// ÇÃ·¹ÀÌ¾î »óÅÂ º¯°æ Ã¼Å©
+		data.stateChange = abilityComponent != nullptr && abilityComponent->UpdateStateChange();
 
 		if (!data.stopUpdate)
 		{
 			HandleInput();
 
-			if (!data.stateChange)
-				UpdateAbilityStayState();
+			if (!data.stateChange && abilityComponent != nullptr)
+				abilityComponent->UpdateStateStay();
 
 			animData.animationSpeed = currInput.Lstick.Size;
 		}
@@ -240,20 +338,25 @@ namespace Phyzzle
 	{
 		if (!data.stopUpdate)
 		{
-			UpdatePlayerAnimationState();			// ÀÌº¥Æ® Áß¿¡´Â ¾Ö´Ï¸ŞÀÌ¼Ç ¾÷µ¥ÀÌÆ®¸¦ ¾È ÇÔ
+			UpdatePlayerAnimationState();			// ì´ë²¤íŠ¸ ì¤‘ì—ëŠ” ì• ë‹ˆë©”ì´ì…˜ ì—…ë°ì´íŠ¸ë¥¼ ì•ˆ í•¨
 
-			if (!data.stateChange)
-				PostUpdateAbilityState();			// »óÅÂ°¡ ¹Ù²ï Á÷ÈÄ¿£ ÇÃ·¹ÀÌ¾î ¾÷µ¥ÀÌÆ®¸¦ ¾È ÇÔ
+			if (!data.stateChange && abilityComponent != nullptr)
+			{
+				abilityComponent->PostUpdateState();			// ìƒíƒœê°€ ë°”ë€ ì§í›„ì—” í”Œë ˆì´ì–´ ì—…ë°ì´íŠ¸ë¥¼ ì•ˆ í•¨
+			}
 		}
 
-		UpdateCameraLerp();							// Ä«¸Ş¶ó º¸°£
-		CharacterDisable();							// Ä«¸Ş¶ó À§Ä¡¿¡ µû¶ó¼­ Ä³¸¯ÅÍ ºñÈ°¼ºÈ­
+		UpdateCameraLerp();							// ì¹´ë©”ë¼ ë³´ê°„
+		CharacterDisable();							// ì¹´ë©”ë¼ ìœ„ì¹˜ì— ë”°ë¼ì„œ ìºë¦­í„° ë¹„í™œì„±í™”
+		DrawSelectedAbilityUI();
 
 		if (data.debugMode)
 			DebugDraw();
 
-		prevState = currState;
-		currState = nextState;
+		if (abilityComponent != nullptr)
+		{
+			abilityComponent->AdvanceFrame();
+		}
 		prevPlayerState = currPlayerState;
 	}
 
@@ -289,7 +392,10 @@ namespace Phyzzle
 
 			if (stopCount >= 1)
 			{
-				stateSystem[currState]->StateCancel();
+				if (abilityComponent != nullptr)
+				{
+					abilityComponent->CancelCurrentState();
+				}
 
 				data.stopUpdate = _value;
 			}
@@ -300,7 +406,10 @@ namespace Phyzzle
 
 			if (stopCount <= 0)
 			{
-				stateSystem[currState]->StateCancel();
+				if (abilityComponent != nullptr)
+				{
+					abilityComponent->CancelCurrentState();
+				}
 
 				data.stopUpdate = _value;
 			}
@@ -308,38 +417,6 @@ namespace Phyzzle
 	}
 
 #pragma region Update
-	bool Player::UpdateAbilitChangeyState()
-	{
-		if (prevState == currState)
-			return false;
-
-		if (stateSystem.contains(prevState))
-			stateSystem[prevState]->StateExit();
-
-		if (stateSystem.contains(currState))
-			stateSystem[currState]->StateEnter();
-
-		return true;
-	}
-
-	void Player::UpdateAbilityStayState()
-	{
-		if (prevState != currState)
-			return;
-
-		if (stateSystem.contains(currState))
-			stateSystem[currState]->StateStay();
-	}
-
-	void Player::PostUpdateAbilityState()
-	{
-		if (prevState != currState)
-			return;
-
-		if (stateSystem.contains(currState))
-			stateSystem[currState]->PostStateStay();
-	}
-
 	void Player::UpdatePlayerAnimationState()
 	{
 		if (prevPlayerState != currPlayerState)
@@ -357,7 +434,81 @@ namespace Phyzzle
 
 	void Player::ChangeAbilityState(AbilityState _state)
 	{
-		nextState = _state;
+		EnsureRuntimeComponents();
+		if (abilityComponent != nullptr)
+		{
+			abilityComponent->RequestState(_state);
+		}
+	}
+
+	void Player::SelectAbility(AbilityState _state)
+	{
+		if (_state != ATTACH_SELECT && _state != REWIND_SELECT)
+		{
+			return;
+		}
+
+		data.state = _state;
+
+		if (abilityComponent == nullptr)
+		{
+			return;
+		}
+
+		const AbilityState currentState = abilityComponent->GetCurrentState();
+		if (currentState != DEFAULT && currentState != ATTACH_HOLD && currentState != _state)
+		{
+			ChangeAbilityState(_state);
+		}
+	}
+
+	void Player::SelectNextAbility()
+	{
+		if (data.state == ATTACH_SELECT)
+		{
+			SelectAbility(REWIND_SELECT);
+			return;
+		}
+
+		SelectAbility(ATTACH_SELECT);
+	}
+
+	void Player::SelectPreviousAbility()
+	{
+		if (data.state == REWIND_SELECT)
+		{
+			SelectAbility(ATTACH_SELECT);
+			return;
+		}
+
+		SelectAbility(REWIND_SELECT);
+	}
+
+	void Player::UseSelectedAbility()
+	{
+		if (!data.isGrounded)
+		{
+			return;
+		}
+
+		switch (data.state)
+		{
+		case ATTACH_SELECT:
+			ChangeAbilityState(ATTACH_SELECT);
+			break;
+
+		case REWIND_SELECT:
+			if (RewindSystem::Instance().IsRewinding())
+			{
+				RewindSystem::Instance().EndRewind();
+			}
+
+			ChangeAbilityState(REWIND_SELECT);
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	void Player::ChangePlayerAnimationState(PlayerState _state)
@@ -368,9 +519,19 @@ namespace Phyzzle
 #pragma region Input
 	void Player::HandleInput()
 	{
-		if (gamePad->IsConnected())
+		EnsureRuntimeComponents();
+		ResolveGamePadBinding();
+		if (abilityComponent != nullptr)
 		{
-			HandleGamePadInput();
+			abilityComponent->InitializeRuntime();
+		}
+
+		if (gamePad != nullptr && gamePad->IsConnected())
+		{
+			if (abilityComponent != nullptr)
+			{
+				abilityComponent->HandleGamePadInput();
+			}
 		}
 		else
 		{
@@ -392,79 +553,20 @@ namespace Phyzzle
 		}
 	}
 
-	void Player::HandleGamePadInput()
-	{
-		if (gamePad->IsConnected())
-		{
-			HandleStickInput();
-			HandleTriggerInput();
-			HandleButtonInput();
-		}
-	}
-
-	void Player::HandleStickInput()
-	{
-		currInput.Lstick.Size = gamePad->GetStickRatio(PurahEngine::ePadStick::ePAD_STICK_L, currInput.Lstick.X, currInput.Lstick.Y);
-		currInput.Rstick.Size = gamePad->GetStickRatio(PurahEngine::ePadStick::ePAD_STICK_R, currInput.Rstick.X, currInput.Rstick.Y);
-
-		stateSystem[currState]->Stick_L();
-		stateSystem[currState]->Stick_R();
-	}
-
-	void Player::HandleTriggerInput()
-	{
-		currInput.LTrigger = gamePad->GetTriggerRatio(PurahEngine::ePadTrigger::ePAD_TRIGGER_L);
-		currInput.RTrigger = gamePad->GetTriggerRatio(PurahEngine::ePadTrigger::ePAD_TRIGGER_R);
-
-		stateSystem[currState]->Trigger_L();
-		stateSystem[currState]->Trigger_R();
-	}
-
-	void Player::HandleButtonInput()
-	{
-		HandleButton(PurahEngine::ePad::ePAD_SHOULDER_L, &IState::Click_LB, &IState::Pressing_LB, &IState::Up_LB);
-		HandleButton(PurahEngine::ePad::ePAD_SHOULDER_R, &IState::Click_RB, &IState::Pressing_RB, &IState::Up_RB);
-		HandleButton(PurahEngine::ePad::ePAD_A, &IState::Click_A, &IState::Pressing_A, nullptr);
-		HandleButton(PurahEngine::ePad::ePAD_B, &IState::Click_B, &IState::Pressing_B, nullptr);
-		HandleButton(PurahEngine::ePad::ePAD_X, &IState::Click_X, &IState::Pressing_X, &IState::Up_X);
-		HandleButton(PurahEngine::ePad::ePAD_Y, &IState::Click_Y, &IState::Pressing_Y, &IState::Up_Y);
-		HandleButton(PurahEngine::ePad::ePAD_UP, &IState::Click_DUp, &IState::Pressing_DUp, nullptr);
-		HandleButton(PurahEngine::ePad::ePAD_DOWN, &IState::Click_DDown, &IState::Pressing_DDown, nullptr);
-		HandleButton(PurahEngine::ePad::ePAD_LEFT, &IState::Click_DLeft, &IState::Pressing_DLeft, nullptr);
-		HandleButton(PurahEngine::ePad::ePAD_RIGHT, &IState::Click_DRight, &IState::Pressing_DRight, nullptr);
-	}
-
-	void Player::HandleButton(PurahEngine::ePad button, void (IState::* clickFunc)(), void (IState::* pressingFunc)(), void (IState::* upFunc)())
-	{
-		if (gamePad->IsKeyDown(button))
-		{
-			(stateSystem[currState]->*clickFunc)();
-		}
-		else if (gamePad->IsKeyPressed(button))
-		{
-			if (pressingFunc)
-			{
-				(stateSystem[currState]->*pressingFunc)();
-			}
-		}
-		else if (gamePad->IsKeyUp(button))
-		{
-			if (upFunc)
-			{
-				(stateSystem[currState]->*upFunc)();
-			}
-		}
-	}
-
 	void Player::HandleKeyboardInput()
 	{
 		HandleMovementInput();
-		stateSystem[currState]->Stick_L();
-		stateSystem[currState]->Stick_R();
+		if (abilityComponent != nullptr)
+		{
+			abilityComponent->HandleKeyboardStateInput();
+		}
 
 		HandleCameraRotationInput();
-		HandleActionInput();
-		HandleAbilityInput();
+		if (abilityComponent != nullptr)
+		{
+			abilityComponent->HandleKeyboardActionInput();
+			abilityComponent->HandleKeyboardAbilityInput();
+		}
 
 	}
 
@@ -508,32 +610,6 @@ namespace Phyzzle
 		currInput.Rstick.Size = std::clamp(std::sqrt(magnitude), 0.0f, 1.0f);
 	}
 
-	void Player::HandleActionInput()
-	{
-		bool jump = PurahEngine::InputManager::Getinstance().IsKeyDown(PurahEngine::eKey::eKEY_SPACE);
-		if (jump)
-			stateSystem[currState]->Click_A();
-
-		bool select = PurahEngine::InputManager::Getinstance().IsKeyDown(PurahEngine::eKey::eKEY_F);
-		if (select)
-			stateSystem[currState]->Click_B();
-
-		bool attach = PurahEngine::InputManager::Getinstance().IsKeyDown(PurahEngine::eKey::eKEY_Z);
-		if (attach)
-			stateSystem[currState]->Click_X();
-	}
-
-	void Player::HandleAbilityInput()
-	{
-		bool abillity = PurahEngine::InputManager::Getinstance().IsKeyDown(PurahEngine::eKey::eKEY_Q);
-		if (abillity)
-			stateSystem[currState]->Click_LB();
-
-		bool rotate = PurahEngine::InputManager::Getinstance().IsKeyDown(PurahEngine::eKey::eKEY_E);
-		if (rotate)
-			stateSystem[currState]->Click_RB();
-	}
-
 #pragma endregion Input
 
 #pragma region Player
@@ -551,9 +627,9 @@ namespace Phyzzle
 				{
 					Eigen::Vector3f movingGroundVelocity = groundBody->GetLinearVelocity();
 					
-					for (int i = 0; i < zn_collision.contactCount; i++)
+					for (size_t i = 0; i < zn_collision.contactCount; ++i)
 					{
-						// Ãæµ¹ ÁöÁ¡ÀÌ ÇÃ·¹ÀÌ¾îÀÇ ¾Æ·¡ÂÊÀÎÁö È®ÀÎ
+						// ì¶©ëŒ ì§€ì ì´ í”Œë ˆì´ì–´ì˜ ì•„ë˜ìª½ì¸ì§€ í™•ì¸
 						if (zn_collision.contacts[i].point.y() < data.modelCore->GetWorldPosition().y() + 0.5f)
 						{
 							if (data.onPlatformVelocity.norm() < movingGroundVelocity.norm())
@@ -570,7 +646,7 @@ namespace Phyzzle
 
 	void Player::PlayerImpulseCheck(const ZonaiPhysics::ZnCollision& zn_collision, const PurahEngine::Collider* collider)
 	{
-		// Ãæµ¹ÇÑ °ÔÀÓ ¿ÀºêÁ§Æ®°¡ "½´ÅÍ" ÅÂ±×¸¦ °¡Áö°í ÀÖ´ÂÁö È®ÀÎ
+		// ì¶©ëŒí•œ ê²Œì„ ì˜¤ë¸Œì íŠ¸ê°€ "ìŠˆí„°" íƒœê·¸ë¥¼ ê°€ì§€ê³  ìˆëŠ”ì§€ í™•ì¸
 		if (collider->GetGameObject()->tag.IsContain(L"Shooter"))
 		{
 			PurahEngine::GameObject* shooterObj = collider->GetGameObject();
@@ -580,10 +656,10 @@ namespace Phyzzle
 			{
 				if (zn_collision.impulses.norm() >= data.impactThreshold)
 				{
-					// ÇÃ·¹ÀÌ¾î¸¦ ³¯·Á º¸³»±â À§ÇÑ Èû °è»ê
+					// í”Œë ˆì´ì–´ë¥¼ ë‚ ë ¤ ë³´ë‚´ê¸° ìœ„í•œ í˜ ê³„ì‚°
 					Eigen::Vector3f knockbackForce = zn_collision.impulses;
 
-					// ÇÃ·¹ÀÌ¾îÀÇ ¼Óµµ¿¡ ÈûÀ» Ãß°¡ÇÏ¿© ³¯·Á º¸³¿
+					// í”Œë ˆì´ì–´ì˜ ì†ë„ì— í˜ì„ ì¶”ê°€í•˜ì—¬ ë‚ ë ¤ ë³´ëƒ„
 					if (data.playerFlyingVelocity.norm() < knockbackForce.norm())
 					{
 						data.playerFlyingVelocity = knockbackForce;
@@ -661,20 +737,14 @@ namespace Phyzzle
 
 	bool Player::CanMove()
 	{
-		using namespace Eigen;
-
-		if (!data.isGrounded)
-			return false;
-
-		if (!data.isStandableSlope)
-			return false;
+		return data.isGrounded && data.isStandableSlope;
 	}
 
 	bool Player::TryPlayerMove(float _moveSpeed)
 	{
 		using namespace Eigen;
 
-		// ÀÌµ¿ ¹æÇâ º¤ÅÍ °è»ê
+		// ì´ë™ ë°©í–¥ ë²¡í„° ê³„ì‚°
 		const Vector3f cameraFront = data.cameraArm->GetFront();
 		const Vector3f forward = Vector3f(cameraFront.x(), 0.f, cameraFront.z()).normalized();
 		const Vector3f right = Vector3f::UnitY().cross(forward).normalized();
@@ -682,7 +752,7 @@ namespace Phyzzle
 		Vector3f direction = Vector3f::Zero();
 		const float moveSpeed = _moveSpeed * currInput.Lstick.Size;
 
-		// °æ»ç¸é ¿©ºÎ¿¡ µû¶ó ÀÌµ¿ ¹æÇâ º¤ÅÍ °è»ê
+		// ê²½ì‚¬ë©´ ì—¬ë¶€ì— ë”°ë¼ ì´ë™ ë°©í–¥ ë²¡í„° ê³„ì‚°
 		if (!data.flying && data.isStandableSlope)
 		{
 			Vector3f movementRight = data.lastGroundNormal.cross(forward).normalized();
@@ -694,35 +764,35 @@ namespace Phyzzle
 			direction = originDirection;
 		}
 
-		// ¸ñÇ¥ ¼Óµµ º¤ÅÍ °è»ê
+		// ëª©í‘œ ì†ë„ ë²¡í„° ê³„ì‚°
 		Vector3f targetVelocity = moveSpeed * direction.dot(originDirection) * direction;
 
-		// ÇöÀç ¼Óµµ º¤ÅÍ °è»ê ¹× yÃà ¼Óµµ Á¦ÇÑ
+		// í˜„ì¬ ì†ë„ ë²¡í„° ê³„ì‚° ë° yì¶• ì†ë„ ì œí•œ
 		Vector3f currentVelocity = data.playerRigidbody->GetLinearVelocity();
 		currentVelocity.y() = std::clamp(currentVelocity.y(), -data.maxLinearVelocityY, data.maxLinearVelocityY);
 		data.playerRigidbody->SetLinearVelocity(currentVelocity);
 		currentVelocity.y() = 0.f;
 
-		// Ãß°¡ ¼Óµµ º¤ÅÍ °è»ê
+		// ì¶”ê°€ ì†ë„ ë²¡í„° ê³„ì‚°
 		Vector3f additionalVelocity = targetVelocity - currentVelocity;
 
-		// ³¯°í ÀÖ´Â °æ¿ì
+		// ë‚ ê³  ìˆëŠ” ê²½ìš°
 		if (data.flying)
 		{
-			// ºñÇà Áß Ãß°¡ ¼Óµµ º¤ÅÍ °è»ê ¹× Àû¿ë
+			// ë¹„í–‰ ì¤‘ ì¶”ê°€ ì†ë„ ë²¡í„° ê³„ì‚° ë° ì ìš©
 			data.playerRigidbody->AddForce(targetVelocity, ZonaiPhysics::Force);
 		}
-		// Áö¸é¿¡ ÀÖ´Â °æ¿ì
+		// ì§€ë©´ì— ìˆëŠ” ê²½ìš°
 		else if (data.isGrounded)
 		{
-			// Áö¸é¿¡ ÀÖ´Â °æ¿ì Ãß°¡ ¼Óµµ º¤ÅÍ °è»ê
+			// ì§€ë©´ì— ìˆëŠ” ê²½ìš° ì¶”ê°€ ì†ë„ ë²¡í„° ê³„ì‚°
 			additionalVelocity.y() = 0.f;
 
-			// Áö¸é¿¡ ÀÖ´Â °æ¿ì ÈûÀ» Ãß°¡ÇÏ¿© ¼Óµµ Á¶Àı
+			// ì§€ë©´ì— ìˆëŠ” ê²½ìš° í˜ì„ ì¶”ê°€í•˜ì—¬ ì†ë„ ì¡°ì ˆ
 			data.playerRigidbody->AddForce(additionalVelocity + data.onPlatformVelocity, ZonaiPhysics::ForceType::Accelration);
 
 		}
-		// °øÁß¿¡ ÀÖ´Â °æ¿ì
+		// ê³µì¤‘ì— ìˆëŠ” ê²½ìš°
 		else
 		{
 			data.playerRigidbody->AddForce(additionalVelocity * data.playerRigidbody->GetMass(), ZonaiPhysics::Force);
@@ -730,32 +800,32 @@ namespace Phyzzle
 
 		data.onPlatformVelocity = Vector3f::Zero();
 
-		// ÀÌµ¿ ¿©ºÎ ¹İÈ¯
+		// ì´ë™ ì—¬ë¶€ ë°˜í™˜
 		return currInput.Lstick.Size >= 1e-6;
 	}
 #pragma endregion Player
 
-	/// \brief ¸ğµ¨À» ¿ùµå ¹æÇâ º¤ÅÍ¸¦ ÇâÇØ È¸Àü
+	/// \brief ëª¨ë¸ì„ ì›”ë“œ ë°©í–¥ ë²¡í„°ë¥¼ í–¥í•´ íšŒì „
 	void Player::LookInWorldDirection(const Eigen::Vector3f& _worldDirection) const
 	{
 		if (_worldDirection.isZero())
 			return;
 
-		// ÇÃ·¹ÀÌ¾îÀÇ ¿ùµå È¸ÀüÀ» ±¸ÇÔ
+		// í”Œë ˆì´ì–´ì˜ ì›”ë“œ íšŒì „ì„ êµ¬í•¨
 		const Eigen::Quaternionf parentWorld = gameObject->GetTransform()->GetWorldRotation();
-		// ModelÀÇ ·ÎÄÃ ¹æÇâÀ» ±¸ÇÔ.
+		// Modelì˜ ë¡œì»¬ ë°©í–¥ì„ êµ¬í•¨.
 		const Eigen::Vector3f localDirection = parentWorld.conjugate() * _worldDirection;
 
 		LookInLocalDirection(localDirection);
 	}
 
-	/// \brief ¸ğµ¨À» PlayerÀÇ ·ÎÄÃ ¹æÇâ º¤ÅÍ¸¦ ÇâÇØ È¸Àü
+	/// \brief ëª¨ë¸ì„ Playerì˜ ë¡œì»¬ ë°©í–¥ ë²¡í„°ë¥¼ í–¥í•´ íšŒì „
 	void Player::LookInLocalDirection(const Eigen::Vector3f& _localDirection) const
 	{
 		if (_localDirection.isZero())
 			return;
 
-		// ·ÎÄÃ Z¿Í Local Direction »çÀÌÀÇ ÄõÅÍ´Ï¾ğÀ» ±¸ÇÔ.
+		// ë¡œì»¬ Zì™€ Local Direction ì‚¬ì´ì˜ ì¿¼í„°ë‹ˆì–¸ì„ êµ¬í•¨.
 		const Eigen::Vector3f worldUp = Eigen::Vector3f::UnitY();
 		const Eigen::Vector3f forward = _localDirection.normalized();
 		const Eigen::Vector3f right = worldUp.cross(forward).normalized();
@@ -766,7 +836,7 @@ namespace Phyzzle
 		rotation.col(1) = up;
 		rotation.col(2) = forward;
 
-		// ModelÀ» È¸Àü½ÃÅ´
+		// Modelì„ íšŒì „ì‹œí‚´
 		data.modelCore->SetLocalRotation(Eigen::Quaternionf(rotation));
 	}
 
@@ -783,17 +853,17 @@ namespace Phyzzle
 		UpdateSelectCameraCore();
 	}
 
-	// default »óÅÂ¿¡¼­ camera coreÀÇ À§Ä¡¸¦ °è»êÇÏ´Â ÇÔ¼ö 
+	// default ìƒíƒœì—ì„œ camera coreì˜ ìœ„ì¹˜ë¥¼ ê³„ì‚°í•˜ëŠ” í•¨ìˆ˜ 
 	void Player::UpdateDefaultCameraCore()
 	{
 		using namespace Eigen;
 
 		Vector3f localPosition = Vector3f::Zero();
 		Vector3f worldPosition = Vector3f::Zero();
-		// °¢µµ¿¡ µû¶ó À§Ä¡¸¦ ¿ì¼± Á¦ÇÑÇÔ
+		// ê°ë„ì— ë”°ë¼ ìœ„ì¹˜ë¥¼ ìš°ì„  ì œí•œí•¨
 		CalculateDefaultCameraCorePosition(localPosition, worldPosition, false);
 
-		// ¿ÀºêÁ§Æ®¿¡ Ãæµ¹ÇÏ¸é Ã³¸®ÇÔ
+		// ì˜¤ë¸Œì íŠ¸ì— ì¶©ëŒí•˜ë©´ ì²˜ë¦¬í•¨
 		if (ResolveCameraCollision(localPosition, worldPosition))
 		{
 			SetCameraCoreWorldTargetPosition(worldPosition);
@@ -810,10 +880,10 @@ namespace Phyzzle
 
 		Vector3f localPosition = Vector3f::Zero();
 		Vector3f worldPosition = Vector3f::Zero();
-		// °¢µµ¿¡ µû¶ó À§Ä¡¸¦ ¿ì¼± Á¦ÇÑÇÔ
+		// ê°ë„ì— ë”°ë¼ ìœ„ì¹˜ë¥¼ ìš°ì„  ì œí•œí•¨
 		CalculateDefaultCameraCorePosition(localPosition, worldPosition, true);
 
-		// ¿ÀºêÁ§Æ®¿¡ Ãæµ¹ÇÏ¸é Ã³¸®ÇÔ
+		// ì˜¤ë¸Œì íŠ¸ì— ì¶©ëŒí•˜ë©´ ì²˜ë¦¬í•¨
 		if (ResolveCameraCollision(localPosition, worldPosition))
 		{
 			SetCameraCoreWorldTargetPosition(worldPosition);
@@ -886,34 +956,34 @@ namespace Phyzzle
 		if (hit)
 			targetDistance = info.distance;
 
-		// º¸°£À» ¾ÈÇÏ´Â °æ¿ì
+		// ë³´ê°„ì„ ì•ˆí•˜ëŠ” ê²½ìš°
 		if (hit && (targetDistance <= prevDistance))
 		{
-			// Ãæµ¹ ÇßÁö¸¸ ÀÌÀü º¸´Ù °¡±î¿î °æ¿ì
+			// ì¶©ëŒ í–ˆì§€ë§Œ ì´ì „ ë³´ë‹¤ ê°€ê¹Œìš´ ê²½ìš°
 			prevDistance = targetDistance;
 
 			Vector3f newPosition = worldStart + worldDir * prevDistance;
 			Affine3f worldT{ data.cameraArm->GetWorldMatrix() };
 			Vector3f localPos = worldT.inverse() * newPosition;
 
-			// º¸°£À» ¾ÈÇÏ´Â °æ¿ì Å¸°ÙÆ÷Áö¼Ç°ú Ä«¸Ş¶ó Æ÷Áö¼ÇÀ» °°°ÔÇÔ
+			// ë³´ê°„ì„ ì•ˆí•˜ëŠ” ê²½ìš° íƒ€ê²Ÿí¬ì§€ì…˜ê³¼ ì¹´ë©”ë¼ í¬ì§€ì…˜ì„ ê°™ê²Œí•¨
 			data.cameraCore->SetLocalPosition(localPos);
 			camData.coreTargetPosition = localPos;
 
 			localIn = localPos;
 			worldIn = newPosition;
 		}
-		// º¸°£À» ÇÏ´Â °æ¿ì
+		// ë³´ê°„ì„ í•˜ëŠ” ê²½ìš°
 		else
 		{
 			if (hit && (targetDistance > prevDistance))
 			{
-				// Ãæµ¹ ÇßÁö¸¸ ÀÌÀüº¸´Ù ¸Õ °æ¿ì
+				// ì¶©ëŒ í–ˆì§€ë§Œ ì´ì „ë³´ë‹¤ ë¨¼ ê²½ìš°
 				prevDistance = std::min(prevDistance + camData.smoothingSpeed, targetDistance);
 			}
 			else if (!hit)
 			{
-				// Ãæµ¹ ÇÏÁö ¾ÊÀº °æ¿ì
+				// ì¶©ëŒ í•˜ì§€ ì•Šì€ ê²½ìš°
 				prevDistance = std::min(prevDistance + camData.smoothingSpeed, dis);
 			}
 
@@ -1233,7 +1303,31 @@ namespace Phyzzle
 	}
 #pragma endregion Camera
 
-#pragma region Á÷·ÄÈ­
+#define PLAYER_PREDESERIALIZE_FIELD(target, field) \
+	do \
+	{ \
+		auto field = (target).field; \
+		PREDESERIALIZE_VALUE(field); \
+		(target).field = field; \
+	} while (false)
+
+#define PLAYER_PREDESERIALIZE_WSTRING_FIELD(target, field) \
+	do \
+	{ \
+		auto field = (target).field; \
+		PREDESERIALIZE_WSTRING(field); \
+		(target).field = field; \
+	} while (false)
+
+#define PLAYER_POSTDESERIALIZE_PTR_FIELD(target, field) \
+	do \
+	{ \
+		auto field = (target).field; \
+		POSTDESERIALIZE_PTR(field); \
+		(target).field = field; \
+	} while (false)
+
+#pragma region ì§ë ¬í™”
 	void Player::PreSerialize(json& jsonData) const
 	{}
 
@@ -1243,108 +1337,35 @@ namespace Phyzzle
 
 		// Player
 		{
-			auto moveSpeed = data.moveSpeed;
-			PREDESERIALIZE_VALUE(moveSpeed);
-			data.moveSpeed = moveSpeed;
-
-			auto holdSpeed = data.holdSpeed;
-			PREDESERIALIZE_VALUE(holdSpeed);
-			data.holdSpeed = holdSpeed;
-
-			auto sensitivity = data.sensitivity;
-			PREDESERIALIZE_VALUE(sensitivity);
-			data.sensitivity = sensitivity;
-
-			auto jumpPower = data.jumpPower;
-			PREDESERIALIZE_VALUE(jumpPower);
-			data.jumpPower = jumpPower;
-
-			auto slopeLimit = data.slopeLimit;
-			PREDESERIALIZE_VALUE(slopeLimit);
-			data.slopeLimit = slopeLimit;
+			PLAYER_PREDESERIALIZE_FIELD(data, moveSpeed);
+			PLAYER_PREDESERIALIZE_FIELD(data, holdSpeed);
+			PLAYER_PREDESERIALIZE_FIELD(data, sensitivity);
+			PLAYER_PREDESERIALIZE_FIELD(data, jumpPower);
+			PLAYER_PREDESERIALIZE_FIELD(data, slopeLimit);
 		}
 
 		// Ability
 		{
-			auto searchAroundbufferSize = abilData.searchAroundbufferSize;
-			PREDESERIALIZE_VALUE(searchAroundbufferSize);
-			abilData.searchAroundbufferSize = searchAroundbufferSize;
-
-			auto searchAroundDistance = abilData.searchAroundDistance;
-			PREDESERIALIZE_VALUE(searchAroundDistance);
-			abilData.searchAroundDistance = searchAroundDistance;
-
-			auto searchAroundLayers = abilData.searchAroundLayers;
-			PREDESERIALIZE_VALUE(searchAroundLayers);
-			abilData.searchAroundLayers = searchAroundLayers;
-
-			auto attachRaycastLayers = abilData.attachRaycastLayers;
-			PREDESERIALIZE_VALUE(attachRaycastLayers);
-			abilData.attachRaycastLayers = attachRaycastLayers;
-
-			float attachRaycastDistance = abilData.attachRaycastDistance;
-			PREDESERIALIZE_VALUE(attachRaycastDistance);
-			abilData.attachRaycastDistance = attachRaycastDistance;
-
-			auto targetPositionYSpeed = abilData.targetPositionYSpeed;
-			PREDESERIALIZE_VALUE(targetPositionYSpeed);
-			abilData.targetPositionYSpeed = targetPositionYSpeed;
-
-			auto targetPositionZStep = abilData.targetPositionZStep;
-			PREDESERIALIZE_VALUE(targetPositionZStep);
-			abilData.targetPositionZStep = targetPositionZStep;
-
-			auto minTargetPositionY = abilData.minTargetPositionY;
-			PREDESERIALIZE_VALUE(minTargetPositionY);
-			abilData.minTargetPositionY = minTargetPositionY;
-
-			auto maxTargetPositionY = abilData.maxTargetPositionY;
-			PREDESERIALIZE_VALUE(maxTargetPositionY);
-			abilData.maxTargetPositionY = maxTargetPositionY;
-
-			auto minTargetPositionZ = abilData.minTargetPositionZ;
-			PREDESERIALIZE_VALUE(minTargetPositionZ);
-			abilData.minTargetPositionZ = minTargetPositionZ;
-
-			auto maxTargetPositionZ = abilData.maxTargetPositionZ;
-			PREDESERIALIZE_VALUE(maxTargetPositionZ);
-			abilData.maxTargetPositionZ = maxTargetPositionZ;
-
-			auto targetPositionOffset = abilData.targetPositionOffset;
-			PREDESERIALIZE_VALUE(targetPositionOffset);
-			abilData.targetPositionOffset = targetPositionOffset;
-
-			auto linearSpringDamping = abilData.linearSpringDamping;
-			PREDESERIALIZE_VALUE(linearSpringDamping);
-			abilData.linearSpringDamping = linearSpringDamping;
-
-			auto linearSpringFrequency = abilData.linearSpringFrequency;
-			PREDESERIALIZE_VALUE(linearSpringFrequency);
-			abilData.linearSpringFrequency = linearSpringFrequency;
-
-			auto linearMaxVelocity = abilData.linearMaxVelocity;
-			PREDESERIALIZE_VALUE(linearMaxVelocity);
-			abilData.linearMaxVelocity = linearMaxVelocity;
-
-			auto angularSpringDamping = abilData.angularSpringDamping;
-			PREDESERIALIZE_VALUE(angularSpringDamping);
-			abilData.angularSpringDamping = angularSpringDamping;
-
-			auto angularSpringFrequency = abilData.angularSpringFrequency;
-			PREDESERIALIZE_VALUE(angularSpringFrequency);
-			abilData.angularSpringFrequency = angularSpringFrequency;
-
-			auto angularMaxVelocity = abilData.angularMaxVelocity;
-			PREDESERIALIZE_VALUE(angularMaxVelocity);
-			abilData.angularMaxVelocity = angularMaxVelocity;
-
-			auto holdRotateAngle = abilData.holdRotateAngle;
-			PREDESERIALIZE_VALUE(holdRotateAngle);
-			abilData.holdRotateAngle = holdRotateAngle;
-
-			auto arcRatio = abilData.arcRatio;
-			PREDESERIALIZE_VALUE(arcRatio);
-			abilData.arcRatio = arcRatio;
+			PLAYER_PREDESERIALIZE_FIELD(abilData, searchAroundbufferSize);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, searchAroundDistance);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, searchAroundLayers);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, attachRaycastLayers);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, attachRaycastDistance);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, targetPositionYSpeed);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, targetPositionZStep);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, minTargetPositionY);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, maxTargetPositionY);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, minTargetPositionZ);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, maxTargetPositionZ);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, targetPositionOffset);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, linearSpringDamping);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, linearSpringFrequency);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, linearMaxVelocity);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, angularSpringDamping);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, angularSpringFrequency);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, angularMaxVelocity);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, holdRotateAngle);
+			PLAYER_PREDESERIALIZE_FIELD(abilData, arcRatio);
 		}
 
 		// Outline
@@ -1368,60 +1389,23 @@ namespace Phyzzle
 
 		// Camera
 		{
-			int cameraCollisionLayers = camData.cameraCollisionLayers;
-			PREDESERIALIZE_VALUE(cameraCollisionLayers);
-			camData.cameraCollisionLayers = cameraCollisionLayers;
-
-			float cameraCollisionRadius = camData.cameraCollisionRadius;
-			PREDESERIALIZE_VALUE(cameraCollisionRadius);
-			camData.cameraCollisionRadius = cameraCollisionRadius;
+			PLAYER_PREDESERIALIZE_FIELD(camData, cameraCollisionLayers);
+			PLAYER_PREDESERIALIZE_FIELD(camData, cameraCollisionRadius);
 		}
 
 		// Animation
 		{
-			auto idleAnimation = animData.idleAnimation;
-			PREDESERIALIZE_WSTRING(idleAnimation);
-			animData.idleAnimation = idleAnimation;
-
-			auto walkingAnimation = animData.walkingAnimation;
-			PREDESERIALIZE_WSTRING(walkingAnimation);
-			animData.walkingAnimation = walkingAnimation;
-
-			auto runningAnimation = animData.runningAnimation;
-			PREDESERIALIZE_WSTRING(runningAnimation);
-			animData.runningAnimation = runningAnimation;
-
-			auto jumpAnimation = animData.jumpAnimation;
-			PREDESERIALIZE_WSTRING(jumpAnimation);
-			animData.jumpAnimation = jumpAnimation;
-
-			auto jumpingAnimation = animData.jumpingAnimation;
-			PREDESERIALIZE_WSTRING(jumpingAnimation);
-			animData.jumpingAnimation = jumpingAnimation;
-
-			auto landingAnimation = animData.landingAnimation;
-			PREDESERIALIZE_WSTRING(landingAnimation);
-			animData.landingAnimation = landingAnimation;
-
-			auto holdIdleAnimation = animData.holdIdleAnimation;
-			PREDESERIALIZE_WSTRING(holdIdleAnimation);
-			animData.holdIdleAnimation = holdIdleAnimation;
-
-			auto holdFrontAnimation = animData.holdFrontAnimation;
-			PREDESERIALIZE_WSTRING(holdFrontAnimation);
-			animData.holdFrontAnimation = holdFrontAnimation;
-
-			auto holdBackAnimation = animData.holdBackAnimation;
-			PREDESERIALIZE_WSTRING(holdBackAnimation);
-			animData.holdBackAnimation = holdBackAnimation;
-
-			auto holdRightAnimation = animData.holdRightAnimation;
-			PREDESERIALIZE_WSTRING(holdRightAnimation);
-			animData.holdRightAnimation = holdRightAnimation;
-
-			auto holdLeftAnimation = animData.holdLeftAnimation;
-			PREDESERIALIZE_WSTRING(holdLeftAnimation);
-			animData.holdLeftAnimation = holdLeftAnimation;
+			PLAYER_PREDESERIALIZE_WSTRING_FIELD(animData, idleAnimation);
+			PLAYER_PREDESERIALIZE_WSTRING_FIELD(animData, walkingAnimation);
+			PLAYER_PREDESERIALIZE_WSTRING_FIELD(animData, runningAnimation);
+			PLAYER_PREDESERIALIZE_WSTRING_FIELD(animData, jumpAnimation);
+			PLAYER_PREDESERIALIZE_WSTRING_FIELD(animData, jumpingAnimation);
+			PLAYER_PREDESERIALIZE_WSTRING_FIELD(animData, landingAnimation);
+			PLAYER_PREDESERIALIZE_WSTRING_FIELD(animData, holdIdleAnimation);
+			PLAYER_PREDESERIALIZE_WSTRING_FIELD(animData, holdFrontAnimation);
+			PLAYER_PREDESERIALIZE_WSTRING_FIELD(animData, holdBackAnimation);
+			PLAYER_PREDESERIALIZE_WSTRING_FIELD(animData, holdRightAnimation);
+			PLAYER_PREDESERIALIZE_WSTRING_FIELD(animData, holdLeftAnimation);
 		}
 	}
 
@@ -1431,102 +1415,43 @@ namespace Phyzzle
 	void Player::PostDeserialize(const json& jsonData)
 	{
 		{
-			auto playerRigidbody = data.playerRigidbody;
-			POSTDESERIALIZE_PTR(playerRigidbody);
-			data.playerRigidbody = playerRigidbody;
-
-			auto modelCore = data.modelCore;
-			POSTDESERIALIZE_PTR(modelCore);
-			data.modelCore = modelCore;
-
-			auto cameraArm = data.cameraArm;
-			POSTDESERIALIZE_PTR(cameraArm);
-			data.cameraArm = cameraArm;
-
-			auto cameraCore = data.cameraCore;
-			POSTDESERIALIZE_PTR(cameraCore);
-			data.cameraCore = cameraCore;
-
-			auto animator = data.animator;
-			POSTDESERIALIZE_PTR(animator);
-			data.animator = animator;
-
-			auto crossHead01 = data.crossHead01;
-			POSTDESERIALIZE_PTR(crossHead01);
-			data.crossHead01 = crossHead01;
-
-			auto crossHead02 = data.crossHead02;
-			POSTDESERIALIZE_PTR(crossHead02);
-			data.crossHead02 = crossHead02;
-
-			auto groundCheck = data.groundCheck;
-			POSTDESERIALIZE_PTR(groundCheck);
-			data.groundCheck = groundCheck;
-
-			auto rotationArow = data.rotationArow;
-			POSTDESERIALIZE_PTR(rotationArow);
-			data.rotationArow = rotationArow;
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(data, playerRigidbody);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(data, modelCore);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(data, cameraArm);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(data, cameraCore);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(data, animator);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(data, crossHead01);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(data, crossHead02);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(data, groundCheck);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(data, rotationArow);
 		}
 
 		{
-			auto attachLowCamera0 = camData.attachLowCamera0;
-			POSTDESERIALIZE_PTR(attachLowCamera0);
-			camData.attachLowCamera0 = attachLowCamera0;
-
-			auto attachLowCamera1 = camData.attachLowCamera1;
-			POSTDESERIALIZE_PTR(attachLowCamera1);
-			camData.attachLowCamera1 = attachLowCamera1;
-
-			auto attachDefaultCamera0 = camData.attachDefaultCamera0;
-			POSTDESERIALIZE_PTR(attachDefaultCamera0);
-			camData.attachDefaultCamera0 = attachDefaultCamera0;
-
-			auto attachDefaultCamera1 = camData.attachDefaultCamera1;
-			POSTDESERIALIZE_PTR(attachDefaultCamera1);
-			camData.attachDefaultCamera1 = attachDefaultCamera1;
-
-			auto attachHighCamera0 = camData.attachHighCamera0;
-			POSTDESERIALIZE_PTR(attachHighCamera0);
-			camData.attachHighCamera0 = attachHighCamera0;
-
-			auto attachHighCamera1 = camData.attachHighCamera1;
-			POSTDESERIALIZE_PTR(attachHighCamera1);
-			camData.attachHighCamera1 = attachHighCamera1;
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(camData, attachLowCamera0);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(camData, attachLowCamera1);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(camData, attachDefaultCamera0);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(camData, attachDefaultCamera1);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(camData, attachHighCamera0);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(camData, attachHighCamera1);
 		}
 
 		{
-			auto Attach_Default = uiData.Attach_Default;
-			POSTDESERIALIZE_PTR(Attach_Default);
-			uiData.Attach_Default = Attach_Default;
-
-			auto Attach_Hold_NoneStick = uiData.Attach_Hold_NoneStick;
-			POSTDESERIALIZE_PTR(Attach_Hold_NoneStick);
-			uiData.Attach_Hold_NoneStick = Attach_Hold_NoneStick;
-
-			auto Attach_Hold_Stick = uiData.Attach_Hold_Stick;
-			POSTDESERIALIZE_PTR(Attach_Hold_Stick);
-			uiData.Attach_Hold_Stick = Attach_Hold_Stick;
-
-			auto Rotation_NoneStick = uiData.Rotation_NoneStick;
-			POSTDESERIALIZE_PTR(Rotation_NoneStick);
-			uiData.Rotation_NoneStick = Rotation_NoneStick;
-
-			auto Rotation_Stick = uiData.Rotation_Stick;
-			POSTDESERIALIZE_PTR(Rotation_Stick);
-			uiData.Rotation_Stick = Rotation_Stick;
-
-			auto Catch_B = uiData.Catch_B;
-			POSTDESERIALIZE_PTR(Catch_B);
-			uiData.Catch_B = Catch_B;
-
-			auto Stick_B = uiData.Stick_B;
-			POSTDESERIALIZE_PTR(Stick_B);
-			uiData.Stick_B = Stick_B;
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(uiData, Attach_Default);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(uiData, Attach_Hold_NoneStick);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(uiData, Attach_Hold_Stick);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(uiData, Rotation_NoneStick);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(uiData, Rotation_Stick);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(uiData, Catch_B);
+			PLAYER_POSTDESERIALIZE_PTR_FIELD(uiData, Stick_B);
 		}
 	}
-#pragma endregion Á÷·ÄÈ­
+#pragma endregion ì§ë ¬í™”
 
-#pragma region ÇÃ·¹ÀÌ¾îSFX
+#undef PLAYER_PREDESERIALIZE_FIELD
+#undef PLAYER_PREDESERIALIZE_WSTRING_FIELD
+#undef PLAYER_POSTDESERIALIZE_PTR_FIELD
+
+#pragma region í”Œë ˆì´ì–´SFX
 	void Player::PlayFootStep()
 	{
 		GetGameObject()->GetComponent<PurahEngine::AudioSource>()->PlayAudio(L"footstep.mp3");
@@ -1541,5 +1466,5 @@ namespace Phyzzle
 	{
 		GetGameObject()->GetComponent<PurahEngine::AudioSource>()->PlayAudio(L"landing.wav");
 	}
-#pragma endregion ÇÃ·¹ÀÌ¾îSFX
+#pragma endregion í”Œë ˆì´ì–´SFX
 }

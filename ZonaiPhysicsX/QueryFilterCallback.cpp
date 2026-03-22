@@ -1,4 +1,4 @@
-#include <PxShape.h>
+ï»¿#include <PxShape.h>
 
 #include "QueryFilterCallback.h"
 
@@ -12,15 +12,15 @@ namespace ZonaiPhysics
         const physx::PxFilterData& filterData, const physx::PxShape* shape, 
         const physx::PxRigidActor* actor, physx::PxHitFlags& queryFlags)
 	{
-        // shape°¡ ¾øÀ¸¸é X
+        // shapeê°€ ì—†ìœ¼ë©´ X
         if (!shape)
             return physx::PxQueryHitType::eNONE;
 
-        // Æ®¸®°Å´Â X
+        // íŠ¸ë¦¬ê±°ëŠ” X
         if (PxFilterObjectIsTrigger(shape->getFlags()))
             return physx::PxQueryHitType::eNONE;
 
-        // ·¹ÀÌ¾î°¡ ´Ù¸£¸é X
+        // ë ˆì´ì–´ê°€ ë‹¤ë¥´ë©´ X
         const physx::PxFilterData shapeFilter = shape->getQueryFilterData();
 
         const bool test = ZnLayer::IsCollide(filterData.word1, shapeFilter.word1);

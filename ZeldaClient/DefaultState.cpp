@@ -1,4 +1,4 @@
-#include <Eigen/Dense>
+﻿#include <Eigen/Dense>
 #include <cmath>
 #include <iostream>
 
@@ -59,10 +59,7 @@ namespace Phyzzle
 
 	void DefaultState::Click_LB()
 	{
-		if (player->data.isGrounded)
-		{
-			player->ChangeAbilityState(Player::AbilityState::ATTACH_SELECT);
-		}
+		player->UseSelectedAbility();
 	}
 
 	void DefaultState::Jump() const

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngineAPI.h"
 #include "SerializableDefine.h"
 #include "Transform.h"
@@ -11,7 +11,7 @@
 
 namespace ZonaiPhysics
 {
-	class ZnCollision;
+	struct ZnCollision;
 	class ZnCollider;
 }
 
@@ -36,14 +36,14 @@ namespace PurahEngine
 		void StartEvent(std::queue<std::pair<Component*, std::function<void(Component&)>>>& eventQueue, bool parentEnable = true);
 
 		/// Update
-		// ¹°¸® °ü·Ã ¾÷µ¥ÀÌÆ®
+		// ë¬¼ë¦¬ ê´€ë ¨ ì—…ë°ì´íŠ¸
 		virtual void FixedUpdateEvent(std::queue<std::pair<Component*, std::function<void(Component&)>>>& eventQueue, bool parentEnable = true);
-		// ±âÁ¸ ¾÷µ¥ÀÌÆ®
+		// ê¸°ì¡´ ì—…ë°ì´íŠ¸
 		virtual void UpdateEvent(std::queue<std::pair<Component*, std::function<void(Component&)>>>& eventQueue, bool parentEnable = true);
 
-		// ¹°¸® °ü·Ã ¾÷µ¥ÀÌÆ® 2Á¾ Ãß°¡¿¹Á¤
+		// ë¬¼ë¦¬ ê´€ë ¨ ì—…ë°ì´íŠ¸ 2ì¢… ì¶”ê°€ì˜ˆì •
 
-		// Upate ÈÄ¿¡ ÇÑ¹ø ´õ ¾÷µ¥ÀÌÆ® (ÁÖ·Î Ä«¸Ş¶ó °ü·Ã¿¡¼­ »ç¿ëÇÑ´Ù°í ÇÑ´Ù)
+		// Upate í›„ì— í•œë²ˆ ë” ì—…ë°ì´íŠ¸ (ì£¼ë¡œ ì¹´ë©”ë¼ ê´€ë ¨ì—ì„œ ì‚¬ìš©í•œë‹¤ê³  í•œë‹¤)
 		virtual void LateUpdateEvent(std::queue<std::pair<Component*, std::function<void(Component&)>>>& eventQueue, bool parentEnable = true);
 
 		void DeleteChild(GameObject* child);
@@ -56,27 +56,27 @@ namespace PurahEngine
 
 
 		/// OnCollision
-		// Ãæµ¹Ã¼°¡ Ãæµ¹ÇßÀ» ¶§ È£Ãâ
+		// ì¶©ëŒì²´ê°€ ì¶©ëŒí–ˆì„ ë•Œ í˜¸ì¶œ
 		virtual void OnCollisionEnter(const ZonaiPhysics::ZnCollision&, const Collider*);
-		// Ãæµ¹Ã¼°¡ Ãæµ¹À» À¯ÁöÇÒ ¶§ È£Ãâ
+		// ì¶©ëŒì²´ê°€ ì¶©ëŒì„ ìœ ì§€í•  ë•Œ í˜¸ì¶œ
 		virtual void OnCollisionStay(const ZonaiPhysics::ZnCollision&, const Collider*);
-		// Ãæµ¹Ã¼°¡ Ãæµ¹À» ¹ş¾î³µÀ» ¶§ È£Ãâ
+		// ì¶©ëŒì²´ê°€ ì¶©ëŒì„ ë²—ì–´ë‚¬ì„ ë•Œ í˜¸ì¶œ
 		virtual void OnCollisionExit(const ZonaiPhysics::ZnCollision&, const Collider*);
 
 		/// OnTrigger
-		// Æ®¸®°Å°¡ Ãæµ¹ÇßÀ» ¶§ È£Ãâ
+		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒí–ˆì„ ë•Œ í˜¸ì¶œ
 		virtual void OnTriggerEnter(const Collider*);
-		// Æ®¸®°Å°¡ Ãæµ¹À² À¯ÁöÇÒ ¶§ È£Ãâ
+		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒìœ¨ ìœ ì§€í•  ë•Œ í˜¸ì¶œ
 		virtual void OnTriggerStay(const Collider*);
-		// Æ®¸®°Å°¡ Ãæµ¹À» ¹ş¾î³µÀ» ¶§ È£Ãâ
+		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒì„ ë²—ì–´ë‚¬ì„ ë•Œ í˜¸ì¶œ
 		virtual void OnTriggerExit(const Collider*);
 
 		/// OnMouse
-		// ¸¶¿ì½º°¡ ¿ÀºêÁ§Æ® À§¿¡ ¿Ã¶ó°¬À» ¶§ È£Ãâ
+		// ë§ˆìš°ìŠ¤ê°€ ì˜¤ë¸Œì íŠ¸ ìœ„ì— ì˜¬ë¼ê°”ì„ ë•Œ í˜¸ì¶œ
 		virtual void OnMouseEnter();
-		// ¸¶¿ì½º°¡ ¿ÀºêÁ§Æ® À§¿¡¼­ À¯ÁöÇÒ ¶§ È£Ãâ
+		// ë§ˆìš°ìŠ¤ê°€ ì˜¤ë¸Œì íŠ¸ ìœ„ì—ì„œ ìœ ì§€í•  ë•Œ í˜¸ì¶œ
 		virtual void OnMouseStay();
-		// ¸¶¿ì½º°¡ ¿ÀºêÁ§Æ®¿¡¼­ ¹ş¾î³µÀ» ¶§ È£Ãâ
+		// ë§ˆìš°ìŠ¤ê°€ ì˜¤ë¸Œì íŠ¸ì—ì„œ ë²—ì–´ë‚¬ì„ ë•Œ í˜¸ì¶œ
 		virtual void OnMouseExit();
 
 		void SetEnable(bool isTrue);
@@ -102,7 +102,7 @@ namespace PurahEngine
 
 
 	private:
-		// ComponentList·Î Component °ü¸®
+		// ComponentListë¡œ Component ê´€ë¦¬
 		std::vector<Component*> componentList;
 		std::queue<Component*> addQueue;
 		void AddComponentQueue();
@@ -138,7 +138,7 @@ namespace PurahEngine
 		void EraseDontDestroy();
 
 	public:
-		// ComponentList·Î Component Ãß°¡
+		// ComponentListë¡œ Component ì¶”ê°€
 		template<componentType T>
 		T* AddComponentInit()
 		{
@@ -149,10 +149,10 @@ namespace PurahEngine
 
 			t->Initialize();
 
-			return t; // Ãß°¡µÈ ÄÄÆ÷³ÍÆ® Æ÷ÀÎÅÍ¸¦ ¹İÈ¯
+			return t; // ì¶”ê°€ëœ ì»´í¬ë„ŒíŠ¸ í¬ì¸í„°ë¥¼ ë°˜í™˜
 		}
 
-		// ComponentList·Î Component Ãß°¡
+		// ComponentListë¡œ Component ì¶”ê°€
 		template<componentType T>
 		T* AddComponent()
 		{
@@ -163,7 +163,7 @@ namespace PurahEngine
 
 			t->Initialize();
 
-			return t; // Ãß°¡µÈ ÄÄÆ÷³ÍÆ® Æ÷ÀÎÅÍ¸¦ ¹İÈ¯
+			return t; // ì¶”ê°€ëœ ì»´í¬ë„ŒíŠ¸ í¬ì¸í„°ë¥¼ ë°˜í™˜
 		}
 
 		template<componentType T>
@@ -174,11 +174,11 @@ namespace PurahEngine
 				T* t = dynamic_cast<T*>(component);
 				if (t != nullptr)
 				{
-					return t; // Å¸ÀÔÀÌ ÀÏÄ¡ÇÏ´Â ÄÄÆ÷³ÍÆ®¸¦ Ã£¾ÒÀ» ¶§ ¹İÈ¯
+					return t; // íƒ€ì…ì´ ì¼ì¹˜í•˜ëŠ” ì»´í¬ë„ŒíŠ¸ë¥¼ ì°¾ì•˜ì„ ë•Œ ë°˜í™˜
 				}
 			}
 
-			return nullptr; // ÇØ´ç Å¸ÀÔÀÇ ÄÄÆ÷³ÍÆ®¸¦ Ã£Áö ¸øÇßÀ» ¶§ nullptr ¹İÈ¯
+			return nullptr; // í•´ë‹¹ íƒ€ì…ì˜ ì»´í¬ë„ŒíŠ¸ë¥¼ ì°¾ì§€ ëª»í–ˆì„ ë•Œ nullptr ë°˜í™˜
 		}
 
 		template<componentType T>
@@ -194,11 +194,11 @@ namespace PurahEngine
 				}
 			}
 
-			return components; // ÇØ´ç Å¸ÀÔÀÇ ÄÄÆ÷³ÍÆ®¸¦ Ã£Áö ¸øÇßÀ» ¶§ nullptr ¹İÈ¯
+			return components; // í•´ë‹¹ íƒ€ì…ì˜ ì»´í¬ë„ŒíŠ¸ë¥¼ ì°¾ì§€ ëª»í–ˆì„ ë•Œ nullptr ë°˜í™˜
 		}
 
 	private:
-		// DeSerializeÇÑ Component Ãß°¡ÇÏ±â À§ÇÑ ÇÔ¼ö.
+		// DeSerializeí•œ Component ì¶”ê°€í•˜ê¸° ìœ„í•œ í•¨ìˆ˜.
 		Component* AddComponentToString(std::string componentName);
 
 		friend SceneManager;

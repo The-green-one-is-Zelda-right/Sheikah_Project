@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 #include <unordered_map>
 #include <queue>
 #include <set>
 
-// ¼ø¼­ Áß¿äÇÔ.
+// ìˆœì„œ ì¤‘ìš”í•¨.
 #include <Windows.h>
 #include <Xinput.h>
 //
@@ -31,7 +31,7 @@ namespace PurahEngine
 		void UpdateInputMap(const XINPUT_STATE& _state);
 		void UpdateVibration();
 
-		/// °ÔÀÓÆĞµå
+		/// ê²Œì„íŒ¨ë“œ
 		XINPUT_STATE		GetState();
 
 	public:
@@ -80,7 +80,7 @@ namespace PurahEngine
 		bool				Vibrate(int _left, int _right) const;
 
 	public:
-		/// Å° ÀÔ·Â
+		/// í‚¤ ì…ë ¥
 		bool				GetKey(ePad _input) override;
 		bool				IsKeyDown(ePad _input) override;
 		bool				IsKeyPressed(ePad _input) override;
@@ -88,15 +88,15 @@ namespace PurahEngine
 		bool				IsKeyReleased(ePad _input) override;
 		ePadState			IsKeyValue(ePad _input) override;
 
-		/// Æ®¸®°Å °ª
+		/// íŠ¸ë¦¬ê±° ê°’
 		int					GetTriggerRawValue(ePadTrigger _index) const override;
 		float				GetTriggerRatio(ePadTrigger _index) const override;
 
-		/// ½ºÆ½ °ª
+		/// ìŠ¤í‹± ê°’
 		int					GetStickValue(ePadStick _index, int& _outX, int& _outY) const override;
 		float				GetStickRatio(ePadStick _index, float& _outX, float& _outY) const override;
 
-		/// Áøµ¿
+		/// ì§„ë™
 		bool				VibrateRatio(float _left, float _right) const override;
 		void				VibrateRatio(float _left, float _right, float _time) override;
 
@@ -104,11 +104,11 @@ namespace PurahEngine
 		void				VibrateResume() override;
 		void				VibrateOff() const override;
 
-		/// µ¥µåÁ¸ ¼³Á¤
+		/// ë°ë“œì¡´ ì„¤ì •
 		void				SetDeadZone(unsigned int) override;
 		void				SetDeadZoneRatio(float _ratio) override;
 
-		/// ¿¬°á ¿©ºÎ
+		/// ì—°ê²° ì—¬ë¶€
 		bool				IsConnected() override;
 
 	private:
@@ -116,13 +116,16 @@ namespace PurahEngine
 		int						id;
 		XINPUT_STATE			state;
 		XINPUT_KEYSTROKE		stroke;
+		bool					lastConnected = false;
+		bool					hasConnectionSnapshot = false;
+		DWORD					lastConnectionResult = ERROR_DEVICE_NOT_CONNECTED;
 		int						deadZone = 1000;
 		std::unordered_map<ePad, ePadState>	inputMap;
 		std::unordered_map<ePad, ePadState>	prevInputMap;
 		std::unordered_map<ePad, float>	keyDownElapsedMap;
 		std::unordered_map<ePad, bool>	keyMap;
 
-		// std::map<> Áøµ¿ °ü·ÃµÈ Ã¼³ÎÀ» °ü¸®ÇÏ´Â ¹º°¡°¡ ÀÖÀ¸¸é ÁÁ°ÚÀ½.
+		// std::map<> ì§„ë™ ê´€ë ¨ëœ ì²´ë„ì„ ê´€ë¦¬í•˜ëŠ” ë­”ê°€ê°€ ìˆìœ¼ë©´ ì¢‹ê² ìŒ.
 		bool stopVibe = false;
 		std::vector<VibrateData> leftVibeCommend;
 		std::vector<VibrateData> rightVibeCommend;

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "PurahEngineAPI.h"
 #include <functional>
 #include <queue>
@@ -39,7 +39,7 @@ namespace ZonaiPhysics
 	class ZnSphericalJoint;
 	class ZnDistanceJoint;
 
-	class ZnTransform;
+	struct ZnTransform;
 }
 
 namespace PurahEngine

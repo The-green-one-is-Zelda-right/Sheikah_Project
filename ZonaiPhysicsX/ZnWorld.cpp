@@ -1,4 +1,4 @@
-#include <PxPhysicsAPI.h>
+ï»¿#include <PxPhysicsAPI.h>
 #include <cassert>
 
 #include "ZnRigidBody.h"
@@ -410,7 +410,7 @@ namespace ZonaiPhysics
 
 		physx::PxScene* scene = _userScene ? sceneList[_userScene] : currScene;
 
-		// ¾ÀÀÇ °­Ã¼ ¸®½ºÆ®¸¦ °¡Á®¿È
+		// ì”¬ì˜ ê°•ì²´ ë¦¬ìŠ¤íŠ¸ë¥¼ ê°€ì ¸ì˜´
 		const auto bodiesItr = bodyList.find(scene);
 		if (bodiesItr == bodyList.end())
 		{
@@ -420,7 +420,7 @@ namespace ZonaiPhysics
 
 		auto& bodies = bodiesItr->second;
 
-		// °­Ã¼ ¸®½ºÆ®¿¡¼­ À¯Àú µ¥ÀÌÅÍ¿¡ ÇØ´çÇÏ´Â °­Ã¼¸¦ °¡Á®¿È
+		// ê°•ì²´ ë¦¬ìŠ¤íŠ¸ì—ì„œ ìœ ì € ë°ì´í„°ì— í•´ë‹¹í•˜ëŠ” ê°•ì²´ë¥¼ ê°€ì ¸ì˜´
 		const auto bodyItr = bodies.find(_userData);
 		if (bodyItr == bodies.end())
 		{
@@ -430,7 +430,7 @@ namespace ZonaiPhysics
 
 		auto& [znBody, hasBody] = bodyItr->second;
 
-		// ¾ÀÀÇ Äİ¶óÀÌ´õ ¸®½ºÆ®¸¦ °¡Á®¿È
+		// ì”¬ì˜ ì½œë¼ì´ë” ë¦¬ìŠ¤íŠ¸ë¥¼ ê°€ì ¸ì˜´
 		const auto colliderItr = colliderList.find(scene);
 		if (colliderItr == colliderList.end())
 		{
@@ -440,11 +440,11 @@ namespace ZonaiPhysics
 
 		auto& colliders = colliderItr->second;
 
-		// Äİ¶óÀÌ´õ ¸®½ºÆ®¿¡¼­ À¯Àú µ¥ÀÌÅÍ¿¡ ÇØ´çÇÏ´Â Äİ¶óÀÌ´õ¸¦ °¡Á®¿È
+		// ì½œë¼ì´ë” ë¦¬ìŠ¤íŠ¸ì—ì„œ ìœ ì € ë°ì´í„°ì— í•´ë‹¹í•˜ëŠ” ì½œë¼ì´ë”ë¥¼ ê°€ì ¸ì˜´
 		const auto shapeItr = colliders.find(_userData);
 		if (shapeItr == colliders.end())
 		{
-			// shape°¡ ºñ¾îÀÖÀ¸¸é »èÁ¦½ÃÅ´
+			// shapeê°€ ë¹„ì–´ìˆìœ¼ë©´ ì‚­ì œì‹œí‚´
 			hasBody = false;
 			ReleaseBody(&znBody, _userData, scene, hasBody);
 			return;
@@ -453,15 +453,15 @@ namespace ZonaiPhysics
 		const auto& shapes = shapeItr->second;
 		if (shapes.empty())
 		{
-			// shape°¡ ºñ¾îÀÖÀ½.
-			// bodyµµ Áö¿ò
+			// shapeê°€ ë¹„ì–´ìˆìŒ.
+			// bodyë„ ì§€ì›€
 			hasBody = false;
 			ReleaseBody(&znBody, _userData, scene, hasBody);
 		}
 		else
 		{
-			// shape°¡ ºñ¾îÀÖÁö ¾ÊÀ½.
-			// body´Â Áö¿öÁü
+			// shapeê°€ ë¹„ì–´ìˆì§€ ì•ŠìŒ.
+			// bodyëŠ” ì§€ì›Œì§
 			hasBody = false;
 
 			znBody->SetKinematic(true);
@@ -479,7 +479,7 @@ namespace ZonaiPhysics
 		const auto collidersItr = colliderList.find(scene);
 		if (collidersItr == colliderList.end())
 		{
-			// ¾Àµµ ¾øÀ½.
+			// ì”¬ë„ ì—†ìŒ.
 			assert(0);
 			return;
 		}
@@ -488,8 +488,8 @@ namespace ZonaiPhysics
 		const auto shapesItr = colliders.find(_userData);
 		if (shapesItr == colliders.end())
 		{
-			// À¯Àú µ¥ÀÌÅÍ¿¡ ÇØ´çÇÏ´Â Äİ¶óÀÌ´õ ¸®½ºÆ®°¡ ¾ø´Ù?
-			// Áö¿ï Äİ¶óÀÌ´õµµ ¾ø´Â °ÅÀÓ.
+			// ìœ ì € ë°ì´í„°ì— í•´ë‹¹í•˜ëŠ” ì½œë¼ì´ë” ë¦¬ìŠ¤íŠ¸ê°€ ì—†ë‹¤?
+			// ì§€ìš¸ ì½œë¼ì´ë”ë„ ì—†ëŠ” ê±°ì„.
 			assert(0);
 			return;
 		}
@@ -498,12 +498,12 @@ namespace ZonaiPhysics
 		const auto shapeItr = std::ranges::find(shapes, _znShape);
 		if (shapeItr != shapes.end())
 		{
-			// Äİ¶óÀÌ´õ¸¦ Áö¿ò
+			// ì½œë¼ì´ë”ë¥¼ ì§€ì›€
 			shapes.erase(shapeItr);
 			delete _znShape;
 		}
 
-		// Äİ¶óÀÌ´õ°¡ ºñ¾îÀÖ´Â°¡?
+		// ì½œë¼ì´ë”ê°€ ë¹„ì–´ìˆëŠ”ê°€?
 		if (shapes.empty())
 		{
 			colliders.erase(_userData);

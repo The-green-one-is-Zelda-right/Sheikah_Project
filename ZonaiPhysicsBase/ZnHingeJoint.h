@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "ZnJoint.h"
 #include <Eigen/Dense>
 
@@ -14,44 +14,44 @@ namespace ZonaiPhysics
 		~ZnHingeJoint() override = default;
 
 	public:
-		// °üÀı °¢µµ
+		// ê´€ì ˆ ê°ë„
 		virtual float GetAngle() const = 0;
-		// °üÀı ¼Óµµ
+		// ê´€ì ˆ ì†ë„
 		virtual float GetVelocity() const = 0;
 
-		// °üÀı Á¦ÇÑ
+		// ê´€ì ˆ ì œí•œ
 		virtual void SetLimit(float _lower, float _upper) = 0;
 		virtual void GetLimit(float& _upper, float& _lower) const = 0;
 		
-		// ¹İ¹ß °è¼ö (¸®¹ÌÆ®)
+		// ë°˜ë°œ ê³„ìˆ˜ (ë¦¬ë¯¸íŠ¸)
 		virtual float GetRestitution() const = 0;
 		virtual void SetRestitution(float _restitution) const = 0;
 
-		// Æ¨±â´Â Èû ÃÖ¼ÒÄ¡ (¸®¹ÌÆ®)
+		// íŠ•ê¸°ëŠ” í˜ ìµœì†Œì¹˜ (ë¦¬ë¯¸íŠ¸)
 		virtual float GetBounceThreshold() const = 0;
 		virtual void SetBounceThreshold(float _bounceThreshold) const = 0;
 
-		// ½ºÇÁ¸µ °ü·Ã º¯¼ö
+		// ìŠ¤í”„ë§ ê´€ë ¨ ë³€ìˆ˜
 		virtual void SetSpringArg(float _stiffness, float _damping) = 0;
 		virtual void GetSpringArg(float& _stiffness, float& _damping) = 0;
 		
-		// ¸ğÅÍÀÇ °¢¼Óµµ
+		// ëª¨í„°ì˜ ê°ì†ë„
 		virtual void SetDriveVelocity(float _velocity) = 0;
 		virtual float GetDriveVelocity() const = 0;
 
-		// ¸ğÅÍ Èû Á¦ÇÑ
+		// ëª¨í„° í˜ ì œí•œ
 		virtual void SetDriveForceLimit(float) = 0;
 		virtual float GetDriveForceLimit() const = 0;
 
-		// ±â¾î ºñÀ²
+		// ê¸°ì–´ ë¹„ìœ¨
 		virtual void SetDriveGearRatio(float) = 0;
 		virtual float GetDriveGearRatio() const = 0;
 
-		// Á¦ÇÑ È°¼ºÈ­
+		// ì œí•œ í™œì„±í™”
 		virtual void SetLimitEnable(bool) = 0;
-		// ¸ğÅÍ È°¼ºÈ­
+		// ëª¨í„° í™œì„±í™”
 		virtual void SetDriveEnable(bool) = 0;
-		// ±âÁ¸ ¼Óµµ°¡ ¸ğÅÍÀÇ ¼Óµµ¸¦ ÃÊ°úÇÏ´Â °æ¿ì ÈûÀ» Ãß°¡ÇÏÁö ¾ÊÀ½
+		// ê¸°ì¡´ ì†ë„ê°€ ëª¨í„°ì˜ ì†ë„ë¥¼ ì´ˆê³¼í•˜ëŠ” ê²½ìš° í˜ì„ ì¶”ê°€í•˜ì§€ ì•ŠìŒ
 		virtual void SetDriveFreespin(bool) = 0;
 	};
 }

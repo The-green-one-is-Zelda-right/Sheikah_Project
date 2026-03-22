@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Timer.h"
 #include "ITween.h"
 #include "TimeController.h"
@@ -44,9 +44,9 @@ namespace PurahEngine
 		{
 			_tween->timer =
 				Timer::Delay(
-					0.f,		// delay ½Ã°£
-					false,		// ¹İº¹
-					[_tween]()	// Äİ¹é
+					0.f,		// delay ì‹œê°„
+					false,		// ë°˜ë³µ
+					[_tween]()	// ì½œë°±
 					{
 						_tween->start =
 							_tween->end -

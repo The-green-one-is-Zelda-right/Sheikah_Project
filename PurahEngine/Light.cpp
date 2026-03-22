@@ -1,4 +1,4 @@
-#include "Light.h"
+ï»¿#include "Light.h"
 
 #include "GraphicsManager.h"
 #include "GraphicsResourceManager.h"
@@ -7,7 +7,7 @@
 
 namespace PurahEngine
 {
-	// ³ªÁß¿¡ Angle °ü·ÃµÈ°Í ±¸ÇöÇÒ ¶§ Radian°ú Degree ÁÖÀÇ
+	// ë‚˜ì¤‘ì— Angle ê´€ë ¨ëœê²ƒ êµ¬í˜„í•  ë•Œ Radianê³¼ Degree ì£¼ì˜
 
 	Light::Light() :
 		ambient({ 0.2f, 0.2f, 0.2f }),
@@ -30,7 +30,7 @@ namespace PurahEngine
 
 	void Light::Awake()
 	{
-		// Áøµ¿ ºĞÆ÷ ÃÊ±âÈ­
+		// ì§„ë™ ë¶„í¬ ì´ˆê¸°í™”
 		atten0Distribution = std::uniform_real_distribution<float>(0.0f, atten0VibrationRange);
 		atten1Distribution = std::uniform_real_distribution<float>(0.0f, atten1VibrationRange);
 		atten2Distribution = std::uniform_real_distribution<float>(0.0f, atten2VibrationRange);
@@ -52,12 +52,12 @@ namespace PurahEngine
 	{
 		float deltaTime = TimeController::GetInstance().GetDeltaTime();
 
-		// PositionÀÇ Áøµ¿
+		// Positionì˜ ì§„ë™
 		if (positionVibrationRange > 0.0f)
 		{
 			if (currentPosition == targetPosition)
 			{
-				// ¹İÁö¸§ Å©±â 1ÀÎ ±¸ ¹üÀ§ ³»ÀÇ ·£´ı À§Ä¡ »ı¼º
+				// ë°˜ì§€ë¦„ í¬ê¸° 1ì¸ êµ¬ ë²”ìœ„ ë‚´ì˜ ëœë¤ ìœ„ì¹˜ ìƒì„±
 				Eigen::Vector3f newPos;
 				do
 				{
@@ -68,7 +68,7 @@ namespace PurahEngine
 			}
 			else
 			{
-				// µµÂø±îÁö ¿òÁ÷¿©¾ß ÇÏ´Â °Å¸® º¤ÅÍ
+				// ë„ì°©ê¹Œì§€ ì›€ì§ì—¬ì•¼ í•˜ëŠ” ê±°ë¦¬ ë²¡í„°
 				Eigen::Vector3f needVec = targetPosition - currentPosition;
 				float need = std::abs(needVec.norm());
 
@@ -86,7 +86,7 @@ namespace PurahEngine
 			}
 		}
 
-		// AttenuationÀÇ Áøµ¿
+		// Attenuationì˜ ì§„ë™
 		{
 			float& _origin = atten0;
 			float& _vRange = atten0VibrationRange;
@@ -103,10 +103,10 @@ namespace PurahEngine
 				}
 				else
 				{
-					// µµÂø±îÁö ¿òÁ÷¿©¾ß ÇÏ´Â °Å¸®
+					// ë„ì°©ê¹Œì§€ ì›€ì§ì—¬ì•¼ í•˜ëŠ” ê±°ë¦¬
 					float need = std::abs(_target - _current);
 
-					// ÀÌ¹ø¿¡ ¿òÁ÷ÀÏ ¼ö ÀÖ´Â °Å¸®
+					// ì´ë²ˆì— ì›€ì§ì¼ ìˆ˜ ìˆëŠ” ê±°ë¦¬
 					float moveDelta = std::abs(_vSpeed * deltaTime);
 
 					if (need < moveDelta)
@@ -139,10 +139,10 @@ namespace PurahEngine
 				}
 				else
 				{
-					// µµÂø±îÁö ¿òÁ÷¿©¾ß ÇÏ´Â °Å¸®
+					// ë„ì°©ê¹Œì§€ ì›€ì§ì—¬ì•¼ í•˜ëŠ” ê±°ë¦¬
 					float need = std::abs(_target - _current);
 
-					// ÀÌ¹ø¿¡ ¿òÁ÷ÀÏ ¼ö ÀÖ´Â °Å¸®
+					// ì´ë²ˆì— ì›€ì§ì¼ ìˆ˜ ìˆëŠ” ê±°ë¦¬
 					float moveDelta = std::abs(_vSpeed * deltaTime);
 
 					if (need < moveDelta)
@@ -175,10 +175,10 @@ namespace PurahEngine
 				}
 				else
 				{
-					// µµÂø±îÁö ¿òÁ÷¿©¾ß ÇÏ´Â °Å¸®
+					// ë„ì°©ê¹Œì§€ ì›€ì§ì—¬ì•¼ í•˜ëŠ” ê±°ë¦¬
 					float need = std::abs(_target - _current);
 
-					// ÀÌ¹ø¿¡ ¿òÁ÷ÀÏ ¼ö ÀÖ´Â °Å¸®
+					// ì´ë²ˆì— ì›€ì§ì¼ ìˆ˜ ìˆëŠ” ê±°ë¦¬
 					float moveDelta = std::abs(_vSpeed * deltaTime);
 
 					if (need < moveDelta)
@@ -249,7 +249,7 @@ namespace PurahEngine
 
 	void Light::Render(IZeldaRenderer* renderer)
 	{
-		// °ÔÀÓ¿ÀºêÁ§Æ®°¡ È°¼ºÈ­ µÇ¾î ÀÖ´Â °æ¿ì¿¡¸¸ ÀÛµ¿ÇÑ´Ù.
+		// ê²Œì„ì˜¤ë¸Œì íŠ¸ê°€ í™œì„±í™” ë˜ì–´ ìˆëŠ” ê²½ìš°ì—ë§Œ ì‘ë™í•œë‹¤.
 		if (GetGameObject()->IsRootEnable())
 		{
 			Eigen::Vector3f direction = { 0.0f , 0.0f, 1.0f };

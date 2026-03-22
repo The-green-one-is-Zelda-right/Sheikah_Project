@@ -1,4 +1,4 @@
-#include "EasingFunction.h"
+﻿#include "EasingFunction.h"
 
 float InSine(float x)
 {

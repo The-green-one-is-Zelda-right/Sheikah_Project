@@ -1,4 +1,4 @@
-#define NOMINMAX
+ï»¿#define NOMINMAX
 #include <cmath>
 #include <algorithm>
 #include "Timer.h"
@@ -6,6 +6,17 @@
 #include "TimeController.h"
 
 #include <cassert>
+#include <cstdio>
+
+namespace
+{
+	void LogGamePadConnection(int id, bool connected, DWORD result)
+	{
+		char buffer[128] = {};
+		sprintf_s(buffer, "[GamePad] slot=%d connected=%s result=%lu\n", id, connected ? "true" : "false", static_cast<unsigned long>(result));
+		OutputDebugStringA(buffer);
+	}
+}
 
 
 namespace PurahEngine
@@ -19,19 +30,19 @@ namespace PurahEngine
 
 		ZeroMemory(&state, sizeof(XINPUT_STATE));
 
-		// ÀÔ·Â ¸Ê ÃÊ±âÈ­
+		// ì…ë ¥ ë§µ ì´ˆê¸°í™”
 		for (auto i = 0; i < _size; i++)
 		{
 			inputMap.insert(std::make_pair(_inputArr[i], ePadState::eNONE));
 		}
 
-		// ÀÌÀü ÀÔ·Â ¸Ê ÃÊ±âÈ­
+		// ì´ì „ ì…ë ¥ ë§µ ì´ˆê¸°í™”
 		for (auto i = 0; i < _size; i++)
 		{
 			prevInputMap.insert(std::make_pair(_inputArr[i], ePadState::eNONE));
 		}
 
-		// keyDownElapsedMap ÃÊ±âÈ­
+		// keyDownElapsedMap ì´ˆê¸°í™”
 		for (auto i = 0; i < _size; i++)
 		{
 			keyDownElapsedMap.insert(std::make_pair(_inputArr[i], -1.0f));
@@ -66,22 +77,22 @@ namespace PurahEngine
 		{
 			const WORD button = static_cast<WORD>(keyCode);
 
-			// ÇöÀç »óÅÂ¸¦ prevInputMap¿¡ ÀúÀå
+			// í˜„ì¬ ìƒíƒœë¥¼ prevInputMapì— ì €ì¥
 			auto prevState = currState;
 			prevInputMap[keyCode] = prevState;
 
-			// ´©¸§
+			// ëˆ„ë¦„
 			if (_state.Gamepad.wButtons & button)
 			{
 				currState = ePadState::eDOWN;
 
-				// Å°°¡ ¹æ±İ ´­·È´Ù¸é Å°°¡ ´­¸°½Ã°£À» ÃÊ±âÈ­ ÇÑ´Ù.
+				// í‚¤ê°€ ë°©ê¸ˆ ëˆŒë ¸ë‹¤ë©´ í‚¤ê°€ ëˆŒë¦°ì‹œê°„ì„ ì´ˆê¸°í™” í•œë‹¤.
 				if (prevState == ePadState::eUP)
 				{
 					keyDownElapsedMap[keyCode] = 0.0f;
 					keyMap[keyCode] = true;
 				}
-				// Å°°¡ ´­·È´Ù¸é ½Ã°£À» ´©ÀûÇÑ´Ù.
+				// í‚¤ê°€ ëˆŒë ¸ë‹¤ë©´ ì‹œê°„ì„ ëˆ„ì í•œë‹¤.
 				else
 				{
 					keyDownElapsedMap[keyCode] += deltaTime;
@@ -92,7 +103,7 @@ namespace PurahEngine
 					}
 				}
 			}
-			// ¶À
+			// ë—Œ
 			else
 			{
 				currState = ePadState::eUP;
@@ -106,22 +117,22 @@ namespace PurahEngine
 		float leftPower = 0.f;
 		float rightPower = 0.f;
 
-		// ³²¾ÆÀÖ´Â Áøµ¿ Áß¿¡¼­ °¡Àå ½ë Áøµ¿ ¸í·ÉÀ» Ã£À½
+		// ë‚¨ì•„ìˆëŠ” ì§„ë™ ì¤‘ì—ì„œ ê°€ì¥ ìˆ ì§„ë™ ëª…ë ¹ì„ ì°¾ìŒ
 		for (auto it = leftVibeCommend.begin(); it != leftVibeCommend.end();) 
 		{
-			it->time -= deltaTime; // ³²Àº ½Ã°£À» µ¨Å¸ Å¸ÀÓ¸¸Å­ °¨¼Ò
+			it->time -= deltaTime; // ë‚¨ì€ ì‹œê°„ì„ ë¸íƒ€ íƒ€ì„ë§Œí¼ ê°ì†Œ
 
-			// ³²Àº ½Ã°£ÀÌ ÀÖ´Â°¡?
+			// ë‚¨ì€ ì‹œê°„ì´ ìˆëŠ”ê°€?
 			if (it->time > 0) 
 			{
-				// °¡Àå °­ÇÑ Áøµ¿ °­µµ¸¦ Ã£À½
+				// ê°€ì¥ ê°•í•œ ì§„ë™ ê°•ë„ë¥¼ ì°¾ìŒ
 				leftPower = std::max(leftPower, it->power);
 
-				++it;  // for¹®¿¡ ³ÖÀ¸¸é endÀ» ³Ñ¾î°¥·Á°í ÇØ¼­ ¼öÁ¤ÇÔ
+				++it;  // forë¬¸ì— ë„£ìœ¼ë©´ endì„ ë„˜ì–´ê°ˆë ¤ê³  í•´ì„œ ìˆ˜ì •í•¨
 			}
 			else
 			{
-				// ½Ã°£ÀÌ ´Ù µÈ ¸í·ÉÀº »èÁ¦
+				// ì‹œê°„ì´ ë‹¤ ëœ ëª…ë ¹ì€ ì‚­ì œ
 				it = leftVibeCommend.erase(it);
 			}
 		}
@@ -147,8 +158,20 @@ namespace PurahEngine
 
 	XINPUT_STATE GamePad::GetState()
 	{
-		XInputGetState(id, &state);
-		XInputGetKeystroke(id, 0, &stroke);
+		const DWORD result = XInputGetState(id, &state);
+		if (result == ERROR_SUCCESS)
+		{
+			if (XInputGetKeystroke(id, 0, &stroke) != ERROR_SUCCESS)
+			{
+				ZeroMemory(&stroke, sizeof(XINPUT_KEYSTROKE));
+			}
+		}
+		else
+		{
+			ZeroMemory(&state, sizeof(XINPUT_STATE));
+			ZeroMemory(&stroke, sizeof(XINPUT_KEYSTROKE));
+		}
+
 		return state;
 	}
 
@@ -192,13 +215,13 @@ namespace PurahEngine
 
 	void GamePad::GetStickRawValue(ePadStick _index, int& _outX, int& _outY) const
 	{
-		// ÁÂÃø ½ºÆ½ÀÇ °æ¿ì
+		// ì¢Œì¸¡ ìŠ¤í‹±ì˜ ê²½ìš°
 		if (_index == ePadStick::ePAD_STICK_L)
 		{
 			_outX = state.Gamepad.sThumbLX;
 			_outY = state.Gamepad.sThumbLY;
 		}
-		// ¿ìÃø ½ºÆ½ÀÇ °æ¿ì
+		// ìš°ì¸¡ ìŠ¤í‹±ì˜ ê²½ìš°
 		else if (_index == ePadStick::ePAD_STICK_R)
 		{
 			_outX = state.Gamepad.sThumbRX;
@@ -212,7 +235,7 @@ namespace PurahEngine
 
 	void GamePad::GetStickRawRatio(ePadStick _index, float& _outX, float& _outY) const
 	{
-		// X, Y °ªÀ» °¢°¢ º¯¼ö·Î ¼³Á¤
+		// X, Y ê°’ì„ ê°ê° ë³€ìˆ˜ë¡œ ì„¤ì •
 		int xValue = 0, yValue = 0;
 
 		GetStickRawValue(_index, xValue, yValue);
@@ -289,7 +312,7 @@ namespace PurahEngine
 
 	int GamePad::GetStickValue(ePadStick _index, int& _outX, int& _outY) const
 	{
-		// X, Y °ªÀ» °¢°¢ º¯¼ö·Î ¼³Á¤
+		// X, Y ê°’ì„ ê°ê° ë³€ìˆ˜ë¡œ ì„¤ì •
 		int xValue = 0, yValue = 0;
 
 		GetStickRawValue(_index, xValue, yValue);
@@ -303,17 +326,17 @@ namespace PurahEngine
 
 		if (distanceSquared > static_cast<float>(deadZone * deadZone))
 		{
-			// °Å¸® Å¬¸³
+			// ê±°ë¦¬ í´ë¦½
 			magnitude = std::sqrtf(distanceSquared);
 
 			_outX = LX / magnitude;
 			_outY = LX / magnitude;
 
-			// Å©±â Å¬¸³
+			// í¬ê¸° í´ë¦½
 			if (magnitude > 32767)
 				magnitude = 32767;
 
-			// µ¥µåÁ¸ºÎÅÍ ÀÔ·ÂÀ» ¹Ş±â ½ÃÀÛÇÏ´Ï Å©±âµµ Á¶ÀıÇÔ.
+			// ë°ë“œì¡´ë¶€í„° ì…ë ¥ì„ ë°›ê¸° ì‹œì‘í•˜ë‹ˆ í¬ê¸°ë„ ì¡°ì ˆí•¨.
 			magnitude -= deadZone;
 		}
 		else
@@ -340,10 +363,10 @@ namespace PurahEngine
 		float magnitude = 0.0f;
 		float normalizedMagnitude = 0.0f;
 
-		// °Å¸®ÀÇ Á¦°öÀÌ µ¥µåÁ¸º¸´Ù Å«Áö ºñ±³ÇÏ¿© ºĞ±â ÃÖÀûÈ­
+		// ê±°ë¦¬ì˜ ì œê³±ì´ ë°ë“œì¡´ë³´ë‹¤ í°ì§€ ë¹„êµí•˜ì—¬ ë¶„ê¸° ìµœì í™”
 		if (distanceSquared > deadZone * deadZone)
 		{
-			// °Å¸® Å¬¸³
+			// ê±°ë¦¬ í´ë¦½
 			magnitude = std::sqrtf(distanceSquared);
 
 			_outX = LX / magnitude;
@@ -354,12 +377,12 @@ namespace PurahEngine
 
 			magnitude -= static_cast<float>(deadZone);
 
-			// 1 / (32767 - deadZone) °ªÀ» ÇÑ ¹ø¸¸ °è»ê
+			// 1 / (32767 - deadZone) ê°’ì„ í•œ ë²ˆë§Œ ê³„ì‚°
 			const float inv = 1.0f / (32767.0f - static_cast<float>(deadZone));
 
 			normalizedMagnitude = magnitude * inv;
 		}
-		else // ÄÁÆ®·Ñ·¯°¡ µ¥µåÁ¸ ¾È¿¡ ÀÖ´Â °æ¿ì
+		else // ì»¨íŠ¸ë¡¤ëŸ¬ê°€ ë°ë“œì¡´ ì•ˆì— ìˆëŠ” ê²½ìš°
 		{
 			_outX = 0.0f;
 			_outY = 0.0f;
@@ -416,22 +439,39 @@ namespace PurahEngine
 
 	void GamePad::SetDeadZone(unsigned int _value)
 	{
-		deadZone = _value; // µ¥µåÁ¸ °ªÀ» ¼³Á¤ÇÕ´Ï´Ù.
+		deadZone = _value; // ë°ë“œì¡´ ê°’ì„ ì„¤ì •í•©ë‹ˆë‹¤.
 	}
 
 	void GamePad::SetDeadZoneRatio(float _ratio)
 	{
 		_ratio = std::clamp(_ratio, 0.f, 1.f);
 
-		// ½ºÆ½ °ªÀÇ ¹üÀ§: -32768 ~ 32767
-		// µ¥µåÁ¸ °ªÀ» ºñÀ²·Î Á¤ÀÇÇÕ´Ï´Ù.
-		// ¿¹¸¦ µé¾î, 0.2ÀÇ °æ¿ì -32768 * 0.2 = -6553.6 ÀÌ¹Ç·Î,
-		// -6553.6¿¡¼­ 6553.6 »çÀÌÀÇ °ªÀ» µ¥µåÁ¸À¸·Î ¼³Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.
+		// ìŠ¤í‹± ê°’ì˜ ë²”ìœ„: -32768 ~ 32767
+		// ë°ë“œì¡´ ê°’ì„ ë¹„ìœ¨ë¡œ ì •ì˜í•©ë‹ˆë‹¤.
+		// ì˜ˆë¥¼ ë“¤ì–´, 0.2ì˜ ê²½ìš° -32768 * 0.2 = -6553.6 ì´ë¯€ë¡œ,
+		// -6553.6ì—ì„œ 6553.6 ì‚¬ì´ì˜ ê°’ì„ ë°ë“œì¡´ìœ¼ë¡œ ì„¤ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.
 		deadZone = static_cast<int>(32767.0f * _ratio);
 	}
 
 	bool GamePad::IsConnected()
 	{
-		return XInputGetState(id, &state) == ERROR_SUCCESS;
+		const DWORD result = XInputGetState(id, &state);
+		const bool connected = result == ERROR_SUCCESS;
+
+		if (!connected)
+		{
+			ZeroMemory(&state, sizeof(XINPUT_STATE));
+			ZeroMemory(&stroke, sizeof(XINPUT_KEYSTROKE));
+		}
+
+		if (!hasConnectionSnapshot || lastConnected != connected || lastConnectionResult != result)
+		{
+			LogGamePadConnection(id, connected, result);
+			hasConnectionSnapshot = true;
+			lastConnected = connected;
+			lastConnectionResult = result;
+		}
+
+		return connected;
 	}
 }

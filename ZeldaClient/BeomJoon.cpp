@@ -1,4 +1,4 @@
-#include "BeomJoon.h"
+ï»¿#include "BeomJoon.h"
 
 #include "PurahEngine.h"
 
@@ -9,34 +9,34 @@ using namespace PurahEngine;
 
 void BeomJoon::Run()
 {
-	// Ä«¸Þ¶ó »ý¼º
+	// ì¹´ë©”ë¼ ìƒì„±
 	GameObject* mainCameraObject = SceneManager::GetInstance().CreateGameObject(L"MainCamera");
 	Camera* mainCamera = mainCameraObject->AddComponent<Camera>();
 	mainCameraObject->AddComponent<CameraMovement>();
 
 	mainCameraObject->GetTransform()->SetLocalPosition({ 0.0f, 0.0f, -100.0f });
 
-	// ¸ÞÀÎ Ä«¸Þ¶ó·Î ¼³Á¤
+	// ë©”ì¸ ì¹´ë©”ë¼ë¡œ ì„¤ì •
 	SceneManager::GetInstance().SetMainCamera(mainCamera);
 
-	// ¶óÀÌÆ® »ý¼º
+	// ë¼ì´íŠ¸ ìƒì„±
 	GameObject* lightObject = SceneManager::GetInstance().CreateGameObject(L"Light");
 	
-	// ¶óÀÌÆ®ÀÇ ¹æÇâÀ» ¿ÞÂÊ À§¿¡¼­ µé¿©´Ù º¸´Â ¹æÇâÀ¸·Î ¼³Á¤
+	// ë¼ì´íŠ¸ì˜ ë°©í–¥ì„ ì™¼ìª½ ìœ„ì—ì„œ ë“¤ì—¬ë‹¤ ë³´ëŠ” ë°©í–¥ìœ¼ë¡œ ì„¤ì •
 	//lightObject->GetTransform()->Rotate({ 0.0f, 1.0f, 0.0f }, 45.0f);
 	DirectionalLight* light = lightObject->AddComponent<DirectionalLight>();
 
-	// Å¥ºê »ý¼º
+	// íë¸Œ ìƒì„±
 	GameObject* cubeObject = SceneManager::GetInstance().CreateGameObject(L"Cube");
 	MeshRenderer* cube = cubeObject->AddComponent<MeshRenderer>();
 
-	// MeshRendererÀÇ Å¸ÀÔÀ» Cube·Î ¼³Á¤ÇÑ´Ù.
-	// ±âº»°ªÀº NoneÀ¸·Î ÀÌ °æ¿ì ¾Æ¹«°Íµµ È­¸é¿¡ ¶ßÁö ¾Ê´Â´Ù.(Debug ¸ðµåÀÇ °æ¿ì ·±Å¸ÀÓ ¿¡·¯¸¦ ¹ß»ý½ÃÅ²´Ù.)
+	// MeshRendererì˜ íƒ€ìž…ì„ Cubeë¡œ ì„¤ì •í•œë‹¤.
+	// ê¸°ë³¸ê°’ì€ Noneìœ¼ë¡œ ì´ ê²½ìš° ì•„ë¬´ê²ƒë„ í™”ë©´ì— ëœ¨ì§€ ì•ŠëŠ”ë‹¤.(Debug ëª¨ë“œì˜ ê²½ìš° ëŸ°íƒ€ìž„ ì—ëŸ¬ë¥¼ ë°œìƒì‹œí‚¨ë‹¤.)
 	cube->SetMesh(MeshRenderer::MeshType::Cube);
 	cube->SetTexture(L"scd.jpg");
 
 
-	// Ä³¸¯ÅÍ »ý¼º
+	// ìºë¦­í„° ìƒì„±
 	GameObject* characterObject = SceneManager::GetInstance().CreateGameObject(L"Character");
 	ModelRenderer* character = characterObject->AddComponent<ModelRenderer>();
 	character->SetModelName(L"Character\\Character.fbx");
@@ -44,7 +44,7 @@ void BeomJoon::Run()
 
 	characterObject->GetTransform()->SetLocalScale({ 0.2f, 0.2f, 0.2f });
 
-	// ¾Ö´Ï¸ÞÀÌ¼ÇÀ» Å×½ºÆ®ÇÏ±â À§ÇÑ ÄÄÆ÷³ÍÆ® Ãß°¡
+	// ì• ë‹ˆë©”ì´ì…˜ì„ í…ŒìŠ¤íŠ¸í•˜ê¸° ìœ„í•œ ì»´í¬ë„ŒíŠ¸ ì¶”ê°€
 	characterObject->AddComponent<Animator>();
 	characterObject->AddComponent<AnimationTestController>();
 }

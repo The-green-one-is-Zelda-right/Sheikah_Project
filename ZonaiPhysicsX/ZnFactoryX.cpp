@@ -1,4 +1,4 @@
-#include "FilterCallback.h"
+ï»¿#include "FilterCallback.h"
 
 #include "RigidBodyHelper.h"
 #include "RigidBody.h"
@@ -33,7 +33,7 @@ namespace ZonaiPhysics
 
 	void ZnFactoryX::CreatePhysxFactory()
 	{
-		/// SDK »ý¼º
+		/// SDK ìƒì„±
 		{
 			foundation = PxCreateFoundation(PX_PHYSICS_VERSION, allocator, errorCallback);
 #if PX_SUPPORT_PVD
@@ -304,7 +304,7 @@ namespace ZonaiPhysics
 			accIndex += index.size();
 		}
 
-		// Á¤Á¡ Á¤º¸
+		// ì •ì  ì •ë³´
 		PxTriangleMeshDesc meshDesc;
 
 		meshDesc.points.count = (physx::PxU32)vertices.size();
@@ -350,7 +350,7 @@ namespace ZonaiPhysics
 			}
 		}
 
-		// Á¤Á¡ Á¤º¸
+		// ì •ì  ì •ë³´
 		physx::PxConvexMeshDesc convexDesc;
 		convexDesc.points.count = vertices.size();
 		convexDesc.points.stride = sizeof(physx::PxVec3);
@@ -360,7 +360,7 @@ namespace ZonaiPhysics
 		physx::PxCookingParams params(pxFactory->getTolerancesScale());
 		params.midphaseDesc.setToDefault(physx::PxMeshMidPhase::eBVH34);
 
-		// Á¤Á¡ ¸Þ¸ð¸® ¹öÆÛ
+		// ì •ì  ë©”ëª¨ë¦¬ ë²„í¼
 		physx::PxDefaultMemoryOutputStream buf;
 		physx::PxConvexMeshCookingResult::Enum result;
 		const bool status = PxCookConvexMesh(params, convexDesc, buf, &result);
@@ -370,7 +370,7 @@ namespace ZonaiPhysics
 			return nullptr;
 		}
 
-		// ¹öÆÛ¸¦ ¹ÙÅÁÀ¸·Î Mesh »ý¼º
+		// ë²„í¼ë¥¼ ë°”íƒ•ìœ¼ë¡œ Mesh ìƒì„±
 		physx::PxDefaultMemoryInputData input(buf.getData(), buf.getSize());
 		physx::PxConvexMesh* convexMesh = pxFactory->createConvexMesh(input);
 

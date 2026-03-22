@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PurahEngine.h"
 
@@ -10,16 +10,16 @@ namespace Phyzzle
 		void OnEnable() override;
 		void Update() override;
 
-		// Æ®¸®°Å°¡ Ãæµ¹ÇßÀ» ¶§ È£Ãâ
+		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒí–ˆì„ ë•Œ í˜¸ì¶œ
 		void OnTriggerEnter(const PurahEngine::Collider*) override;
-		// Æ®¸®°Å°¡ Ãæµ¹À» ¹ş¾î³µÀ» ¶§ È£Ãâ
+		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒì„ ë²—ì–´ë‚¬ì„ ë•Œ í˜¸ì¶œ
 		void OnTriggerExit(const PurahEngine::Collider*) override;
 
 	private:
-		float burnTime; // ºÒÅ¸´Âµ¥ °É¸®´Â ½Ã°£
-		PurahEngine::GameObject* burnableObject; // Å¸´Â ¿ÀºêÁ§Æ®
-		PurahEngine::ParticleSystem* effect; // ÀÌÆåÆ®¸¦ ²ô°í ÄÑ´Âµ¥ »ç¿ëÇÒ ¿ÀºêÁ§Æ®
-		float destoryDelay; // ¿ÀºêÁ§Æ® Á¦°Å Áö¿¬½Ã°£
+		float burnTime; // ë¶ˆíƒ€ëŠ”ë° ê±¸ë¦¬ëŠ” ì‹œê°„
+		PurahEngine::GameObject* burnableObject; // íƒ€ëŠ” ì˜¤ë¸Œì íŠ¸
+		PurahEngine::ParticleSystem* effect; // ì´í™íŠ¸ë¥¼ ë„ê³  ì¼œëŠ”ë° ì‚¬ìš©í•  ì˜¤ë¸Œì íŠ¸
+		float destoryDelay; // ì˜¤ë¸Œì íŠ¸ ì œê±° ì§€ì—°ì‹œê°„
 
 	private:
 		std::vector<const PurahEngine::Collider*> fireList;
@@ -28,7 +28,7 @@ namespace Phyzzle
 		float destroyElapsed;
 
 	public:
-		// ComponentÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// Componentì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void PreSerialize(json& jsonData) const override;
 		void PreDeserialize(const json& jsonData) override;
 		void PostSerialize(json& jsonData) const override;

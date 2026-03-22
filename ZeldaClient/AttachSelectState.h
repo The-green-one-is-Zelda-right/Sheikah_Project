@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "IState.h"
 
 namespace Phyzzle
@@ -14,7 +14,7 @@ namespace Phyzzle
 
 #pragma region StateEvent
 	private:
-		// IStateÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// IStateì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void StateEnter() override;
 
 		void StateStay() override;

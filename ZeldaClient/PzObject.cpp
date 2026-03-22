@@ -1,4 +1,4 @@
-#include "PzObject.h"
+ï»¿#include "PzObject.h"
 
 #include "AttachSystem.h"
 
@@ -53,56 +53,84 @@ namespace Phyzzle
 
 	void PzObject::ValiantStore()
 	{
-		isKinematic = body->IsKinematic();
-		hasGravity = body->HasGravity();
-		originMass = body->GetMass();
-		tensor = body->GetInertiaTensor();
+		if (!body)
+			return;
 
-		for (auto& col : colliders)
-			materials.emplace_back(col->GetMaterial());
+		selectionSnapshot.Reset();
+		selectionSnapshot.materials.reserve(colliders.size());
 
-		assert(originMass > 0.01f);
+		selectionSnapshot.isKinematic = body->IsKinematic();
+		selectionSnapshot.hasGravity = body->HasGravity();
+		selectionSnapshot.mass = body->GetMass();
+		selectionSnapshot.inertiaTensor = body->GetInertiaTensor();
+
+		for (auto* col : colliders)
+		{
+			if (!col)
+			{
+				selectionSnapshot.materials.emplace_back();
+				continue;
+			}
+
+			selectionSnapshot.materials.emplace_back(col->GetMaterial());
+		}
+
+		assert(selectionSnapshot.IsValid());
 	}
 
 	void PzObject::Selected()
 	{
-		if (select)
+		if (select || !body)
 			return;
 
 		ValiantStore();
 
-		body->SetKinematic(false);
-		body->UseGravity(false);
-		body->SetMass(0.1f);
-		body->SetInertiaTensor(Eigen::Vector3f(100.f, 100.f, 100.f));
+		if (!selectionSnapshot.IsValid())
+			return;
 
-		for (auto& col : colliders)
-			col->SetMaterial(L"SelectedObject");
+		body->SetKinematic(selectionOverride.isKinematic);
+		body->UseGravity(selectionOverride.hasGravity);
+		body->SetMass(selectionOverride.mass);
+		body->SetInertiaTensor(selectionOverride.inertiaTensor);
+
+		for (auto* col : colliders)
+		{
+			if (col)
+				col->SetMaterial(selectionOverride.material);
+		}
 
 		select = true;
 	}
 
 	void PzObject::ValiantRetrieve()
 	{
-		if (!select)
+		if (!select || !body)
 			return;
 
-		assert(originMass > 0.01f);
+		assert(selectionSnapshot.IsValid());
 
-		body->SetKinematic(isKinematic);
-		body->UseGravity(hasGravity);
-		body->SetMass(originMass);
-		body->SetInertiaTensor(tensor);
+		if (!selectionSnapshot.IsValid())
+		{
+			select = false;
+			selectionSnapshot.Reset();
+			return;
+		}
 
-		for (size_t i = 0; i < colliders.size(); i++)
-			colliders[i]->SetMaterial(materials[i]);
+		body->SetKinematic(selectionSnapshot.isKinematic);
+		body->UseGravity(selectionSnapshot.hasGravity);
+		body->SetMass(selectionSnapshot.mass);
+		body->SetInertiaTensor(selectionSnapshot.inertiaTensor);
 
-		materials.clear();
+		const size_t materialCount = colliders.size() < selectionSnapshot.materials.size()
+			? colliders.size()
+			: selectionSnapshot.materials.size();
+		for (size_t i = 0; i < materialCount; i++)
+		{
+			if (colliders[i])
+				colliders[i]->SetMaterial(selectionSnapshot.materials[i]);
+		}
 
-		isKinematic = false;
-		hasGravity = false;
-		originMass = -1.f;
-		tensor = Eigen::Vector3f::Zero();
+		selectionSnapshot.Reset();
 
 		select = false;
 	}
@@ -130,7 +158,7 @@ namespace Phyzzle
 			const bool myIDNull = islandID == nullptr;
 			const bool sameNull = otherIDNull && myIDNull;
 			const bool sameID = attachable->islandID == islandID;
-			bool diffID = !sameNull && sameID;					// µÑ ´Ù ³ÎÀÌ ¾Æ´Ï°í 
+			bool diffID = !sameNull && sameID;					// ë‘˜ ë‹¤ ë„ì´ ì•„ë‹ˆê³  
 
 			if (diffID)
 			{
@@ -138,7 +166,7 @@ namespace Phyzzle
 				return;
 			}
 
-			// ¾ŞÄ¿ À§Ä¡
+			// ì•µì»¤ ìœ„ì¹˜
 			Eigen::Vector3f acc = Eigen::Vector3f::Zero();
 			for (int i = 0; i < _collision.contactCount; i++)
 			{

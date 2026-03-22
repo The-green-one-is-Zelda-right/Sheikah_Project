@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <stdint.h>
 #include <cassert>
 #include <map>
@@ -20,16 +20,16 @@ namespace ZonaiPhysics
 	public:
 		static void Clear();
 
-		// Äİ¸®Àü µ¥ÀÌÅÍ ¼³Á¤
+		// ì½œë¦¬ì „ ë°ì´í„° ì„¤ì •
 		static void SetCollisionData(uint32_t _layerID, const std::initializer_list<uint32_t>& _collisionLayers);
 
-		// Äİ¸®Àü ·¹ÀÌ¾î ¼³Á¤
+		// ì½œë¦¬ì „ ë ˆì´ì–´ ì„¤ì •
 		static void SetCollisionLayer(uint32_t _layerID, uint32_t _collisionLayerID, bool _value);
 
-		// ·¹ÀÌ¾î¿Í ·¹ÀÌ¾î
+		// ë ˆì´ì–´ì™€ ë ˆì´ì–´
 		static bool CanCollide(uint32_t _layerID0, uint32_t _layerID1);
 
-		// Äİ¸®Àü µ¥ÀÌÅÍ¿Í ·¹ÀÌ¾î
+		// ì½œë¦¬ì „ ë°ì´í„°ì™€ ë ˆì´ì–´
 		static bool IsCollide(uint32_t _layerData, uint32_t _layerID0);
 	};
 }

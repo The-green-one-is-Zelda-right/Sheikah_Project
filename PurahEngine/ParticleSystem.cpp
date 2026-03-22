@@ -1,4 +1,4 @@
-#include "ParticleSystem.h"
+ï»¿#include "ParticleSystem.h"
 #include "GameObject.h"
 #include "Transform.h"
 #include "TimeController.h"
@@ -29,7 +29,7 @@ namespace PurahEngine
 
 		float deltaTime = TimeController::GetInstance().GetDeltaTime();
 		
-		// ÀÌµ¿ & vibration & lifeTime °¨¼Ò
+		// ì´ë™ & vibration & lifeTime ê°ì†Œ
 		for (auto& element : elements)
 		{
 			element->lifeTime -= deltaTime;
@@ -59,13 +59,13 @@ namespace PurahEngine
 			if (std::abs(element->vibration.z()) < -vibrationRange) element->vibration.z() = -vibrationRange;
 			if (vibrationRange < std::abs(element->vibration.z())) element->vibration.z() = vibrationRange;
 
-			// vibration¿¡¼­ moveDirection¹æÇâÀÇ ¼ººÐ Á¦°Å
+			// vibrationì—ì„œ moveDirectionë°©í–¥ì˜ ì„±ë¶„ ì œê±°
 			element->vibration = -(element->vibration.dot(moveDirection) * moveDirection) + element->vibration;
 
 			element->translation = moveMatrix * element->translation;
 		}
 
-		// lifeTimeÀÌ 0º¸´Ù ÀÛ°Å³ª °°¾ÆÁø element Á¦°Å
+		// lifeTimeì´ 0ë³´ë‹¤ ìž‘ê±°ë‚˜ ê°™ì•„ì§„ element ì œê±°
 		for (auto iter = elements.begin(); iter != elements.end();)
 		{
 			if ((*iter)->lifeTime <= 0.0f)
@@ -92,7 +92,7 @@ namespace PurahEngine
 	{
 		Eigen::Matrix4f worldMatrix = GetGameObject()->GetTransform()->GetWorldMatrix();
 
-		// °ÔÀÓ¿ÀºêÁ§Æ®°¡ È°¼ºÈ­ µÇ¾î ÀÖ´Â °æ¿ì¿¡¸¸ ÀÛµ¿ÇÑ´Ù.
+		// ê²Œìž„ì˜¤ë¸Œì íŠ¸ê°€ í™œì„±í™” ë˜ì–´ ìžˆëŠ” ê²½ìš°ì—ë§Œ ìž‘ë™í•œë‹¤.
 		if (GetGameObject()->IsRootEnable())
 		{
 			TextureID textureID = TextureID::ID_NULL;

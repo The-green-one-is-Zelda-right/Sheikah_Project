@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "ElectricalDevice.h"
 
@@ -15,9 +15,9 @@ namespace Phyzzle
 			OnlyPowerOn = 1,
 			OnlyPowerOff = 2,
 			ToggleCounter = 3,
-			PowerOnBuffer = 4,	// PowerOnÀÌ µÈ ÈÄ, PowerOff°¡ µÇ´Â ½Ã°£ Áö¿¬
-			PowerOffBuffer = 5,	// PowerOff°¡ µÈ ÈÄ, PowerOnÀÌ µÇ´Â ½Ã°£ Áö¿¬
-			PowerOnFilter = 6	// PowerOn »óÅÂ°¡ À¯ÁöµÇ¾îµµ ÀÏÁ¤½Ã°£¸¸ PowerOn »óÅÂ¸¦ À¯ÁöÇÑ´Ù.
+			PowerOnBuffer = 4,	// PowerOnì´ ëœ í›„, PowerOffê°€ ë˜ëŠ” ì‹œê°„ ì§€ì—°
+			PowerOffBuffer = 5,	// PowerOffê°€ ëœ í›„, PowerOnì´ ë˜ëŠ” ì‹œê°„ ì§€ì—°
+			PowerOnFilter = 6	// PowerOn ìƒíƒœê°€ ìœ ì§€ë˜ì–´ë„ ì¼ì •ì‹œê°„ë§Œ PowerOn ìƒíƒœë¥¼ ìœ ì§€í•œë‹¤.
 		};
 
 	public:
@@ -33,7 +33,7 @@ namespace Phyzzle
 
 	private:
 		Type type;
-		int numOfToggles; // Åä±Û(On/Off º¯°æ) °¡´ÉÇÑ È½¼ö
+		int numOfToggles; // í† ê¸€(On/Off ë³€ê²½) ê°€ëŠ¥í•œ íšŸìˆ˜
 		float delay;
 		std::vector<ElectricalDevice*> targetDeviceList;
 

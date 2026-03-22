@@ -1,4 +1,4 @@
-#include "TimeController.h"
+﻿#include "TimeController.h"
 
 const float PurahEngine::TimeController::TIMESCALE_DEFAULT = 1.0f;
 const int PurahEngine::TimeController::FPS_DEFAULT = 60;

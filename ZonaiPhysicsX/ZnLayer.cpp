@@ -1,4 +1,4 @@
-#include "ZnLayer.h"
+ï»¿#include "ZnLayer.h"
 
 
 namespace ZonaiPhysics
@@ -50,7 +50,7 @@ namespace ZonaiPhysics
 		ValidateLayer(_layerID0);
 		ValidateLayer(_layerID1);
 
-		// ÇØ´ç ºñÆ®¸¦ È®ÀÎÇØº¸°í 1ÀÌ¸é true¸¦ ¹İÈ¯ÇÔ
+		// í•´ë‹¹ ë¹„íŠ¸ë¥¼ í™•ì¸í•´ë³´ê³  1ì´ë©´ trueë¥¼ ë°˜í™˜í•¨
 		return layerData[_layerID0].test(_layerID1);
 	}
 
