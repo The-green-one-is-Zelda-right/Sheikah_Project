@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <queue>
 #include <unordered_map>
 #include <Eigen/Dense>
@@ -37,60 +37,60 @@ namespace Phyzzle
 		std::queue<IslandID> removedIndex;
 
 	private:
-		// ID »ı¼º »èÁ¦
-		IslandID CreateIslandID();
-		void RemoveIslandID(IslandID _id);
+		// ID ìƒì„± ì‚­ì œ
+		IslandID					CreateIslandID();
+		void						RemoveIslandID(IslandID _id);
 
-		// ¼¶ »ı¼º »èÁ¦
-		IslandID CreateIsland(const std::vector<PzObject*>& _arr);
-		void RemoveIsland(IslandID _id);
+		// ì„¬ ìƒì„± ì‚­ì œ
+		IslandID					CreateIsland(const std::vector<PzObject*>& _arr);
+		void						RemoveIsland(IslandID _id);
 
 	public:
-		void Clear();
+		void						Clear();
 
-		void SelectBody(PzObject* _body);
-		void DeselectBody(PzObject* _body);
+		void						SelectBody(PzObject* _body);
+		void						DeselectBody(PzObject* _body);
 
-		void SetOutlineColor(Eigen::Vector4f* const _color0, Eigen::Vector4f* const _color1, Eigen::Vector4f* const _color2);
-		void ApplyOutlineSettings(PzObject* obj, bool value, Eigen::Vector4f* const color);
-		void ApplyDShadowSettings(PzObject* obj, bool value);
-		void EnableOutline(PzObject*, Eigen::Vector4f* const _targetColor, Eigen::Vector4f* const _subColor = nullptr);
-		void DisableOutline(PzObject*);
-		void EnableDShadow(PzObject* _obj);
-		void DisableDShadow(PzObject* _obj);
+		void						SetOutlineColor(Eigen::Vector4f* const _color0, Eigen::Vector4f* const _color1, Eigen::Vector4f* const _color2);
+		void						ApplyOutlineSettings(PzObject* obj, bool value, Eigen::Vector4f* const color);
+		void						ApplyDShadowSettings(PzObject* obj, bool value);
+		void						EnableOutline(PzObject*, Eigen::Vector4f* const _targetColor, Eigen::Vector4f* const _subColor = nullptr);
+		void						DisableOutline(PzObject*);
+		void						EnableDShadow(PzObject* _obj);
+		void						DisableDShadow(PzObject* _obj);
 
-		bool IsTouching(PzObject* _base);
-		bool TryAttach(PzObject* _base);
-		bool Attach(PzObject* _base, PzObject* _other);
-		bool Dettach(PzObject* _base);
+		bool						IsTouching(PzObject* _base);
+		bool						TryAttach(PzObject* _base);
+		bool						Attach(PzObject* _base, PzObject* _other);
+		bool						Dettach(PzObject* _base);
 
-		void ConnectNode(PzObject* _base, PzObject* _other, PurahEngine::FixedJoint* _joint);
-		void DisconnectNode(PzObject* _base, PzObject* _other);
+		void						ConnectNode(PzObject* _base, PzObject* _other, PurahEngine::FixedJoint* _joint);
+		void						DisconnectNode(PzObject* _base, PzObject* _other);
 
 		PurahEngine::FixedJoint*	CreateJoint(PzObject* _base, PzObject* _other);
-		void BreakJoint(PzObject* _base, PzObject* _other);
+		void						BreakJoint(PzObject* _base, PzObject* _other);
 
-		bool HasAttachIsland(const IslandID& _id, AttachIsland& _island);
-		void RebuildIsland(PzObject* _base, PzObject* _other);
+		bool						HasAttachIsland(const IslandID& _id, AttachIsland& _island);
+		void						RebuildIsland(PzObject* _base, PzObject* _other);
 
-		uint32_t GetCountInIsland(PzObject* _obj);
+		uint32_t					GetCountInIsland(PzObject* _obj);
 
-		void CalculateLocalAnchor(
-			const Eigen::Vector3f& _anchorP, 
-			const Eigen::Quaternionf& _anchorQ,
-			const PzObject* _base,
-			Eigen::Vector3f& _outP,
-			Eigen::Quaternionf& _outQ
-		);
+		void						CalculateLocalAnchor(
+										const Eigen::Vector3f& _anchorP, 
+										const Eigen::Quaternionf& _anchorQ,
+										const PzObject* _base,
+										Eigen::Vector3f& _outP, 
+										Eigen::Quaternionf& _outQ
+									);
 
 		/// <summary>
-		/// ¼¶ÀÇ ¹Ù¿îµù ¹Ú½º¸¦ ±¸ÇÏ´Â ÇÔ¼ö
+		/// ì„¬ì˜ ë°”ìš´ë”© ë°•ìŠ¤ë¥¼ êµ¬í•˜ëŠ” í•¨ìˆ˜
 		/// </summary>
 		/// <param name="_base">attachable pointer</param>
 		/// <param name="_mat">world matrix</param>
 		/// <returns></returns>
-		ZonaiPhysics::ZnBound3 ComputeBoundingBox(PzObject* const _base, const Eigen::Matrix4f& _mat);
-		ZonaiPhysics::ZnBound3 ComputeBoundingBoxAtTransform(PzObject* const _base, const Eigen::Matrix4f& _mat);
+		ZonaiPhysics::ZnBound3		ComputeBoundingBox(PzObject* const _base, const Eigen::Matrix4f& _mat);
+		ZonaiPhysics::ZnBound3		ComputeBoundingBoxAtTransform(PzObject* const _base, const Eigen::Matrix4f& _mat);
 
 	public:
 		Eigen::Vector4f color0;
@@ -100,15 +100,15 @@ namespace Phyzzle
 }
 
 /*
- * 1.	ÇÃ·¹ÀÌ¾î°¡ ¿ïÆ®¶óÇÚµå·Î ¿ÀºêÁ§Æ® ÇÏ³ª¸¦ ¼±ÅÃ
+ * 1.	í”Œë ˆì´ì–´ê°€ ìš¸íŠ¸ë¼í•¸ë“œë¡œ ì˜¤ë¸Œì íŠ¸ í•˜ë‚˜ë¥¼ ì„ íƒ
  *
- * 2.	¿ÀºêÁ§Æ®¿Í ºÎÂøÇÒ ¼ö ÀÖ´Â ¿ÀºêÁ§Æ®¸¦ Å½»ö
+ * 2.	ì˜¤ë¸Œì íŠ¸ì™€ ë¶€ì°©í•  ìˆ˜ ìˆëŠ” ì˜¤ë¸Œì íŠ¸ë¥¼ íƒìƒ‰
  *
- * 3.	ÀÏÁ¤ °Å¸®¿¡ ´Ù´Ù¸£¸é Attatch°¡ °¡´É.
+ * 3.	ì¼ì • ê±°ë¦¬ì— ë‹¤ë‹¤ë¥´ë©´ Attatchê°€ ê°€ëŠ¥.
  *
- * 4.	Attatch¸¦ ÇÏ¸é µÎ ¿ÀºêÁ§Æ®´Â ÀÏÁ¤ÇÑ ¼Ó·ÂÀ¸·Î ¼­·Î¿¡°Ô °¡±î¿öÁü
+ * 4.	Attatchë¥¼ í•˜ë©´ ë‘ ì˜¤ë¸Œì íŠ¸ëŠ” ì¼ì •í•œ ì†ë ¥ìœ¼ë¡œ ì„œë¡œì—ê²Œ ê°€ê¹Œì›Œì§
  *
- * 5.	µÎ ¹°Ã¼°¡ Ãæµ¹À» °¨ÁöÇÏ¸é Ãæµ¹ÇÑ À§Ä¡¸¦ Anchor À§Ä¡·Î ÇÏ°í FixedJoint¸¦ ¿¬°áÇÔ.
+ * 5.	ë‘ ë¬¼ì²´ê°€ ì¶©ëŒì„ ê°ì§€í•˜ë©´ ì¶©ëŒí•œ ìœ„ì¹˜ë¥¼ Anchor ìœ„ì¹˜ë¡œ í•˜ê³  FixedJointë¥¼ ì—°ê²°í•¨.
  *
- * 6.	AnchorÀÇ ÁÂÇ¥´Â ¿ùµå·Î ³ª¿À±â ¶§¹®¿¡ ·ÎÄÃ·Î °è»êÇØ¼­ Á¶ÀÎÆ®¸¦ ¸¸µé ÇÊ¿ä°¡ ÀÖÀ½.
+ * 6.	Anchorì˜ ì¢Œí‘œëŠ” ì›”ë“œë¡œ ë‚˜ì˜¤ê¸° ë•Œë¬¸ì— ë¡œì»¬ë¡œ ê³„ì‚°í•´ì„œ ì¡°ì¸íŠ¸ë¥¼ ë§Œë“¤ í•„ìš”ê°€ ìˆìŒ.
 */

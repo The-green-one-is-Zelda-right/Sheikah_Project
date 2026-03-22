@@ -1,4 +1,4 @@
-#include "TestMovement.h"
+ï»¿#include "TestMovement.h"
 #include "TimeController.h"
 #include <cassert>
 #define M_PI       3.14159265358979323846
@@ -22,7 +22,7 @@ void PurahEngine::TestMovement::Update()
 
 	//auto& inputManager = PurahEngine::InputManager::Getinstance();
 
-	///// °ÔÀÓÆÐµå °ü·Ã
+	///// ê²Œìž„íŒ¨ë“œ ê´€ë ¨
 	//
 	//const auto rigid = GetGameObject()->GetComponent<RigidBody>();
 	//const auto trans = GetGameObject()->GetComponent<PurahEngine::Transform>();
@@ -88,11 +88,11 @@ void PurahEngine::TestMovement::Update()
 
 	//if (inputManager.IsKeyPressed(eKey::eKEY_B) == true)
 	//{
-	//	float roll = 0.0f;    // X Ãà È¸Àü
-	//	float pitch = rotationValue;   // Y Ãà È¸Àü
-	//	float yaw = 0.0f;     // Z Ãà È¸Àü
+	//	float roll = 0.0f;    // X ì¶• íšŒì „
+	//	float pitch = rotationValue;   // Y ì¶• íšŒì „
+	//	float yaw = 0.0f;     // Z ì¶• íšŒì „
 
-	//	// ¿ÀÀÏ·¯ °¢µµ¸¦ ÄõÅÍ´Ï¾ðÀ¸·Î º¯È¯
+	//	// ì˜¤ì¼ëŸ¬ ê°ë„ë¥¼ ì¿¼í„°ë‹ˆì–¸ìœ¼ë¡œ ë³€í™˜
 	//	Eigen::Quaternionf q;
 	//	q = Eigen::AngleAxisf(yaw, Eigen::Vector3f::UnitZ())
 	//		* Eigen::AngleAxisf(pitch, Eigen::Vector3f::UnitY())
@@ -105,7 +105,7 @@ void PurahEngine::TestMovement::Update()
 	//const auto localPos = trans->GetLocalPosition();
 	//const auto worldPos = trans->GetWorldPosition();
 
-	//// Transform ¿¡°Ô Áà¶ó
+	//// Transform ì—ê²Œ ì¤˜ë¼
 	////rigid->SetPosition(localPos + movement);
 
 	//trans->SetLocalPosition(localPos + movement);

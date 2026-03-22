@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngineAPI.h"
 
 #include "Component.h"
@@ -35,9 +35,9 @@ namespace PurahEngine
 		virtual void PostDeserialize(const json& jsonData) override;
 
 	private:
-		float cameraNear;	// ÃÖ¼Ò °Å¸®
-		float cameraFar;	// ÃÖ´ë °Å¸®
-		float fieldOfView;	// ½Ã¾ß°¢ (º¸Åë 45 ~ 75¸¦ »ç¿ëÇÑ´Ù°í ÇÔ)
+		float cameraNear;	// ìµœì†Œ ê±°ë¦¬
+		float cameraFar;	// ìµœëŒ€ ê±°ë¦¬
+		float fieldOfView;	// ì‹œì•¼ê° (ë³´í†µ 45 ~ 75ë¥¼ ì‚¬ìš©í•œë‹¤ê³  í•¨)
 
 		const static float DEFAULT_FOV;
 		const static float DEFAULT_NEAR;

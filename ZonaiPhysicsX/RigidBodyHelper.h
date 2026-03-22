@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 #pragma warning(push)
 #pragma warning(disable: 33010 26495 4819)
@@ -41,7 +41,7 @@ namespace ZonaiPhysics
 		static void				SetUserData(void*, void*);
 
 	public:
-		// ¡˙∑Æ
+		// ÏßàÎüâ
 		static float			GetMass(void*);
 		static void				SetMass(void*,float);
 		static void				SetDensity(void*,float);
@@ -57,7 +57,7 @@ namespace ZonaiPhysics
 		static void				SetAngularDamping(void*, float);
 
 	public:
-		// º”µµ
+		// ÏÜçÎèÑ
 		static Eigen::Vector3f	GetLinearVelocity(void*);
 		static void				SetLinearVelocity(void*, const Eigen::Vector3f&);
 
@@ -76,7 +76,7 @@ namespace ZonaiPhysics
 		static Eigen::Quaternionf	GetQuaternion(void*);
 		static void				SetQuaternion(void*, const Eigen::Quaternionf&, bool _wakeup);
 
-		// »˚
+		// Ìûò
 		static void				SetForceAndTorque(void*, const Eigen::Vector3f& _force, const Eigen::Vector3f& _torque, ForceType _type);
 
 		static void				AddForce(void*, const Eigen::Vector3f&, ForceType);

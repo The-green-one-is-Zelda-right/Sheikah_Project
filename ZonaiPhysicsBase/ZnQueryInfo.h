@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <string>
 #include <Eigen/Dense>
 
@@ -12,10 +12,10 @@ namespace ZonaiPhysics
 			// shapes.clear();
 		}
 
-		void* bodyData = nullptr;							// ¿ÀºêÁ§Æ® Æ÷ÀÎÅÍ
-		void* colliderData = nullptr;						// Äİ¶óÀÌ´õ Æ÷ÀÎÅÍ
-		Eigen::Vector3f position = Eigen::Vector3f::Zero();	// Ãæµ¹ À§Ä¡
-		float distance = FLT_MIN;							// Ãæµ¹ °Å¸®
+		void* bodyData = nullptr;							// ì˜¤ë¸Œì íŠ¸ í¬ì¸í„°
+		void* colliderData = nullptr;						// ì½œë¼ì´ë” í¬ì¸í„°
+		Eigen::Vector3f position = Eigen::Vector3f::Zero();	// ì¶©ëŒ ìœ„ì¹˜
+		float distance = FLT_MIN;							// ì¶©ëŒ ê±°ë¦¬
 		Eigen::Vector3f normal = Eigen::Vector3f::Zero();
 
 		std::vector<void*> actors;

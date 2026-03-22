@@ -1,13 +1,13 @@
-#pragma once
+ï»¿#pragma once
 
 
 namespace ZonaiPhysics
 {
 	enum eCombineMode
 	{
-		eAVERAGE = 0,		// Æò±Õ
-		eMIN = 1,			// ÃÖ¼Ò
-		eMULTIPLY = 2,		// °ö
-		eMAX = 3,			// ÃÖ´ë
+		eAVERAGE = 0,		// í‰ê· 
+		eMIN = 1,			// ìµœì†Œ
+		eMULTIPLY = 2,		// ê³±
+		eMAX = 3,			// ìµœëŒ€
 	};
 }

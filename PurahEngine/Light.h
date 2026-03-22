@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PurahEngineAPI.h"
 
@@ -31,7 +31,7 @@ namespace PurahEngine
 		void SetAttenuation(const Eigen::Vector3f& attenuation);
 		Eigen::Vector3f GetAttenuation() const;
 
-		// IRendererÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// IRendererì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		bool IsRootEnable() override;
 		void Render(IZeldaRenderer* renderer) override;
 
@@ -74,7 +74,7 @@ namespace PurahEngine
 		LightID lightID;
 
 	protected:
-		// Áøµ¿À» À§ÇÑ Ãß°¡ º¯¼ö
+		// ì§„ë™ì„ ìœ„í•œ ì¶”ê°€ ë³€ìˆ˜
 		float currentAtten0;
 		float currentAtten1;
 		float currentAtten2;

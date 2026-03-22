@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Component.h"
 #include "PurahEngineAPI.h"
 
@@ -16,16 +16,16 @@ namespace PurahEngine
 		Transform();
 		virtual ~Transform();
 
-		// È¸Àü ÇÔ¼ö
+		// íšŒì „ í•¨ìˆ˜
 		void Rotate(const Eigen::Vector3f& axis, float angle);
 
 		/// get
 		// Local
-		// ¿ÀºêÁ§Æ®ÀÇ Æ÷Áö¼ÇÀ» °¡Á®¿Â´Ù.
+		// ì˜¤ë¸Œì íŠ¸ì˜ í¬ì§€ì…˜ì„ ê°€ì ¸ì˜¨ë‹¤.
 		Eigen::Vector3f GetLocalPosition() const;
-		// ¿ÀºêÁ§Æ®ÀÇ ·ÎÅ×ÀÌ¼ÇÀ» °¡Á®¿Â´Ù.
+		// ì˜¤ë¸Œì íŠ¸ì˜ ë¡œí…Œì´ì…˜ì„ ê°€ì ¸ì˜¨ë‹¤.
 		Eigen::Quaternionf GetLocalRotation() const;
-		// ¿ÀºêÁ§Æ®ÀÇ ½ºÄÉÀÏÀ» °¡Á®¿Â´Ù.
+		// ì˜¤ë¸Œì íŠ¸ì˜ ìŠ¤ì¼€ì¼ì„ ê°€ì ¸ì˜¨ë‹¤.
 		Eigen::Vector3f GetLocalScale() const;
 
 		Eigen::Matrix4f GetLocalMatrix() const;
@@ -33,11 +33,11 @@ namespace PurahEngine
 
 
 		// World
-		// ¿ÀºêÁ§Æ®ÀÇ ¿ùµå Æ÷Áö¼ÇÀ» °¡Á®¿Â´Ù.
+		// ì˜¤ë¸Œì íŠ¸ì˜ ì›”ë“œ í¬ì§€ì…˜ì„ ê°€ì ¸ì˜¨ë‹¤.
 		Eigen::Vector3f GetWorldPosition() const;
-		// ¿ÀºêÁ§Æ®ÀÇ ¿ùµå ·ÎÅ×ÀÌ¼ÇÀ» °¡Á®¿Â´Ù.
+		// ì˜¤ë¸Œì íŠ¸ì˜ ì›”ë“œ ë¡œí…Œì´ì…˜ì„ ê°€ì ¸ì˜¨ë‹¤.
 		Eigen::Quaternionf GetWorldRotation() const;
-		// ¿ÀºêÁ§Æ®ÀÇ ¿ùµå ½ºÄÉÀÏÀ» °¡Á®¿Â´Ù.
+		// ì˜¤ë¸Œì íŠ¸ì˜ ì›”ë“œ ìŠ¤ì¼€ì¼ì„ ê°€ì ¸ì˜¨ë‹¤.
 		Eigen::Vector3f GetWorldScale() const;
 
 		Eigen::Matrix4f GetWorldMatrix() const;
@@ -48,11 +48,11 @@ namespace PurahEngine
 
 		/// set
 		// Local
-		// Æ÷Áö¼Ç ¼¼ÆÃ
+		// í¬ì§€ì…˜ ì„¸íŒ…
 		void SetLocalPosition(const Eigen::Vector3f& setPosition);
-		// ·ÎÅ×ÀÌ¼Ç ¼¼ÆÃ
+		// ë¡œí…Œì´ì…˜ ì„¸íŒ…
 		void SetLocalRotation(const Eigen::Quaternionf& setRotation);
-		// ½ºÄÉÀÏ ¼¼ÆÃ
+		// ìŠ¤ì¼€ì¼ ì„¸íŒ…
 		void SetLocalScale(const Eigen::Vector3f& setScale);
 
 		// World
@@ -83,19 +83,19 @@ namespace PurahEngine
 		virtual void PostDeserialize(const json& jsonData) override;
 
 	private:
-		// À§Ä¡
+		// ìœ„ì¹˜
 		Eigen::Vector3f position;
-		// ·ÎÅ×ÀÌ¼Ç
+		// ë¡œí…Œì´ì…˜
 		Eigen::Quaternionf rotation;
-		// ½ºÄÉÀÏ
+		// ìŠ¤ì¼€ì¼
 		Eigen::Vector3f scale;
-		// Çà·Ä
-		/// Çàº¤ÅÍ´Â º¤ÅÍ * SRT, ¿­º¤ÅÍ´Â TRS * º¤ÅÍ
-		/// EigenÀº ¿­º¤ÅÍ´Ù.
+		// í–‰ë ¬
+		/// í–‰ë²¡í„°ëŠ” ë²¡í„° * SRT, ì—´ë²¡í„°ëŠ” TRS * ë²¡í„°
+		/// Eigenì€ ì—´ë²¡í„°ë‹¤.
 
 		RigidBody* rigidbody;
 		void SetRigidBody(RigidBody* rigid);
-		// ºÎ¸ğ Transform
+		// ë¶€ëª¨ Transform
 		Transform* parentTransform;
 		std::vector<Transform*> children;
 

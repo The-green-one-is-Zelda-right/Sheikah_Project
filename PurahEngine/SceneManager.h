@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngineAPI.h"
 #include "SerializableDefine.h"
 
@@ -24,12 +24,12 @@ namespace PurahEngine
 		SceneManager();
 		~SceneManager();
 		SceneManager(const SceneManager& ref) = delete;
-		// Å¬·¡½º¸¦ »ı¼ºÇÏ°Ô µÉ °æ¿ì, ±âº»ÀûÀ¸·Î = ¿¡ ´ëÇÑ ¿¬»êÀÚ ¿À¹ö·ÎµùÀÌ »ı¼ºµÈ´Ù.
-		// ½Ì±ÛÅÏÀº °´Ã¼°¡ ÇÏ³ª¿©¾ß ÇÏ¹Ç·Î ±×°ÍÀ» ¹æÁöÇÏ±â À§ÇØ, ¸í½ÃÀûÀ¸·Î delete¸¦ »ç¿ëÇÏ¿© »ç¿ëÀ» ¸·´Â´Ù.
+		// í´ë˜ìŠ¤ë¥¼ ìƒì„±í•˜ê²Œ ë  ê²½ìš°, ê¸°ë³¸ì ìœ¼ë¡œ = ì— ëŒ€í•œ ì—°ì‚°ì ì˜¤ë²„ë¡œë”©ì´ ìƒì„±ëœë‹¤.
+		// ì‹±ê¸€í„´ì€ ê°ì²´ê°€ í•˜ë‚˜ì—¬ì•¼ í•˜ë¯€ë¡œ ê·¸ê²ƒì„ ë°©ì§€í•˜ê¸° ìœ„í•´, ëª…ì‹œì ìœ¼ë¡œ deleteë¥¼ ì‚¬ìš©í•˜ì—¬ ì‚¬ìš©ì„ ë§‰ëŠ”ë‹¤.
 		SceneManager& operator=(const SceneManager& ref) = delete;
 
 	public:
-		// ¾À¿¡ °ÔÀÓ¿ÀºêÁ§Æ®¸¦ »ı¼ºÇÑ´Ù. »ı¼ºÇÒ ¶§, ÀÌ¸§µµ °°ÀÌ ºÎ¿©ÇÑ´Ù.
+		// ì”¬ì— ê²Œì„ì˜¤ë¸Œì íŠ¸ë¥¼ ìƒì„±í•œë‹¤. ìƒì„±í•  ë•Œ, ì´ë¦„ë„ ê°™ì´ ë¶€ì—¬í•œë‹¤.
 		GameObject* CreateGameObject(std::wstring objectName);
 		Camera* GetMainCamera();
 
@@ -83,10 +83,10 @@ namespace PurahEngine
 		std::wstring sceneName;
 		std::wstring sceneBuffer;
 
-		// ¾À¿¡ »ı¼ºµÈ ¿ÀºêÁ§Æ® ¸®½ºÆ®
+		// ì”¬ì— ìƒì„±ëœ ì˜¤ë¸Œì íŠ¸ ë¦¬ìŠ¤íŠ¸
 		std::vector<GameObject*> objectList;
 
-		// È­¸éÀ» ¶ç¿ï ¸ŞÀÎ Ä«¸Ş¶ó
+		// í™”ë©´ì„ ë„ìš¸ ë©”ì¸ ì¹´ë©”ë¼
 		Camera* mainCamera;
 		Eigen::Vector3f cameraPosition;
 
@@ -95,7 +95,7 @@ namespace PurahEngine
 
 		float physicsTime;
 
-		// GameLoop¿¡ friend¼±¾ğÀ» ÇØÁÜÀ¸·Î½á private¼³Á¤ÀÌ µÇÀÖ´Â Initialize()¸¦ GameLoop¿¡¼­ ¾µ ¼ö ÀÖ´Ù.
+		// GameLoopì— friendì„ ì–¸ì„ í•´ì¤Œìœ¼ë¡œì¨ privateì„¤ì •ì´ ë˜ìˆëŠ” Initialize()ë¥¼ GameLoopì—ì„œ ì“¸ ìˆ˜ ìˆë‹¤.
 		friend GameLoop;
 		friend GameObject;
 		friend Transform;

@@ -1,4 +1,4 @@
-#include "GamePadManager.h"
+﻿#include "GamePadManager.h"
 
 namespace PurahEngine
 {

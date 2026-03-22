@@ -1,4 +1,4 @@
-#include "ResourceManager.h"
+ï»¿#include "ResourceManager.h"
 
 #include "ZeldaGraphicsDefine.h"
 #include "ZeldaModel.h"
@@ -74,7 +74,7 @@ MeshID ResourceManager::CreateCubeMesh()
 	XMVECTOR worldUp = { 0.0f, 1.0f, 0.0f, 0.0f };
 	XMVECTOR worldBack = { 0.0f, 0.0f, 1.0f, 0.0f };
 
-	// ¼ø¼­ ¹Ù²Ù¸é ¾ÈµÊ(¾Æ·¡ÀÇ Cross°è»ê ¶§¹®¿¡)
+	// ìˆœì„œ ë°”ê¾¸ë©´ ì•ˆë¨(ì•„ë˜ì˜ Crossê³„ì‚° ë•Œë¬¸ì—)
 	XMFLOAT3 dir[6] = {
 		{0.0f, 0.0f, -1.0f},
 		{0.0f, 0.0f, 1.0f},
@@ -97,7 +97,7 @@ MeshID ResourceManager::CreateCubeMesh()
 		XMVECTOR left = XMVector3Cross(up, XMLoadFloat3(&dir[faceNum]));
 		XMVECTOR right = -left;
 
-		// ¿ŞÂÊ ¾Æ·¡
+		// ì™¼ìª½ ì•„ë˜
 		XMStoreFloat4(&vertexList[faceNum * 4 + 0].position, 0.5f * (front + left + down));
 		vertexList[faceNum * 4 + 0].position.w = 1.0f;
 		vertexList[faceNum * 4 + 0].texture = XMFLOAT2(0.0f, 1.0f);
@@ -107,7 +107,7 @@ MeshID ResourceManager::CreateCubeMesh()
 		vertexList[faceNum * 4 + 0].boneIndices.z = 0xffffffffu;
 		vertexList[faceNum * 4 + 0].boneIndices.w = 0xffffffffu;
 
-		// ¿ŞÂÊ À§
+		// ì™¼ìª½ ìœ„
 		XMStoreFloat4(&vertexList[faceNum * 4 + 1].position, 0.5f * (front + left + up));
 		vertexList[faceNum * 4 + 1].position.w = 1.0f;
 		vertexList[faceNum * 4 + 1].texture = XMFLOAT2(0.0f, 0.0f);
@@ -117,7 +117,7 @@ MeshID ResourceManager::CreateCubeMesh()
 		vertexList[faceNum * 4 + 1].boneIndices.z = 0xffffffffu;
 		vertexList[faceNum * 4 + 1].boneIndices.w = 0xffffffffu;
 
-		// ¿À¸¥ÂÊ À§
+		// ì˜¤ë¥¸ìª½ ìœ„
 		XMStoreFloat4(&vertexList[faceNum * 4 + 2].position, 0.5f * (front + right + up));
 		vertexList[faceNum * 4 + 2].position.w = 1.0f;
 		vertexList[faceNum * 4 + 2].texture = XMFLOAT2(1.0f, 0.0f);
@@ -127,7 +127,7 @@ MeshID ResourceManager::CreateCubeMesh()
 		vertexList[faceNum * 4 + 2].boneIndices.z = 0xffffffffu;
 		vertexList[faceNum * 4 + 2].boneIndices.w = 0xffffffffu;
 
-		// ¿À¸¥ÂÊ ¾Æ·¡
+		// ì˜¤ë¥¸ìª½ ì•„ë˜
 		XMStoreFloat4(&vertexList[faceNum * 4 + 3].position, 0.5f * (front + right + down));
 		vertexList[faceNum * 4 + 3].position.w = 1.0f;
 		vertexList[faceNum * 4 + 3].texture = XMFLOAT2(1.0f, 1.0f);
@@ -254,15 +254,15 @@ MeshID ResourceManager::CreateSphereMesh()
 		return MeshID::ID_NULL;
 	}
 
-	const float radius = 0.5f; // ±¸ÀÇ ¹İÁö¸§
-	const unsigned int stackCount = 20; // °¡·Î ºĞÇÒ
-	const unsigned int sliceCount = 20; // ¼¼·Î ºĞÇÒ
+	const float radius = 0.5f; // êµ¬ì˜ ë°˜ì§€ë¦„
+	const unsigned int stackCount = 20; // ê°€ë¡œ ë¶„í• 
+	const unsigned int sliceCount = 20; // ì„¸ë¡œ ë¶„í• 
 
 	std::vector<VertexType> vertexList;
 	std::vector<unsigned int> indexList(36);
 
-	// ºÏ±Ø
-	// ÀÏ´Ü ÀÓ½Ã·Î tangent´Â (1, 0, 0)À» ³Ö¾ú´Ù, Á¦´ë·Î ÇÏ·Á¸é ºÏ±Ø ¹öÅØ½º¸¦ ¸éÀÇ °¹¼ö¸¸Å­ ¿©·¯°³ ¸¸µé°í ¸é¸¶´Ù ´Ù¸£°Ô ¼³Á¤ÇØ Áà¾ß ÇÑ´Ù.
+	// ë¶ê·¹
+	// ì¼ë‹¨ ì„ì‹œë¡œ tangentëŠ” (1, 0, 0)ì„ ë„£ì—ˆë‹¤, ì œëŒ€ë¡œ í•˜ë ¤ë©´ ë¶ê·¹ ë²„í…ìŠ¤ë¥¼ ë©´ì˜ ê°¯ìˆ˜ë§Œí¼ ì—¬ëŸ¬ê°œ ë§Œë“¤ê³  ë©´ë§ˆë‹¤ ë‹¤ë¥´ê²Œ ì„¤ì •í•´ ì¤˜ì•¼ í•œë‹¤.
 	vertexList.push_back({ { 0.0f, radius, 0.0f, 0.0f }, { 0.0f , 1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { 0.5f, 0.0f } });
 
 	float stackAngle = DirectX::XM_PI / static_cast<float>(stackCount);
@@ -271,12 +271,12 @@ MeshID ResourceManager::CreateSphereMesh()
 	float deltaU = 1.f / static_cast<float>(sliceCount);
 	float deltaV = 1.f / static_cast<float>(stackCount);
 
-	// °í¸®¸¶´Ù µ¹¸é¼­ Á¤Á¡À» °è»êÇÑ´Ù (ºÏ±Ø/³²±Ø ´ÜÀÏÁ¡Àº °í¸®°¡ X)
+	// ê³ ë¦¬ë§ˆë‹¤ ëŒë©´ì„œ ì •ì ì„ ê³„ì‚°í•œë‹¤ (ë¶ê·¹/ë‚¨ê·¹ ë‹¨ì¼ì ì€ ê³ ë¦¬ê°€ X)
 	for (size_t y = 1; y <= stackCount - 1; ++y)
 	{
 		float phi = y * stackAngle;
 
-		// °í¸®¿¡ À§Ä¡ÇÑ Á¤Á¡
+		// ê³ ë¦¬ì— ìœ„ì¹˜í•œ ì •ì 
 		for (size_t x = 0; x <= sliceCount; ++x)
 		{
 			float theta = x * sliceAngle;
@@ -295,11 +295,11 @@ MeshID ResourceManager::CreateSphereMesh()
 		}
 	}
 
-	// ³²±Ø
-	// ÀÏ´Ü ÀÓ½Ã·Î tangent´Â (1, 0, 0)À» ³Ö¾ú´Ù, Á¦´ë·Î ÇÏ·Á¸é ³²±Ø ¹öÅØ½º¸¦ ¸éÀÇ °¹¼ö¸¸Å­ ¿©·¯°³ ¸¸µé°í ¸é¸¶´Ù ´Ù¸£°Ô ¼³Á¤ÇØ Áà¾ß ÇÑ´Ù.
+	// ë‚¨ê·¹
+	// ì¼ë‹¨ ì„ì‹œë¡œ tangentëŠ” (1, 0, 0)ì„ ë„£ì—ˆë‹¤, ì œëŒ€ë¡œ í•˜ë ¤ë©´ ë‚¨ê·¹ ë²„í…ìŠ¤ë¥¼ ë©´ì˜ ê°¯ìˆ˜ë§Œí¼ ì—¬ëŸ¬ê°œ ë§Œë“¤ê³  ë©´ë§ˆë‹¤ ë‹¤ë¥´ê²Œ ì„¤ì •í•´ ì¤˜ì•¼ í•œë‹¤.
 	vertexList.push_back({ { 0.0f, -radius, 0.0f, 0.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { 0.5f, 1.0f } });
 
-	// ºÏ±Ø ÀÎµ¦½º
+	// ë¶ê·¹ ì¸ë±ìŠ¤
 	for (unsigned int i = 0; i <= sliceCount; ++i)
 	{
 		//  [0]
@@ -310,7 +310,7 @@ MeshID ResourceManager::CreateSphereMesh()
 		indexList.push_back(i + 1);
 	}
 
-	// ¸öÅë ÀÎµ¦½º
+	// ëª¸í†µ ì¸ë±ìŠ¤
 	unsigned int ringVertexCount = sliceCount + 1;
 	for (unsigned int y = 0; y < stackCount - 2; ++y)
 	{
@@ -331,7 +331,7 @@ MeshID ResourceManager::CreateSphereMesh()
 		}
 	}
 
-	// ³²±Ø ÀÎµ¦½º
+	// ë‚¨ê·¹ ì¸ë±ìŠ¤
 	size_t bottomIndex = vertexList.size() - 1;
 	size_t lastRingStartIndex = bottomIndex - ringVertexCount;
 	for (size_t i = 0; i < sliceCount; ++i)
@@ -366,17 +366,17 @@ MeshID ResourceManager::CreateCapsuleMesh()
 	std::vector<VertexType> vertexList;
 	std::vector<unsigned int> indexList;
 
-	const float radius = 0.5f; // Ä¸½¶ÀÇ ¹İÁö¸§
-	const float height = 1.0f; // Ä¸½¶ÀÇ ³ôÀÌ
-	const int stackCount = 5; // ¼öÆò ºĞÇÒ
-	const int sliceCount = 20; // ¼öÁ÷ ºĞÇÒ
+	const float radius = 0.5f; // ìº¡ìŠì˜ ë°˜ì§€ë¦„
+	const float height = 1.0f; // ìº¡ìŠì˜ ë†’ì´
+	const int stackCount = 5; // ìˆ˜í‰ ë¶„í• 
+	const int sliceCount = 20; // ìˆ˜ì§ ë¶„í• 
 
-	// »ó´Ü ¹İ±¸ Á¤Á¡
+	// ìƒë‹¨ ë°˜êµ¬ ì •ì 
 	vertexList.push_back({ { 0.0f, radius + height * 0.5f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } });
 
 	for (int i = 1; i <= stackCount; i++)
 	{
-		// À­¹æÇâ º¤ÅÍ¿ÍÀÇ °¢µµ
+		// ìœ—ë°©í–¥ ë²¡í„°ì™€ì˜ ê°ë„
 		float upTheta = XM_PI * 0.5f * (i / static_cast<float>(stackCount));
 
 		float xzsize = radius * sinf(upTheta);
@@ -398,10 +398,10 @@ MeshID ResourceManager::CreateCapsuleMesh()
 
 	size_t middleIdx = vertexList.size();
 
-	// ÇÏ´Ü ¹İ±¸ Á¤Á¡
+	// í•˜ë‹¨ ë°˜êµ¬ ì •ì 
 	for (int i = stackCount; i >= 1; i--)
 	{
-		// À­¹æÇâ º¤ÅÍ¿ÍÀÇ °¢µµ
+		// ìœ—ë°©í–¥ ë²¡í„°ì™€ì˜ ê°ë„
 		float upTheta = XM_PI * 0.5f * (i / static_cast<float>(stackCount));
 
 		float xzsize = radius * sinf(upTheta);
@@ -423,7 +423,7 @@ MeshID ResourceManager::CreateCapsuleMesh()
 
 	vertexList.push_back({ { 0.0f, -(radius + height * 0.5f), 0.0f, 0.0f }, { 0.0f, -1.0f, 0.0f } });
 
-	// »ó´Ü ¹İ±¸ ÀÎµ¦½º
+	// ìƒë‹¨ ë°˜êµ¬ ì¸ë±ìŠ¤
 	for (int i = 0; i < sliceCount; i++) {
 		int a = 0;
 		int b = 1 + i;
@@ -451,7 +451,7 @@ MeshID ResourceManager::CreateCapsuleMesh()
 		}
 	}
 
-	// ½Ç¸°´õ ºÎºĞ ÀÎµ¦½º
+	// ì‹¤ë¦°ë” ë¶€ë¶„ ì¸ë±ìŠ¤
 	for (int i = 0; i < sliceCount; i++)
 	{
 		int a = middleIdx - sliceCount + i;
@@ -468,7 +468,7 @@ MeshID ResourceManager::CreateCapsuleMesh()
 		indexList.push_back(b);
 	}
 
-	// ÇÏ´Ü ¹İ±¸ ÀÎµ¦½º
+	// í•˜ë‹¨ ë°˜êµ¬ ì¸ë±ìŠ¤
 	for (int i = 1; i < stackCount; i++) {
 		for (int j = 0; j < sliceCount; j++) {
 			int a = middleIdx + (i - 1) * sliceCount + j;
@@ -515,20 +515,20 @@ MeshID ResourceManager::CreateCylinderMesh()
 		return MeshID::ID_NULL;
 	}
 
-	const float radius = 0.5f; // ½Ç¸°´õÀÇ ¹İÁö¸§
-	const float height = 1.0f; // ½Ç¸°´õÀÇ ³ôÀÌ
-	const int sliceCount = 20; // ¼öÁ÷ ºĞÇÒ
+	const float radius = 0.5f; // ì‹¤ë¦°ë”ì˜ ë°˜ì§€ë¦„
+	const float height = 1.0f; // ì‹¤ë¦°ë”ì˜ ë†’ì´
+	const int sliceCount = 20; // ìˆ˜ì§ ë¶„í• 
 
 	std::vector<VertexType> vertexList;
 	std::vector<unsigned int> indexList;
 
-	// Á¤»ó Á¤Á¡
+	// ì •ìƒ ì •ì 
 	vertexList.push_back({ { 0.0f, height * 0.5f, 0.0f, 0.0f }, { 0.0f , 1.0f, 0.0f } });
 
-	// ¹Ù´Ú Á¤Á¡
+	// ë°”ë‹¥ ì •ì 
 	vertexList.push_back({ { 0.0f, -height * 0.5f, 0.0f, 0.0f }, { 0.0f, -1.0f, 0.0f } });
 
-	// À­¸é
+	// ìœ—ë©´
 	for (int i = 0; i < sliceCount; ++i)
 	{
 		float zTheta = DirectX::XM_2PI * (i / static_cast<float>(sliceCount));
@@ -540,7 +540,7 @@ MeshID ResourceManager::CreateCylinderMesh()
 		vertexList.push_back({ { x, y, z, 0.0f }, { 0.0f, 1.0f, 0.0f } });
 	}
 
-	// ¹Ø¸é
+	// ë°‘ë©´
 	for (int i = 0; i < sliceCount; ++i)
 	{
 		float zTheta = DirectX::XM_2PI * (i / static_cast<float>(sliceCount));
@@ -552,7 +552,7 @@ MeshID ResourceManager::CreateCylinderMesh()
 		vertexList.push_back({ { x, -y, z, 0.0f }, { 0.0f, -1.0f, 0.0f } });
 	}
 
-	// ¿·¸é À§
+	// ì˜†ë©´ ìœ„
 	for (int i = 0; i < sliceCount; ++i)
 	{
 		float zTheta = DirectX::XM_2PI * (i / static_cast<float>(sliceCount));
@@ -566,7 +566,7 @@ MeshID ResourceManager::CreateCylinderMesh()
 		vertexList.push_back({ { x, y, z, 0.0f }, normal });
 	}
 
-	// ¿·¸é ¾Æ·¡
+	// ì˜†ë©´ ì•„ë˜
 	for (int i = 0; i < sliceCount; ++i)
 	{
 		float zTheta = DirectX::XM_2PI * (i / static_cast<float>(sliceCount));
@@ -581,7 +581,7 @@ MeshID ResourceManager::CreateCylinderMesh()
 	}
 
 
-	// À­¸é ÀÎµ¦½º
+	// ìœ—ë©´ ì¸ë±ìŠ¤
 	for (int i = 0; i < sliceCount; ++i)
 	{
 		int a = 0;
@@ -593,7 +593,7 @@ MeshID ResourceManager::CreateCylinderMesh()
 		indexList.push_back(c);
 	}
 
-	// ¿·¸é ÀÎµ¦½º
+	// ì˜†ë©´ ì¸ë±ìŠ¤
 	for (int i = 0; i < sliceCount; ++i)
 	{
 		int a = 2 + (2 * sliceCount) + i;
@@ -610,7 +610,7 @@ MeshID ResourceManager::CreateCylinderMesh()
 		indexList.push_back(b);
 	}
 
-	// ¹Ø¸é ÀÎµ¦½º
+	// ë°‘ë©´ ì¸ë±ìŠ¤
 	for (int i = 0; i < sliceCount; ++i)
 	{
 		int a = 1;

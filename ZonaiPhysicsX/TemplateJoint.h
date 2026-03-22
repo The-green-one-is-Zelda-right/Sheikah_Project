@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "ZnJoint.h"
 
 #pragma warning(push)
@@ -15,14 +15,14 @@ namespace physx
 namespace ZonaiPhysics
 {
 	class ZnJoint;
-	class ZnTransform;
+	struct ZnTransform;
 	class RigidBody;
 
-	// Base Å¸ÀÔÀÌ ZnJointÀ» »ó¼Ó¹Ş´Â°¡?
+	// Base íƒ€ì…ì´ ZnJointì„ ìƒì†ë°›ëŠ”ê°€?
 	template <typename Base>
 	concept isJoint = std::is_base_of_v<ZnJoint, Base>;
 
-	// ZnJointÀÇ °øÅëµÈ ÇÔ¼ö¸¦ ÅÛÇÃ¸´¿¡¼­ Á¤ÀÇÇÏ´Â °É·Î ¹İº¹µÈ ÀÛ¾÷À» ÁÙÀÓ.
+	// ZnJointì˜ ê³µí†µëœ í•¨ìˆ˜ë¥¼ í…œí”Œë¦¿ì—ì„œ ì •ì˜í•˜ëŠ” ê±¸ë¡œ ë°˜ë³µëœ ì‘ì—…ì„ ì¤„ì„.
 	template <isJoint Base, typename PhysxJoint>
 	class TemplateJoint : public Base
 	{
@@ -47,7 +47,7 @@ namespace ZonaiPhysics
 		}
 
 		/**
-		¿ÀºêÁ§Æ®ÀÇ Æ÷Áö¼Ç
+		ì˜¤ë¸Œì íŠ¸ì˜ í¬ì§€ì…˜
 		*/
 		void SetLocalPosition(ZnJoint::eOBJECT _index, const Eigen::Vector3f& _localPos) override
 		{
@@ -71,7 +71,7 @@ namespace ZonaiPhysics
 		}
 
 		/**
-		¿ÀºêÁ§Æ®ÀÇ ·ÎÅ×ÀÌ¼Ç
+		ì˜¤ë¸Œì íŠ¸ì˜ ë¡œí…Œì´ì…˜
 		*/
 		void SetLocalQuaternion(ZnJoint::eOBJECT _index, const Quaternionf& _localQuat) override
 		{
@@ -95,7 +95,7 @@ namespace ZonaiPhysics
 		}
 
 		/**
-		¿ÀºêÁ§Æ®0À» ±âÁØÀ¸·Î ¿ÀºêÁ§Æ®1ÀÇ »ó´ë ¼Óµµ¸¦ ¹İÈ¯ÇÔ.
+		ì˜¤ë¸Œì íŠ¸0ì„ ê¸°ì¤€ìœ¼ë¡œ ì˜¤ë¸Œì íŠ¸1ì˜ ìƒëŒ€ ì†ë„ë¥¼ ë°˜í™˜í•¨.
 		*/
 		Eigen::Vector3f GetRelativeLinearVelocity() const override
 		{
@@ -116,7 +116,7 @@ namespace ZonaiPhysics
 		}
 
 		/**
-		Á¶ÀÎÆ® ÆÄ±« ÈûÀ» ¼³Á¤ÇÔ
+		ì¡°ì¸íŠ¸ íŒŒê´´ í˜ì„ ì„¤ì •í•¨
 		*/
 		void		SetBreakForce(float _force, float _torque) override
 		{

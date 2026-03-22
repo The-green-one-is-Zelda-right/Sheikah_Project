@@ -1,4 +1,4 @@
-//#pragma once
+ï»¿//#pragma once
 //
 //#include "PurahEngine.h"
 //
@@ -21,18 +21,18 @@
 //
 //		void RegisterCallBackFunction(std::function<bool(const PurahEngine::Collider* other)> function, Type type);
 //
-//		// Ãæµ¹Ã¼°¡ Ãæµ¹ÇßÀ» ¶§ È£Ãâ
+//		// ì¶©ëŒì²´ê°€ ì¶©ëŒí–ˆì„ ë•Œ í˜¸ì¶œ
 //		void OnCollisionEnter(const ZonaiPhysics::ZnCollision& collision, const PurahEngine::Collider* other) override;
-//		// Ãæµ¹Ã¼°¡ Ãæµ¹À» À¯ÁöÇÒ ¶§ È£Ãâ
+//		// ì¶©ëŒì²´ê°€ ì¶©ëŒì„ ìœ ì§€í•  ë•Œ í˜¸ì¶œ
 //		void OnCollisionStay(const ZonaiPhysics::ZnCollision& collision, const PurahEngine::Collider* other) override;
-//		// Ãæµ¹Ã¼°¡ Ãæµ¹À» ¹ş¾î³µÀ» ¶§ È£Ãâ
+//		// ì¶©ëŒì²´ê°€ ì¶©ëŒì„ ë²—ì–´ë‚¬ì„ ë•Œ í˜¸ì¶œ
 //		void OnCollisionExit(const ZonaiPhysics::ZnCollision& collision, const PurahEngine::Collider* other) override;
 //
-//		// Æ®¸®°Å°¡ Ãæµ¹ÇßÀ» ¶§ È£Ãâ
+//		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒí–ˆì„ ë•Œ í˜¸ì¶œ
 //		void OnTriggerEnter(const PurahEngine::Collider* other) override;
-//		// Æ®¸®°Å°¡ Ãæµ¹À² À¯ÁöÇÒ ¶§ È£Ãâ
+//		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒìœ¨ ìœ ì§€í•  ë•Œ í˜¸ì¶œ
 //		void OnTriggerStay(const PurahEngine::Collider* other) override;
-//		// Æ®¸®°Å°¡ Ãæµ¹À» ¹ş¾î³µÀ» ¶§ È£Ãâ
+//		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒì„ ë²—ì–´ë‚¬ì„ ë•Œ í˜¸ì¶œ
 //		void OnTriggerExit(const PurahEngine::Collider* other) override;
 //		
 //	private:

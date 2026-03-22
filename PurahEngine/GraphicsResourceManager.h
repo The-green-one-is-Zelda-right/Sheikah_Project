@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <unordered_map>
 #include <unordered_set>
@@ -19,11 +19,11 @@ namespace PurahEngine
 		GraphicsResourceManager(IZeldaRenderer* zeldaRenderer);
 		~GraphicsResourceManager();
 
-		// ¿©·¯°³ »ç¿ëµÉ ¼ö ÀÖ´Â °Í, ¾ø´Ù¸é »ı¼ºÇÔ
+		// ì—¬ëŸ¬ê°œ ì‚¬ìš©ë  ìˆ˜ ìˆëŠ” ê²ƒ, ì—†ë‹¤ë©´ ìƒì„±í•¨
 		TextureID GetTextureID(const std::wstring& textureName);
 		ModelID GetModelID(const std::wstring& modelName);
 
-		// ÇÏ³ª¸¸ »ç¿ëµÇ´Â °Í
+		// í•˜ë‚˜ë§Œ ì‚¬ìš©ë˜ëŠ” ê²ƒ
 		LightID CreateDirectionalLight(const Eigen::Vector3f& ambient, const Eigen::Vector3f& diffuse, const Eigen::Vector3f& specular, const Eigen::Vector3f& shadowColor, const Eigen::Vector3f& direction);
 		LightID CreatePointLight(const Eigen::Vector3f& ambient, const Eigen::Vector3f& diffuse, const Eigen::Vector3f& specular, const Eigen::Vector3f& shadowColor, const Eigen::Vector3f& position, float range, float atten0, float atten1, float atten2);
 		LightID CreateSpotLight(const Eigen::Vector3f& ambient, const Eigen::Vector3f& diffuse, const Eigen::Vector3f& specular, const Eigen::Vector3f& shadowColor, const Eigen::Vector3f& direction, const Eigen::Vector3f& position, float range, float angle);

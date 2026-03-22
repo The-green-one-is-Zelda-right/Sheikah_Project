@@ -1,4 +1,4 @@
-#include <PxPhysicsAPI.h>
+ï»¿#include <PxPhysicsAPI.h>
 #include <extensions/PxRigidBodyExt.h>
 
 #include "ZnUtil.h"
@@ -393,7 +393,7 @@ namespace ZonaiPhysics
 			globalMaxBounds = globalMaxBounds.cwiseMax(shapeBound.maximum);
 		}
 
-		// ÃÖÁ¾ °æ°è »óÀÚ ¹İÈ¯
+		// ìµœì¢… ê²½ê³„ ìƒì ë°˜í™˜
 		return ZnBound3(globalMinBounds, globalMaxBounds);
 	}
 

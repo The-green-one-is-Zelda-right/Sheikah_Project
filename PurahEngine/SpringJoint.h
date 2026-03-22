@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngineAPI.h"
 #include "JointT.h"
 #include "ZnDistanceJoint.h"
@@ -15,36 +15,36 @@ namespace PurahEngine
 		void PostInitialize() override;
 
 	public:
-		// ÇöÀç Á¶ÀÎÆ® °Å¸®
+		// í˜„ì¬ ì¡°ì¸íŠ¸ ê±°ë¦¬
 		float	GetDistance() const;
 
-		// Á¶ÀÎÆ® ÃÖ¼Ò °Å¸®
+		// ì¡°ì¸íŠ¸ ìµœì†Œ ê±°ë¦¬
 		void	SetMinDistance(float _distance) const;
 		float	GetMinDistance() const;
 
-		// Á¶ÀÎÆ® ÃÖ´ë °Å¸®
+		// ì¡°ì¸íŠ¸ ìµœëŒ€ ê±°ë¦¬
 		void	SetMaxDistance(float _distance) const;
 		float	GetMaxDistance() const;
 
-		// Çã¿ë ¹üÀ§¸¦ ¹ş¾î³­ °Å¸®
-		// Á¶ÀÎÆ®°¡ È°¼ºÈ­ µÇ´Â ÁöÁ¡
+		// í—ˆìš© ë²”ìœ„ë¥¼ ë²—ì–´ë‚œ ê±°ë¦¬
+		// ì¡°ì¸íŠ¸ê°€ í™œì„±í™” ë˜ëŠ” ì§€ì 
 		void	SetTolerance(float _tolerance) const;
 		float	GetTolerance() const;
 
-		// ½ºÇÁ¸µ °­µµ
-		// ±âº»°ª 0.f
+		// ìŠ¤í”„ë§ ê°•ë„
+		// ê¸°ë³¸ê°’ 0.f
 		void	SetStiffness(float _stiffness) const;
 		float	GetStiffness() const;
 
-		// ½ºÇÁ¸µ °¨¼è
-		// ±âº»°ª 0.f
+		// ìŠ¤í”„ë§ ê°ì‡ 
+		// ê¸°ë³¸ê°’ 0.f
 		void	SetDamping(float _damping) const;
 		float	GetDamping() const;
 
-		// ½ºÇÁ¸µ °ü·Ã º¯¼ö
+		// ìŠ¤í”„ë§ ê´€ë ¨ ë³€ìˆ˜
 		void	SetSpringArg(float _stiffness, float _damping) const;
 
-		// Á¶ÀÎÆ® ÇÃ·¡±×
+		// ì¡°ì¸íŠ¸ í”Œë˜ê·¸
 		void	SetMinDistanceEnable(bool _value) const;
 		void	SetMaxDistanceEnable(bool _value) const;
 		void	SetSpringEnable(bool _value) const;

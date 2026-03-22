@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Component.h"
 
@@ -37,7 +37,7 @@ namespace PurahEngine
 		void Play(const std::wstring& animationName);
 		void Play(unsigned int animationID);
 
-		// SettingQueue¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Â ÇÔ¼ö
+		// SettingQueueë¥¼ ì‚¬ìš©í•  ìˆ˜ ìžˆëŠ” í•¨ìˆ˜
 		void SetPlaySpeed(unsigned int animationNumber, float speed);
 		void SetPlaySpeed(const std::wstring& animationName, float speed);
 		void SetLoop(unsigned int animationNumber, bool loop);

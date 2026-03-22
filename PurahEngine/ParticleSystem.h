@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Renderer.h"
 #include <list>
@@ -11,17 +11,17 @@ namespace PurahEngine
 	public:
 		enum class GeneratorType
 		{
-			Point = 0,		// ÇÑ Á¡¿¡¼­ »ı¼º
-			Circle = 1,		// ¿ø ¸ğ¾çÀ¸·Î »ı¼º
-			Sphere = 2,		// ±¸ ¸ğ¾çÀ¸·Î »ı¼º
-			Square = 3		// »ç°¢Çü ¸ğ¾çÀ¸·Î »ı¼º
+			Point = 0,		// í•œ ì ì—ì„œ ìƒì„±
+			Circle = 1,		// ì› ëª¨ì–‘ìœ¼ë¡œ ìƒì„±
+			Sphere = 2,		// êµ¬ ëª¨ì–‘ìœ¼ë¡œ ìƒì„±
+			Square = 3		// ì‚¬ê°í˜• ëª¨ì–‘ìœ¼ë¡œ ìƒì„±
 		};
 
 		enum class ElementType
 		{
-			Move = 0,					// ÇÑ ¹æÇâÀ¸·Î ÀÌµ¿
-			Spread = 1,					// »ç¹æÀ¸·Î ÆÛÁü
-			SpreadInOneDirection = 2	// ÇÑ ¹æÇâÀ¸·Î ÆÛÁü
+			Move = 0,					// í•œ ë°©í–¥ìœ¼ë¡œ ì´ë™
+			Spread = 1,					// ì‚¬ë°©ìœ¼ë¡œ í¼ì§
+			SpreadInOneDirection = 2	// í•œ ë°©í–¥ìœ¼ë¡œ í¼ì§
 		};
 
 	public:
@@ -30,7 +30,7 @@ namespace PurahEngine
 
 		void Update() override;
 
-		// RendererÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// Rendererì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void Render(IZeldaRenderer* renderer) override;
 
 		void Play();
@@ -47,24 +47,24 @@ namespace PurahEngine
 
 		bool playWithStart;
 
-		float generatorRadius;			// »ı¼º ¹üÀ§(¹İÁö¸§) - Circle, Sphere
-		float generatorSizeX;			// »ı¼º ¹üÀ§ - Square
-		float generatorSizeY;			// »ı¼º ¹üÀ§ - Square
-		float generatorSizeZ;			// »ı¼º ¹üÀ§ - Square
-		float generationCycle;			// »ı¼º ÁÖ±â
+		float generatorRadius;			// ìƒì„± ë²”ìœ„(ë°˜ì§€ë¦„) - Circle, Sphere
+		float generatorSizeX;			// ìƒì„± ë²”ìœ„ - Square
+		float generatorSizeY;			// ìƒì„± ë²”ìœ„ - Square
+		float generatorSizeZ;			// ìƒì„± ë²”ìœ„ - Square
+		float generationCycle;			// ìƒì„± ì£¼ê¸°
 
-		Eigen::Vector3f moveDirection;	// ÀÌµ¿(È®»ê) ¹æÇâ
-		float spread;					// È®»ê Å©±â (ÀÌµ¿¹æÇâ¿¡ ¼öÁ÷ÀÎ ·£´ıÇÑ ¹æÇâÀ¸·Î ÀÌµ¿ÇÏ´Â Å©±â)
-		float vibrationSpeed;			// Áøµ¿ ¼Óµµ
-		float vibrationRange;			// Áøµ¿ Å©±â (ÀÌµ¿¹æÇâ¿¡ ¼öÁ÷ÀÎ ·£´ıÇÑ ¹æÇâÀ¸·Î ÀÌµ¿, vibrationRange¸¦ ¹ş¾î³ªÁö ¾ÊÀ½)
+		Eigen::Vector3f moveDirection;	// ì´ë™(í™•ì‚°) ë°©í–¥
+		float spread;					// í™•ì‚° í¬ê¸° (ì´ë™ë°©í–¥ì— ìˆ˜ì§ì¸ ëœë¤í•œ ë°©í–¥ìœ¼ë¡œ ì´ë™í•˜ëŠ” í¬ê¸°)
+		float vibrationSpeed;			// ì§„ë™ ì†ë„
+		float vibrationRange;			// ì§„ë™ í¬ê¸° (ì´ë™ë°©í–¥ì— ìˆ˜ì§ì¸ ëœë¤í•œ ë°©í–¥ìœ¼ë¡œ ì´ë™, vibrationRangeë¥¼ ë²—ì–´ë‚˜ì§€ ì•ŠìŒ)
 
-		float moveSpeed;				// ÀÌµ¿ ¼Óµµ
-		float lifeTime;					// »ıÁ¸ ±â°£
-		float randomLifeTimeMax;		// Ãß°¡ÀûÀÎ ·£´ı »ıÁ¸ ±â°£ÀÇ ÃÖ´ëÄ¡
+		float moveSpeed;				// ì´ë™ ì†ë„
+		float lifeTime;					// ìƒì¡´ ê¸°ê°„
+		float randomLifeTimeMax;		// ì¶”ê°€ì ì¸ ëœë¤ ìƒì¡´ ê¸°ê°„ì˜ ìµœëŒ€ì¹˜
 
 		bool useChangeColor;
-		Eigen::Vector4f changedColorInMove;		// ÀÌµ¿ ¹æÇâÀ¸·Î ÀÌµ¿ÇÏ¸é¼­ À§Ä¡¿¡ µû¸¥ »ö±ò º¯°æ
-		Eigen::Vector4f changedColorInOther;	// ÀÌµ¿ ¹æÇâÀÌ ¾Æ´Ñ ¹æÇâ¿¡¼­ À§Ä¡¿¡ µû¸¥ »ö±ò º¯°æ
+		Eigen::Vector4f changedColorInMove;		// ì´ë™ ë°©í–¥ìœ¼ë¡œ ì´ë™í•˜ë©´ì„œ ìœ„ì¹˜ì— ë”°ë¥¸ ìƒ‰ê¹” ë³€ê²½
+		Eigen::Vector4f changedColorInOther;	// ì´ë™ ë°©í–¥ì´ ì•„ë‹Œ ë°©í–¥ì—ì„œ ìœ„ì¹˜ì— ë”°ë¥¸ ìƒ‰ê¹” ë³€ê²½
 
 	private:
 		void Generate();
@@ -99,7 +99,7 @@ namespace PurahEngine
 		std::uniform_real_distribution<float> vibrationDistribution;
 
 	private:
-		// ComponentÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// Componentì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void PreSerialize(json& jsonData) const override;
 		void PreDeserialize(const json& jsonData) override;
 		void PostSerialize(json& jsonData) const override;

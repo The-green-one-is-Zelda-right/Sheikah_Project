@@ -1,4 +1,4 @@
-#include "ZeldaShader.h"
+ï»¿#include "ZeldaShader.h"
 
 #include "ZeldaMesh.h"
 #include "ZeldaTexture.h"
@@ -98,13 +98,13 @@ bool ZeldaShader::Initialize(ID3D11Device* device, const std::wstring& vsFileNam
 	}
 
 	// Create the vertex shader from the buffer.
-	// ID3D11VertexShader °´Ã¼ »ý¼º
+	// ID3D11VertexShader ê°ì²´ ìƒì„±
 	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(),
 		vertexShaderBuffer->GetBufferSize(), nullptr, &vertexShader);
 	if (FAILED(result)) return false;
 
 	// Create the pixel shader from the buffer.
-	// ID3D11PixelShade °´Ã¼ »ý¼º
+	// ID3D11PixelShade ê°ì²´ ìƒì„±
 	result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(),
 		pixelShaderBuffer->GetBufferSize(), nullptr, &pixelShader);
 	if (FAILED(result)) return false;
@@ -132,7 +132,7 @@ bool ZeldaShader::Initialize(ID3D11Device* device, const std::wstring& vsFileNam
 		}
 
 		// Create the vertex shader from the buffer.
-		// ID3D11VertexShader °´Ã¼ »ý¼º
+		// ID3D11VertexShader ê°ì²´ ìƒì„±
 		result = device->CreateVertexShader(instVertexShaderBuffer->GetBufferPointer(),
 			instVertexShaderBuffer->GetBufferSize(), nullptr, &instancingVertexShader);
 		if (FAILED(result)) return false;
@@ -145,7 +145,7 @@ bool ZeldaShader::Initialize(ID3D11Device* device, const std::wstring& vsFileNam
 		//ID3D11ShaderReflection* shaderReflection = nullptr;
 		//D3DReflect(instVertexShaderBuffer->GetBufferPointer(), instVertexShaderBuffer->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&shaderReflection);
 
-		//// »ó¼ö ¹öÆÛ Á¤º¸ ¾ò±â
+		//// ìƒìˆ˜ ë²„í¼ ì •ë³´ ì–»ê¸°
 		//D3D11_SHADER_DESC shaderDesc;
 		//shaderReflection->GetDesc(&shaderDesc);
 
@@ -160,13 +160,13 @@ bool ZeldaShader::Initialize(ID3D11Device* device, const std::wstring& vsFileNam
 
 		//}
 
-		// ÇØÁ¦
+		// í•´ì œ
 		instVertexShaderBuffer->Release();
 		instVertexShaderBuffer = nullptr;
 	}
 
 	// Release the vertex shader buffer and pixel shader buffer since they are no longer needed.
-	// ID3D11VertextShader, ID3D11PixelShader°´Ã¼¿¡ bytecode°¡ ÀúÀåµÇ¾î ÀÖÀ½. ´õÀÌ»ó ¹öÆÛ´Â ÇÊ¿ä¾ø´Ù.
+	// ID3D11VertextShader, ID3D11PixelShaderê°ì²´ì— bytecodeê°€ ì €ìž¥ë˜ì–´ ìžˆìŒ. ë”ì´ìƒ ë²„í¼ëŠ” í•„ìš”ì—†ë‹¤.
 	vertexShaderBuffer->Release();
 	vertexShaderBuffer = 0;
 

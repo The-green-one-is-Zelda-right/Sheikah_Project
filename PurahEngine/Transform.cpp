@@ -1,4 +1,4 @@
-#include "Transform.h"
+ï»¿#include "Transform.h"
 #include "RigidBody.h"
 #include "GameObject.h"
 
@@ -21,7 +21,7 @@ PurahEngine::Transform::~Transform()
 
 void PurahEngine::Transform::Rotate(const Eigen::Vector3f& axis, float angle)
 {
-	// axis´Â UnitX(), UnitY(), UnitZ()·Î ÇÒ°Í
+	// axisëŠ” UnitX(), UnitY(), UnitZ()ë¡œ í• ê²ƒ
 	rotation = Eigen::AngleAxisf(angle * (M_PI / 180.f), axis) * rotation;
 
 	if (rigidbody != nullptr)
@@ -140,12 +140,12 @@ void PurahEngine::Transform::SetLocalScale(const Eigen::Vector3f& setScale)
 
 void PurahEngine::Transform::SetWorldPosition(const Eigen::Vector3f& setPosition)
 {
-	/// ÀÌ·Ğ : WorldMatrix ¿¡¼­ Position ºÎºĞ¸¸ ±³Ã¼ÇÑ´Ù.
+	/// ì´ë¡  : WorldMatrix ì—ì„œ Position ë¶€ë¶„ë§Œ êµì²´í•œë‹¤.
 	// Eigen::Matrix4f worldMatrix = GetWorldMatrix();
 	// worldMatrix.block<3, 1>(0, 3) = setPosition;
 
 
-	// matrix inverse ·Î ¹Ù²ã¶ó
+	// matrix inverse ë¡œ ë°”ê¿”ë¼
 	if (parentTransform != nullptr)
 	{
 		Eigen::Matrix4f parentWorldMatrix = parentTransform->GetWorldMatrix();
@@ -192,13 +192,13 @@ void PurahEngine::Transform::SetParent(PurahEngine::Transform* parentObject)
 	}
 	else
 	{
-		// erase, remove °¢°¢ µû·Î ¾²°Ô µÉ °æ¿ì ´ÜÁ¡ÀÌ ÀÖ´Ù.
-		// erase ´Â °ªÀ» »èÁ¦ÇÏ¸é size°¡ ÁÙ¾îµç´Ù. ÇÏÁö¸¸ return °ªÀÌ ÀÇ¹Ì°¡ ¾ø´Ù.
-		// remove ´Â °ªÀ» »èÁ¦ÇØµµ size°¡ ÁÙ¾îµéÁö ¾Ê´Â´Ù. return °ªÀÌ ³²Àº °ªµé Áß ¸¶Áö¸· °ªÀÇ ¹Ù·Î µÚ¸¦ °¡¸®Å²´Ù.
-		// °í·Î erase(remove())¸¦ ÇÏ°Ô µÇ¸é removeÀÇ returnÀ¸·Î Á¤·ÄÀ» ÇÏ°í, erase¸¦ ÇÏ°ÔµÇ¸é size±îÁö ÁÙ¾îµé°Ô ÇÒ ¼ö ÀÖ´Ù.
+		// erase, remove ê°ê° ë”°ë¡œ ì“°ê²Œ ë  ê²½ìš° ë‹¨ì ì´ ìˆë‹¤.
+		// erase ëŠ” ê°’ì„ ì‚­ì œí•˜ë©´ sizeê°€ ì¤„ì–´ë“ ë‹¤. í•˜ì§€ë§Œ return ê°’ì´ ì˜ë¯¸ê°€ ì—†ë‹¤.
+		// remove ëŠ” ê°’ì„ ì‚­ì œí•´ë„ sizeê°€ ì¤„ì–´ë“¤ì§€ ì•ŠëŠ”ë‹¤. return ê°’ì´ ë‚¨ì€ ê°’ë“¤ ì¤‘ ë§ˆì§€ë§‰ ê°’ì˜ ë°”ë¡œ ë’¤ë¥¼ ê°€ë¦¬í‚¨ë‹¤.
+		// ê³ ë¡œ erase(remove())ë¥¼ í•˜ê²Œ ë˜ë©´ removeì˜ returnìœ¼ë¡œ ì •ë ¬ì„ í•˜ê³ , eraseë¥¼ í•˜ê²Œë˜ë©´ sizeê¹Œì§€ ì¤„ì–´ë“¤ê²Œ í•  ìˆ˜ ìˆë‹¤.
 		parentTransform->children.erase(remove(parentTransform->children.begin(), parentTransform->children.end(), this), parentTransform->children.end());
 
-		// À§ÀÇ °úÁ¤¿¡¼­ parentTransformÀ» nullptr·Î ¸¸µé¾îÁá´Ù.
+		// ìœ„ì˜ ê³¼ì •ì—ì„œ parentTransformì„ nullptrë¡œ ë§Œë“¤ì–´ì¤¬ë‹¤.
 		parentTransform = parentObject;
 		parentObject->children.push_back(this);
 	}
@@ -208,16 +208,16 @@ void PurahEngine::Transform::SetWorldMatrix(const Eigen::Matrix4f& targetMatrix)
 {
 	Eigen::Affine3f affine(targetMatrix);
 
-	// À§Ä¡ ÃßÃâ
+	// ìœ„ì¹˜ ì¶”ì¶œ
 	position = affine.translation();
 
-	// ½ºÄÉÀÏ ÃßÃâ
+	// ìŠ¤ì¼€ì¼ ì¶”ì¶œ
 	Eigen::Matrix3f rotationScaleMatrix = affine.linear();
 	scale.x() = rotationScaleMatrix.col(0).norm();
 	scale.y() = rotationScaleMatrix.col(1).norm();
 	scale.z() = rotationScaleMatrix.col(2).norm();
 
-	// ·ÎÅ×ÀÌ¼Ç ÃßÃâ
+	// ë¡œí…Œì´ì…˜ ì¶”ì¶œ
 	Eigen::Matrix3f rotationMatrix;
 	if (scale.x() != 0)
 	{

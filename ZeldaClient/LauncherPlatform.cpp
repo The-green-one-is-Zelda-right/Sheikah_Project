@@ -1,4 +1,4 @@
-#include "LauncherPlatform.h"
+﻿#include "LauncherPlatform.h"
 
 namespace Phyzzle
 {

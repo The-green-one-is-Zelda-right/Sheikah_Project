@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <Eigen/Dense>
 
 #include "ZnBase.h"
@@ -15,19 +15,19 @@ namespace ZonaiPhysics
 
 	public:
 		/**
-		À§Ä¡
+		ìœ„ì¹˜
 		*/
 		virtual Eigen::Vector3f	GetPosition() const = 0;
 		virtual void		SetPosition(const Eigen::Vector3f& _position, bool _wakeup = false) = 0;
 
 		/**
-		È¸Àü
+		íšŒì „
 		*/
 		virtual Eigen::Quaternionf	GetQuaternion() const = 0;
 		virtual void		 SetQuaternion(const Eigen::Quaternionf& _quaternion, bool _wakeup = false) = 0;
 
 		/**
-		À¯Àú µ¥ÀÌÅÍ
+		ìœ ì € ë°ì´í„°
 		*/
 		virtual void*		GetUserData() const = 0;
 		virtual void		SetUserData(void* _userData) = 0;

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "IState.h"
 
 namespace PurahEngine
@@ -43,7 +43,7 @@ namespace Phyzzle
 		void Cancel() const;
 #pragma endregion Content
 
-		// IStateÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// IStateì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void StateCancel() override;
 	};
 }

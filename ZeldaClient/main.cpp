@@ -1,4 +1,4 @@
-#include <windows.h>
+ï»¿#include <windows.h>
 #include <iostream>
 #include <cassert>
 #include "PurahEngine.h"
@@ -41,7 +41,7 @@
 
 #include "PauseGame.h"
 
-/// °¢ÀÚ ¸¸µå´Â °Íµé
+/// ê°ì ë§Œë“œëŠ” ê²ƒë“¤
 #include "PzObject.h"
 #include "NaDong.h"
 #include "BeomJoon.h"
@@ -69,7 +69,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	auto CreateRun = reinterpret_cast<void (*)(_In_ int nCmdShow)>(GetProcAddress(PurahEngineDll, "Run"));
 	auto CreateFinalize = reinterpret_cast<void (*)()>(GetProcAddress(PurahEngineDll, "Finalize"));
 
-	// DLL ÇÔ¼ö¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.
+	// DLL í•¨ìˆ˜ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.
 	assert(!(CreateInitialize == nullptr || CreateRun == nullptr || CreateFinalize == nullptr));
 
 	PurahEngine::ComponentFactory::GetInstance().RegisterComponent<PurahEngine::Test>("Test");
@@ -112,12 +112,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	PurahEngine::ComponentFactory::GetInstance().RegisterComponent<Phyzzle::DebugCameraSetting>("DebugCameraSetting");
 	PurahEngine::ComponentFactory::GetInstance().RegisterComponent<Phyzzle::PauseGame>("PauseGame");
 
-	//PurahEngine::Initialize(hInstance, gameName.c_str(), 1920, 1080); ¿ªÇÒ
+	//PurahEngine::Initialize(hInstance, gameName.c_str(), 1920, 1080); ì—­í• 
 	CreateInitialize(hInstance, gameName.c_str(), 1920, 1080);
 
-	//PurahEngine::Run(); ¿ªÇÒ
+	//PurahEngine::Run(); ì—­í• 
 	CreateRun(nCmdShow);
-	//PurahEngine::Finalize(); ¿ªÇÒ
+	//PurahEngine::Finalize(); ì—­í• 
 	CreateFinalize();
 
 	::FreeLibrary(PurahEngineDll);

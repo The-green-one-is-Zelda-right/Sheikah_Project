@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <string>
 #include <Eigen/Dense>
 
@@ -32,7 +32,7 @@ namespace ZonaiPhysics
 	class ZnCollider;
 	class ZnJoint;
 
-	class ZnTransform;
+	struct ZnTransform;
 	struct ZnQueryInfo;
 
 	struct MaterialDesc;
@@ -131,15 +131,15 @@ namespace ZonaiPhysics
 		/// <summary>
 		/// Create Joint
 		/// </summary>
-		// °íÁ¤ Á¶ÀÎÆ®
+		// ê³ ì • ì¡°ì¸íŠ¸
 		virtual ZnFixedJoint*		CreateFixedJoint(ZnRigidBody*, const ZnTransform&, ZnRigidBody*, const ZnTransform&) = 0;
-		// °Å¸® Á¶ÀÎÆ®
+		// ê±°ë¦¬ ì¡°ì¸íŠ¸
 		virtual ZnDistanceJoint*	CreateDistanceJoint(ZnRigidBody*, const ZnTransform&, ZnRigidBody*, const ZnTransform&) = 0;
-		// ±¸Çü Á¶ÀÎÆ®
+		// êµ¬í˜• ì¡°ì¸íŠ¸
 		virtual ZnSphericalJoint*	CreateSphericalJoint(ZnRigidBody*, const ZnTransform&, ZnRigidBody*, const ZnTransform&) = 0;
-		// Æ¯Á¤ Ãà¿¡ È¸Àü¸¸ Çã¿ëÇÏ´Â Á¶ÀÎÆ® (ÀÌµ¿ X)
+		// íŠ¹ì • ì¶•ì— íšŒì „ë§Œ í—ˆìš©í•˜ëŠ” ì¡°ì¸íŠ¸ (ì´ë™ X)
 		virtual ZnHingeJoint*		CreateHingeJoint(ZnRigidBody*, const ZnTransform&, ZnRigidBody*, const ZnTransform&) = 0;
-		// Æ¯Á¤ Ãà¿¡ ÀÌµ¿¸¸ Çã¿ëÇÏ´Â Á¶ÀÎÆ® (È¸Àü X)
+		// íŠ¹ì • ì¶•ì— ì´ë™ë§Œ í—ˆìš©í•˜ëŠ” ì¡°ì¸íŠ¸ (íšŒì „ X)
 		virtual ZnPrismaticJoint*	CreatePrismaticJoint(ZnRigidBody*, const ZnTransform&, ZnRigidBody*, const ZnTransform&) = 0;
 
 		virtual ZnSpringFlexJoint* CreateSpringFlexJoint(

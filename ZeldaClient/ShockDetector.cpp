@@ -1,4 +1,4 @@
-#include "ShockDetector.h"
+﻿#include "ShockDetector.h"
 
 #include "ElectricalDevice.h"
 

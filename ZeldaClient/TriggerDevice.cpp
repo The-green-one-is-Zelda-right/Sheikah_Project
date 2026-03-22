@@ -1,4 +1,4 @@
-#include "TriggerDevice.h"
+ï»¿#include "TriggerDevice.h"
 
 namespace Phyzzle
 {
@@ -12,7 +12,7 @@ namespace Phyzzle
 	{
 		PurahEngine::Tag& othertag = other->GetGameObject()->tag;
 		
-		// containTag°¡ ¾ø´Ù¸é ¸®ÅÏ
+		// containTagê°€ ì—†ë‹¤ë©´ ë¦¬í„´
 		if (containTags.size() == 0)
 		{
 			return;
@@ -22,7 +22,7 @@ namespace Phyzzle
 		{
 			if (othertag.IsContain(containTag) == false)
 			{
-				// ÇÏ³ªÀÇ containTag¶óµµ ¸¸Á·ÇÏÁö ¾Ê´Â´Ù¸é ¸®ÅÏ
+				// í•˜ë‚˜ì˜ containTagë¼ë„ ë§Œì¡±í•˜ì§€ ì•ŠëŠ”ë‹¤ë©´ ë¦¬í„´
 				return;
 			}
 		}
@@ -39,7 +39,7 @@ namespace Phyzzle
 	{
 		auto& othertag = other->GetGameObject()->tag;
 
-		// containTag°¡ ¾ø´Ù¸é ¸®ÅÏ
+		// containTagê°€ ì—†ë‹¤ë©´ ë¦¬í„´
 		if (containTags.size() == 0)
 		{
 			return;
@@ -49,7 +49,7 @@ namespace Phyzzle
 		{
 			if (othertag.IsContain(containTag) == false)
 			{
-				// ÇÏ³ªÀÇ containTag¶óµµ ¸¸Á·ÇÏÁö ¾Ê´Â´Ù¸é ¸®ÅÏ
+				// í•˜ë‚˜ì˜ containTagë¼ë„ ë§Œì¡±í•˜ì§€ ì•ŠëŠ”ë‹¤ë©´ ë¦¬í„´
 				return;
 			}
 		}

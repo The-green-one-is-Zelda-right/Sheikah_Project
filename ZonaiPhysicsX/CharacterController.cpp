@@ -1,4 +1,4 @@
-#include "PxPhysicsAPI.h"
+ï»¿#include "PxPhysicsAPI.h"
 
 #include "ZnUtil.h"
 #include "CharacterController.h"
@@ -99,23 +99,23 @@ namespace ZonaiPhysics
 	{
 		if (isJumping)
 		{
-			// Áß·Â Àû¿ë
+			// ì¤‘ë ¥ ì ìš©
 			jumpVelocity -= 9.8f * _dt;
 			pendingMovement.y() += jumpVelocity * _dt;
 		}
 
-		// ÀÌµ¿ º¤ÅÍ Àû¿ë
+		// ì´ë™ ë²¡í„° ì ìš©
 		physx::PxControllerFilters filters;
 		collisionFlags = controller->move(EigenToPhysx(pendingMovement), 0.001f, _dt, filters);
 
-		// ¹Ù´Ú¿¡ ´ê¾Ò´ÂÁö È®ÀÎ
+		// ë°”ë‹¥ì— ë‹¿ì•˜ëŠ”ì§€ í™•ì¸
 		if (collisionFlags & physx::PxControllerCollisionFlag::eCOLLISION_DOWN)
 		{
 			isJumping = false;
 			jumpVelocity = 0.0f;
 		}
 
-		// ´ë±â ÁßÀÎ ÀÌµ¿ º¤ÅÍ ÃÊ±âÈ­
+		// ëŒ€ê¸° ì¤‘ì¸ ì´ë™ ë²¡í„° ì´ˆê¸°í™”
 		pendingMovement = Eigen::Vector3f::Zero();
 	}
 

@@ -1,4 +1,4 @@
-#include "GameObject.h"
+ï»¿#include "GameObject.h"
 #include "PhysicsSystem.h"
 #include "ZnRigidBody.h"
 #include "ZnCollider.h"
@@ -29,7 +29,7 @@ namespace PurahEngine
 		auto user0 = _body->GetUserData();
 		const auto pBody = static_cast<PurahEngine::RigidBody*>(user0);
 
-		// Àá¿¡¼­ ±ú¾î³µÀ¸´Ï
+		// ìž ì—ì„œ ê¹¨ì–´ë‚¬ìœ¼ë‹ˆ
 
 		return;
 	}
@@ -41,7 +41,7 @@ namespace PurahEngine
 
 		pJoint->BreakCallback();
 
-		// ÄÄÆ÷³ÍÆ® ÆÄ±« ÇØ¾ßÇÔ.
+		// ì»´í¬ë„ŒíŠ¸ íŒŒê´´ í•´ì•¼í•¨.
 		pJoint->GetGameObject()->DeleteComponent(pJoint);
 	}
 

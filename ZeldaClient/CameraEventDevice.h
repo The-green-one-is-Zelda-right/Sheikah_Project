@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "ElectricalDevice.h"
 
@@ -24,32 +24,32 @@ namespace Phyzzle
 	private:
 		void Run();
 
-		void EnableController() = delete;	// Å° Á¶ÀÛÀ» È°¼ºÈ­ÇÑ´Ù.
-		void DisableController() = delete;	// Å° Á¶ÀÛÀ» ºñÈ°¼ºÈ­ÇÑ´Ù.
+		void EnableController() = delete;	// í‚¤ ì¡°ì‘ì„ í™œì„±í™”í•œë‹¤.
+		void DisableController() = delete;	// í‚¤ ì¡°ì‘ì„ ë¹„í™œì„±í™”í•œë‹¤.
 
 	private:
 		PurahEngine::Camera* SearchCamera(PurahEngine::GameObject* obj);
 
 	private:
-		bool timeStopDuringEvent;							// ÀÌº¥Æ® Áß, ½Ã°£ Á¤Áö
-		bool worksOnlyOnce;									// ´Ü ÇÑ¹ø¸¸ ÀÛµ¿
-		float moveSpeed;									// Ä«¸Ş¶óÀÇ ÀÌµ¿¼Óµµ
-		float startDelay;									// Ä«¸Ş¶óÀÇ ÀÌµ¿ÀÌ ½ÃÀÛµÇ±â ÀüÀÇ Áö¿¬½Ã°£
-		float powerDelay;									// Ä«¸Ş¶óÀÇ ÀÌµ¿ÀÌ Á¾·áµÈ ÈÄ, targetDevice¿¡ Àü¿øÀ» °ø±ŞÇÏ±â±îÁö Áö¿¬½Ã°£
-		float delay;										// targetDevice¿¡ Àü¿ø °ø±Ş ÈÄ, ÀÌº¥Æ® Á¾·á±îÁöÀÇ ´ë±â½Ã°£
-		PurahEngine::Camera* targetCamera;					// ÀÌº¥Æ®¿¡ »ç¿ëÇÒ Ä«¸Ş¶ó
+		bool timeStopDuringEvent;							// ì´ë²¤íŠ¸ ì¤‘, ì‹œê°„ ì •ì§€
+		bool worksOnlyOnce;									// ë‹¨ í•œë²ˆë§Œ ì‘ë™
+		float moveSpeed;									// ì¹´ë©”ë¼ì˜ ì´ë™ì†ë„
+		float startDelay;									// ì¹´ë©”ë¼ì˜ ì´ë™ì´ ì‹œì‘ë˜ê¸° ì „ì˜ ì§€ì—°ì‹œê°„
+		float powerDelay;									// ì¹´ë©”ë¼ì˜ ì´ë™ì´ ì¢…ë£Œëœ í›„, targetDeviceì— ì „ì›ì„ ê³µê¸‰í•˜ê¸°ê¹Œì§€ ì§€ì—°ì‹œê°„
+		float delay;										// targetDeviceì— ì „ì› ê³µê¸‰ í›„, ì´ë²¤íŠ¸ ì¢…ë£Œê¹Œì§€ì˜ ëŒ€ê¸°ì‹œê°„
+		PurahEngine::Camera* targetCamera;					// ì´ë²¤íŠ¸ì— ì‚¬ìš©í•  ì¹´ë©”ë¼
 		std::vector<PurahEngine::Transform*> cameraPath;
 		std::vector<ElectricalDevice*> targetDeviceList;
 
 		Player* player = nullptr;
 
 	private:
-		bool running;		// Ä«¸Ş¶ó ÀÌº¥Æ® ÁøÇàÁß
+		bool running;		// ì¹´ë©”ë¼ ì´ë²¤íŠ¸ ì§„í–‰ì¤‘
 		int powerCounter;
-		PurahEngine::Camera* originMainCamera = nullptr; // ¿ø·¡ ¸ŞÀÎ Ä«¸Ş¶ó ¿´´ø Ä«¸Ş¶ó¸¦ ÀÓ½Ã ÀúÀå
+		PurahEngine::Camera* originMainCamera = nullptr; // ì›ë˜ ë©”ì¸ ì¹´ë©”ë¼ ì˜€ë˜ ì¹´ë©”ë¼ë¥¼ ì„ì‹œ ì €ì¥
 
-		float eventElapsed;		// ÁøÇàÁßÀÎ ÀÌº¥Æ®ÀÇ ´©Àû ½Ã°£
-		int eventLevel;			// ÁøÇàÁßÀÎ ÀÌº¥Æ®ÀÇ cameraPath¿¡¼­ÀÇ ¹øÈ£
+		float eventElapsed;		// ì§„í–‰ì¤‘ì¸ ì´ë²¤íŠ¸ì˜ ëˆ„ì  ì‹œê°„
+		int eventLevel;			// ì§„í–‰ì¤‘ì¸ ì´ë²¤íŠ¸ì˜ cameraPathì—ì„œì˜ ë²ˆí˜¸
 		bool workOnce;
 
 		int pauseLevel;

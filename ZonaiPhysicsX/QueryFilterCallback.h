@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <PxQueryFiltering.h>
 
 namespace ZonaiPhysics

@@ -1,16 +1,6 @@
-#include "AttachSelectState.h"
-
-#include "EnumPlayerState.h"
-#include "Player.h"
-
-#include "PlayerController.h"
-#include "PlayerStateMachine.h"
-#include "PlayerMovement.h"
-#include "PlayerAnimation.h"
-#include "PlayerCamera.h"
-#include "PlayerUIManager.h"
-
+ï»¿#include "AttachSelectState.h"
 #include "PzObject.h"
+
 #include "AttachSystem.h"
 
 namespace Phyzzle
@@ -19,28 +9,28 @@ namespace Phyzzle
 		= default;
 
 #pragma region StateEvent
-	// »óÅÂ µé¾î¿À±â
+	// ìƒíƒœ ë“¤ì–´ì˜¤ê¸°
 	void AttachSelectState::StateEnter()
 	{
 		{
 			using namespace Eigen;
 
-			auto p = player->GetCamera()->coreDefaultPosition;
+			auto p = player->camData.coreDefaultPosition;
 			p.x() += 0.5f;
 			p.y() += 0.5f;
 
-			player->GetCamera()->SetCameraCoreLocalTargetPosition(p);
+			player->SetCameraCoreLocalTargetPosition(p);
 		}
 
 		CrossHeadRender(true);
 		SearchUIRender(true);
 	}
 
-	// »óÅÂ ³ª°¡±â
+	// ìƒíƒœ ë‚˜ê°€ê¸°
 	void AttachSelectState::StateExit()
 	{
 		{
-			player->GetCamera()->SetCameraCoreLocalTargetPosition(player->GetCamera()->coreDefaultPosition);
+			player->SetCameraCoreLocalTargetPosition(player->camData.coreDefaultPosition);
 		}
 
 		EnableOutline(false);
@@ -102,10 +92,10 @@ namespace Phyzzle
 #pragma endregion StateEvent
 
 #pragma region Input
-	// ÀÌµ¿
+	// ì´ë™
 	void AttachSelectState::Stick_L()
 	{
-		// ÀÌµ¿ ¹æÇâÀ¸·Î Ä³¸¯ÅÍ¸¦ È¸Àü ½ÃÅ´
+		// ì´ë™ ë°©í–¥ìœ¼ë¡œ ìºë¦­í„°ë¥¼ íšŒì „ ì‹œí‚´
 		PlayerMove(player->data.moveSpeed);
 		auto velocity = player->data.playerRigidbody->GetLinearVelocity();
 		velocity.y() = 0.f;
@@ -115,44 +105,44 @@ namespace Phyzzle
 		}
 	}
 
-	// Ä«¸Þ¶ó È¸Àü
+	// ì¹´ë©”ë¼ íšŒì „
 	void AttachSelectState::Stick_R()
 	{
 
 	}
 
-	// Ãë¼Ò
+	// ì·¨ì†Œ
 	void AttachSelectState::Click_A()
 	{
 		Cancel();
 	}
 
-	// ¼±ÅÃ
+	// ì„ íƒ
 	void AttachSelectState::Click_B()
 	{
-		// ·¹ÀÌÄ³½ºÆÃ
+		// ë ˆì´ìºìŠ¤íŒ…
 		if (select)
 		{ 
-			// »óÅÂ ¹Ù²Þ
+			// ìƒíƒœ ë°”ê¿ˆ
 			player->data.holdObject = selectObject;
 			player->data.holdObjectBody = seleteBody;
-			player->ChangeAbilityState(AbilityState::ATTACH_HOLD);
+			player->ChangeAbilityState(Player::ATTACH_HOLD);
 		}
 	}
 
-	// Ãë¼Ò
+	// ì·¨ì†Œ
 	void AttachSelectState::Click_X()
 	{
 		Cancel();
 	}
 
-	// Ãë¼Ò
+	// ì·¨ì†Œ
 	void AttachSelectState::Click_Y()
 	{
 		Cancel();
 	}
 
-	// Ãë¼Ò
+	// ì·¨ì†Œ
 	void AttachSelectState::Click_LB()
 	{
 		Cancel();
@@ -162,33 +152,33 @@ namespace Phyzzle
 #pragma region Content
 	void AttachSelectState::PlayerMove(float _speed) const
 	{
-		if (player->GetMovement()->TryPlayerMove(_speed))
+		if (player->TryPlayerMove(_speed))
 		{
-			player->GetAnimation()->ChangePlayerAnimationState(AnimationState::WALK);
+			player->ChangePlayerAnimationState(Player::WALK);
 		}
 		else
 		{
-			player->GetAnimation()->ChangePlayerAnimationState(AnimationState::IDLE);
+			player->ChangePlayerAnimationState(Player::IDLE);
 		}
 	}
 
 	void AttachSelectState::CameraUpdate() const
 	{
-		player->GetCamera()->UpdateSelectCamera();
+		player->UpdateSelectCamera();
 	}
 
 	void AttachSelectState::Cancel()
 	{
 		EnableOutline(false);
 		CrossHeadRender(false);
-		player->GetStateMachine()->SetAbilityState(AbilityState::DEFAULT);
+		player->ChangeAbilityState(Player::AbilityState::DEFAULT);
 	}
 
 	void AttachSelectState::Jump() const
 	{
-		if (player->GetMovement()->TryJump())
+		if (player->TryJump())
 		{
-			player->GetAnimation()->ChangePlayerAnimationState(AnimationState::JUMP);
+			player->ChangePlayerAnimationState(Player::JUMP);
 		}
 	}
 
@@ -204,11 +194,11 @@ namespace Phyzzle
 
 	bool AttachSelectState::Search()
 	{
-		Eigen::Vector3f from = player->GetCameraCoreTrnasform()->GetWorldPosition();
-		Eigen::Matrix3f rotate = player->GetCameraCoreTrnasform()->GetWorldRotation().toRotationMatrix();
+		Eigen::Vector3f from = player->data.cameraCore->GetWorldPosition();
+		Eigen::Matrix3f rotate = player->data.cameraCore->GetWorldRotation().toRotationMatrix();
 		Eigen::Vector3f to = rotate * Eigen::Vector3f{ 0.f, 0.f, 1.f };
-		float distance = player->GetStateMachine()->attachRaycastDistance + std::fabs(player->GetCameraCoreTrnasform()->GetLocalPosition().z());
-		unsigned int layers = player->GetStateMachine()->searchAroundLayers;
+		float distance = player->abilData.attachRaycastDistance + std::fabs(player->data.cameraCore->GetLocalPosition().z());
+		unsigned int layers = player->abilData.searchAroundLayers;
 		ZonaiPhysics::ZnQueryInfo info;
 
 		const bool block = PurahEngine::Physics::Raycast(from, to, distance, layers, info);
@@ -249,16 +239,16 @@ namespace Phyzzle
 	{
 		using namespace Eigen;
 
-		float radius = player->GetStateMachine()->searchAroundDistance;
-		Eigen::Affine3f parentMatrix(player->GetCameraArmTrnasform()->GetWorldMatrix());
-		Eigen::Vector3f corePosition = player->GetCameraCoreTrnasform()->GetLocalPosition();
+		float radius = player->abilData.searchAroundDistance;
+		Eigen::Affine3f parentMatrix(player->data.cameraArm->GetWorldMatrix());
+		Eigen::Vector3f corePosition = player->data.cameraCore->GetLocalPosition();
 		corePosition.z() = 0.f;
 		Eigen::Vector3f position = parentMatrix * corePosition;
 		Quaternionf rotation = Quaternionf::Identity();
-		int layer = player->GetStateMachine()->searchAroundLayers;
+		int layer = player->abilData.searchAroundLayers;
 		ZonaiPhysics::ZnQueryInfo info;
-		info.actors.resize(player->GetStateMachine()->searchAroundbufferSize);
-		info.shapes.resize(player->GetStateMachine()->searchAroundbufferSize);
+		info.actors.resize(player->abilData.searchAroundbufferSize);
+		info.shapes.resize(player->abilData.searchAroundbufferSize);
 
 		bool hit = PurahEngine::Physics::SphereOverlap(radius, position, rotation, layer, info);
 
@@ -314,7 +304,7 @@ namespace Phyzzle
 
 		if (_value)
 		{
-			// AttachSystem::Instance()->EnableOutline(selectObject, /*&player->color0, &player->color1*/);
+			AttachSystem::Instance()->EnableOutline(selectObject, &player->color0, &player->color1);
 		}
 		else
 		{
@@ -324,23 +314,22 @@ namespace Phyzzle
 	
 	void AttachSelectState::CrossHeadRender(bool _value)
 	{
-		// player->data.crossHead01->SetEnable(_value);
-		player->GetUIManager()->ShowAttachDefaultUI();
+		player->data.crossHead01->SetEnable(_value);
 	}
 
 	void AttachSelectState::CrossHeadSelectRender(bool _value)
 	{
-		// player->data.crossHead02->SetEnable(_value);
+		player->data.crossHead02->SetEnable(_value);
 	}
 
 	void AttachSelectState::SearchUIRender(bool _value)
 	{
-		// player->uiData.Attach_Default->SetEnable(_value);
+		player->uiData.Attach_Default->SetEnable(_value);
 	}
 
 	void AttachSelectState::SearchCatchUIRender(bool _value)
 	{
-		// player->uiData.Catch_B->SetEnable(_value);
+		player->uiData.Catch_B->SetEnable(_value);
 	}
 
 #pragma endregion Content

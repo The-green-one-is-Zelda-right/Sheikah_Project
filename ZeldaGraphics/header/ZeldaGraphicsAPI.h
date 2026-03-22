@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifdef ZELDAGRAPHICS_EXPORTS
 #define ZELDAGRAPHICS_API __declspec(dllexport)

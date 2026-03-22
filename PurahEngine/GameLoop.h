@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngineAPI.h"
 #include <windows.h>
 
@@ -19,13 +19,13 @@ namespace PurahEngine
 		GameLoop();
 		~GameLoop();
 		GameLoop(const GameLoop& ref) = delete;
-		// Å¬·¡½º¸¦ »ı¼ºÇÏ°Ô µÉ °æ¿ì, ±âº»ÀûÀ¸·Î = ¿¡ ´ëÇÑ ¿¬»êÀÚ ¿À¹ö·ÎµùÀÌ »ı¼ºµÈ´Ù.
-		// ½Ì±ÛÅÏÀº °´Ã¼°¡ ÇÏ³ª¿©¾ß ÇÏ¹Ç·Î ±×°ÍÀ» ¹æÁöÇÏ±â À§ÇØ, ¸í½ÃÀûÀ¸·Î delete¸¦ »ç¿ëÇÏ¿© »ç¿ëÀ» ¸·´Â´Ù.
+		// í´ë˜ìŠ¤ë¥¼ ìƒì„±í•˜ê²Œ ë  ê²½ìš°, ê¸°ë³¸ì ìœ¼ë¡œ = ì— ëŒ€í•œ ì—°ì‚°ì ì˜¤ë²„ë¡œë”©ì´ ìƒì„±ëœë‹¤.
+		// ì‹±ê¸€í„´ì€ ê°ì²´ê°€ í•˜ë‚˜ì—¬ì•¼ í•˜ë¯€ë¡œ ê·¸ê²ƒì„ ë°©ì§€í•˜ê¸° ìœ„í•´, ëª…ì‹œì ìœ¼ë¡œ deleteë¥¼ ì‚¬ìš©í•˜ì—¬ ì‚¬ìš©ì„ ë§‰ëŠ”ë‹¤.
 		GameLoop& operator=(const GameLoop& ref) = delete;
 
 	public:
 		void Initialize(_In_ HINSTANCE hInstance, LPCWSTR gameName, unsigned int width, unsigned int height);
-		// ¿ÜºÎ¿¡¼­ »ç¿ëÇÒ Run() ÇÔ¼ö
+		// ì™¸ë¶€ì—ì„œ ì‚¬ìš©í•  Run() í•¨ìˆ˜
 		void Run(_In_ int nCmdShow);
 		void Finalize();
 
@@ -36,7 +36,7 @@ namespace PurahEngine
 		bool moving = false;
 		HWND hWnd;
 
-		// ³»ºÎÀûÀ¸·Î Run()ÇÔ¼ö¿¡¼­ µ¹¾Æ°¥ ÇÔ¼ö
+		// ë‚´ë¶€ì ìœ¼ë¡œ Run()í•¨ìˆ˜ì—ì„œ ëŒì•„ê°ˆ í•¨ìˆ˜
 		void run();
 
 		static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

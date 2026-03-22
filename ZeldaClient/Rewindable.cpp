@@ -1,9 +1,10 @@
-#include "TimeController.h"
+ï»¿#include "TimeController.h"
 
 #include "RigidBody.h"
 #include "GameObject.h"
 
 #include "Snapshot.h"
+#include "PzObject.h"
 
 #include "Rewindable.h"
 
@@ -63,25 +64,23 @@ namespace Phyzzle
 
 		this->step = PurahEngine::TimeController::GetInstance().GetDeltaTime();
 
-		// ¹°¸® Á¤º¸¸¦ ÀúÀå.
-		Snapshot* snapshot = new Snapshot;
-		snapshot->step = step;
-		snapshot->position = body->GetPosition();
-		snapshot->rotation = body->GetRotation();
-		snapshot->linearVelocity = body->GetLinearVelocity();
-		snapshot->angularVelocity = body->GetAngularVelocity();
+		auto* object = gameObject->GetComponent<PzObject>();
+		if (object == nullptr)
+		{
+			return;
+		}
 
-		RewindSystem::Instance()->Store(this, snapshot);
+		RewindSystem::Instance().SaveState(object);
 	}
 
 	void Rewindable::Restore(Snapshot* _data)
 	{
-		// ½Ã°£ °£°Ý
+		// ì‹œê°„ ê°„ê²©
 
-		// dt¸¦ 
+		// dtë¥¼ 
 		float dt = PurahEngine::TimeController::GetInstance().GetDeltaTime();
 
-		// ¹°¸® Á¤º¸¸¦ ²¨³¿.
+		// ë¬¼ë¦¬ ì •ë³´ë¥¼ êº¼ëƒ„.
 		_data->linearVelocity;
 		_data->angularVelocity;
 	}

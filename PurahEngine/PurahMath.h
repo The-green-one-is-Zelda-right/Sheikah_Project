@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PurahEngineAPI.h"
 
@@ -10,13 +10,13 @@ namespace PurahEngine
 	class PURAHENGINE_API PurahMath
 	{
 	public:
-		// µÎ ÄõÅÍ´Ï¾ğ »çÀÌÀÇ È¸Àü °¢µµ (¶óµğ¾È) °è»ê
+		// ë‘ ì¿¼í„°ë‹ˆì–¸ ì‚¬ì´ì˜ íšŒì „ ê°ë„ (ë¼ë””ì•ˆ) ê³„ì‚°
 		float CalculateRotationLength(const Eigen::Quaternionf& quatA, const Eigen::Quaternionf& quatB);
-		// µÎ º¯È¯ º¤ÅÍ »çÀÌÀÇ À¯Å¬¸®µå °Å¸® °è»ê
+		// ë‘ ë³€í™˜ ë²¡í„° ì‚¬ì´ì˜ ìœ í´ë¦¬ë“œ ê±°ë¦¬ ê³„ì‚°
 		float CalculateTranslationLength(const Eigen::Vector3f& translationA, const Eigen::Vector3f& translationB);
-		// µÎ º¯È¯ Çà·Ä »çÀÌÀÇ °æ·Î ±æÀÌ °è»ê
+		// ë‘ ë³€í™˜ í–‰ë ¬ ì‚¬ì´ì˜ ê²½ë¡œ ê¸¸ì´ ê³„ì‚°
 		float CalculateTransformPathLength(const Eigen::Matrix4f& A, const Eigen::Matrix4f& B, int steps);
-		// µÎ º¯È¯ Çà·ÄÀÇ º¸°£ Çà·Ä °è»ê
+		// ë‘ ë³€í™˜ í–‰ë ¬ì˜ ë³´ê°„ í–‰ë ¬ ê³„ì‚°
 		Eigen::Matrix4f InterpolateTransform(const Eigen::Matrix4f& A, const Eigen::Matrix4f& B, float t);
 
 	public:

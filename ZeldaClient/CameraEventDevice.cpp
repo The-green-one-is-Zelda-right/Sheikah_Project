@@ -1,4 +1,4 @@
-#include "CameraEventDevice.h"
+ï»¿#include "CameraEventDevice.h"
 
 #include "Player.h"
 
@@ -120,7 +120,7 @@ namespace Phyzzle
 				{
 					if (delay < eventElapsed)
 					{
-						// ÇöÀç Ä«¸Þ¶ó°¡ TargetCameraÀÎ °æ¿ì¿¡¸¸ ¿ø·¡ Ä«¸Þ¶ó·Î º¯°æÇÑ´Ù.
+						// í˜„ìž¬ ì¹´ë©”ë¼ê°€ TargetCameraì¸ ê²½ìš°ì—ë§Œ ì›ëž˜ ì¹´ë©”ë¼ë¡œ ë³€ê²½í•œë‹¤.
 						if (PurahEngine::SceneManager::GetInstance().GetMainCamera() == targetCamera)
 						{
 							originMainCamera->SetMainCamera();
@@ -200,7 +200,7 @@ namespace Phyzzle
 				targetCamera->GetGameObject()->GetTransform()->SetWorldMatrix(cameraPath[0]->GetWorldMatrix());
 			}
 
-			// ¸ÞÀÎ Ä«¸Þ¶ó ±³Ã¼
+			// ë©”ì¸ ì¹´ë©”ë¼ êµì²´
 			targetCamera->SetMainCamera();
 		}
 		else

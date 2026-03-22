@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "RenderInfo.h"
 
@@ -11,7 +11,7 @@ class RenderInfoManager final
 public:
 	void ClearRenderInfo();
 
-	// RenderInfo¸¦ Á¤·ÄÇÑ´Ù. (DrawID°¡ Á¤ÇØÁø´Ù.)
+	// RenderInfoë¥¼ ì •ë ¬í•œë‹¤. (DrawIDê°€ ì •í•´ì§„ë‹¤.)
 	void SortRenderInfo(DirectX::XMMATRIX viewMatrix);
 
 	void RegisterRenderInfo(RenderType renderType, RenderOption renderOption, InstancingKey instancingKey, InstancingValue instancingValue);

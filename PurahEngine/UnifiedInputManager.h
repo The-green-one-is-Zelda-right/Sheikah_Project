@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PurahEngineAPI.h"
 #include "eUnfInput.h"
@@ -25,15 +25,15 @@ namespace PurahEngine
 
 		void Update();
 
-		// Å°°¡ ¹æ±İ ´­·È´Â°¡?
+		// í‚¤ê°€ ë°©ê¸ˆ ëˆŒë ¸ëŠ”ê°€?
 		bool GetKeyDown(eUnfInput keycode);
-		// Å° ÀÔ·ÂÀÌ 
+		// í‚¤ ì…ë ¥ì´ 
 		bool GetKey(eUnfInput keycode);
-		// Å°¸¦ ´­¸®°í ÀÖ´Â°¡?
+		// í‚¤ë¥¼ ëˆŒë¦¬ê³  ìˆëŠ”ê°€?
 		bool GetKeyPressed(eUnfInput keycode);
-		// Å°¸¦ ¹æ±İ ¶Ã´Â°¡?
+		// í‚¤ë¥¼ ë°©ê¸ˆ ë—ëŠ”ê°€?
 		bool GetKeyUp(eUnfInput keycode);
-		// Å°¸¦ ¶¼°í ÀÖ´Â »óÅÂÀÎ°¡?
+		// í‚¤ë¥¼ ë–¼ê³  ìˆëŠ” ìƒíƒœì¸ê°€?
 		bool GetKeyReleased(eUnfInput keycode);
 
 	private:

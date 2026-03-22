@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <unordered_set>
 
 #include "IState.h"
@@ -11,7 +11,17 @@ namespace Phyzzle
 	class AttachHoldState final : public IState
 	{
 	public:
-		enum RotateInfo;
+		enum RotateInfo : int
+		{
+			None		= 0,
+			RotateX		= 1,
+			RotateY		= 2,
+			RotateX_Y	= 3,
+			RotateXY	= 4,
+			RotateY_X	= 5,
+			RotateYX	= 6,
+			RotateZ		= 7,
+		};
 
 		AttachHoldState() = delete;
 		explicit AttachHoldState(Player* _player);
@@ -35,8 +45,8 @@ namespace Phyzzle
 			float angle, const Eigen::Vector3f& axis,
 			RotateInfo type);
 
-		void VariableSet();										// º¯¼ö ÀúÀå
-		void VariableReset();									// º¯¼ö ÃÊ±âÈ­
+		void VariableSet();										// ì„ íƒ ëŒ€ìƒ ê´€ë ¨ ìƒíƒœë¥¼ ì„¤ì •
+		void VariableReset();									// ì„ íƒ ëŒ€ìƒ ê´€ë ¨ ìƒíƒœë¥¼ ì´ˆê¸°í™”
 #pragma endregion Initialize
 
 #pragma region StateEvent
@@ -90,40 +100,40 @@ namespace Phyzzle
 
 		PositionSpring posSpring;
 		QuaternionSpring quatSpring;
-		const float pushingVelocity = 5.f;		// up, down ÀÔ·ÂÀÇ
+		const float pushingVelocity = 5.f;		// ìƒí•˜ ì´ë™ ì†ë„
 		const float rotateAngle = 0.25f * std::numbers::pi_v<float>;
 
 	private:
-		Eigen::Vector3f targetVelocity = Eigen::Vector3f::Zero();			// ÀÌ¹ø ÇÁ·¹ÀÓ¿¡ »ı±ä Á¾ÇÕ ¼Óµµ
-		Eigen::Vector3f targetAngularVelocity = Eigen::Vector3f::Zero();	// ÀÌ¹ø ÇÁ·¹ÀÓ¿¡ »ı±ä Á¾ÇÕ °¢¼Óµµ
+		Eigen::Vector3f targetVelocity = Eigen::Vector3f::Zero();			// ëª©í‘œ ì„ í˜• ì†ë„
+		Eigen::Vector3f targetAngularVelocity = Eigen::Vector3f::Zero();	// ëª©í‘œ ê°ì†ë„
 
-		Eigen::Vector3f linearSpringForce = Eigen::Vector3f::Zero();					// ½ºÇÁ¸µÀ¸·Î ÀÎÇØ »ı±â´Â ¼Óµµ
-		Eigen::Vector3f angularSpringForce = Eigen::Vector3f::Zero();					// ½ºÇÁ¸µÀ¸·Î ÀÎÇØ »ı±â´Â °¢¼Óµµ
+		Eigen::Vector3f linearSpringForce = Eigen::Vector3f::Zero();					// ì„ í˜• ìŠ¤í”„ë§ ê³„ì‚° ê²°ê³¼
+		Eigen::Vector3f angularSpringForce = Eigen::Vector3f::Zero();					// íšŒì „ ìŠ¤í”„ë§ ê³„ì‚° ê²°ê³¼
 
-		Eigen::Vector3f targetPosition = Eigen::Vector3f::Zero();			// 
+		Eigen::Vector3f targetPosition = Eigen::Vector3f::Zero();			// í”Œë ˆì´ì–´ ê¸°ì¤€ ëª©í‘œ ìœ„ì¹˜
 		Eigen::Quaternionf targetRotation = Eigen::Quaternionf::Identity();
 
 		PurahEngine::RigidBody* selectBody;
 		Phyzzle::PzObject* attachble;
 
 	private:
-		void PlayerMove(float _speed) const;					// ÀÌµ¿
+		void PlayerMove(float _speed) const;					// í”Œë ˆì´ì–´ ì´ë™
 
 #pragma region Camera
-		void UpdateCamera();									// Ä«¸Ş¶ó ¾÷µ¥ÀÌÆ®
-		void UpdateHoldingCameraPosition(Eigen::Vector3f& _local, Eigen::Vector3f& _world) const;						// Ä«¸Ş¶ó À§Ä¡ ¾÷µ¥ÀÌÆ®
-		void UpdateHoldingCameraRotation() const;							// Ä«¸Ş¶ó È¸Àü ¾÷µ¥ÀÌÆ®
-		void CameraReset() const;								// Ä«¸Ş¶ó È¸Àü
+		void UpdateCamera();									// ì¹´ë©”ë¼ë¥¼ ê°±ì‹ 
+		void UpdateHoldingCameraPosition(Eigen::Vector3f& _local, Eigen::Vector3f& _world) const;						// í™€ë“œ ìƒíƒœ ì¹´ë©”ë¼ ìœ„ì¹˜ë¥¼ ê°±ì‹ 
+		void UpdateHoldingCameraRotation() const;							// í™€ë“œ ìƒíƒœ ì¹´ë©”ë¼ íšŒì „ì„ ê°±ì‹ 
+		void CameraReset() const;								// ì¹´ë©”ë¼ë¥¼ ì´ˆê¸° ìƒíƒœë¡œ ë˜ëŒë¦¼
 #pragma endregion Camera
 
-		void Cancel() const;										// Default ¸ğµå·Î µ¹¾Æ°¨
-		bool TrySelect();										// ¼±ÅÃ
+		void Cancel() const;										// ê¸°ë³¸ ìƒíƒœë¡œ ë³µê·€
+		bool TrySelect();										// í˜„ì¬ í™€ë“œ ëŒ€ìƒ ì„ íƒ ì‹œë„
 
-		void LookToWorldDirection(const Eigen::Vector3f& _to);	// ÇÃ·¹ÀÌ¾î°¡ to ¹æÇâÀ¸·Î È¸Àü
-		void LookToLocalDirection(const Eigen::Vector3f& _to);	// ÇÃ·¹ÀÌ¾î°¡ to ¹æÇâÀ¸·Î È¸Àü
+		void LookToWorldDirection(const Eigen::Vector3f& _to);	// í”Œë ˆì´ì–´ë¥¼ ì›”ë“œ ë°©í–¥ìœ¼ë¡œ íšŒì „
+		void LookToLocalDirection(const Eigen::Vector3f& _to);	// í”Œë ˆì´ì–´ë¥¼ ë¡œì»¬ ë°©í–¥ìœ¼ë¡œ íšŒì „
 
-		void ApplyObjectVelocity() const;						// ÀÔ·ÂÀ» ¿ÀºêÁ§Æ®¿¡ Àû¿ë½ÃÅ´
-		void ResetObjectVelocity();								// ÀÔ·ÂÀ» ÃÊ±âÈ­ ½ÃÅ´
+		void ApplyObjectVelocity() const;						// ê³„ì‚°ëœ ì˜¤ë¸Œì íŠ¸ ì†ë„ë¥¼ ì ìš©
+		void ResetObjectVelocity();								// ì˜¤ë¸Œì íŠ¸ ì†ë„ ë²„í¼ë¥¼ ì´ˆê¸°í™”
 
 		// void SpringMassModel(const Eigen::Vector3f& worldTargetPosition);
 		// void UpdateTargetPosition();
@@ -137,20 +147,20 @@ namespace Phyzzle
 		void CalculateSpringPosition();
 		void CalculateSpringRotation();
 
-		// void TranslateSpringAlongY(float _distance);									// ½ºÇÁ¸µ ÀÌµ¿
-		void TranslateSpringAlongZ(float _distance);									// ½ºÇÁ¸µ ÀÌµ¿
+		// void TranslateSpringAlongY(float _distance);									// ìŠ¤í”„ë§ì„ Yì¶•ìœ¼ë¡œ ì´ë™
+		void TranslateSpringAlongZ(float _distance);									// ìŠ¤í”„ë§ì„ Zì¶•ìœ¼ë¡œ ì´ë™
 
-		void TranslateObjectAlongXZ(float _distance);									// ¿ÀºêÁ§Æ® ÀÌµ¿
-		void TranslateObjectAlongY(float _distance);									// ¿ÀºêÁ§Æ® ÀÌµ¿
-		// void TranslateObjectAlongZ(float _distance);									// ¿ÀºêÁ§Æ® ÀÌµ¿
-		void TranslateObject(const Eigen::Vector3f& _direction, float power);			// ¿ÀºêÁ§Æ® ÀÌµ¿
+		void TranslateObjectAlongXZ(float _distance);									// ì˜¤ë¸Œì íŠ¸ë¥¼ XZ í‰ë©´ìœ¼ë¡œ ì´ë™
+		void TranslateObjectAlongY(float _distance);									// ì˜¤ë¸Œì íŠ¸ë¥¼ Yì¶•ìœ¼ë¡œ ì´ë™
+		// void TranslateObjectAlongZ(float _distance);									// ì˜¤ë¸Œì íŠ¸ë¥¼ Zì¶•ìœ¼ë¡œ ì´ë™
+		void TranslateObject(const Eigen::Vector3f& _direction, float power);			// ì˜¤ë¸Œì íŠ¸ ì´ë™ëŸ‰ì„ ëˆ„ì 
 
-		void RotateSpringAlongX(float _angle);											// ½ºÇÁ¸µ È¸Àü
-		void RotateSpringAlongY(float _angle);											// ½ºÇÁ¸µ È¸Àü
-		void RotateWithSpring(const Eigen::Vector3f& _axis, float _angle);				// ½ºÇÁ¸µ ÀÌµ¿
+		void RotateSpringAlongX(float _angle);											// ìŠ¤í”„ë§ì„ Xì¶•ìœ¼ë¡œ íšŒì „
+		void RotateSpringAlongY(float _angle);											// ìŠ¤í”„ë§ì„ Yì¶•ìœ¼ë¡œ íšŒì „
+		void RotateWithSpring(const Eigen::Vector3f& _axis, float _angle);				// ìŠ¤í”„ë§ ê¸°ì¤€ íšŒì „ì„ ì ìš©
 
-		bool TryAttach() const;									// ºÎÂø
-		bool TryDettach();									// ºÎÂø
+		bool TryAttach() const;									// ë¶€ì°© ì‹œë„
+		bool TryDettach();									// ë¶„ë¦¬ ì‹œë„
 
 		bool SearchAround();
 		void AroundObjectEnableOutline(bool _value);
@@ -169,20 +179,16 @@ namespace Phyzzle
 		void RotationArowRender(bool _value);
 
 		void UIDisable();
+
+		// ë¦¬ë²„ë ˆì½” ê´€ë ¨ í•¨ìˆ˜
+		void SaveRecallState();  // í˜„ì¬ ìƒíƒœ ì €ì¥
+		void StartRecall();      // ë¦¬ë²„ë ˆì½” ì‹œì‘
+		void UpdateRecall(float _deltaTime);  // ë¦¬ë²„ë ˆì½” ì—…ë°ì´íŠ¸
+		void EndRecall();        // ë¦¬ë²„ë ˆì½” ì¢…ë£Œ
+		bool CanUseRecall() const;  // ë¦¬ë²„ë ˆì½” ì‚¬ìš© ê°€ëŠ¥ ì—¬ë¶€
 #pragma endregion Content
 
 	private:
-		enum RotateInfo : int
-		{
-			None		= 0,
-			RotateX		= 1,
-			RotateY		= 2,
-			RotateX_Y	= 3,
-			RotateXY	= 4,
-			RotateY_X	= 5,
-			RotateYX	= 6,
-			RotateZ		= 7,
-		};
 		struct Rotate
 		{
 			RotateInfo info;

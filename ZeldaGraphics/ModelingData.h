@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <d3d11.h>
 #include <DirectXMath.h>
@@ -23,12 +23,12 @@ struct ZMaterial
 	bool hasTexture;
 	std::wstring textureFilePath;
 
-	// Ãß°¡µÉ ¼ö ÀÖ´Â °Íµé
-	// diffuseColor »ö»ó
-	// specularReflection ¹İ»çµµ
-	// Glossiness ±¤ÅÃ
-	// Transparency Åõ¸íµµ
-	// Normal Maps ³ë¸»¸Ê
+	// ì¶”ê°€ë  ìˆ˜ ìˆëŠ” ê²ƒë“¤
+	// diffuseColor ìƒ‰ìƒ
+	// specularReflection ë°˜ì‚¬ë„
+	// Glossiness ê´‘íƒ
+	// Transparency íˆ¬ëª…ë„
+	// Normal Maps ë…¸ë§ë§µ
 };
 
 struct ZMesh

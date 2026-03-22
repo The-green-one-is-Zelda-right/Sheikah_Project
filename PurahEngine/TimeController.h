@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngineAPI.h"
 
 #include <chrono>
@@ -27,7 +27,7 @@ namespace PurahEngine
 		float GetDeltaTime(int pauseLevel);
 
 		/// <summary>
-		/// °ÔÀÓÀ» ÀÏ½ÃÁ¤ÁöÇÕ´Ï´Ù.
+		/// ê²Œì„ì„ ì¼ì‹œì •ì§€í•©ë‹ˆë‹¤.
 		/// </summary>
 		/// <returns> Pause Level </returns>
 		int PauseAll();

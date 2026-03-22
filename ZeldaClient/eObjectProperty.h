@@ -1,14 +1,14 @@
-#pragma once
+ï»¿#pragma once
 #include "TemplateFlag.h"
 
 namespace Phyzzle
 {
 	enum class eObjectProperty : unsigned int
 	{
-		eConductor				= 0x01 << 0,	// Àüµµ¼º
-		eEnableHandling			= 0x01 << 1,	// ¿ïÆ®¶óÇÚµå °¡´É ¿©ºÎ
-		ePortable				= 0x01 << 2,	// ÇÃ·¹ÀÌ¾î°¡ µé ¼ö ÀÖ´Â°¡
-		eFlammable				= 0x01 << 3,	// °¡¿¬¼º
+		eConductor				= 0x01 << 0,	// ì „ë„ì„±
+		eEnableHandling			= 0x01 << 1,	// ìš¸íŠ¸ë¼í•¸ë“œ ê°€ëŠ¥ ì—¬ë¶€
+		ePortable				= 0x01 << 2,	// í”Œë ˆì´ì–´ê°€ ë“¤ ìˆ˜ ìžˆëŠ”ê°€
+		eFlammable				= 0x01 << 3,	// ê°€ì—°ì„±
 		e4						= 0x01 << 4,	// 
 		e5						= 0x01 << 5,	// 
 		e6						= 0x01 << 6,	// 

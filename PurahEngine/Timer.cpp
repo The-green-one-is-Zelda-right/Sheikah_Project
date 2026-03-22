@@ -1,4 +1,4 @@
-#include <cassert>
+ï»¿#include <cassert>
 
 #include "PreTimerHandler.h"
 #include "TimerHandler.h"
@@ -16,14 +16,14 @@ namespace PurahEngine
 
 	void Timer::PreUpdate()
 	{
-		// »õ Å¸ÀÌ¸Ó Ãß°¡
+		// ìƒˆ íƒ€ì´ë¨¸ ì¶”ê°€
 		while (!addPreTimerBuffer.empty())
 		{
 			preTimerList.push_back(addPreTimerBuffer.front());
 			addPreTimerBuffer.pop();
 		}
 
-		// Å¸ÀÌ¸Ó ¾÷µ¥ÀÌÆ®
+		// íƒ€ì´ë¨¸ ì—…ë°ì´íŠ¸
 		for (const auto timer : preTimerList)
 		{
 			timer->Update();
@@ -32,14 +32,14 @@ namespace PurahEngine
 
 	void Timer::Update()
 	{
-		// »õ Å¸ÀÌ¸Ó Ãß°¡
+		// ìƒˆ íƒ€ì´ë¨¸ ì¶”ê°€
 		while (!addTimerBuffer.empty())
 		{
 			timerList.push_back(addTimerBuffer.front());
 			addTimerBuffer.pop();
 		}
 
-		// Å¸ÀÌ¸Ó Á¦°Å
+		// íƒ€ì´ë¨¸ ì œê±°
 		while (!removeTimerBuffer.empty())
 		{
 			auto timer = removeTimerBuffer.front();
@@ -53,7 +53,7 @@ namespace PurahEngine
 			removeTimerBuffer.pop();
 		}
 
-		// Å¸ÀÌ¸Ó ¾÷µ¥ÀÌÆ®
+		// íƒ€ì´ë¨¸ ì—…ë°ì´íŠ¸
 		for (const auto timer : timerList)
 		{
 			timer->Update();

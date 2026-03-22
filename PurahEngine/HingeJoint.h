@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngineAPI.h"
 #include "JointT.h"
 #include "ZnHingeJoint.h"
@@ -15,44 +15,44 @@ namespace PurahEngine
 		void PostInitialize() override;
 
 	public:
-		// °üÀı °¢µµ
+		// ê´€ì ˆ ê°ë„
 		float GetAngle() const;
-		// °üÀı ¼Óµµ
+		// ê´€ì ˆ ì†ë„
 		float GetVelocity() const;
 
-		// °üÀı Á¦ÇÑ
+		// ê´€ì ˆ ì œí•œ
 		void SetLimit(float _lower, float _upper) const;
 		void GetLimit(float& _upper, float& _lower) const;
 
-		// ¹İ¹ß °è¼ö (¸®¹ÌÆ®)
+		// ë°˜ë°œ ê³„ìˆ˜ (ë¦¬ë¯¸íŠ¸)
 		float GetRestitution() const;
 		void SetRestitution(float _restitution) const;
 
-		// Æ¨±â´Â Èû ÃÖ¼ÒÄ¡ (¸®¹ÌÆ®)
+		// íŠ•ê¸°ëŠ” í˜ ìµœì†Œì¹˜ (ë¦¬ë¯¸íŠ¸)
 		float GetBounceThreshold() const;
 		void SetBounceThreshold(float _bounceThreshold) const;
 
-		// ½ºÇÁ¸µ °ü·Ã º¯¼ö
+		// ìŠ¤í”„ë§ ê´€ë ¨ ë³€ìˆ˜
 		void SetSpringArg(float _stiffness, float _damping) const;
 		void GetSpringArg(float& _stiffness, float& _damping) const;
 
-		// ¸ğÅÍÀÇ °¢¼Óµµ
+		// ëª¨í„°ì˜ ê°ì†ë„
 		void SetDriveVelocity(float _velocity) const;
 		float GetDriveVelocity() const;
 
-		// ¸ğÅÍ Èû Á¦ÇÑ
+		// ëª¨í„° í˜ ì œí•œ
 		void SetDriveForceLimit(float) const;
 		float GetDriveForceLimit() const;
 
-		// ±â¾î ºñÀ²
+		// ê¸°ì–´ ë¹„ìœ¨
 		void SetDriveGearRatio(float) const;
 		float GetDriveGearRatio() const;
 
-		// Á¦ÇÑ È°¼ºÈ­
+		// ì œí•œ í™œì„±í™”
 		void SetLimitEnable(bool) const;
-		// ¸ğÅÍ È°¼ºÈ­
+		// ëª¨í„° í™œì„±í™”
 		void SetDriveEnable(bool) const;
-		// ±âÁ¸ ¼Óµµ°¡ ¸ğÅÍÀÇ ¼Óµµ¸¦ ÃÊ°úÇÏ´Â °æ¿ì ÈûÀ» Ãß°¡ÇÏÁö ¾ÊÀ½
+		// ê¸°ì¡´ ì†ë„ê°€ ëª¨í„°ì˜ ì†ë„ë¥¼ ì´ˆê³¼í•˜ëŠ” ê²½ìš° í˜ì„ ì¶”ê°€í•˜ì§€ ì•ŠìŒ
 		void SetDriveFreespin(bool) const;
 
 	public:

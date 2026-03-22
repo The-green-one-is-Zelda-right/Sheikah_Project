@@ -1,4 +1,4 @@
-#include "RenderInfoManager.h"
+ï»¿#include "RenderInfoManager.h"
 
 void RenderInfoManager::ClearRenderInfo()
 {
@@ -7,7 +7,7 @@ void RenderInfoManager::ClearRenderInfo()
 
 void RenderInfoManager::SortRenderInfo(DirectX::XMMATRIX viewMatrix)
 {
-	// Á¤·ÄµÈ RenderInfo¸¦ ÀúÀåÇÏ´Â ÄÁÅ×ÀÌ³Êµé ÃÊ±âÈ­
+	// ì •ë ¬ëœ RenderInfoë¥¼ ì €ì¥í•˜ëŠ” ì»¨í…Œì´ë„ˆë“¤ ì´ˆê¸°í™”
 	deferredRenderInfo.clear();
 	forwardRenderInfo.clear();
 	spriteRenderInfo.clear();
@@ -23,7 +23,7 @@ void RenderInfoManager::SortRenderInfo(DirectX::XMMATRIX viewMatrix)
 	fastOutLineRenderInfo.clear();
 	outLineRenderInfo.clear();
 
-	// renderInfoList¸¦ ¼øÈ¸ÇÏ¸ç Á¤·ÄÇÑ´Ù.
+	// renderInfoListë¥¼ ìˆœíšŒí•˜ë©° ì •ë ¬í•œë‹¤.
 	for (int i = 0; i < renderInfoList.size(); i++)
 	{
 		RenderInfo& renderInfo = renderInfoList[i];
@@ -44,7 +44,7 @@ void RenderInfoManager::SortRenderInfo(DirectX::XMMATRIX viewMatrix)
 				{
 					outLineRenderInfo.push_back(&renderInfo);
 				}
-				// FastOutLineÀº OutLineÀ» ±×¸°´Ù¸é ÁøÇàÇÏÁö ¾Ê´Â´Ù.
+				// FastOutLineì€ OutLineì„ ê·¸ë¦°ë‹¤ë©´ ì§„í–‰í•˜ì§€ ì•ŠëŠ”ë‹¤.
 				else if ((renderOption & RenderInfoOption::FastOutLine) > 0u)
 				{
 					SortRenderInfo(&renderInfo, fastOutLineRenderInfo);
@@ -121,9 +121,9 @@ void RenderInfoManager::SortRenderInfo(DirectX::XMMATRIX viewMatrix)
 		}
 	}
 
-	// sprite¿Í billboard´Â depth°ªÀ¸·Î ÇÑ¹ø ´õ Á¤·ÄÇÑ´Ù.
+	// spriteì™€ billboardëŠ” depthê°’ìœ¼ë¡œ í•œë²ˆ ë” ì •ë ¬í•œë‹¤.
 
-	// ID¸¦ ºÎ¿©ÇÑ´Ù.
+	// IDë¥¼ ë¶€ì—¬í•œë‹¤.
 	int drawIDCounter = 1;
 
 	// 1
@@ -276,13 +276,13 @@ void RenderInfoManager::SortRenderInfo(RenderInfo* renderInfo, std::unordered_ma
 {
 	auto iter = targetContainer.find(renderInfo->instancingKey);
 
-	// µ¿ÀÏÇÑ instancingKey·Î ±×¸°ÀûÀÌ ÀÖÀ½
+	// ë™ì¼í•œ instancingKeyë¡œ ê·¸ë¦°ì ì´ ìˆìŒ
 	if (iter != targetContainer.end())
 	{
 		auto& infoVector = iter->second;
 		infoVector.push_back(renderInfo);
 	}
-	// µ¿ÀÏÇÑ instancingKey·Î ±×¸°ÀûÀÌ ¾øÀ½
+	// ë™ì¼í•œ instancingKeyë¡œ ê·¸ë¦°ì ì´ ì—†ìŒ
 	else
 	{
 		targetContainer.insert({ renderInfo->instancingKey, std::vector<RenderInfo*>(1, renderInfo) });

@@ -1,4 +1,4 @@
-#include "PhysicsSystem.h"
+ï»¿#include "PhysicsSystem.h"
 
 #include "GameObject.h"
 #include "ZnCollider.h"
@@ -136,7 +136,7 @@ namespace PurahEngine
     {
 	    if (awake)
 	    {
-            OutputDebugStringW(L"½ÇÇà µµÁß¿¡ Collider Type º¯°æÀº ºÒ°¡´É ÇÕ´Ï´Ù.");
+            OutputDebugStringW(L"ì‹¤í–‰ ë„ì¤‘ì— Collider Type ë³€ê²½ì€ ë¶ˆê°€ëŠ¥ í•©ë‹ˆë‹¤.");
             return;
 	    }
         

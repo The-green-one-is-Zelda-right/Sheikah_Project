@@ -1,4 +1,4 @@
-#include "Animator.h"
+ï»¿#include "Animator.h"
 
 #include "GraphicsManager.h"
 #include "GameObject.h"
@@ -72,13 +72,13 @@ namespace PurahEngine
 		Initialize_Animator(modelRenderer);
 	}
 
-	// ±âÁ¸¿¡ ¼³Á¤ÇÑ °ªµéÀ» clear·Î ¾ø¾ÖÁö ¾Ê°í
-	// ÃÖ´ëÇÑ º¸Á¸ÇÏ¸é¼­ ÃÊ±âÈ­ÇÑ´Ù.
+	// ê¸°ì¡´ì— ì„¤ì •í•œ ê°’ë“¤ì„ clearë¡œ ì—†ì• ì§€ ì•Šê³ 
+	// ìµœëŒ€í•œ ë³´ì¡´í•˜ë©´ì„œ ì´ˆê¸°í™”í•œë‹¤.
 	void Animator::Initialize_Animator(ModelRenderer* modelRenderer)
 	{
 		if (modelRenderer != nullptr)
 		{
-			// ÀÌ¹Ì ´Ù¸¥ Animator, Renderer°¡ ÀÖ´Ù¸é ¹®Á¦°¡ µÉ ¼ö ÀÖÀ½
+			// ì´ë¯¸ ë‹¤ë¥¸ Animator, Rendererê°€ ìˆë‹¤ë©´ ë¬¸ì œê°€ ë  ìˆ˜ ìˆìŒ
 			assert(modelRenderer->animator == nullptr);
 			assert(targetRenderer == nullptr);
 
@@ -86,7 +86,7 @@ namespace PurahEngine
 			targetRenderer = modelRenderer;
 			ModelID modelID = modelRenderer->GetModelID(modelRenderer->modelName);
 
-			// ÀÌ ¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍ¿Í °ü·ÃµÇ¾î ÀÖ´Â ÄÁÅ×ÀÌ³Ê ÃÊ±âÈ­
+			// ì´ ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ì™€ ê´€ë ¨ë˜ì–´ ìˆëŠ” ì»¨í…Œì´ë„ˆ ì´ˆê¸°í™”
 			animationList.clear();
 			playTime.clear();
 			animationIDTable.clear();
@@ -100,11 +100,11 @@ namespace PurahEngine
 				animationIDTable[animationList[i]] = i;
 			}
 
-			// Å©±â¸¦ º¯°æÇÏ¸é¼­ ÃÊ±âÈ­µÇ¾îÀÖÁö ¾ÊÀº °ªµéÀº ±âº»°ªÀ¸·Î ÃÊ±âÈ­ÇÑ´Ù.
+			// í¬ê¸°ë¥¼ ë³€ê²½í•˜ë©´ì„œ ì´ˆê¸°í™”ë˜ì–´ìˆì§€ ì•Šì€ ê°’ë“¤ì€ ê¸°ë³¸ê°’ìœ¼ë¡œ ì´ˆê¸°í™”í•œë‹¤.
 			playSpeed.resize(animationList.size(), defaultPlaySpeed);
 			animationLoop.resize(animationList.size(), defaultLoop);
 
-			// Blend Time ÃÊ±âÈ­
+			// Blend Time ì´ˆê¸°í™”
 			for (unsigned int i = 0; i < animationList.size(); i++)
 			{
 				for (unsigned int j = 0; j < animationList.size(); j++)
@@ -136,11 +136,11 @@ namespace PurahEngine
 			return;
 		}
 
-		// Blending AnimationÀÌ Àç»ıµÇ°í ÀÖ´Â °æ¿ì¿¡´Â
-		// Á¾·áµÈ ÈÄ¿¡ ´ÙÀ½ ¾Ö´Ï¸ŞÀÌ¼ÇÀ» Àç»ıÇÑ´Ù.
+		// Blending Animationì´ ì¬ìƒë˜ê³  ìˆëŠ” ê²½ìš°ì—ëŠ”
+		// ì¢…ë£Œëœ í›„ì— ë‹¤ìŒ ì• ë‹ˆë©”ì´ì…˜ì„ ì¬ìƒí•œë‹¤.
 
-		// ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ Àç»ıÀÌ ³¡³ª¸é loop°¡ ÄÑÁ®ÀÖ´Â ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ °æ¿ì¿¡´Â ´Ù½Ã ¹İº¹ÇØ¼­ Àç»ıÇÏ¸ç
-		// ±×·¸Áö ¾Ê´Ù¸é ¸¶Áö¸· »óÅÂ¿¡¼­ play¸í·ÉÀÌ ´Ù½Ã µé¾î¿Ã ¶§±îÁö ´ë±âÇÑ´Ù.
+		// ì• ë‹ˆë©”ì´ì…˜ì˜ ì¬ìƒì´ ëë‚˜ë©´ loopê°€ ì¼œì ¸ìˆëŠ” ì• ë‹ˆë©”ì´ì…˜ì˜ ê²½ìš°ì—ëŠ” ë‹¤ì‹œ ë°˜ë³µí•´ì„œ ì¬ìƒí•˜ë©°
+		// ê·¸ë ‡ì§€ ì•Šë‹¤ë©´ ë§ˆì§€ë§‰ ìƒíƒœì—ì„œ playëª…ë ¹ì´ ë‹¤ì‹œ ë“¤ì–´ì˜¬ ë•Œê¹Œì§€ ëŒ€ê¸°í•œë‹¤.
 		bool& isBlending = targetRenderer->isBlending;
 		std::wstring& animationName1 = targetRenderer->animationName1;
 		std::wstring& animationName2 = targetRenderer->animationName2;
@@ -154,18 +154,18 @@ namespace PurahEngine
 		unsigned int animationID1 = animationIDTable[animationName1];
 		unsigned int animationID2 = animationIDTable[animationName2];
 
-		// Blending AnimationÀ» Àç»ıÇÏ´Â Áß
+		// Blending Animationì„ ì¬ìƒí•˜ëŠ” ì¤‘
 		if (isBlending)
 		{
-			// ÇöÀç Àç»ıÁßÀÎ Bleding AnimationÀÇ ÀüÃ¼ Àç»ı½Ã°£
+			// í˜„ì¬ ì¬ìƒì¤‘ì¸ Bleding Animationì˜ ì „ì²´ ì¬ìƒì‹œê°„
 			float currentPlayTime = blendTimeTable[{ animationID1, animationID2 }];
-			// Áö±İ±îÁö Àç»ıµÈ ½Ã°£
+			// ì§€ê¸ˆê¹Œì§€ ì¬ìƒëœ ì‹œê°„
 			float currentElapsedTime = ratio * currentPlayTime;
 
 			currentElapsedTime += deltaTime;
 
-			// Blending AnimationÀÇ Àç»ı½Ã°£ÀÌ Á¾·áµÈ °æ¿ì
-			// ÀÌ¾î¼­ ´ÙÀ½ ¾Ö´Ï¸ŞÀÌ¼ÇÀ» Àç»ıÇÑ´Ù.
+			// Blending Animationì˜ ì¬ìƒì‹œê°„ì´ ì¢…ë£Œëœ ê²½ìš°
+			// ì´ì–´ì„œ ë‹¤ìŒ ì• ë‹ˆë©”ì´ì…˜ì„ ì¬ìƒí•œë‹¤.
 			if (currentElapsedTime > currentPlayTime)
 			{
 				float overTime = currentPlayTime - currentElapsedTime;
@@ -176,7 +176,7 @@ namespace PurahEngine
 
 				float secondPlayTime = playTime[animationID2];
 
-				// ÀÌ¹Ì ½Ã°£ÀÌ ÀÌ¾î¼­ Àç»ıÇÒ ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ Àç»ı½Ã°£À» ÃÊ°úÇÑ °æ¿ì
+				// ì´ë¯¸ ì‹œê°„ì´ ì´ì–´ì„œ ì¬ìƒí•  ì• ë‹ˆë©”ì´ì…˜ì˜ ì¬ìƒì‹œê°„ì„ ì´ˆê³¼í•œ ê²½ìš°
 				if (time2 > secondPlayTime)
 				{
 					if (animationLoop[animationID2])
@@ -194,25 +194,25 @@ namespace PurahEngine
 
 				time1 = time2;
 			}
-			// Blending AnimationÀ» ÀÌ¾î¼­ Àç»ı
+			// Blending Animationì„ ì´ì–´ì„œ ì¬ìƒ
 			else
 			{
 				ratio = currentElapsedTime / currentPlayTime;
 			}
 		}
-		// Blending AnimationÀÌ ¾Æ´Ô
+		// Blending Animationì´ ì•„ë‹˜
 		else
 		{
-			// ÇöÀç Àç»ıÁßÀÎ Bleding AnimationÀÇ ÀüÃ¼ Àç»ı½Ã°£
+			// í˜„ì¬ ì¬ìƒì¤‘ì¸ Bleding Animationì˜ ì „ì²´ ì¬ìƒì‹œê°„
 			float currentPlayTime = playTime[animationID1];
-			// Áö±İ±îÁö Àç»ıµÈ ½Ã°£
+			// ì§€ê¸ˆê¹Œì§€ ì¬ìƒëœ ì‹œê°„
 			float& currentElapsedTime = time1;
-			// ÇöÀç Àç»ıÁßÀÎ ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ ¼Óµµ
+			// í˜„ì¬ ì¬ìƒì¤‘ì¸ ì• ë‹ˆë©”ì´ì…˜ì˜ ì†ë„
 			float currentPlaySpeed = playSpeed[animationID1];
 
 			currentElapsedTime += currentPlaySpeed * deltaTime;
 
-			// Àç»ı½Ã°£ÀÌ Á¾·áµÈ °æ¿ì
+			// ì¬ìƒì‹œê°„ì´ ì¢…ë£Œëœ ê²½ìš°
 			if (currentElapsedTime > currentPlayTime)
 			{
 				if (animationLoop[animationID1])
@@ -229,7 +229,7 @@ namespace PurahEngine
 			}
 			else
 			{
-				// ±× ¿ÜÀÇ °æ¿ì time1¿¡ ÀÌ¹Ì deltaTimeÀÌ ´õÇØÁ³±â ¶§¹®¿¡ µû·Î Ã³¸®ÇÒ ÇÊ¿ä°¡ ¾øÀ½
+				// ê·¸ ì™¸ì˜ ê²½ìš° time1ì— ì´ë¯¸ deltaTimeì´ ë”í•´ì¡Œê¸° ë•Œë¬¸ì— ë”°ë¡œ ì²˜ë¦¬í•  í•„ìš”ê°€ ì—†ìŒ
 			}
 		}
 	}
@@ -402,11 +402,11 @@ namespace PurahEngine
 		float& time2 = targetRenderer->time2;
 		float& ratio = targetRenderer->ratio;
 
-		// blendingÀÌ ÀÖ´Â ¾Ö´Ï¸ŞÀÌ¼Ç
-		// ÃÊ±â»óÅÂ¿¡¼­ Ã³À½À¸·Î Play¸í·ÉÀ» ÇÏ¸é blending ÇÏÁö ¾ÊÀ½
+		// blendingì´ ìˆëŠ” ì• ë‹ˆë©”ì´ì…˜
+		// ì´ˆê¸°ìƒíƒœì—ì„œ ì²˜ìŒìœ¼ë¡œ Playëª…ë ¹ì„ í•˜ë©´ blending í•˜ì§€ ì•ŠìŒ
 		if (animationBlend && animationName2 != L"")
 		{
-			// ÀÌ¹Ì blending ÇÏ´Â Áß¿¡´Â ¸¶Áö¸· »óÅÂ·Î Áï½Ã º¯°æ
+			// ì´ë¯¸ blending í•˜ëŠ” ì¤‘ì—ëŠ” ë§ˆì§€ë§‰ ìƒíƒœë¡œ ì¦‰ì‹œ ë³€ê²½
 			if (isBlending)
 			{
 				isBlending = true;
@@ -424,7 +424,7 @@ namespace PurahEngine
 				ratio = 0.0f;
 			}
 		}
-		// blendingÀÌ ¾ø´Â ¾Ö´Ï¸ŞÀÌ¼ÇÀº Áï½Ã º¯°æ
+		// blendingì´ ì—†ëŠ” ì• ë‹ˆë©”ì´ì…˜ì€ ì¦‰ì‹œ ë³€ê²½
 		else
 		{
 			isBlending = false;

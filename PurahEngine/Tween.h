@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <cassert>
 #include <functional>
 #include "EasingFunc.h"
@@ -65,10 +65,10 @@ namespace PurahEngine
 	public:
 		template <Arithmetic Type>
 		static ITween* Create(
-			Type& _start, const Type& _end,					// ½ÃÀÛÁ¡, ³¡Á¡
-			eEasing _easing,								// ±×·¡ÇÁ
-			float _durationSec,								// Áö¼Ó½Ã°£
-			std::function<void()> _callback = nullptr		// Äİ¹é
+			Type& _start, const Type& _end,					// ì‹œì‘ì , ëì 
+			eEasing _easing,								// ê·¸ë˜í”„
+			float _durationSec,								// ì§€ì†ì‹œê°„
+			std::function<void()> _callback = nullptr		// ì½œë°±
 		)
 		{
 			ITween* result = new TweenHandler<Type>(

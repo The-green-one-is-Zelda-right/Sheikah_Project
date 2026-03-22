@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngine.h"
 #include <iostream>
 
@@ -17,8 +17,8 @@ namespace PurahEngine
 		TestSingleton();
 		~TestSingleton();
 		TestSingleton(const TestSingleton& ref) = delete;
-		// Å¬·¡½º¸¦ »ı¼ºÇÏ°Ô µÉ °æ¿ì, ±âº»ÀûÀ¸·Î = ¿¡ ´ëÇÑ ¿¬»êÀÚ ¿À¹ö·ÎµùÀÌ »ı¼ºµÈ´Ù.
-		// ½Ì±ÛÅÏÀº °´Ã¼°¡ ÇÏ³ª¿©¾ß ÇÏ¹Ç·Î ±×°ÍÀ» ¹æÁöÇÏ±â À§ÇØ, ¸í½ÃÀûÀ¸·Î delete¸¦ »ç¿ëÇÏ¿© »ç¿ëÀ» ¸·´Â´Ù.
+		// í´ë˜ìŠ¤ë¥¼ ìƒì„±í•˜ê²Œ ë  ê²½ìš°, ê¸°ë³¸ì ìœ¼ë¡œ = ì— ëŒ€í•œ ì—°ì‚°ì ì˜¤ë²„ë¡œë”©ì´ ìƒì„±ëœë‹¤.
+		// ì‹±ê¸€í„´ì€ ê°ì²´ê°€ í•˜ë‚˜ì—¬ì•¼ í•˜ë¯€ë¡œ ê·¸ê²ƒì„ ë°©ì§€í•˜ê¸° ìœ„í•´, ëª…ì‹œì ìœ¼ë¡œ deleteë¥¼ ì‚¬ìš©í•˜ì—¬ ì‚¬ìš©ì„ ë§‰ëŠ”ë‹¤.
 		TestSingleton& operator=(const TestSingleton& ref) = delete;
 	};
 }

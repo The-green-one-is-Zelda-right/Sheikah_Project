@@ -1,4 +1,4 @@
-#include <PxShape.h>
+ï»¿#include <PxShape.h>
 
 #include "ZnLayer.h"
 #include "ZnUtil.h"
@@ -151,22 +151,22 @@ namespace ZonaiPhysics
 
 	ZonaiPhysics::ZnBound3 ColliderHelper::GetBoundingBox(void* _shape, const Eigen::Vector3f& _pos, const Eigen::Quaternionf& _rot)
 	{
-		// ÀÔ·ÂµÈ void* Æ÷ÀÎÅÍ¸¦ physx::PxShape*·Î º¯È¯ÇÕ´Ï´Ù.
+		// ì…ë ¥ëœ void* í¬ì¸í„°ë¥¼ physx::PxShape*ë¡œ ë³€í™˜í•©ë‹ˆë‹¤.
 		const auto pxShape = static_cast<physx::PxShape*>(_shape);
 
-		// PxShape¿¡¼­ Çü»óÀ» °¡Á®¿É´Ï´Ù.
+		// PxShapeì—ì„œ í˜•ìƒì„ ê°€ì ¸ì˜µë‹ˆë‹¤.
 		const physx::PxGeometry& geom = pxShape->getGeometry();
 
-		// Eigen Çü½ÄÀÇ À§Ä¡¿Í È¸ÀüÀ» PhysX Çü½ÄÀ¸·Î º¯È¯ÇÕ´Ï´Ù.
+		// Eigen í˜•ì‹ì˜ ìœ„ì¹˜ì™€ íšŒì „ì„ PhysX í˜•ì‹ìœ¼ë¡œ ë³€í™˜í•©ë‹ˆë‹¤.
 		physx::PxTransform pose(EigenToPhysx(_pos), EigenToPhysx(_rot));
 
-		// °æ°è »óÀÚ¸¦ ÀúÀåÇÒ °´Ã¼¸¦ »ı¼ºÇÕ´Ï´Ù.
+		// ê²½ê³„ ìƒìë¥¼ ì €ì¥í•  ê°ì²´ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
 		physx::PxBounds3 aabb;
 
-		// ÁÖ¾îÁø Çü»ó°ú º¯È¯(À§Ä¡ ¹× È¸Àü)¿¡ ´ëÇØ °æ°è »óÀÚ¸¦ °è»êÇÕ´Ï´Ù.
+		// ì£¼ì–´ì§„ í˜•ìƒê³¼ ë³€í™˜(ìœ„ì¹˜ ë° íšŒì „)ì— ëŒ€í•´ ê²½ê³„ ìƒìë¥¼ ê³„ì‚°í•©ë‹ˆë‹¤.
 		physx::PxGeometryQuery::computeGeomBounds(aabb, geom, pose, 0.1f);
 
-		// PhysX Çü½ÄÀÇ °æ°è »óÀÚ¸¦ Eigen Çü½ÄÀ¸·Î º¯È¯ÇÏ¿© ¹İÈ¯ÇÕ´Ï´Ù.
+		// PhysX í˜•ì‹ì˜ ê²½ê³„ ìƒìë¥¼ Eigen í˜•ì‹ìœ¼ë¡œ ë³€í™˜í•˜ì—¬ ë°˜í™˜í•©ë‹ˆë‹¤.
 		return ZnBound3(PhysxToEigen(aabb.minimum), PhysxToEigen(aabb.maximum));
 	}
 

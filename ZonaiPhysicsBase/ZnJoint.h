@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <Eigen/Dense>
 #include "ZnBase.h"
 
@@ -26,31 +26,31 @@ namespace ZonaiPhysics
 		virtual void		DisableConstraint(bool _value) = 0;
 
 		/**
-		¿ÀºêÁ§Æ®ÀÇ Æ÷Áö¼Ç
+		ì˜¤ë¸Œì íŠ¸ì˜ í¬ì§€ì…˜
 		*/
 		virtual void		SetLocalPosition(eOBJECT, const Eigen::Vector3f&) = 0;
 		virtual Eigen::Vector3f	GetLocalPosition(eOBJECT) const = 0;
 
 		/**
-		¿ÀºêÁ§Æ®ÀÇ ·ÎÅ×ÀÌ¼Ç
+		ì˜¤ë¸Œì íŠ¸ì˜ ë¡œí…Œì´ì…˜
 		*/
 		virtual void		SetLocalQuaternion(eOBJECT, const Eigen::Quaternionf&) = 0;
 		virtual Eigen::Quaternionf	GetLocalQuaternion(eOBJECT) const = 0;
 
 		/**
-		¿ÀºêÁ§Æ®0À» ±âÁØÀ¸·Î ¿ÀºêÁ§Æ®1ÀÇ »ó´ë ¼Óµµ¸¦ ¹İÈ¯ÇÔ.
+		ì˜¤ë¸Œì íŠ¸0ì„ ê¸°ì¤€ìœ¼ë¡œ ì˜¤ë¸Œì íŠ¸1ì˜ ìƒëŒ€ ì†ë„ë¥¼ ë°˜í™˜í•¨.
 		*/
 		virtual Eigen::Vector3f	GetRelativeLinearVelocity() const = 0;
 		virtual Eigen::Vector3f	GetRelativeAngularVelocity() const = 0;
 
 		/**
-		Á¶ÀÎÆ® ÆÄ±« ÈûÀ» ¼³Á¤ÇÔ
+		ì¡°ì¸íŠ¸ íŒŒê´´ í˜ì„ ì„¤ì •í•¨
 		*/
 		virtual void		SetBreakForce(float _force, float _torque) = 0;
 		virtual void		GetBreakForce(float& _force, float& _torque) const = 0;
 
 		/**
-		¿¬°áµÈ °­Ã¼³¢¸® Ãæµ¹ÇÒÁö ¿©ºÎ
+		ì—°ê²°ëœ ê°•ì²´ë¼ë¦¬ ì¶©ëŒí• ì§€ ì—¬ë¶€
 		*/
 		virtual void		EnableCollision(bool) = 0;
 

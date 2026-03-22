@@ -1,4 +1,4 @@
-#include "SceneManager.h"
+ï»¿#include "SceneManager.h"
 #include "GameObject.h"
 #include "Transform.h"
 #include "Camera.h"
@@ -147,7 +147,7 @@ void PurahEngine::SceneManager::InitializationEvent()
 	}
 	ExcuteEventQueue();
 
-	// OnEnable(È°¼ºÈ­ Á÷ ÈÄ)
+	// OnEnable(í™œì„±í™” ì§ í›„)
 	for (PurahEngine::GameObject* object : objectList)
 	{
 		if (object->trans->GetParent() == nullptr)
@@ -179,7 +179,7 @@ void PurahEngine::SceneManager::InitializationEvent()
 
 void PurahEngine::SceneManager::DecommissionEvent()
 {
-	// OnDisable (ºñÈ°¼ºÈ­ »óÅÂ)
+	// OnDisable (ë¹„í™œì„±í™” ìƒíƒœ)
 	for (PurahEngine::GameObject* object : objectList)
 	{
 		if (object->trans->GetParent() == nullptr)
@@ -189,7 +189,7 @@ void PurahEngine::SceneManager::DecommissionEvent()
 	}
 	ExcuteEventQueue();
 
-	// OnDestroy (¸Ç ¸¶Áö¸·ÇÁ·¹ÀÓ¿¡ ¿ÀºêÁ§Æ® ÆÄ±«)
+	// OnDestroy (ë§¨ ë§ˆì§€ë§‰í”„ë ˆì„ì— ì˜¤ë¸Œì íŠ¸ íŒŒê´´)
 	for (PurahEngine::GameObject* object : objectList)
 	{
 		if (object->trans->GetParent() == nullptr)
@@ -264,7 +264,7 @@ void PurahEngine::SceneManager::LoadScene()
 
 	LoadDontDestroyObject();
 
-	// ÇÊ¿äÇÏ´Ù¸é ¿©±â¼­ sceneName º¯°æÇÏ´Â ÄÚµå Ãß°¡
+	// í•„ìš”í•˜ë‹¤ë©´ ì—¬ê¸°ì„œ sceneName ë³€ê²½í•˜ëŠ” ì½”ë“œ ì¶”ê°€
 	sceneName = sceneBuffer;
 	sceneBuffer = L"";
 
@@ -324,7 +324,7 @@ void PurahEngine::SceneManager::PostDeserialize(const json& jsonData)
 
 void PurahEngine::SceneManager::Initialize()
 {
-	// ¾ÀÀ» ÃÊ±âÈ­ÇÒ¶§ Ä«¸Ş¶ó¸¦ ¾À¿¡ »ı¼ºÇØµĞ´Ù.
+	// ì”¬ì„ ì´ˆê¸°í™”í• ë•Œ ì¹´ë©”ë¼ë¥¼ ì”¬ì— ìƒì„±í•´ë‘”ë‹¤.
 	if (mainCamera == nullptr)
 	{
 		GameObject* object = CreateGameObject(L"MainCamera");

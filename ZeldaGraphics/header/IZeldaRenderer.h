@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "GraphicsResourceID.h"
 
@@ -32,136 +32,136 @@ enum class RendererMode : unsigned int
 class IZeldaRenderer
 {
 public:
-	/// RendererÀÇ ÃÊ±âÈ­
+	/// Rendererì˜ ì´ˆê¸°í™”
 	virtual bool Initialize(unsigned int screenWidth, unsigned int screenHeight, bool vsync, HWND hwnd, bool fullScreen) abstract;
-	/// RendererÀÇ Á¾·á
+	/// Rendererì˜ ì¢…ë£Œ
 	virtual void Finalize() abstract;
 
-	// È­¸é Å©±â Àç¼³Á¤
+	// í™”ë©´ í¬ê¸° ì¬ì„¤ì •
 	virtual void Resize(unsigned int screenWidth, unsigned int screenHeight) abstract;
 
 	/// <summary>
-	/// Ãß°¡ ¿É¼ÇÀ» ¼³Á¤ÇÑ´Ù. Initialize°¡ È£ÃâµÇ±â ÀÌÀü¿¡ È£ÃâµÇ¾î¾ß ¼³Á¤µÈ ¿É¼ÇÀ» Àû¿ëÇÒ ¼ö ÀÖ´Ù.
+	/// ì¶”ê°€ ì˜µì…˜ì„ ì„¤ì •í•œë‹¤. Initializeê°€ í˜¸ì¶œë˜ê¸° ì´ì „ì— í˜¸ì¶œë˜ì–´ì•¼ ì„¤ì •ëœ ì˜µì…˜ì„ ì ìš©í•  ìˆ˜ ìˆë‹¤.
 	/// </summary>
-	/// <param name="[shadowAreaRange] :"> ±×¸²ÀÚ¿µ¿ªÀÇ ¹üÀ§, ÀÌ ¿µ¿ª¾È¿¡ ÀÖ´Â ¿ÀºêÁ§Æ®¸¸ ±×¸²ÀÚ°¡ ±×·ÁÁö¸ç ¸ŞÀÎÄ«¸Ş¶óÀ§Ä¡¿¡¼­ ¸ŞÀÎÄ«¸Ş¶ó°¡ ¹Ù¶óº¸´Â ¹æÇâÀ¸·Î shadowAreaRange¸¸Å­ ¶³¾îÁø À§Ä¡¿¡¼­ shadowAreaRange¸¦ ¹İÁö¸§À¸·Î °¡Áö´Â ±¸ÀÇ ¹Ù±ù¿¡ Á¢ÇÏ´Â Á¤À°¸éÃ¼ °ø°£ÀÌ ±×¸²ÀÚ ¿µ¿ªÀÌµÈ´Ù. (ÀÌ °ªÀÌ Ä¿Áú¼ö·Ï ±×¸²ÀÚÀÇ Ç°ÁúÀÌ ³·¾ÆÁø´Ù.) </param>
-	/// <param name="[shadowAreaOffset] :"> ±×¸²ÀÚ¿µ¿ªÀÇ ¹üÀ§¸¦ Ä«¸Ş¶ó ¹æÇâÀ¸·Î shadowAreaOffsetÀÇ Å©±â¸¸Å­ ´ç±ä´Ù.</param>
-	/// <param name="[shadowMapSize] :"> shadowMapÀÇ Å©±â, width, height¸¦ ¸ğµÎ ÀÌ °ªÀ¸·Î »ç¿ëÇÑ´Ù. (ÀÌ °ªÀÌ Ä¿Áú¼ö·Ï ±×¸²ÀÚÀÇ Ç°ÁúÀÌ ³ô¾ÆÁø´Ù.) </param>
+	/// <param name="[shadowAreaRange] :"> ê·¸ë¦¼ìì˜ì—­ì˜ ë²”ìœ„, ì´ ì˜ì—­ì•ˆì— ìˆëŠ” ì˜¤ë¸Œì íŠ¸ë§Œ ê·¸ë¦¼ìê°€ ê·¸ë ¤ì§€ë©° ë©”ì¸ì¹´ë©”ë¼ìœ„ì¹˜ì—ì„œ ë©”ì¸ì¹´ë©”ë¼ê°€ ë°”ë¼ë³´ëŠ” ë°©í–¥ìœ¼ë¡œ shadowAreaRangeë§Œí¼ ë–¨ì–´ì§„ ìœ„ì¹˜ì—ì„œ shadowAreaRangeë¥¼ ë°˜ì§€ë¦„ìœ¼ë¡œ ê°€ì§€ëŠ” êµ¬ì˜ ë°”ê¹¥ì— ì ‘í•˜ëŠ” ì •ìœ¡ë©´ì²´ ê³µê°„ì´ ê·¸ë¦¼ì ì˜ì—­ì´ëœë‹¤. (ì´ ê°’ì´ ì»¤ì§ˆìˆ˜ë¡ ê·¸ë¦¼ìì˜ í’ˆì§ˆì´ ë‚®ì•„ì§„ë‹¤.) </param>
+	/// <param name="[shadowAreaOffset] :"> ê·¸ë¦¼ìì˜ì—­ì˜ ë²”ìœ„ë¥¼ ì¹´ë©”ë¼ ë°©í–¥ìœ¼ë¡œ shadowAreaOffsetì˜ í¬ê¸°ë§Œí¼ ë‹¹ê¸´ë‹¤.</param>
+	/// <param name="[shadowMapSize] :"> shadowMapì˜ í¬ê¸°, width, heightë¥¼ ëª¨ë‘ ì´ ê°’ìœ¼ë¡œ ì‚¬ìš©í•œë‹¤. (ì´ ê°’ì´ ì»¤ì§ˆìˆ˜ë¡ ê·¸ë¦¼ìì˜ í’ˆì§ˆì´ ë†’ì•„ì§„ë‹¤.) </param>
 	virtual void SetExtraInitOption(float shadowAreaRange, float shadowAreaOffset, unsigned int shadowMapSize) abstract;
 
 	/// <summary>
-	/// Ãß°¡ ¿É¼ÇÀ» ¼³Á¤ÇÑ´Ù. BeginDraw ÀÌÀü¿¡ È£ÃâµÇ¾î¾ß Á¤»óÀûÀ¸·Î ÀÛµ¿ÇÑ´Ù.
+	/// ì¶”ê°€ ì˜µì…˜ì„ ì„¤ì •í•œë‹¤. BeginDraw ì´ì „ì— í˜¸ì¶œë˜ì–´ì•¼ ì •ìƒì ìœ¼ë¡œ ì‘ë™í•œë‹¤.
 	/// </summary>
-	/// <param name="[shadowMapDepthBias] :"> shadowMapÀÇ DepthBias¸¦ ¼³Á¤ÇÑ´Ù. (DepthBias´Â ShadowMap°ú ViewSpaceÀÇ ÁÂÇ¥°è Â÷ÀÌ·Î ÀÎÇÑ ÅØ½ºÃÄÀÇ °è´ÜÇö»óÀ» ¿ÏÈ­½ÃÄÑÁÖ¸ç ºû°ú ±×¸²ÀÚ°¡ ±×·ÁÁö´Â ¿ÀºêÁ§Æ®ÀÇ °¢µµ¿¡ µû¶ó º¯°æÀÌ ÇÊ¿äÇÒ ¼ö ÀÖ´Ù.) </param>
+	/// <param name="[shadowMapDepthBias] :"> shadowMapì˜ DepthBiasë¥¼ ì„¤ì •í•œë‹¤. (DepthBiasëŠ” ShadowMapê³¼ ViewSpaceì˜ ì¢Œí‘œê³„ ì°¨ì´ë¡œ ì¸í•œ í…ìŠ¤ì³ì˜ ê³„ë‹¨í˜„ìƒì„ ì™„í™”ì‹œì¼œì£¼ë©° ë¹›ê³¼ ê·¸ë¦¼ìê°€ ê·¸ë ¤ì§€ëŠ” ì˜¤ë¸Œì íŠ¸ì˜ ê°ë„ì— ë”°ë¼ ë³€ê²½ì´ í•„ìš”í•  ìˆ˜ ìˆë‹¤.) </param>
 	virtual void SetExtraOption(float shadowMapDepthBias, float pointLightDepthBias) abstract;
 
 
-	// µğ¹ö±× ¸ğµå¸¦ ¼±ÅÃÇÑ´Ù.
+	// ë””ë²„ê·¸ ëª¨ë“œë¥¼ ì„ íƒí•œë‹¤.
 	virtual void SetDebugMode(DebugMode mode) abstract;
-	// ·»´õ·¯ ¸ğµå¸¦ ¼±ÅÃÇÑ´Ù.
+	// ë Œë”ëŸ¬ ëª¨ë“œë¥¼ ì„ íƒí•œë‹¤.
 	virtual void SetRendererMode(RendererMode mode) abstract;
 
-	// ±×¸®±â¸¦ ÁØºñÇÑ´Ù. Draw¸í·É ÀÌÀü¿¡ ¹İµå½Ã ÇÑ¹ø È£ÃâµÇ¾î¾ß ÇÑ´Ù. (deltaTimeÀÇ ´ÜÀ§´Â second)
+	// ê·¸ë¦¬ê¸°ë¥¼ ì¤€ë¹„í•œë‹¤. Drawëª…ë ¹ ì´ì „ì— ë°˜ë“œì‹œ í•œë²ˆ í˜¸ì¶œë˜ì–´ì•¼ í•œë‹¤. (deltaTimeì˜ ë‹¨ìœ„ëŠ” second)
 	virtual void BeginDraw(float deltaTime) abstract;
-	// ±×¸®±â¸¦ Á¾·áÇÑ´Ù. Draw¸í·É ÀÌÈÄ¿¡ ¹İµå½Ã ÇÑ¹ø È£ÃâµÇ¾î¾ß ÇÑ´Ù.
+	// ê·¸ë¦¬ê¸°ë¥¼ ì¢…ë£Œí•œë‹¤. Drawëª…ë ¹ ì´í›„ì— ë°˜ë“œì‹œ í•œë²ˆ í˜¸ì¶œë˜ì–´ì•¼ í•œë‹¤.
 	virtual void EndDraw() abstract;
 
 
 
 	// ### DrawXXXX() 
-	// ¹«¾ğ°¡¸¦ ±×¸®´Â ¸í·É, µ¿ÀÏÇÑ ID¸¦ »ç¿ëÇÒ°æ¿ì ÃÖÀûÈ­µÈ´Ù.
+	// ë¬´ì–¸ê°€ë¥¼ ê·¸ë¦¬ëŠ” ëª…ë ¹, ë™ì¼í•œ IDë¥¼ ì‚¬ìš©í• ê²½ìš° ìµœì í™”ëœë‹¤.
 
 	virtual void DrawCube(const Eigen::Matrix4f& worldMatrix, TextureID texture, bool wireFrame, bool drawDirectionalShadow, bool drawPointShadow, bool fastOutLine, bool outLine, Color color, Color outLineColor) abstract;
 	virtual void DrawModel(const Eigen::Matrix4f& worldMatrix, ModelID model, bool wireFrame, bool drawDirectionalShadow, bool drawPointShadow, bool fastOutLine, bool outLine, Color outLineColor) abstract;
 	virtual void DrawAnimation(const Eigen::Matrix4f& worldMatrix, ModelID model, std::wstring animationName, float animationTime, bool wireFrame, bool drawDirectionalShadow, bool drawPointShadow, bool fastOutLine, bool outLine, Color outLineColor) abstract;
 	virtual void DrawChangingAnimation(const Eigen::Matrix4f& worldMatrix, ModelID model, const std::wstring& firstAnimationName, const std::wstring& secondAnimationName, float firstAnimationTime, float secondAnimationTime, float ratio, bool wireFrame, bool drawDirectionalShadow, bool drawPointShadow, bool fastOutLine, bool outLine, Color outLineColor) abstract;
 
-	// Light¸¦ ±×¸°´Ù. °°Àº ÇÁ·¹ÀÓ¿¡ µ¿ÀÏÇÑ ¶óÀÌÆ®¸¦ 2°³ ÀÌ»ó ±×¸°´Ù¸é ÇÑ¹ø¸¸ Àû¿ëÇÑ´Ù. (¿©±â¼­ µ¿ÀÏÇÑ ¶óÀÌÆ®´Â LightID°¡ °°Àº ¶óÀÌÆ®¸¦ ¸»ÇÑ´Ù.)
+	// Lightë¥¼ ê·¸ë¦°ë‹¤. ê°™ì€ í”„ë ˆì„ì— ë™ì¼í•œ ë¼ì´íŠ¸ë¥¼ 2ê°œ ì´ìƒ ê·¸ë¦°ë‹¤ë©´ í•œë²ˆë§Œ ì ìš©í•œë‹¤. (ì—¬ê¸°ì„œ ë™ì¼í•œ ë¼ì´íŠ¸ëŠ” LightIDê°€ ê°™ì€ ë¼ì´íŠ¸ë¥¼ ë§í•œë‹¤.)
 	virtual void DrawLight(LightID lightID) abstract;
 
-	// sprite¸¦ ¿øº» Å©±â ±×´ë·Î position À§Ä¡¿¡ ±×¸°´Ù.
+	// spriteë¥¼ ì›ë³¸ í¬ê¸° ê·¸ëŒ€ë¡œ position ìœ„ì¹˜ì— ê·¸ë¦°ë‹¤.
 	virtual void DrawImage(const Eigen::Vector2f& position, TextureID texture, Color color, unsigned int layer) abstract;
 
-	// sprite¸¦ sizeÅ©±â·Î position À§Ä¡¿¡ ±×¸°´Ù. (size¸¦ (0, 0)À¸·Î ¼³Á¤ÇÏ¸é ¿øº» Å©±â·Î ±×·ÁÁø´Ù.)
+	// spriteë¥¼ sizeí¬ê¸°ë¡œ position ìœ„ì¹˜ì— ê·¸ë¦°ë‹¤. (sizeë¥¼ (0, 0)ìœ¼ë¡œ ì„¤ì •í•˜ë©´ ì›ë³¸ í¬ê¸°ë¡œ ê·¸ë ¤ì§„ë‹¤.)
 	virtual void DrawImage(const Eigen::Vector2f& position, const Eigen::Vector2f& size, TextureID texture, Color color, unsigned int layer) abstract;
 
 	/// <summary>
-	/// ºôº¸µå¸¦ »ç¿ëÇÑ ÆÄÆ¼Å¬À» ±×¸°´Ù.
+	/// ë¹Œë³´ë“œë¥¼ ì‚¬ìš©í•œ íŒŒí‹°í´ì„ ê·¸ë¦°ë‹¤.
 	/// </summary>
-	/// <param name="worldMatrix">: ÆÄÆ¼Å¬ÀÇ ÀüÃ¼ À§Ä¡·Î »ç¿ëÇÒ Çà·Ä(µª½º°ª °è»ê¿¡ »ç¿ëÇÑ´Ù.) </param>
-	/// <param name="particleMatrix">: ÆÄÆ¼Å¬ÀÇ Çà·Ä </param>
-	/// <param name="layer">: µ¿ÀÏÇÑ ±íÀÌÀÎ ÆÄÆ¼Å¬ »çÀÌÀÇ ¿ì¼±¼øÀ§(layer°¡ ³ôÀ» ¼ö·Ï µÚ¿¡ ±×·ÁÁø´Ù.) </param>
-	/// <param name="texture">: »ç¿ëÇÒ ÀÌ¹ÌÁö </param>
-	/// <param name="ccwRadianAngle">: ºôº¸µåÀÇ ¹İ½Ã°è ¹æÇâ È¸Àü °ª(Radian) </param>
-	/// <param name="keepOriginSize">: 1x1Å©±âÀÇ Á¤»ç°¢Çü ´ë½Å ¿ø·¡ ÀÌ¹ÌÁöÀÇ Å©±â(ÇÈ¼¿ ¼ö / 100)¸¦ »ç¿ëÇÑ´Ù. </param>
-	/// <param name="useAlphaTexture">: Èæ¹é ÅØ½ºÃÄ¸¦ ¾ËÆÄ°ªÀ¸·Î »ç¿ëÇÏµµ·Ï ¼³Á¤ÇÑ´Ù. </param>
-	/// <param name="color">: AlphaTexture¿É¼ÇÀ» »ç¿ëÇÒ ¶§ »ç¿ëÇÒ »ö </param>
+	/// <param name="worldMatrix">: íŒŒí‹°í´ì˜ ì „ì²´ ìœ„ì¹˜ë¡œ ì‚¬ìš©í•  í–‰ë ¬(ëìŠ¤ê°’ ê³„ì‚°ì— ì‚¬ìš©í•œë‹¤.) </param>
+	/// <param name="particleMatrix">: íŒŒí‹°í´ì˜ í–‰ë ¬ </param>
+	/// <param name="layer">: ë™ì¼í•œ ê¹Šì´ì¸ íŒŒí‹°í´ ì‚¬ì´ì˜ ìš°ì„ ìˆœìœ„(layerê°€ ë†’ì„ ìˆ˜ë¡ ë’¤ì— ê·¸ë ¤ì§„ë‹¤.) </param>
+	/// <param name="texture">: ì‚¬ìš©í•  ì´ë¯¸ì§€ </param>
+	/// <param name="ccwRadianAngle">: ë¹Œë³´ë“œì˜ ë°˜ì‹œê³„ ë°©í–¥ íšŒì „ ê°’(Radian) </param>
+	/// <param name="keepOriginSize">: 1x1í¬ê¸°ì˜ ì •ì‚¬ê°í˜• ëŒ€ì‹  ì›ë˜ ì´ë¯¸ì§€ì˜ í¬ê¸°(í”½ì…€ ìˆ˜ / 100)ë¥¼ ì‚¬ìš©í•œë‹¤. </param>
+	/// <param name="useAlphaTexture">: í‘ë°± í…ìŠ¤ì³ë¥¼ ì•ŒíŒŒê°’ìœ¼ë¡œ ì‚¬ìš©í•˜ë„ë¡ ì„¤ì •í•œë‹¤. </param>
+	/// <param name="color">: AlphaTextureì˜µì…˜ì„ ì‚¬ìš©í•  ë•Œ ì‚¬ìš©í•  ìƒ‰ </param>
 	virtual void DrawBillBoardParticle(const Eigen::Matrix4f& worldMatrix, const std::vector<Eigen::Matrix4f>& particleMatrix, unsigned int layer, TextureID texture, float ccwRadianAngle, bool keepOriginSize, bool useAlphaTexture, const std::vector<Color>& colors) abstract;
 
 	/// <summary>
-	/// ºôº¸µå¸¦ ±×¸°´Ù.
+	/// ë¹Œë³´ë“œë¥¼ ê·¸ë¦°ë‹¤.
 	/// </summary>
-	/// <param name="worldMatrix">: Áß½É À§Ä¡ </param>
-	/// <param name="texture">: »ç¿ëÇÒ ÀÌ¹ÌÁö </param>
-	/// <param name="ccwRadianAngle">: ºôº¸µåÀÇ ¹İ½Ã°è ¹æÇâ È¸Àü °ª(Radian) </param>
-	/// <param name="keepOriginSize">: 1x1Å©±âÀÇ Á¤»ç°¢Çü ´ë½Å ¿ø·¡ ÀÌ¹ÌÁöÀÇ Å©±â(ÇÈ¼¿ ¼ö / 100)¸¦ »ç¿ëÇÑ´Ù. </param>
-	/// <param name="useAlphaTexture">: Èæ¹é ÅØ½ºÃÄ¸¦ ¾ËÆÄ°ªÀ¸·Î »ç¿ëÇÏµµ·Ï ¼³Á¤ÇÑ´Ù. </param>
-	/// <param name="color">: AlphaTexture¿É¼ÇÀ» »ç¿ëÇÒ ¶§ »ç¿ëÇÒ »ö </param>
+	/// <param name="worldMatrix">: ì¤‘ì‹¬ ìœ„ì¹˜ </param>
+	/// <param name="texture">: ì‚¬ìš©í•  ì´ë¯¸ì§€ </param>
+	/// <param name="ccwRadianAngle">: ë¹Œë³´ë“œì˜ ë°˜ì‹œê³„ ë°©í–¥ íšŒì „ ê°’(Radian) </param>
+	/// <param name="keepOriginSize">: 1x1í¬ê¸°ì˜ ì •ì‚¬ê°í˜• ëŒ€ì‹  ì›ë˜ ì´ë¯¸ì§€ì˜ í¬ê¸°(í”½ì…€ ìˆ˜ / 100)ë¥¼ ì‚¬ìš©í•œë‹¤. </param>
+	/// <param name="useAlphaTexture">: í‘ë°± í…ìŠ¤ì³ë¥¼ ì•ŒíŒŒê°’ìœ¼ë¡œ ì‚¬ìš©í•˜ë„ë¡ ì„¤ì •í•œë‹¤. </param>
+	/// <param name="color">: AlphaTextureì˜µì…˜ì„ ì‚¬ìš©í•  ë•Œ ì‚¬ìš©í•  ìƒ‰ </param>
 	virtual void DrawBillBoard(const Eigen::Matrix4f& worldMatrix, TextureID texture, float ccwRadianAngle, bool keepOriginSize, bool useAlphaTexture, Color color) abstract;
 
 	/// <summary>
-	/// Sprite¸¦ ±×¸°´Ù.
+	/// Spriteë¥¼ ê·¸ë¦°ë‹¤.
 	/// </summary>
-	/// <param name="worldMatrix">: ¿ùµå º¯È¯ Çà·Ä </param>
-	/// <param name="texture">: »ç¿ëÇÒ ÀÌ¹ÌÁö </param>
-	/// <param name="keepOriginSize">: 1x1Å©±âÀÇ Á¤»ç°¢Çü ´ë½Å ¿ø·¡ ÀÌ¹ÌÁöÀÇ Å©±â(ÇÈ¼¿ ¼ö / 100)¸¦ »ç¿ëÇÑ´Ù. </param>
+	/// <param name="worldMatrix">: ì›”ë“œ ë³€í™˜ í–‰ë ¬ </param>
+	/// <param name="texture">: ì‚¬ìš©í•  ì´ë¯¸ì§€ </param>
+	/// <param name="keepOriginSize">: 1x1í¬ê¸°ì˜ ì •ì‚¬ê°í˜• ëŒ€ì‹  ì›ë˜ ì´ë¯¸ì§€ì˜ í¬ê¸°(í”½ì…€ ìˆ˜ / 100)ë¥¼ ì‚¬ìš©í•œë‹¤. </param>
 	virtual void DrawSprite(const Eigen::Matrix4f& worldMatrix, TextureID texture, Color color, bool keepOriginSize) abstract;
 
-	// Å¥ºê¸ÊÀ» ±×¸°´Ù. ¸¶Áö¸·À¸·Î ±×¸° ´Ü ÇÏ³ª¸¸ ±×·ÁÁø´Ù.
+	// íë¸Œë§µì„ ê·¸ë¦°ë‹¤. ë§ˆì§€ë§‰ìœ¼ë¡œ ê·¸ë¦° ë‹¨ í•˜ë‚˜ë§Œ ê·¸ë ¤ì§„ë‹¤.
 	virtual void DrawCubeMap(TextureID texture) abstract;
 
-	// ¹®ÀÚ¿­À» ±×¸°´Ù.
+	// ë¬¸ìì—´ì„ ê·¸ë¦°ë‹¤.
 	virtual void DrawString(const std::wstring& string, float x, float y, float width, float height, float fontSize, Color color) abstract;
 
 
 	// ### CreateXXXX()
-	// Resource¸¦ »ı¼ºÇÏ´Â ¸í·É, »ı¼ºÀ» ÇØµµ Draw¸í·ÉÀ» ÇÏ±â Àü¿¡´Â È­¸é¿¡ ±×·ÁÁöÁö ¾Ê´Â´Ù.
-	// ´Ü, Ä«¸Ş¶ó´Â Draw´ë½Å SetMainCamera »ç¿ë
+	// Resourceë¥¼ ìƒì„±í•˜ëŠ” ëª…ë ¹, ìƒì„±ì„ í•´ë„ Drawëª…ë ¹ì„ í•˜ê¸° ì „ì—ëŠ” í™”ë©´ì— ê·¸ë ¤ì§€ì§€ ì•ŠëŠ”ë‹¤.
+	// ë‹¨, ì¹´ë©”ë¼ëŠ” DrawëŒ€ì‹  SetMainCamera ì‚¬ìš©
 
-	// ÅØ½ºÃÄ »ı¼º (µ¿ÀÏÇÑ °æ·Î·Î ¿©·¯°³ÀÇ ID¸¦ ¸¸µé ¼ö ÀÖÁö¸¸ ±×¸®±â¿¡ µ¿ÀÏÇÑ ID¸¦ »ç¿ëÇÑ °æ¿ì¿¡¸¸ ÃÖÀûÈ­µÊ)
+	// í…ìŠ¤ì³ ìƒì„± (ë™ì¼í•œ ê²½ë¡œë¡œ ì—¬ëŸ¬ê°œì˜ IDë¥¼ ë§Œë“¤ ìˆ˜ ìˆì§€ë§Œ ê·¸ë¦¬ê¸°ì— ë™ì¼í•œ IDë¥¼ ì‚¬ìš©í•œ ê²½ìš°ì—ë§Œ ìµœì í™”ë¨)
 	virtual TextureID CreateTexture(const std::wstring& texturePath) abstract;
-	// ÅØ½ºÃÄ ÇØÁ¦
+	// í…ìŠ¤ì³ í•´ì œ
 	virtual void ReleaseTexture(TextureID textureID) abstract;
 
-	// ¸ğµ¨ »ı¼º (µ¿ÀÏÇÑ °æ·Î·Î ¿©·¯°³ÀÇ ID¸¦ ¸¸µé ¼ö ÀÖÁö¸¸ ±×¸®±â¿¡ µ¿ÀÏÇÑ ID¸¦ »ç¿ëÇÑ °æ¿ì¿¡¸¸ ÃÖÀûÈ­µÊ)
+	// ëª¨ë¸ ìƒì„± (ë™ì¼í•œ ê²½ë¡œë¡œ ì—¬ëŸ¬ê°œì˜ IDë¥¼ ë§Œë“¤ ìˆ˜ ìˆì§€ë§Œ ê·¸ë¦¬ê¸°ì— ë™ì¼í•œ IDë¥¼ ì‚¬ìš©í•œ ê²½ìš°ì—ë§Œ ìµœì í™”ë¨)
 	virtual ModelID CreateModel(const std::wstring& modelingFilePath) abstract;
-	// ¸ğµ¨ ÇØÁ¦
+	// ëª¨ë¸ í•´ì œ
 	virtual void ReleaseModel(ModelID modelID) abstract;
-	// ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌ¸§ ¾ò±â (ModelID¿¡ µé¾îÀÖ´Â ¸ğµ¨ÀÌ °¡Áø ¸ğµç ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ ÀÌ¸§À» std::vector·Î ¾ò´Â´Ù. ÀÌ¸§ÀÇ ¿À¸§Â÷¼øÀ¸·Î Á¤·ÄµÈ´Ù.)
+	// ì• ë‹ˆë©”ì´ì…˜ ì´ë¦„ ì–»ê¸° (ModelIDì— ë“¤ì–´ìˆëŠ” ëª¨ë¸ì´ ê°€ì§„ ëª¨ë“  ì• ë‹ˆë©”ì´ì…˜ì˜ ì´ë¦„ì„ std::vectorë¡œ ì–»ëŠ”ë‹¤. ì´ë¦„ì˜ ì˜¤ë¦„ì°¨ìˆœìœ¼ë¡œ ì •ë ¬ëœë‹¤.)
 	virtual std::vector<std::wstring> GetAnimationListByModel(ModelID modelID) abstract;
-	// ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı ½Ã°£ ¾ò±â (ModelID¿¡ µé¾îÀÖ´Â ¸ğµ¨ÀÌ °¡Áø ¸ğµç ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ Àç»ı½Ã°£À» ¾ò´Â´Ù. ÇØ´ç ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ ÀÌ¸§ÀÇ ¿À¸§Â÷¼øÀ¸·Î Á¤·ÄµÈ´Ù.)
+	// ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ ì‹œê°„ ì–»ê¸° (ModelIDì— ë“¤ì–´ìˆëŠ” ëª¨ë¸ì´ ê°€ì§„ ëª¨ë“  ì• ë‹ˆë©”ì´ì…˜ì˜ ì¬ìƒì‹œê°„ì„ ì–»ëŠ”ë‹¤. í•´ë‹¹ ì• ë‹ˆë©”ì´ì…˜ì˜ ì´ë¦„ì˜ ì˜¤ë¦„ì°¨ìˆœìœ¼ë¡œ ì •ë ¬ëœë‹¤.)
 	virtual std::vector<float> GetAnimationPlayTime(ModelID model) abstract;
 
 
-	// Ä«¸Ş¶ó¸¦ »ı¼º
+	// ì¹´ë©”ë¼ë¥¼ ìƒì„±
 	virtual CameraID CreateCamera() abstract;
-	// Ä«¸Ş¶ó ÇØÁ¦
+	// ì¹´ë©”ë¼ í•´ì œ
 	virtual void ReleaseCamera(CameraID cameraID) abstract;
 
-	// ¸ŞÀÎ Ä«¸Ş¶ó ¼³Á¤
+	// ë©”ì¸ ì¹´ë©”ë¼ ì„¤ì •
 	virtual bool SetMainCamera(CameraID cameraID) abstract;
-	// Ä«¸Ş¶ó Á¤º¸ ¼öÁ¤
+	// ì¹´ë©”ë¼ ì •ë³´ ìˆ˜ì •
 	virtual bool UpdateCamera(CameraID cameraID, const Eigen::Matrix4f& worldMatrix, float fieldOfView, float cameraNear, float cameraFar) abstract;
 
 
-	// Directional Light »ı¼º
+	// Directional Light ìƒì„±
 	virtual LightID CreateDirectionalLight(const Eigen::Vector3f& ambient, const Eigen::Vector3f& diffuse, const Eigen::Vector3f& specular, const Eigen::Vector3f& shadowColor, const Eigen::Vector3f& direction) abstract;
-	// Point Light »ı¼º
+	// Point Light ìƒì„±
 	virtual LightID CreatePointLight(const Eigen::Vector3f& ambient, const Eigen::Vector3f& diffuse, const Eigen::Vector3f& specular, const Eigen::Vector3f& shadowColor, const Eigen::Vector3f& position, float range, float atten0, float atten1, float atten2) abstract;
-	// Spot Light »ı¼º
+	// Spot Light ìƒì„±
 	virtual LightID CreateSpotLight(const Eigen::Vector3f& ambient, const Eigen::Vector3f& diffuse, const Eigen::Vector3f& specular, const Eigen::Vector3f& shadowColor, const Eigen::Vector3f& direction, const Eigen::Vector3f& position, float range, float angle) abstract;
-	// Light ÇØÁ¦
+	// Light í•´ì œ
 	virtual void ReleaseLight(LightID lightID) abstract;
 
-	// Light Á¤º¸ ¼öÁ¤
+	// Light ì •ë³´ ìˆ˜ì •
 	virtual void UpdateLight(LightID lightID, const Eigen::Vector3f& ambient, const Eigen::Vector3f& diffuse, const Eigen::Vector3f& specular, const Eigen::Vector3f& shadowColor, const Eigen::Vector3f& direction, const Eigen::Vector3f& position, float range, float angle, float atten0, float atten1, float atten2) abstract;
 };

@@ -1,4 +1,4 @@
-#include "PowerController.h"
+ï»¿#include "PowerController.h"
 
 namespace Phyzzle
 {
@@ -124,7 +124,7 @@ namespace Phyzzle
 
 	void PowerController::TargetPowerOn()
 	{
-		// ÄÑÁ®ÀÖÀ» ¶§ ´­·¯µµ Å¸ÀÌ¸Ó°¡ °»½ÅµÇ´Â ¹æ½Ä
+		// ì¼œì ¸ìˆì„ ë•Œ ëˆŒëŸ¬ë„ íƒ€ì´ë¨¸ê°€ ê°±ì‹ ë˜ëŠ” ë°©ì‹
 		if (type == Type::PowerOnBuffer)
 		{
 			elapsedTime = 0.0f;
@@ -137,7 +137,7 @@ namespace Phyzzle
 
 		isPowerOn = true;
 
-		// ²¨Á®ÀÖÀ» ¶§ ´©¸¥°Í¸¸ Å¸ÀÌ¸Ó°¡ °»½Å
+		// êº¼ì ¸ìˆì„ ë•Œ ëˆ„ë¥¸ê²ƒë§Œ íƒ€ì´ë¨¸ê°€ ê°±ì‹ 
 		if (type == Type::PowerOnFilter)
 		{
 			elapsedTime = 0.0f;

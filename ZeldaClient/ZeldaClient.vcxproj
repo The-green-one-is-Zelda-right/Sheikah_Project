@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -53,10 +53,8 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Label="Shared">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionSettings"></ImportGroup>
+  <ImportGroup Label="Shared"></ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -83,6 +81,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -97,6 +96,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -114,7 +114,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(SolutionDir)PurahEngine;$(SolutionDir)eigen-3.4.0;$(SolutionDir)ZeldaGraphics\header\;$(SolutionDir)ZonaiPhysicsBase;$(SolutionDir)fmod\inc;$(SolutionDir)json-develop\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /MP %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -136,7 +136,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)PurahEngine;$(SolutionDir)eigen-3.4.0;$(SolutionDir)ZeldaGraphics\header\;$(SolutionDir)ZonaiPhysicsBase;$(SolutionDir)fmod\inc;$(SolutionDir)json-develop\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /MP %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,35 +151,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ANDGate.cpp" />
-    <ClCompile Include="AttachSystem2.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="PlayerAbility.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="PlayerAnimation.cpp" />
     <ClCompile Include="AnimationTestController.cpp" />
     <ClCompile Include="Burnable.cpp" />
     <ClCompile Include="CameraEventDevice.cpp" />
     <ClCompile Include="DebugCameraSetting.cpp" />
     <ClCompile Include="DirectionalLightSystem.cpp" />
-    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GroundCheck.cpp" />
     <ClCompile Include="LightSystem.cpp" />
     <ClCompile Include="LinearMotor.cpp" />
     <ClCompile Include="ObjectController.cpp" />
     <ClCompile Include="ObjectGenerator.cpp" />
     <ClCompile Include="PauseGame.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerMovement.cpp" />
-    <ClCompile Include="PlayerStateMachine.cpp" />
-    <ClCompile Include="PlayerUIManager.cpp" />
     <ClCompile Include="PointLightSystem.cpp" />
     <ClCompile Include="PowerController.cpp" />
     <ClCompile Include="PzObject.cpp" />
-    <ClCompile Include="PlayerCamera.cpp" />
+    <ClCompile Include="PlayerAbilityComponent.cpp" />
+    <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="IslandID.cpp" />
     <ClCompile Include="AudioTest.cpp" />
     <ClCompile Include="BeomJoon.cpp" />
@@ -193,20 +180,11 @@
     <ClCompile Include="DefaultState.cpp" />
     <ClCompile Include="EventSystem.cpp" />
     <ClCompile Include="Holder.cpp" />
-    <ClCompile Include="LockState.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Player0.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="LockState.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="AttachHoldState.cpp" />
     <ClCompile Include="IObject.cpp" />
-    <ClCompile Include="AttachSystem.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="AttachSystem.cpp" />
     <ClCompile Include="KiHoon.cpp" />
     <ClCompile Include="LauncherPlatform.cpp" />
     <ClCompile Include="main.cpp" />
@@ -215,15 +193,8 @@
     <ClCompile Include="RespawnSystem.cpp" />
     <ClCompile Include="RespawnTrigger.cpp" />
     <ClCompile Include="Rewindable.cpp" />
-    <ClCompile Include="RewindState.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="RewindState.cpp" />
     <ClCompile Include="RewindSystem.cpp" />
-    <ClCompile Include="RewindSystem2.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="SceneLoadSupport.cpp" />
     <ClCompile Include="ShockDetector.cpp" />
     <ClCompile Include="SubLightSystem.cpp" />
@@ -239,16 +210,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ANDGate.h" />
-    <ClInclude Include="AttachSystem2.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="EnumPlayerState.h" />
-    <ClInclude Include="PlayerAbility.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="PlayerAnimation.h" />
     <ClInclude Include="AnimationTestController.h" />
     <ClInclude Include="Bezier.h" />
     <ClInclude Include="Burnable.h" />
@@ -256,22 +217,16 @@
     <ClInclude Include="CoroutineSystem.h" />
     <ClInclude Include="DebugCameraSetting.h" />
     <ClInclude Include="DirectionalLightSystem.h" />
-    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GroundCheck.h" />
     <ClInclude Include="LightSystem.h" />
     <ClInclude Include="LinearMotor.h" />
     <ClInclude Include="ObjectController.h" />
     <ClInclude Include="ObjectGenerator.h" />
     <ClInclude Include="PauseGame.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerInputData.h" />
-    <ClInclude Include="PlayerMovement.h" />
-    <ClInclude Include="PlayerStateMachine.h" />
-    <ClInclude Include="PlayerUIManager.h" />
     <ClInclude Include="PointLightSystem.h" />
     <ClInclude Include="PowerController.h" />
     <ClInclude Include="PzObject.h" />
-    <ClInclude Include="PlayerCamera.h" />
+    <ClInclude Include="CameraController.h" />
     <ClInclude Include="IslandID.h" />
     <ClInclude Include="AudioTest.h" />
     <ClInclude Include="BeomJoon.h" />
@@ -290,29 +245,17 @@
     <ClInclude Include="DefaultState.h" />
     <ClInclude Include="Holder.h" />
     <ClInclude Include="IEvent.h" />
-    <ClInclude Include="LockState.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Player0.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="LockState.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerAbilityComponent.h" />
     <ClInclude Include="AttachHoldState.h" />
-    <ClInclude Include="AttachSystem.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="AttachSystem.h" />
     <ClInclude Include="LauncherPlatform.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="RespawnSystem.h" />
     <ClInclude Include="RespawnTrigger.h" />
     <ClInclude Include="Rewindable.h" />
     <ClInclude Include="RewindSystem.h" />
-    <ClInclude Include="RewindSystem2.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="SceneLoadSupport.h" />
     <ClInclude Include="ShockDetector.h" />
     <ClInclude Include="Snapshot.h" />
@@ -325,10 +268,7 @@
     <ClInclude Include="KiHoon.h" />
     <ClInclude Include="NaDong.h" />
     <ClInclude Include="eObjectProperty.h" />
-    <ClInclude Include="RewindState.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="RewindState.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Test.h" />
     <ClInclude Include="Test2.h" />
@@ -341,6 +281,5 @@
     <ClInclude Include="YongHun.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets"></ImportGroup>
 </Project>

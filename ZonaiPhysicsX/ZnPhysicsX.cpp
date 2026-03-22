@@ -1,4 +1,4 @@
-#include "RigidBody.h"
+ï»¿#include "RigidBody.h"
 
 #include "BoxCollider.h"
 #include "SphereCollider.h"
@@ -35,7 +35,7 @@ namespace ZonaiPhysics
 	{
 		assert(_instance);
 
-		// SDK »ı¼º
+		// SDK ìƒì„±
 		{
 			ZnFactoryX::CreatePhysxFactory();
 		}
@@ -44,7 +44,7 @@ namespace ZonaiPhysics
 			ZnFactoryX::SetSimulationCallback(_instance);
 		}
 
-		// ·¹ÀÌ¾î ¼³Á¤
+		// ë ˆì´ì–´ ì„¤ì •
 		{
 			ZnLayer::Clear();
 			ZnLayer::SetCollisionData(0, {0, 1, 2, 3});
@@ -56,7 +56,7 @@ namespace ZonaiPhysics
 	void ZnPhysicsX::Simulation(float _dt)
 	{
 		ZnWorld::Run(_dt);
-		// Äİº¤ È£ÃâÇÏ´Â À§Ä¡
+		// ì½œë²¡ í˜¸ì¶œí•˜ëŠ” ìœ„ì¹˜
 		EventCallback::SimulationEventCallback();
 	}
 
@@ -142,7 +142,7 @@ namespace ZonaiPhysics
 		return ResourceManager::ReleaseTriangleMesh(_id);
 	}
 
-	// À¯ÀúÀÇ Scene Æ÷ÀÎÅÍ¸¦ key·Î PxSceneÀ» ¸¸µç´Ù.
+	// ìœ ì €ì˜ Scene í¬ì¸í„°ë¥¼ keyë¡œ PxSceneì„ ë§Œë“ ë‹¤.
 	void ZnPhysicsX::CreateScene(void* _userScene, const Eigen::Vector3f& _gravity)
 	{
 		NULL_POINTER_REFERENCE(_userScene, Load Scene Error!);
@@ -248,7 +248,7 @@ namespace ZonaiPhysics
 	}
 
 	/// <summary>
-	/// °­Ã¼¸¦ ¸¸µé¾î¼­ ¹İÈ¯
+	/// ê°•ì²´ë¥¼ ë§Œë“¤ì–´ì„œ ë°˜í™˜
 	/// </summary>
 	ZnRigidBody* ZnPhysicsX::CreateRigidBody(void* _userData, void* _userScene)
 	{
@@ -268,7 +268,7 @@ namespace ZonaiPhysics
 	}
 
 	/// <summary>
-	/// °­Ã¼¸¦ Ã£¾Æ¼­ °Å±â¿¡ Äİ¶óÀÌ´õ¸¦ ºÙÀÓ.
+	/// ê°•ì²´ë¥¼ ì°¾ì•„ì„œ ê±°ê¸°ì— ì½œë¼ì´ë”ë¥¼ ë¶™ì„.
 	/// </summary>
 	ZnCollider* ZnPhysicsX::CreateBoxCollider(
 		void* _userData, 

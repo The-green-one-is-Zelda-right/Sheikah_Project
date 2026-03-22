@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "ElectricalDevice.h"
 
@@ -28,7 +28,7 @@ namespace Phyzzle
 
 	private:
 		GeneratorType generatorType;
-		float generateDelay;									// ¹İº¹ »ı¼º Áö¿¬½Ã°£(GeneratorType::PowerOn¿¡¼­´Â Àû¿ëµÇÁö ¾ÊÀ½)
+		float generateDelay;									// ë°˜ë³µ ìƒì„± ì§€ì—°ì‹œê°„(GeneratorType::PowerOnì—ì„œëŠ” ì ìš©ë˜ì§€ ì•ŠìŒ)
 		std::vector<PurahEngine::GameObject*> targetObjects;
 
 	private:
@@ -36,7 +36,7 @@ namespace Phyzzle
 		int powerCount;
 
 	public:
-		// ComponentÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// Componentì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void PreSerialize(json& jsonData) const override;
 		void PreDeserialize(const json& jsonData) override;
 		void PostSerialize(json& jsonData) const override;

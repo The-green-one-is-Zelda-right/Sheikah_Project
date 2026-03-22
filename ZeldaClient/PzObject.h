@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "PurahEngine.h"
 #include <vector>
 #include <string>
@@ -20,9 +20,9 @@ namespace Phyzzle
 
 	private:
 		IslandID GetIslandID() const;
-		void ValiantStore();		// °­Ã¼ º¯¼ö ÀúÀå
-		void Selected();			// ¼±ÅÃ
-		void ValiantRetrieve();		// °­Ã¼ º¯¼ö µÇµ¹¸²
+		void ValiantStore();		// ê°•ì²´ ë³€ìˆ˜ ì €ì¥
+		void Selected();			// ì„ íƒ
+		void ValiantRetrieve();		// ê°•ì²´ ë³€ìˆ˜ ë˜ëŒë¦¼
 
 	protected:
 		void OnCollisionEnter(const ZonaiPhysics::ZnCollision&, const PurahEngine::Collider*) override;
@@ -36,44 +36,73 @@ namespace Phyzzle
 
 	private:
 		friend class AttachSystem;
+
+		struct SelectionPhysicsSnapshot
+		{
+			bool isKinematic = false;
+			bool hasGravity = false;
+			float mass = -1.f;
+			Eigen::Vector3f inertiaTensor = Eigen::Vector3f::Zero();
+			std::vector<std::wstring> materials;
+
+			bool IsValid() const
+			{
+				return mass > 0.01f;
+			}
+
+			void Reset()
+			{
+				isKinematic = false;
+				hasGravity = false;
+				mass = -1.f;
+				inertiaTensor = Eigen::Vector3f::Zero();
+				materials.clear();
+			}
+		};
+
+		struct SelectionPhysicsOverride
+		{
+			bool isKinematic = false;
+			bool hasGravity = false;
+			float mass = 0.1f;
+			Eigen::Vector3f inertiaTensor = Eigen::Vector3f(100.f, 100.f, 100.f);
+			std::wstring material = L"SelectedObject";
+		};
+
 		PzObject* attachable;
 		PurahEngine::RigidBody* body;
 		std::vector<PurahEngine::Collider*> colliders;
 		Eigen::Vector3f worldAnchor = Eigen::Vector3f::Zero();
-		Eigen::Vector3f tensor = Eigen::Vector3f::Zero();
-		std::vector<std::wstring> materials;
 
 		IslandID islandID;							// IslandID
-		std::vector<PzObject*> connectedObjects;	// Çö °´Ã¼¿Í ¿¬°áµÈ °´Ã¼µé
+		std::vector<PzObject*> connectedObjects;	// í˜„ ê°ì²´ì™€ ì—°ê²°ëœ ê°ì²´ë“¤
 
 	private:
 		bool preState = false;
 		bool select = false;
 
-		// SelectµÇ¸é °´Ã¼ÀÇ »óÅÂ¸¦ ÀúÀåÇÏ±â À§ÇÑ º¯¼ö
-		bool isKinematic = false;					
-		bool hasGravity = false;
-		float originMass = -1.f;
+		SelectionPhysicsSnapshot selectionSnapshot;
+		SelectionPhysicsOverride selectionOverride;
 	};
 }
 
 
 /*
-ºÎÂø °¡´ÉÇÑ ¸ğµç °´Ã¼µéÀº IslandID¸¦ °¡Áö°Ô µÉ °ÍÀÓ.
-ÀÓÀÇÀÇ °´Ã¼¸¦ Áı°í ´Ù¸¥ ºÎÂø °¡´ÉÇÑ °´Ã¼¿¡ ºÎÂø(attach)ÀÌ °¡´ÉÇÔ.
-¼¶À» ÀÌ·çÁö ¸øÇÏ´Â °´Ã¼´Â ID°ªÀÌ -1ÀÓ.
-º»ÀÎ Æ÷ÇÔÇØ¼­ 2°³ ÀÌ»óÀÇ ¿¬°á¼ºÀÌ È®ÀÎµÇ´Â °´Ã¼µéÀº IslandID°ªÀÌ ºÎ¿©µÊ
+ë¶€ì°© ê°€ëŠ¥í•œ ëª¨ë“  ê°ì²´ë“¤ì€ IslandIDë¥¼ ê°€ì§€ê²Œ ë  ê²ƒì„.
+ì„ì˜ì˜ ê°ì²´ë¥¼ ì§‘ê³  ë‹¤ë¥¸ ë¶€ì°© ê°€ëŠ¥í•œ ê°ì²´ì— ë¶€ì°©(attach)ì´ ê°€ëŠ¥í•¨.
+ì„¬ì„ ì´ë£¨ì§€ ëª»í•˜ëŠ” ê°ì²´ëŠ” IDê°’ì´ -1ì„.
+ë³¸ì¸ í¬í•¨í•´ì„œ 2ê°œ ì´ìƒì˜ ì—°ê²°ì„±ì´ í™•ì¸ë˜ëŠ” ê°ì²´ë“¤ì€ IslandIDê°’ì´ ë¶€ì—¬ë¨
 
-¿¬°áÀÌ ÇØÁ¦(dettach)µÉ °æ¿ì¿£ Island¸¦ ´Ù½Ã ¸¸µë.
+ì—°ê²°ì´ í•´ì œ(dettach)ë  ê²½ìš°ì—” Islandë¥¼ ë‹¤ì‹œ ë§Œë“¬.
 
-ex) ¿¹¸¦µé¾î 1-2-3-4ÀÇ ¿¬°á¼ºÀ» °¡Áø ¿ÀºêÁ§Æ®°¡ ÀÖ´Ù°í °¡Á¤ÇßÀ» ¶§
-	2À» ¶¼¾úÀ» ¶§, 2´Â ¿¬°á¼ºÀÌ »ç¶óÁ³±â ¶§¹®¿¡ ID°ªÀÌ -1·Î ÃÊ±âÈ­ µÈ´Ù.
-	2¿Í ¿¬°á¼ºÀ» °¡Áø ¿ÀºêÁ§Æ®µéÀº 2¿ÍÀÇ ¿¬°á¼ºÀÌ ²÷¾îÁö°Ô µÈ´Ù.
+ex) ì˜ˆë¥¼ë“¤ì–´ 1-2-3-4ì˜ ì—°ê²°ì„±ì„ ê°€ì§„ ì˜¤ë¸Œì íŠ¸ê°€ ìˆë‹¤ê³  ê°€ì •í–ˆì„ ë•Œ
+	2ì„ ë–¼ì—ˆì„ ë•Œ, 2ëŠ” ì—°ê²°ì„±ì´ ì‚¬ë¼ì¡Œê¸° ë•Œë¬¸ì— IDê°’ì´ -1ë¡œ ì´ˆê¸°í™” ëœë‹¤.
+	2ì™€ ì—°ê²°ì„±ì„ ê°€ì§„ ì˜¤ë¸Œì íŠ¸ë“¤ì€ 2ì™€ì˜ ì—°ê²°ì„±ì´ ëŠì–´ì§€ê²Œ ëœë‹¤.
 
-	±âÁ¸ Island¿¡¼­ 2°¡ ¶³¾îÁ® ³ª¿Ô±â ‹š¹®¿¡
-	³²¾ÆÀÖ´Â °´Ã¼µéÀÇ ¿¬°á¼ºÀ» È®ÀÎÇÏ°í Island¸¦ »õ·Ó°Ô ¸¸µé¾îÁà¾ßÇÑ´Ù.
-	2¿Í ¿¬°áµÇ¾î ÀÖ¾ú´ø 1°ú 3 ¹æÇâÀ¸·Î Å½»öÀ» ÇÑ´Ù.
-	1 ¹æÇâÀ¸·Î´Â °´Ã¼°¡ 1°³¸¸ Á¸ÀçÇÏ±â ¶§¹®¿¡ Island¸¦ ÀÌ·çÁö ¸øÇÏ°í ID°ªÀÌ -1·Î ÃÊ±âÈ­µÈ´Ù.
-	3 ¹æÇâÀ¸·Î´Â 4¶ó´Â °´Ã¼¿Í ¿¬°á¼ºÀÌ È®ÀÎµÇ±â ¶§¹®¿¡
-	3 ¹æÇâÀÇ IslandµéÀº »õ·Î¿î IslandID°ªÀ» ºÎ¿©¹Ş´Â´Ù.
+	ê¸°ì¡´ Islandì—ì„œ 2ê°€ ë–¨ì–´ì ¸ ë‚˜ì™”ê¸° ë–„ë¬¸ì—
+	ë‚¨ì•„ìˆëŠ” ê°ì²´ë“¤ì˜ ì—°ê²°ì„±ì„ í™•ì¸í•˜ê³  Islandë¥¼ ìƒˆë¡­ê²Œ ë§Œë“¤ì–´ì¤˜ì•¼í•œë‹¤.
+	2ì™€ ì—°ê²°ë˜ì–´ ìˆì—ˆë˜ 1ê³¼ 3 ë°©í–¥ìœ¼ë¡œ íƒìƒ‰ì„ í•œë‹¤.
+	1 ë°©í–¥ìœ¼ë¡œëŠ” ê°ì²´ê°€ 1ê°œë§Œ ì¡´ì¬í•˜ê¸° ë•Œë¬¸ì— Islandë¥¼ ì´ë£¨ì§€ ëª»í•˜ê³  IDê°’ì´ -1ë¡œ ì´ˆê¸°í™”ëœë‹¤.
+	3 ë°©í–¥ìœ¼ë¡œëŠ” 4ë¼ëŠ” ê°ì²´ì™€ ì—°ê²°ì„±ì´ í™•ì¸ë˜ê¸° ë•Œë¬¸ì—
+	3 ë°©í–¥ì˜ Islandë“¤ì€ ìƒˆë¡œìš´ IslandIDê°’ì„ ë¶€ì—¬ë°›ëŠ”ë‹¤.
 */

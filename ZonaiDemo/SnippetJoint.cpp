@@ -1,4 +1,4 @@
-
+ï»¿
 #include <ctype.h>
 #include <windows.h>
 
@@ -32,7 +32,7 @@ public:
 		lastTime = std::chrono::steady_clock::now();
 	}
 
-	// ¹İÈ¯°ª: ÃÊ ´ÜÀ§ÀÇ µ¨Å¸ Å¸ÀÓ
+	// ë°˜í™˜ê°’: ì´ˆ ë‹¨ìœ„ì˜ ë¸íƒ€ íƒ€ì„
 	double GetDelta() {
 		auto currentTime = std::chrono::steady_clock::now();
 		std::chrono::duration<double> delta = currentTime - lastTime;
@@ -124,7 +124,7 @@ int snippetMain(int, const char* const*)
 		HMODULE physicsDLL = LoadLibraryW(path.c_str());
 		if (!physicsDLL)
 		{
-			// MessageBox(_hwnd, L"ÇØ´ç °æ·Î¿¡ Physics DLL ÆÄÀÏÀÌ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.", L"DLL ¿À·ù", MB_OK | MB_ICONWARNING);
+			// MessageBox(_hwnd, L"í•´ë‹¹ ê²½ë¡œì— Physics DLL íŒŒì¼ì´ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.", L"DLL ì˜¤ë¥˜", MB_OK | MB_ICONWARNING);
 			return false;
 		}
 
@@ -133,7 +133,7 @@ int snippetMain(int, const char* const*)
 
 		if (CreateInstance == nullptr)
 		{
-			// MessageBox(_hwnd, L"Physics DLL¿¡¼­ ÇÔ¼ö Æ÷ÀÎÅÍ¸¦ ¹Ş¾Æ¿ÀÁö ¸øÇß½À´Ï´Ù.", L"DLL ¿À·ù", MB_OK | MB_ICONWARNING);
+			// MessageBox(_hwnd, L"Physics DLLì—ì„œ í•¨ìˆ˜ í¬ì¸í„°ë¥¼ ë°›ì•„ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.", L"DLL ì˜¤ë¥˜", MB_OK | MB_ICONWARNING);
 			return false;
 		}
 
@@ -141,7 +141,7 @@ int snippetMain(int, const char* const*)
 
 		if (physicsEngine == nullptr)
 		{
-			// MessageBox(_hwnd, L"Graphics Engine °´Ã¼ »ı¼º ½ÇÆĞ", L"DLL ¿À·ù", NULL);
+			// MessageBox(_hwnd, L"Graphics Engine ê°ì²´ ìƒì„± ì‹¤íŒ¨", L"DLL ì˜¤ë¥˜", NULL);
 			return false;
 		}
 	}

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "ZeldaGraphicsDefine.h"
 
@@ -34,7 +34,7 @@ public:
 	// Point Light
 	void SetRange(float range);
 	void SetPosition(float x, float y, float z);
-	// 1 / ( att0i + att1i * d + att2i * d©÷)
+	// 1 / ( att0i + att1i * d + att2i * dÂ²)
 	void SetAttenuation(float atten0, float atten1, float atten2);
 
 	float GetRange();
@@ -62,10 +62,10 @@ private:
 	float range;
 	float angle;
 
-	// Attenuation ÀÌ¶õ...
+	// Attenuation ì´ë€...
 	// https://learn.microsoft.com/en-us/windows/win32/direct3d9/attenuation-and-spotlight-factor
 
-	// Unity¿¡¼­´Â 1 / (25 * (d / r)^2 + 1) °ú À¯»çÇÑ °ø½ÄÀ» »ç¿ëÇÑ´Ù°í ÇÑ´Ù.
+	// Unityì—ì„œëŠ” 1 / (25 * (d / r)^2 + 1) ê³¼ ìœ ì‚¬í•œ ê³µì‹ì„ ì‚¬ìš©í•œë‹¤ê³  í•œë‹¤.
 	// https://geom.io/bakery/wiki/index.php?title=Point_Light_Attenuation
 
 	float atten0;	// 0 ~ INF

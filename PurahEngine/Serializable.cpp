@@ -1,4 +1,4 @@
-#include "Serializable.h"
+﻿#include "Serializable.h"
 
 void PurahEngine::Serializable::Serialize(json& jsonData) const
 {

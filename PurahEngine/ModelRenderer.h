@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Renderer.h"
 
@@ -13,9 +13,9 @@ namespace PurahEngine
 
 		void Initialize() override;
 
-		// OnDestroy¿¡¼­ Animator°¡ °¡¸®Å°´Â ModelRenderer¸¦ Á¦°ÅÇÏ´Â ±â´É ±¸Çö ÇÊ¿ä
+		// OnDestroyì—ì„œ Animatorê°€ ê°€ë¦¬í‚¤ëŠ” ModelRendererë¥¼ ì œê±°í•˜ëŠ” ê¸°ëŠ¥ êµ¬í˜„ í•„ìš”
 
-		// RendererÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// Rendererì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void Render(IZeldaRenderer* renderer) override;
 
 		void SetModelName(const std::wstring& modelName);

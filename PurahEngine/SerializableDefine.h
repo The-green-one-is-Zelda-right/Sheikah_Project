@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Serializable.h"
 #include "FileManager.h"
 
@@ -43,7 +43,7 @@
 	value = Eigen::Quaternionf(jsonData[#value]["w"], jsonData[#value]["x"], jsonData[#value]["y"], jsonData[#value]["z"]); \
 }
 
-/// ¹ü¿ëÀûÀ¸·Î º¤ÅÍ¸¦ ´ãÀ» ¸ÅÅ©·ÎÇÔ¼ö ¸¸µé±â°¡ Á» ¾î·Æ´Ù. ´õ °í¹ÎÇØº¸´ÂÁß.
+/// ë²”ìš©ì ìœ¼ë¡œ ë²¡í„°ë¥¼ ë‹´ì„ ë§¤í¬ë¡œí•¨ìˆ˜ ë§Œë“¤ê¸°ê°€ ì¢€ ì–´ë µë‹¤. ë” ê³ ë¯¼í•´ë³´ëŠ”ì¤‘.
 #define PREDESERIALIZE_VECTOR(value)\
 {\
 	for(int i = 0; i < jsonData[#value].size() ; i++)\
@@ -52,8 +52,8 @@
 	}\
 }
 
-/// Transform children Àü¿ë ¸ÅÅ©·Î ÇÔ¼ö..¹º°¡ ¾Ö¸ÅÇÏ´Ù..
-/// decltype(value)::value_type À¸·Î ÀÚ·áÇüÀ» °¡Á®¿Â´Ù.
+/// Transform children ì „ìš© ë§¤í¬ë¡œ í•¨ìˆ˜..ë­”ê°€ ì• ë§¤í•˜ë‹¤..
+/// decltype(value)::value_type ìœ¼ë¡œ ìë£Œí˜•ì„ ê°€ì ¸ì˜¨ë‹¤.
 #define POSTDESERIALIZE_VECTOR_PTR(value)\
 {\
 	for(int i = 0; i < jsonData[std::string("__ID__") + #value].size() ; i++)\

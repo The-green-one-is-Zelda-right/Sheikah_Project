@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "EventCallback.h"
 
 #pragma warning(push)
@@ -56,7 +56,7 @@ namespace ZonaiPhysics
 	class HingeJoint;
 	class SpringFlexJoint;
 
-	class ZnTransform;
+	struct ZnTransform;
 }
 
 namespace ZonaiPhysics

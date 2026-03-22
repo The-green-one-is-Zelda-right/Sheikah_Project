@@ -1,4 +1,4 @@
-
+﻿
 #include "Component.h"
 
 PurahEngine::Component::Component() : gameObject(nullptr), state(ComponentState::CREATE)

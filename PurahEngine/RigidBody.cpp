@@ -1,4 +1,4 @@
-#include "RigidBody.h"
+ï»¿#include "RigidBody.h"
 
 #include "GameObject.h"
 #include "PhysicsSystem.h"
@@ -156,13 +156,13 @@ namespace PurahEngine
 		}
 	}
 
-	/// \brief ½ºÅ©¸³Æ®¿¡¼­ È£ÃâÇÏÁö ¸»¾Æ¶ó
+	/// \brief ìŠ¤í¬ë¦½íŠ¸ì—ì„œ í˜¸ì¶œí•˜ì§€ ë§ì•„ë¼
 	void RigidBody::WakeUp() noexcept
 	{
 		body->WakeUp();
 	}
 
-	/// ½ºÅ©¸³Æ®¿¡¼­ È£ÃâÇÏÁö ¸»¾Æ¶ó
+	/// ìŠ¤í¬ë¦½íŠ¸ì—ì„œ í˜¸ì¶œí•˜ì§€ ë§ì•„ë¼
 	bool RigidBody::IsSleeping() const noexcept
 	{
 		return body->IsSleeping();

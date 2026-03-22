@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <map>
 #include <set>
 #include <vector>
@@ -17,8 +17,8 @@ namespace ZonaiPhysics
 {
 	struct ZnQueryInfo;
 	class EventCallback;
-	class ZnTransform;
-	class ZnQueryDesc;
+	struct ZnTransform;
+	struct ZnQueryDesc;
 	class RigidBody;
 	class Collider;
 

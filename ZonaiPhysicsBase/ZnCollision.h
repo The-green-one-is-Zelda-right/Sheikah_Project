@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <cstdint>
 #include <Eigen/Dense>
 #include <memory>
@@ -8,10 +8,10 @@ namespace ZonaiPhysics
 {
 	struct ZnContact
 	{
-		Eigen::Vector3f point{ Eigen::Vector3f::Zero() };  // Á¢ÃËÁ¡
-		Eigen::Vector3f normal{ Eigen::Vector3f::Zero() }; // Á¢ÃËÁ¡ÀÇ ³ë¸»
-		Eigen::Vector3f impulse{ Eigen::Vector3f::Zero() }; // Á¢ÃËÁ¡¿¡¼­ÀÇ Ãæ°İ·®
-		float separation{ 0.f }; // Ä§Åõ ±íÀÌ
+		Eigen::Vector3f point{ Eigen::Vector3f::Zero() };  // ì ‘ì´‰ì 
+		Eigen::Vector3f normal{ Eigen::Vector3f::Zero() }; // ì ‘ì´‰ì ì˜ ë…¸ë§
+		Eigen::Vector3f impulse{ Eigen::Vector3f::Zero() }; // ì ‘ì´‰ì ì—ì„œì˜ ì¶©ê²©ëŸ‰
+		float separation{ 0.f }; // ì¹¨íˆ¬ ê¹Šì´
 	};
 
 	struct ZnCollision
@@ -21,8 +21,8 @@ namespace ZonaiPhysics
 		Eigen::Vector3f thisPostAngularVelocity{ Eigen::Vector3f::Zero() };
 		Eigen::Vector3f otherPostLinearVelocity{ Eigen::Vector3f::Zero() };
 		Eigen::Vector3f otherPostAngularVelocity{ Eigen::Vector3f::Zero() };
-		std::unique_ptr<ZnContact[]> contacts; // Á¢ÃËÁ¡ ¹è¿­ Æ÷ÀÎÅÍ
-		uint32_t contactCount{ 0 }; // Á¢ÃËÁ¡ °³¼ö
+		std::unique_ptr<ZnContact[]> contacts; // ì ‘ì´‰ì  ë°°ì—´ í¬ì¸í„°
+		uint32_t contactCount{ 0 }; // ì ‘ì´‰ì  ê°œìˆ˜
 
 		ZnCollision() = default;
 		~ZnCollision() = default;

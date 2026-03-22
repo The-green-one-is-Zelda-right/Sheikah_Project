@@ -1,4 +1,4 @@
-#include "VolumeScale.h"
+﻿#include "VolumeScale.h"
 
 #include "Image.h"
 

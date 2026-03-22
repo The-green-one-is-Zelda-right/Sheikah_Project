@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <string>
 #include <unordered_map>
@@ -44,7 +44,7 @@ public:
 
 	MeshID CreateCubeMesh();
 	MeshID CreateSquareMesh();
-	MeshID CreateCircleMesh(); // ¹İÁö¸§ 0.5ÀÎ ¿ø¿¡ ¿ÜÁ¢ÇÏ´Â Á¤ 16°¢ÇüÀ» »ı¼ºÇÔ
+	MeshID CreateCircleMesh(); // ë°˜ì§€ë¦„ 0.5ì¸ ì›ì— ì™¸ì ‘í•˜ëŠ” ì • 16ê°í˜•ì„ ìƒì„±í•¨
 	MeshID CreateSphereMesh();
 	MeshID CreateCapsuleMesh();
 	MeshID CreateCylinderMesh();

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PurahEngine.h"
 
@@ -12,9 +12,9 @@ namespace Phyzzle
 	public:
 		enum class Mode
 		{
-			Nearest,	// °¡Àå °¡±î¿î Respawn Point¿¡¼­ ¸®½ºÆù
-			MaxLevel,	// µµ´ŞÇÑ levelÁß °¡Àå ³ôÀº ¸®½ºÆù Æ÷ÀÎÆ®¿¡¼­ ¸®½ºÆù
-			LastLevel,	// °¡Àå ÃÖ±Ù µµ´ŞÇß´ø levelÀÇ ¸®½ºÆù Æ÷ÀÎÆ®¿¡¼­ ¸®½ºÆù
+			Nearest,	// ê°€ì¥ ê°€ê¹Œìš´ Respawn Pointì—ì„œ ë¦¬ìŠ¤í°
+			MaxLevel,	// ë„ë‹¬í•œ levelì¤‘ ê°€ì¥ ë†’ì€ ë¦¬ìŠ¤í° í¬ì¸íŠ¸ì—ì„œ ë¦¬ìŠ¤í°
+			LastLevel,	// ê°€ì¥ ìµœê·¼ ë„ë‹¬í–ˆë˜ levelì˜ ë¦¬ìŠ¤í° í¬ì¸íŠ¸ì—ì„œ ë¦¬ìŠ¤í°
 		};
 
 	public:

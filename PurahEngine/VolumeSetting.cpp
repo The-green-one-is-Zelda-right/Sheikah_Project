@@ -1,4 +1,4 @@
-#include "VolumeSetting.h"
+ï»¿#include "VolumeSetting.h"
 #include "GameObject.h"
 #include "Button.h"
 #include "UnifiedInputManager.h"
@@ -90,4 +90,4 @@ void PurahEngine::VolumeSetting::PostDeserialize(const json& jsonData)
 
 }
 
-/// PreDeserialize °íÄ¡°í, Unity Component ¸¸µé°Í.
+/// PreDeserialize ê³ ì¹˜ê³ , Unity Component ë§Œë“¤ê²ƒ.

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "ElectricalDevice.h"
 
@@ -12,9 +12,9 @@ namespace Phyzzle
 	public:
 		void Awake() override;
 
-		// Æ®¸®°Å°¡ Ãæµ¹ÇßÀ» ¶§ È£Ãâ
+		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒí–ˆì„ ë•Œ í˜¸ì¶œ
 		void OnTriggerEnter(const PurahEngine::Collider*) override;
-		// Æ®¸®°Å°¡ Ãæµ¹À» ¹ş¾î³µÀ» ¶§ È£Ãâ
+		// íŠ¸ë¦¬ê±°ê°€ ì¶©ëŒì„ ë²—ì–´ë‚¬ì„ ë•Œ í˜¸ì¶œ
 		void OnTriggerExit(const PurahEngine::Collider*) override;
 
 		void TargetPowerOn();

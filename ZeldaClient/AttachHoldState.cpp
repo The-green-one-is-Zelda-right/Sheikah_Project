@@ -1,21 +1,11 @@
-#include "AttachHoldState.h"
-
-#include "EnumPlayerState.h"
-
-#include "Player.h"
-#include "PlayerController.h"
-#include "PlayerStateMachine.h"
-#include "PlayerMovement.h"
-#include "PlayerAnimation.h"
-#include "PlayerCamera.h"
-#include "PlayerUIManager.h"
+ï»¿#include "AttachHoldState.h"
 
 #include "PzObject.h"
 #include "AttachSystem.h"
 
 namespace Phyzzle
 {
-	AttachHoldState::AttachHoldState(Phyzzle::Player* _player)
+	AttachHoldState::AttachHoldState(Player* _player)
 		: IState(_player), selectBody(), attachble()
 	{
 		using namespace Eigen;
@@ -168,19 +158,19 @@ namespace Phyzzle
 
 		if (TrySelect())
 		{
-			Vector3f corePos = player->GetCameraCoreTrnasform()->GetWorldPosition();
-			Quaternionf coreRot = player->GetCameraCoreTrnasform()->GetWorldRotation();
+			Vector3f corePos = player->data.cameraCore->GetWorldPosition();
+			Quaternionf coreRot = player->data.cameraCore->GetWorldRotation();
 
-			player->GetCameraArmTrnasform()->SetLocalPosition(player->GetCamera()->armDefaultPosition);
-			player->GetCamera()->armTargetPosition = player->GetCamera()->armDefaultPosition;
+			player->data.cameraArm->SetLocalPosition(player->camData.armDefaultPosition);
+			player->camData.armTargetPosition = player->camData.armDefaultPosition;
 			
-			auto rot = player->GetCameraCoreTrnasform()->GetLocalRotation();
-			player->GetCameraArmTrnasform()->SetLocalRotation(rot);
-			player->GetCamera()->armTargetRotation = rot;
-			player->GetCamera()->xAngle = 0.f;
+			auto rot = player->data.modelCore->GetLocalRotation();
+			player->data.cameraArm->SetLocalRotation(rot);
+			player->camData.armTargetRotation = rot;
+			player->camData.xAngle = 0.f;
 
-			player->GetCameraCoreTrnasform()->SetWorldRotation(coreRot);
-			player->GetCameraCoreTrnasform()->SetWorldPosition(corePos);
+			player->data.cameraCore->SetWorldRotation(coreRot);
+			player->data.cameraCore->SetWorldPosition(corePos);
 		}
 	}
 
@@ -188,8 +178,8 @@ namespace Phyzzle
 	{
 		{
 			using namespace Eigen;
-			player->GetCamera()->SetCameraCoreLocalTargetPosition(player->GetCamera()->coreDefaultPosition);
-			player->GetCamera()->SetCameraCoreLocalTargetRotation(player->GetCamera()->coreDefaultRotation);
+			player->SetCameraCoreLocalTargetPosition(player->camData.coreDefaultPosition);
+			player->SetCameraCoreLocalTargetRotation(player->camData.coreDefaultRotation);
 		}
 
 		AroundObjectEnableOutline(false);
@@ -205,19 +195,20 @@ namespace Phyzzle
 	{
 		AroundObjectEnableOutline(false);
 		aroundObject.clear();
-		around = SearchAround();	// ÁÖº¯ ¿ÀºêÁ§Æ® Å½»ö
+		around = SearchAround();	// ì¢Œí‘œ ê³„ì‚° í›„ íƒìƒ‰
 
-		// Å¸°Ù Æ÷Áö¼ÇÀ» °è»ê
+		// ì¢Œí‘œ ê³„ì‚°
 		UpdateTargetPosition();
 
-		// ½ºÇÁ¸µ ÈûÀ» °è»ê
+		// ìŠ¤í”„ë§ ê³„ì‚°
 		CalculateSpringForces();
 
-		// ¿ÀºêÁ§Æ®¿¡ ¼Ó·ÂÀ» Àû¿ë
+		// ì¢Œí‘œ ì ìš©
 		ApplyObjectVelocity();
 
-		// ¼Ó·Â ¸®¼Â
+		// ì¢Œí‘œ ì´ˆê¸°í™”
 		ResetObjectVelocity();
+
 	}
 
 	void AttachHoldState::PostStateStay()
@@ -230,19 +221,19 @@ namespace Phyzzle
 				AttachTouchUIRender(false);
 
 			if (around)
-				AroundObjectEnableOutline(true);	// ÁÖº¯ ¿ÀºêÁ§Æ® ¾Æ¿ô¶óÀÎ
+				AroundObjectEnableOutline(true);	// ì¢Œí‘œ íƒìƒ‰ í™œì„±í™”
 
 			RotationArowRender(roateMode);
 			AttachRotateUIRender(roateMode);
 			DettachUIRender(!roateMode);
-			EnableOutline(true);		// ÀâÀº ¿ÀºêÁ§Æ® ¾Æ¿ô¶óÀÎ
+			EnableOutline(true);		// ì¢Œí‘œ íƒìƒ‰ í™œì„±í™”
 
-			// Ä«¸Þ¶ó ¾÷µ¥ÀÌÆ®
+			// ì¹´ë©”ë¼ ê³„ì‚°
 			UpdateCamera();
 		}
 
-		// if (player->data.debugMode)
-		// 	SearchDebugDraw();
+		if (player->data.debugMode)
+			SearchDebugDraw();
 	}
 		
 	void AttachHoldState::StateCancel()
@@ -254,48 +245,49 @@ namespace Phyzzle
 #pragma endregion StateEvent
 
 #pragma region Input
-	// ÇÃ·¹ÀÌ¾î ÀÌµ¿
+	// ì¢Œí‘œ ì´ë™
 	void AttachHoldState::Stick_L()
 	{
 		PlayerMove(player->data.holdSpeed);
-		// Å¸°Ù À§Ä¡¿Í ¿ÀºêÁ§Æ®ÀÇ À§Ä¡¸¦ È®ÀÌÇÏ°í offsetº¸´Ù Â÷ÀÌ³ª¸é ÇÃ·¹ÀÌ¾î°¡ ÇØ´ç ¹æÇâÀ¸·Î´Â ¸ø¿òÁ÷ÀÌ°Ô ÇÔ
+		// ì¢Œí‘œ ê³„ì‚° í›„ íƒìƒ‰ í›„ offset ì ìš©
 
 		Eigen::Vector3f playerLinearVelocity = player->data.playerRigidbody->GetLinearVelocity();
 		TranslateObject(playerLinearVelocity, 1.f);
 	}
 
-	// ¿ÀºêÁ§Æ® ÀÌµ¿
+	// ì¢Œí‘œ ì´ë™
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ìµï¿½
 	void AttachHoldState::Stick_R()
 	{
 		using namespace Eigen;
 
-		// Å° ÀÔ·ÂÀÌ ¾øÀ¸¸é Èû ¾ÈÁÜ
-		if (player->GetController()->currInput.Rstick.Size)
+		// Å° ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		if (player->currInput.Rstick.Size)
 		{
-			// Å¸°Ù À§Ä¡¿Í ¿ÀºêÁ§Æ®ÀÇ À§Ä¡¸¦ È®ÀÎÇÏ°í offsetº¸´Ù Â÷ÀÌ³ª¸é ÇØ´ç ¹æÇâÀ¸·Î´Â ¸ø¿òÁ÷ÀÌ°Ô ÇÔ.
+			// Å¸ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï°ï¿½ offsetï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì³ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½.
 
-			TranslateObjectAlongXZ(player->GetController()->currInput.Rstick.X * player->GetController()->currInput.Rstick.Size);
-			TranslateObjectAlongY(player->GetController()->currInput.Rstick.Y * player->GetController()->currInput.Rstick.Size);
+			TranslateObjectAlongXZ(player->currInput.Rstick.X * player->currInput.Rstick.Size);
+			TranslateObjectAlongY(player->currInput.Rstick.Y * player->currInput.Rstick.Size);
 		}
 	}
 
 	void AttachHoldState::Trigger_L()
 	{
-		adjustmentMode = player->GetController()->currInput.LTrigger;
+		adjustmentMode = player->currInput.LTrigger;
 	}
 
-	// Ãë¼Ò
+	// ï¿½ï¿½ï¿½
 	void AttachHoldState::Click_A()
 	{
 		Put();
 		Cancel();
 	}
 
-	// ºÎÂø
+	// ï¿½ï¿½ï¿½ï¿½
 	void AttachHoldState::Click_B()
 	{
-		// ¿ÀºêÁ§Æ®¸¦ ÀÌµ¿½ÃÅ³¼ö ÀÖ´Â »óÅÂ¶ó¸é
-		// ºÙÀÏ ¼ö ÀÖ¾î¾ßÇÔ.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½Å³ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Â¶ï¿½ï¿½
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½.
 		
 		if (TryAttach())
 		{
@@ -306,14 +298,14 @@ namespace Phyzzle
 		}
 	}
 
-	// Ãë¼Ò
+	// ï¿½ï¿½ï¿½
 	void AttachHoldState::Click_X()
 	{
 		Put();
 		Cancel();
 	}
 
-	// Å»°Å
+	// Å»ï¿½ï¿½
 	void AttachHoldState::Click_Y()
 	{
 		if (TryDettach())
@@ -322,14 +314,14 @@ namespace Phyzzle
 		}
 	}
 
-	// Ãë¼Ò
+	// ï¿½ï¿½ï¿½
 	void AttachHoldState::Click_LB()
 	{
 		Put();
 		Cancel();
 	}
 
-	// ¿ÀºêÁ§Æ® ÀÌµ¿ ¹× È¸Àü
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ìµï¿½ ï¿½ï¿½ È¸ï¿½ï¿½
 	void AttachHoldState::Click_DUp()
 	{
 		const bool justRotate = !adjustmentMode && roateMode;
@@ -337,12 +329,12 @@ namespace Phyzzle
 
 		if (justTranslate)
 		{
-			TranslateSpringAlongZ(player->GetStateMachine()->targetPositionZStep);
+			TranslateSpringAlongZ(player->abilData.targetPositionZStep);
 		}
 		else if (justRotate)
 		{
-			// ¿ÀºêÁ§Æ®¿¡ °¢¼Óµµ¸¦ Áà¼­ È¸Àü½ÃÅ´
-			// ÇÃ·¹ÀÌ¾î ±âÁØÀ¸·Î X Ãà ±âÁØÀ¸·Î +È¸Àü ½ÃÅ´
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ ï¿½à¼­ È¸ï¿½ï¿½ï¿½ï¿½Å´
+			// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ X ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ +È¸ï¿½ï¿½ ï¿½ï¿½Å´
 
 			switch(info.info)
 			{
@@ -362,34 +354,34 @@ namespace Phyzzle
 				break;
 
 			case RotateX_Y:
-				// ¹®Á¦ÀÇ ±× °¢µµÀÎµ¥
-				// ¸ÞÀÎ ¸éÀÌ µÇ´Â °Ô ¿ÞÂÊ¿¡ ÀÖÀ» ¶§
-				RotateSpringAlongY(rotateAngle);	// ÁÂ
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½
+				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+				RotateSpringAlongY(rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongX(rotateAngle);	// »ó
+				RotateSpringAlongX(rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongY(-rotateAngle);	// ¿ì
-				RotateSpringAlongY(-rotateAngle);	// ¿ì
+				RotateSpringAlongY(-rotateAngle);	// ï¿½ï¿½
+				RotateSpringAlongY(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongX(rotateAngle);	// »ó
+				RotateSpringAlongX(rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongY(rotateAngle);	// ÁÂ
+				RotateSpringAlongY(rotateAngle);	// ï¿½ï¿½
 				info.info = RotateXY;
 				break;
 
 			case RotateXY:
-				// ¹®Á¦ÀÇ ±× °¢µµÀÎµ¥
-				// ¸ÞÀÎ ¸éÀÌ µÇ´Â °Ô ¿À¸¥ÂÊ¿¡ ÀÖÀ» ¶§
-				RotateSpringAlongY(-rotateAngle);	// ¿ì
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½
+				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+				RotateSpringAlongY(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongX(rotateAngle);	// »ó
+				RotateSpringAlongX(rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongY(rotateAngle);	// ÁÂ
-				RotateSpringAlongY(rotateAngle);	// ÁÂ
+				RotateSpringAlongY(rotateAngle);	// ï¿½ï¿½
+				RotateSpringAlongY(rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongX(rotateAngle);	// »ó
+				RotateSpringAlongX(rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongY(-rotateAngle);	// ¿ì
+				RotateSpringAlongY(-rotateAngle);	// ï¿½ï¿½
 				info.info = RotateX_Y;
 				break;
 
@@ -414,7 +406,7 @@ namespace Phyzzle
 		}
 	}
 
-	// ¿ÀºêÁ§Æ® ÀÌµ¿ ¹× È¸Àü
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ìµï¿½ ï¿½ï¿½ È¸ï¿½ï¿½
 	void AttachHoldState::Click_DDown()
 	{
 		const bool justRotate = !adjustmentMode && roateMode;
@@ -422,12 +414,12 @@ namespace Phyzzle
 
 		if (justTranslate)
 		{
-			TranslateSpringAlongZ(-player->GetStateMachine()->targetPositionZStep);
+			TranslateSpringAlongZ(-player->abilData.targetPositionZStep);
 		}
 		else if (justRotate)
 		{
-			// ¿ÀºêÁ§Æ®¿¡ °¢¼Óµµ¸¦ Áà¼­ È¸Àü½ÃÅ´
-			// ÇÃ·¹ÀÌ¾î ±âÁØÀ¸·Î X Ãà ±âÁØÀ¸·Î -È¸Àü ½ÃÅ´
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ ï¿½à¼­ È¸ï¿½ï¿½ï¿½ï¿½Å´
+			// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ X ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ -È¸ï¿½ï¿½ ï¿½ï¿½Å´
 
 			switch (info.info)
 			{
@@ -447,34 +439,34 @@ namespace Phyzzle
 				break;
 
 			case RotateX_Y:
-				// ¹®Á¦ÀÇ ±× °¢µµÀÎµ¥
-				// ¸ÞÀÎ ¸éÀÌ µÇ´Â °Ô ¿ÞÂÊ¿¡ ÀÖÀ» ¶§
-				RotateSpringAlongY(rotateAngle);		// ÁÂ
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½
+				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+				RotateSpringAlongY(rotateAngle);		// ï¿½ï¿½
 
-				RotateSpringAlongX(-rotateAngle);	// ÇÏ
+				RotateSpringAlongX(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongY(-rotateAngle);	// ¿ì
-				RotateSpringAlongY(-rotateAngle);	// ¿ì
+				RotateSpringAlongY(-rotateAngle);	// ï¿½ï¿½
+				RotateSpringAlongY(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongX(-rotateAngle);	// ÇÏ
+				RotateSpringAlongX(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongY(rotateAngle);		// ÁÂ
+				RotateSpringAlongY(rotateAngle);		// ï¿½ï¿½
 				info.info = RotateXY;
 				break;
 
 			case RotateXY:
-				// ¹®Á¦ÀÇ ±× °¢µµÀÎµ¥
-				// ¸ÞÀÎ ¸éÀÌ µÇ´Â °Ô ¿À¸¥ÂÊ¿¡ ÀÖÀ» ¶§
-				RotateSpringAlongY(-rotateAngle);	// ¿ì
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½
+				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+				RotateSpringAlongY(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongX(-rotateAngle);	// ÇÏ
+				RotateSpringAlongX(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongY(rotateAngle);		// ÁÂ
-				RotateSpringAlongY(rotateAngle);		// ÁÂ
+				RotateSpringAlongY(rotateAngle);		// ï¿½ï¿½
+				RotateSpringAlongY(rotateAngle);		// ï¿½ï¿½
 
-				RotateSpringAlongX(-rotateAngle);	// ÇÏ
+				RotateSpringAlongX(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongY(-rotateAngle);	// ¿ì
+				RotateSpringAlongY(-rotateAngle);	// ï¿½ï¿½
 				info.info = RotateX_Y;
 				break;
 
@@ -499,14 +491,14 @@ namespace Phyzzle
 		}
 	}
 
-	// ¿ÀºêÁ§Æ® ÀÌµ¿ ¹× È¸Àü
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ìµï¿½ ï¿½ï¿½ È¸ï¿½ï¿½
 	void AttachHoldState::Click_DLeft()
 	{
 		const bool justRotate = !adjustmentMode && roateMode;
 		if (justRotate)
 		{
-			// ¿ÀºêÁ§Æ®¿¡ °¢¼Óµµ¸¦ Áà¼­ È¸Àü½ÃÅ´
-			// ÇÃ·¹ÀÌ¾î ±âÁØÀ¸·Î Y Ãà ±âÁØÀ¸·Î -È¸Àü ½ÃÅ´
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ ï¿½à¼­ È¸ï¿½ï¿½ï¿½ï¿½Å´
+			// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Y ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ -È¸ï¿½ï¿½ ï¿½ï¿½Å´
 
 			switch (info.info)
 			{
@@ -536,35 +528,35 @@ namespace Phyzzle
 				break;
 
 			case RotateY_X:
-				// ¹®Á¦ÀÇ ±× °¢µµÀÎµ¥
-				// ¸ÞÀÎ ¸éÀÌ µÇ´Â °Ô À§¿¡ ÀÖÀ» ¶§
-				RotateSpringAlongX(rotateAngle);		// »ó
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½
+				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+				RotateSpringAlongX(rotateAngle);		// ï¿½ï¿½
 
-				RotateSpringAlongY(rotateAngle);		// ÁÂ
+				RotateSpringAlongY(rotateAngle);		// ï¿½ï¿½
 
-				RotateSpringAlongX(-rotateAngle);	// ÇÏ
-				RotateSpringAlongX(-rotateAngle);	// ÇÏ
+				RotateSpringAlongX(-rotateAngle);	// ï¿½ï¿½
+				RotateSpringAlongX(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongY(rotateAngle);		// ÁÂ
+				RotateSpringAlongY(rotateAngle);		// ï¿½ï¿½
 
-				RotateSpringAlongX(rotateAngle);		// »ó
+				RotateSpringAlongX(rotateAngle);		// ï¿½ï¿½
 
 				info.info = RotateYX;
 				break;
 
 			case RotateYX:
-				// ¹®Á¦ÀÇ ±× °¢µµÀÎµ¥
-				// ¸ÞÀÎ ¸éÀÌ µÇ´Â °Ô ¾Æ·¡¿¡ ÀÖÀ» ¶§
-				RotateSpringAlongX(-rotateAngle);	// ÇÏ
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½
+				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+				RotateSpringAlongX(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongY(rotateAngle);		// ÁÂ
+				RotateSpringAlongY(rotateAngle);		// ï¿½ï¿½
 
-				RotateSpringAlongX(rotateAngle);		// »ó
-				RotateSpringAlongX(rotateAngle);		// »ó
+				RotateSpringAlongX(rotateAngle);		// ï¿½ï¿½
+				RotateSpringAlongX(rotateAngle);		// ï¿½ï¿½
 
-				RotateSpringAlongY(rotateAngle);		// ÁÂ
+				RotateSpringAlongY(rotateAngle);		// ï¿½ï¿½
 
-				RotateSpringAlongX(-rotateAngle);	// ÇÏ
+				RotateSpringAlongX(-rotateAngle);	// ï¿½ï¿½
 
 				info.info = RotateY_X;
 				break;
@@ -580,14 +572,14 @@ namespace Phyzzle
 		}
 	}
 
-	// ¿ÀºêÁ§Æ® ÀÌµ¿ ¹× È¸Àü
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ìµï¿½ ï¿½ï¿½ È¸ï¿½ï¿½
 	void AttachHoldState::Click_DRight()
 	{
 		const bool justRotate = !adjustmentMode && roateMode;
 		if (justRotate)
 		{
-			// ¿ÀºêÁ§Æ®¿¡ °¢¼Óµµ¸¦ Áà¼­ È¸Àü½ÃÅ´
-			// ÇÃ·¹ÀÌ¾î ±âÁØÀ¸·Î Y Ãà ±âÁØÀ¸·Î -È¸Àü ½ÃÅ´
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ ï¿½à¼­ È¸ï¿½ï¿½ï¿½ï¿½Å´
+			// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Y ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ -È¸ï¿½ï¿½ ï¿½ï¿½Å´
 
 			switch (info.info)
 			{
@@ -617,35 +609,35 @@ namespace Phyzzle
 				break;
 
 			case RotateY_X:
-				// ¹®Á¦ÀÇ ±× °¢µµÀÎµ¥
-				// ¸ÞÀÎ ¸éÀÌ µÇ´Â °Ô À§¿¡ ÀÖÀ» ¶§
-				RotateSpringAlongX(rotateAngle);		// »ó
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½
+				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+				RotateSpringAlongX(rotateAngle);		// ï¿½ï¿½
 
-				RotateSpringAlongY(-rotateAngle);	// ¿ì
+				RotateSpringAlongY(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongX(-rotateAngle);	// ÇÏ
-				RotateSpringAlongX(-rotateAngle);	// ÇÏ
+				RotateSpringAlongX(-rotateAngle);	// ï¿½ï¿½
+				RotateSpringAlongX(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongY(-rotateAngle);	// ¿ì
+				RotateSpringAlongY(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongX(rotateAngle);		// »ó
+				RotateSpringAlongX(rotateAngle);		// ï¿½ï¿½
 
 				info.info = RotateYX;
 				break;
 
 			case RotateYX:
-				// ¹®Á¦ÀÇ ±× °¢µµÀÎµ¥
-				// ¸ÞÀÎ ¸éÀÌ µÇ´Â °Ô ¾Æ·¡¿¡ ÀÖÀ» ¶§
-				RotateSpringAlongX(-rotateAngle);	// ÇÏ
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½
+				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+				RotateSpringAlongX(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongY(-rotateAngle);	// ¿ì
+				RotateSpringAlongY(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongX(rotateAngle);		// »ó
-				RotateSpringAlongX(rotateAngle);		// »ó
+				RotateSpringAlongX(rotateAngle);		// ï¿½ï¿½
+				RotateSpringAlongX(rotateAngle);		// ï¿½ï¿½
 
-				RotateSpringAlongY(-rotateAngle);	// ¿ì
+				RotateSpringAlongY(-rotateAngle);	// ï¿½ï¿½
 
-				RotateSpringAlongX(-rotateAngle);	// ÇÏ
+				RotateSpringAlongX(-rotateAngle);	// ï¿½ï¿½
 				info.info = RotateY_X;
 				break;
 
@@ -660,7 +652,7 @@ namespace Phyzzle
 		}
 	}
 
-	// ¿ÀºêÁ§Æ® ÀÌµ¿ ¹× È¸Àü
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ìµï¿½ ï¿½ï¿½ È¸ï¿½ï¿½
 	void AttachHoldState::Pressing_DUp()
 	{
 		const bool rotateAdjustment = adjustmentMode && roateMode;
@@ -670,20 +662,20 @@ namespace Phyzzle
 
 		if (translateAdjustment)
 		{
-			// ÇÃ·¹ÀÌ¾î - ¿ÀºêÁ§Æ® ¹æÇâÀ¸·Î ÁÖ°í ¹ÞÀ½.
-			const float velocity = pushingVelocity * player->GetController()->currInput.LTrigger * dt;
+			// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½.
+			const float velocity = pushingVelocity * player->currInput.LTrigger * dt;
 
 			TranslateSpringAlongZ(velocity);
 		}
 		else if (rotateAdjustment)
 		{
-			const float velocity = rotateAngle * player->GetController()->currInput.LTrigger * dt;
+			const float velocity = rotateAngle * player->currInput.LTrigger * dt;
 
 			RotateSpringAlongX(velocity);
 		}
 	}
 
-	// ¿ÀºêÁ§Æ® ÀÌµ¿ ¹× È¸Àü
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ìµï¿½ ï¿½ï¿½ È¸ï¿½ï¿½
 	void AttachHoldState::Pressing_DDown()
 	{
 		const bool translateAdjustment = adjustmentMode && !roateMode;
@@ -691,23 +683,23 @@ namespace Phyzzle
 
 		float dt = PurahEngine::TimeController::GetInstance().GetDeltaTime();
 
-		// ÀÌµ¿
+		// ï¿½Ìµï¿½
 		if (translateAdjustment)
 		{
-			const float velocity = pushingVelocity * player->GetController()->currInput.LTrigger * dt;
+			const float velocity = pushingVelocity * player->currInput.LTrigger * dt;
 
 			TranslateSpringAlongZ(-velocity);
 		}
-		// È¸Àü
+		// È¸ï¿½ï¿½
 		else if (rotateAdjustment)
 		{
-			const float velocity = rotateAngle * player->GetController()->currInput.LTrigger * dt;
+			const float velocity = rotateAngle * player->currInput.LTrigger * dt;
 			
 			RotateSpringAlongX(-velocity);
 		}
 	}
 
-	// ¿ÀºêÁ§Æ® È¸Àü
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® È¸ï¿½ï¿½
 	void AttachHoldState::Pressing_DLeft()
 	{
 		const bool rotateAdjustment = adjustmentMode && roateMode;
@@ -716,16 +708,16 @@ namespace Phyzzle
 
 		if (rotateAdjustment)
 		{
-			// ¿ÀºêÁ§Æ®¿¡ °¢¼Óµµ¸¦ Áà¼­ È¸Àü½ÃÅ´
-			// ÇÃ·¹ÀÌ¾î ±âÁØÀ¸·Î X Ãà ±âÁØÀ¸·Î +È¸Àü ½ÃÅ´
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ ï¿½à¼­ È¸ï¿½ï¿½ï¿½ï¿½Å´
+			// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ X ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ +È¸ï¿½ï¿½ ï¿½ï¿½Å´
 
-			const float velocity = rotateAngle * player->GetController()->currInput.LTrigger * dt;
+			const float velocity = rotateAngle * player->currInput.LTrigger * dt;
 
 			RotateSpringAlongY(velocity);
 		}
 	}
 
-	// ¿ÀºêÁ§Æ® È¸Àü
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® È¸ï¿½ï¿½
 	void AttachHoldState::Pressing_DRight()
 	{
 		const bool rotateAdjustment = adjustmentMode && roateMode;
@@ -734,16 +726,16 @@ namespace Phyzzle
 
 		if (rotateAdjustment)
 		{
-			// ¿ÀºêÁ§Æ®¿¡ °¢¼Óµµ¸¦ Áà¼­ È¸Àü½ÃÅ´
-			// ÇÃ·¹ÀÌ¾î ±âÁØÀ¸·Î Y Ãà ±âÁØÀ¸·Î -È¸Àü ½ÃÅ´
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ ï¿½à¼­ È¸ï¿½ï¿½ï¿½ï¿½Å´
+			// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Y ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ -È¸ï¿½ï¿½ ï¿½ï¿½Å´
 
-			const float velocity = rotateAngle * player->GetController()->currInput.LTrigger * dt;
+			const float velocity = rotateAngle * player->currInput.LTrigger * dt;
 
 			RotateSpringAlongY(-velocity);
 		}
 	}
 
-	// Rotate ¸ðµå
+	// Rotate ï¿½ï¿½ï¿½
 	void AttachHoldState::Pressing_RB()
 	{
 		roateMode = true;
@@ -758,10 +750,10 @@ namespace Phyzzle
 #pragma region Content
 	void AttachHoldState::PlayerMove(float _speed) const
 	{
-		if (player->GetMovement()->TryPlayerMove(_speed))
+		if (player->TryPlayerMove(_speed))
 		{
-			float x = player->GetController()->currInput.Lstick.X;
-			float y = player->GetController()->currInput.Lstick.Y;
+			float x = player->currInput.Lstick.X;
+			float y = player->currInput.Lstick.Y;
 
 			bool front = y > 0.f;
 			bool right = x > 0.f;
@@ -769,24 +761,24 @@ namespace Phyzzle
 
 			if (front && !xBigger)
 			{
-				player->GetAnimation()->ChangePlayerAnimationState(AnimationState::ABILITY_FRONT);
+				player->ChangePlayerAnimationState(Player::PlayerState::ABILITY_FRONT);
 			}
 			else if (!front && !xBigger)
 			{
-				player->GetAnimation()->ChangePlayerAnimationState(AnimationState::ABILITY_BACK);
+				player->ChangePlayerAnimationState(Player::PlayerState::ABILITY_BACK);
 			}
 			else if (right && xBigger)
 			{
-				player->GetAnimation()->ChangePlayerAnimationState(AnimationState::ABILITY_RIGHT);
+				player->ChangePlayerAnimationState(Player::PlayerState::ABILITY_RIGHT);
 			}
 			else if (!right && xBigger)
 			{
-				player->GetAnimation()->ChangePlayerAnimationState(AnimationState::ABILITY_LEFT);
+				player->ChangePlayerAnimationState(Player::PlayerState::ABILITY_LEFT);
 			}
 		}
 		else
 		{
-			player->GetAnimation()->ChangePlayerAnimationState(AnimationState::ABILITY_IDLE);
+			player->ChangePlayerAnimationState(Player::PlayerState::ABILITY_IDLE);
 		}
 	}
 
@@ -801,13 +793,13 @@ namespace Phyzzle
 		UpdateHoldingCameraPosition(localPosition, worldPosition);
 		UpdateHoldingCameraRotation();
 
-		if (player->GetCamera()->ResolveCameraCollision(localPosition, worldPosition))
+		if (player->ResolveCameraCollision(localPosition, worldPosition))
 		{
-			player->GetCamera()->SetCameraCoreWorldTargetPosition(worldPosition);
+			player->SetCameraCoreWorldTargetPosition(worldPosition);
 		}
 		else
 		{
-			player->GetCamera()->SetCameraCoreLocalTargetPosition(localPosition);
+			player->SetCameraCoreLocalTargetPosition(localPosition);
 		}
 	}
 
@@ -825,20 +817,20 @@ namespace Phyzzle
 
 		Vector3f lowCamPos[2] = 
 		{
-			player->GetCamera()->attachLowCamera0->GetLocalPosition(),
-			player->GetCamera()->attachLowCamera1->GetLocalPosition()
+			player->camData.attachLowCamera0->GetLocalPosition(),
+			player->camData.attachLowCamera1->GetLocalPosition()
 		};
 
 		Vector3f defaultCamPos[2] =
 		{
-			player->GetCamera()->attachDefaultCamera0->GetLocalPosition(),
-			player->GetCamera()->attachDefaultCamera1->GetLocalPosition()
+			player->camData.attachDefaultCamera0->GetLocalPosition(),
+			player->camData.attachDefaultCamera1->GetLocalPosition()
 		};
 
 		Vector3f highCamPos[2] =
 		{
-			player->GetCamera()->attachHighCamera0->GetLocalPosition(),
-			player->GetCamera()->attachHighCamera1->GetLocalPosition()
+			player->camData.attachHighCamera0->GetLocalPosition(),
+			player->camData.attachHighCamera1->GetLocalPosition()
 		};
 
 		Vector3f objPos = selectBody->GetPosition();
@@ -858,11 +850,11 @@ namespace Phyzzle
 
 		auto& math = PurahEngine::PurahMath::GetInstance();
 
-		Vector3f interpolatedAF = player->GetCamera()->Lerp(activeCamPos[0], activeCamPos[1], ratioZ);
-		Vector3f interpolatedDC = player->GetCamera()->Lerp(defaultCamPos[0], defaultCamPos[1], ratioZ);
-		Vector3f finalInterpolatedCamera = player->GetCamera()->Lerp(interpolatedDC, interpolatedAF, ratioY);
+		Vector3f interpolatedAF = player->lerp(activeCamPos[0], activeCamPos[1], ratioZ);
+		Vector3f interpolatedDC = player->lerp(defaultCamPos[0], defaultCamPos[1], ratioZ);
+		Vector3f finalInterpolatedCamera = player->lerp(interpolatedDC, interpolatedAF, ratioY);
 
-		Affine3f world{ player->GetCameraArmTrnasform()->GetWorldMatrix() };
+		Affine3f world{ player->data.cameraArm->GetWorldMatrix() };
 		world.translate(finalInterpolatedCamera);
 
 		_local = finalInterpolatedCamera;
@@ -874,7 +866,7 @@ namespace Phyzzle
 		using namespace Eigen;
 
 		Quaternionf modelRot = player->data.modelCore->GetLocalRotation();
-		player->GetCameraArmTrnasform()->SetLocalRotation(modelRot);
+		player->data.cameraArm->SetLocalRotation(modelRot);
 
 		float offset = 1.f;
 
@@ -886,20 +878,20 @@ namespace Phyzzle
 
 		Quaternionf lowCamRot[2] =
 		{
-			player->GetCamera()->attachLowCamera0->GetLocalRotation(),
-			player->GetCamera()->attachLowCamera1->GetLocalRotation()
+			player->camData.attachLowCamera0->GetLocalRotation(),
+			player->camData.attachLowCamera1->GetLocalRotation()
 		};
 
 		Quaternionf defaultCamRot[2] =
 		{
-			player->GetCamera()->attachDefaultCamera0->GetLocalRotation(),
-			player->GetCamera()->attachDefaultCamera1->GetLocalRotation()
+			player->camData.attachDefaultCamera0->GetLocalRotation(),
+			player->camData.attachDefaultCamera1->GetLocalRotation()
 		};
 
 		Quaternionf highCamRot[2] =
 		{
-			player->GetCamera()->attachHighCamera0->GetLocalRotation(),
-			player->GetCamera()->attachHighCamera1->GetLocalRotation()
+			player->camData.attachHighCamera0->GetLocalRotation(),
+			player->camData.attachHighCamera1->GetLocalRotation()
 		};
 
 		Vector3f objPos = selectBody->GetPosition();
@@ -923,18 +915,18 @@ namespace Phyzzle
 		Quaternionf interpolatedDC = defaultCamRot[0].slerp(ratioZ, defaultCamRot[1]);
 		Quaternionf finalInterpolatedCamera = interpolatedDC.slerp(ratioY, interpolatedAF);
 
-		player->GetCamera()->SetCameraCoreLocalTargetRotation(finalInterpolatedCamera);
+		player->SetCameraCoreLocalTargetRotation(finalInterpolatedCamera);
 	}
 
 	void AttachHoldState::CameraReset() const
 	{
-		player->GetCamera()->ResetCameraCore();
+		player->ResetCameraCore();
 	}
 #pragma endregion Camera
 
 	void AttachHoldState::Cancel() const
 	{
-		player->ChangeAbilityState(AbilityState::DEFAULT);
+		player->ChangeAbilityState(Player::AbilityState::DEFAULT);
 	}
 
 	bool AttachHoldState::TrySelect()
@@ -944,14 +936,14 @@ namespace Phyzzle
 
 		if (!attachble || !selectBody)
 		{
-			player->ChangeAbilityState(AbilityState::ATTACH_SELECT);
+			player->ChangeAbilityState(Player::ATTACH_SELECT);
 			return false;;
 		}
 		else
 		{
 			if (selectBody->GetGameObject()->tag.IsContain(L"Phyzzle Player"))
 			{
-				player->ChangeAbilityState(AbilityState::ATTACH_SELECT);
+				player->ChangeAbilityState(Player::ATTACH_SELECT);
 				return false;;
 			}
 			else
@@ -1020,23 +1012,23 @@ namespace Phyzzle
 	// 
 	// 	float deltaTime = PurahEngine::TimeController::GetInstance().GetDeltaTime();
 	// 
-	// 	// ÇöÀç ¿ÀºêÁ§Æ® À§Ä¡
+	// 	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Ä¡
 	// 	Eigen::Vector3f currentPosition = selectBody->GetPosition();
 	// 
-	// 	// ½ºÇÁ¸µ Èû °è»ê (ÈÄÅ©ÀÇ ¹ýÄ¢)
+	// 	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ (ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½Ä¢)
 	// 	Eigen::Vector3f displacement = worldTargetPosition - currentPosition;
 	// 	Eigen::Vector3f springForce = springConstant * displacement;
 	// 
-	// 	// RigidbodyÀÇ ¼Óµµ °¡Á®¿À±â
+	// 	// Rigidbodyï¿½ï¿½ ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	// 	Eigen::Vector3f objectVelocity = selectBody->GetLinearVelocity();
 	// 
-	// 	// °¨¼è Èû °è»ê
+	// 	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
 	// 	Eigen::Vector3f dampingForce = -dampingFactor * objectVelocity;
 	// 
-	// 	// ÃÑ Èû °è»ê
+	// 	// ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
 	// 	Eigen::Vector3f totalForce = springForce + dampingForce;
 	// 
-	// 	// ¿ÀºêÁ§Æ®¿¡ Èû Àû¿ë
+	// 	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	// 	selectBody->AddForce(totalForce);
 	// }
 
@@ -1044,13 +1036,13 @@ namespace Phyzzle
 	//{
 	//	float deltaTime = PurahEngine::TimeController::GetInstance().GetDeltaTime();
 	//
-	//	// ÇöÀç ¿ÀºêÁ§Æ® À§Ä¡
+	//	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Ä¡
 	//	Eigen::Vector3f currentPosition = selectBody->GetPosition();
 	//
-	//	// ¿ùµå ÁÂÇ¥¿¡¼­ÀÇ Å¸°Ù Æ÷Áö¼ÇÀ» °¡Á®¿É´Ï´Ù.
+	//	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½É´Ï´ï¿½.
 	//	Eigen::Vector3f worldTargetPosition = GetWorldTargetPosition();
 	//
-	//	// Å¸°Ù Æ÷Áö¼ÇÀÌ ¿ÀºêÁ§Æ®¸¦ ÇâÇØ ÀÌµ¿
+	//	// Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
 	//	Eigen::Vector3f directionToObject = (currentPosition - worldTargetPosition).normalized();
 	//	worldTargetPosition += directionToObject * 1.f * deltaTime;
 	//
@@ -1062,20 +1054,20 @@ namespace Phyzzle
 
 	Eigen::Vector3f AttachHoldState::GetWorldTargetPosition()
 	{
-		// ÇÃ·¹ÀÌ¾îÀÇ ¿ùµå À§Ä¡¿Í È¸Àü
-		Eigen::Vector3f playerPos = player->GetModelTransform()->GetWorldPosition();
-		Eigen::Quaternionf playerRot = player->GetModelTransform()->GetWorldRotation();
+		// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ È¸ï¿½ï¿½
+		Eigen::Vector3f playerPos = player->data.modelCore->GetWorldPosition();
+		Eigen::Quaternionf playerRot = player->data.modelCore->GetWorldRotation();
 
-		// ·ÎÄÃ Å¸°Ù Æ÷Áö¼ÇÀ» ¿ùµå ÁÂÇ¥·Î º¯È¯
+		// ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½È¯
 		return playerPos + playerRot * targetPosition;
 	}
 
 	Eigen::Quaternionf AttachHoldState::GetWorldTargetQuaternion()
 	{
-		// ÇÃ·¹ÀÌ¾îÀÇ ¿ùµå È¸Àü
-		Eigen::Quaternionf playerRot = player->GetModelTransform()->GetWorldRotation();
+		// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
+		Eigen::Quaternionf playerRot = player->data.modelCore->GetWorldRotation();
 
-		// ·ÎÄÃ Å¸°Ù È¸ÀüÀ» ¿ùµå È¸ÀüÀ¸·Î º¯È¯
+		// ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
 		return playerRot * targetRotation;
 	}
 
@@ -1091,31 +1083,31 @@ namespace Phyzzle
 
 			ZonaiPhysics::ZnBound3 bound = AttachSystem::Instance()->ComputeBoundingBoxAtTransform(attachble, targetTransform.matrix());
 
-			// ¹Ù¿îµù ¹Ú½ºÀÇ ÃÖ¼Ò z °ªÀÌ 1.0º¸´Ù ÀÛÀ¸¸é targetPosition.z¸¦ ¾÷µ¥ÀÌÆ®
-			if (bound.minimum.z() < player->GetStateMachine()->minTargetPositionZ)
+			// ï¿½Ù¿ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ z ï¿½ï¿½ï¿½ï¿½ 1.0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ targetPosition.zï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+			if (bound.minimum.z() < player->abilData.minTargetPositionZ)
 			{
-				float distance = player->GetStateMachine()->minTargetPositionZ - bound.minimum.z();
+				float distance = player->abilData.minTargetPositionZ - bound.minimum.z();
 				targetPosition.z() += distance;
 			}
 
-			// targetPosition.z°¡ max¸¦ ³ÑÀ¸¸é Á¶Á¤
-			if (targetPosition.z() > player->GetStateMachine()->maxTargetPositionZ)
+			// targetPosition.zï¿½ï¿½ maxï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			if (targetPosition.z() > player->abilData.maxTargetPositionZ)
 			{
-				float distance = player->GetStateMachine()->maxTargetPositionZ - targetPosition.z();
+				float distance = player->abilData.maxTargetPositionZ - targetPosition.z();
 				targetPosition.z() += distance;
 			}
 
-			// targetPosition.y°¡ min¸¦ ³ÑÀ¸¸é Á¶Á¤
-			if (targetPosition.y() < player->GetStateMachine()->minTargetPositionY)
+			// targetPosition.yï¿½ï¿½ minï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			if (targetPosition.y() < player->abilData.minTargetPositionY)
 			{
-				float distance = player->GetStateMachine()->minTargetPositionY - targetPosition.y();
+				float distance = player->abilData.minTargetPositionY - targetPosition.y();
 				targetPosition.y() += distance;
 			}
 
-			// targetPosition.y°¡ max¸¦ ³ÑÀ¸¸é Á¶Á¤
-			if (targetPosition.y() > player->GetStateMachine()->maxTargetPositionY)
+			// targetPosition.yï¿½ï¿½ maxï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			if (targetPosition.y() > player->abilData.maxTargetPositionY)
 			{
-				float distance = player->GetStateMachine()->maxTargetPositionY - targetPosition.y();
+				float distance = player->abilData.maxTargetPositionY - targetPosition.y();
 				targetPosition.y() += distance;
 			}
 		}
@@ -1131,8 +1123,8 @@ namespace Phyzzle
 	{
 		using namespace Eigen;
 		
-		const float zeta = player->GetStateMachine()->linearSpringDamping;
-		const float omega = player->GetStateMachine()->linearSpringFrequency;
+		const float zeta = player->abilData.linearSpringDamping;
+		const float omega = player->abilData.linearSpringFrequency;
 		const float timeStep = PurahEngine::TimeController::GetInstance().GetDeltaTime();
 
 		UpdateTargetPosition();
@@ -1141,7 +1133,7 @@ namespace Phyzzle
 		Eigen::Vector3f worldTargetPosition = GetWorldTargetPosition();
 
 		//float distanceToTarget = (worldTargetPosition - currPos).norm();
-		//float adjustedZeta = zeta + distanceToTarget; // ¸ñÇ¥ À§Ä¡¿¡ °¡±î¿öÁú¼ö·Ï ½ºÇÁ¸µ »ó¼ö Áõ°¡
+		//float adjustedZeta = zeta + distanceToTarget; // ï¿½ï¿½Ç¥ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 		posSpring.UpdateVelocity(currPos, linearSpringForce, worldTargetPosition, zeta, omega, timeStep);
 
@@ -1149,36 +1141,36 @@ namespace Phyzzle
 		//	linearSpringForce = (worldTargetPosition - currPos) / 0.01f;
 		//}
 
-		if (linearSpringForce.norm() > player->GetStateMachine()->linearMaxVelocity)
+		if (linearSpringForce.norm() > player->abilData.linearMaxVelocity)
 		{
-			linearSpringForce = linearSpringForce.normalized() * player->GetStateMachine()->linearMaxVelocity;
+			linearSpringForce = linearSpringForce.normalized() * player->abilData.linearMaxVelocity;
 		}
 	}
 
 	void AttachHoldState::CalculateSpringRotation()
 	{
 		// constexpr float zeta0 = 0.05f;
-		const float zeta = player->GetStateMachine()->angularSpringDamping;
-		const float omega = player->GetStateMachine()->angularSpringFrequency;
+		const float zeta = player->abilData.angularSpringDamping;
+		const float omega = player->abilData.angularSpringFrequency;
 		const float timeStep = PurahEngine::TimeController::GetInstance().GetDeltaTime();
 
 		Eigen::Quaternionf currRot = selectBody->GetRotation();
 		Eigen::Quaternionf targetRot = GetWorldTargetQuaternion();
 
 		//float angleToTarget = currRot.angularDistance(targetRot);
-		//float adjustedZeta = zeta + angleToTarget; // ¸ñÇ¥ È¸Àü¿¡ °¡±î¿öÁú¼ö·Ï ½ºÇÁ¸µ »ó¼ö Áõ°¡
+		//float adjustedZeta = zeta + angleToTarget; // ï¿½ï¿½Ç¥ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 		if (player->data.debugMode)
 		{
 			PurahEngine::GraphicsManager::GetInstance().DrawString(
-				L"ÇöÀç À§Ä¡ : " +
+				L"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ : " +
 				std::to_wstring(currRot.x()) + L"\n" +
 				std::to_wstring(currRot.y()) + L"\n" +
 				std::to_wstring(currRot.z()) + L"\n",
 				1200, 300, 200, 600, 15, 255, 255, 255, 255);
 
 			PurahEngine::GraphicsManager::GetInstance().DrawString(
-				L"¸ñÇ¥ À§Ä¡ : " +
+				L"ï¿½ï¿½Ç¥ ï¿½ï¿½Ä¡ : " +
 				std::to_wstring(targetRot.x()) + L"\n" +
 				std::to_wstring(targetRot.y()) + L"\n" +
 				std::to_wstring(targetRot.z()) + L"\n",
@@ -1208,9 +1200,9 @@ namespace Phyzzle
 
 		quatSpring.UpdateVelocity(currRot, angularSpringForce, targetRot.normalized(), zeta, omega, timeStep);
 
-		if (angularSpringForce.norm() > player->GetStateMachine()->angularMaxVelocity)
+		if (angularSpringForce.norm() > player->abilData.angularMaxVelocity)
 		{
-			angularSpringForce = angularSpringForce.normalized() * player->GetStateMachine()->angularMaxVelocity;
+			angularSpringForce = angularSpringForce.normalized() * player->abilData.angularMaxVelocity;
 		}
 	}
 
@@ -1230,20 +1222,20 @@ namespace Phyzzle
 	{
 		const float timeStep = PurahEngine::TimeController::GetInstance().GetDeltaTime();
 
-		// ÃÖ´ë È¸Àü °¢µµ
-		const float angleAtRadiusOne = player->GetStateMachine()->holdRotateAngle;
+		// ï¿½Ö´ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		const float angleAtRadiusOne = player->abilData.holdRotateAngle;
 
-		// ¹ÝÁö¸§ÀÌ 1ÀÏ ¶§ÀÇ È£ÀÇ ±æÀÌ °è»ê
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		const float arcLength = 1.0f * angleAtRadiusOne;
 
-		// targetPosition.zÀÇ ±æÀÌ·Î È¸Àü °¢µµ °è»ê
+		// targetPosition.zï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		const float targetRadius = targetPosition.z();
-		const float angle = (arcLength / targetRadius) * player->GetStateMachine()->arcRatio;
+		const float angle = (arcLength / targetRadius) * player->abilData.arcRatio;
 		const float finalAngle = angle * _factor * timeStep;
 
 		const Eigen::Vector3f axis = Eigen::Vector3f::UnitY();
 
-		// ÇÃ·¹ÀÌ¾îÀÇ ¿ùµå À§Ä¡¿Í È¸Àü
+		// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ È¸ï¿½ï¿½
 		const Eigen::Vector3f playerPosition = player->data.modelCore->GetWorldPosition();
 		Eigen::Quaternionf playerRotation = player->data.modelCore->GetWorldRotation();
 		Eigen::Quaternionf newPlayerRotation = Eigen::AngleAxisf(finalAngle * (std::numbers::pi / 180.f), axis) * playerRotation;
@@ -1255,10 +1247,10 @@ namespace Phyzzle
 		float distance = direction.norm();
 		direction.normalize();
 
-		if (distance > player->GetStateMachine()->targetPositionOffset)
+		if (distance > player->abilData.targetPositionOffset)
 		{
-			// distance°¡ targetPositionOffsetº¸´Ù Å©´Ù¸é, targetPositionOffset Á¤µµ±îÁö¸¸ È¸Àü
-			Eigen::Vector3f offsetWorldTargetPosition = objectPosition + direction * player->GetStateMachine()->targetPositionOffset;
+			// distanceï¿½ï¿½ targetPositionOffsetï¿½ï¿½ï¿½ï¿½ Å©ï¿½Ù¸ï¿½, targetPositionOffset ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
+			Eigen::Vector3f offsetWorldTargetPosition = objectPosition + direction * player->abilData.targetPositionOffset;
 			Eigen::Vector3f playerToTarget = offsetWorldTargetPosition - playerPosition;
 			playerToTarget.y() = 0.f;
 			playerToTarget.normalize();
@@ -1271,7 +1263,7 @@ namespace Phyzzle
 			newPlayerRotation = Eigen::Quaternionf(newRotation);
 		}
 
-		// ¸ðµ¨ÀÇ È¸ÀüÀ» ¾÷µ¥ÀÌÆ®
+		// ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 		player->data.modelCore->SetWorldRotation(newPlayerRotation);
 	}
 
@@ -1280,9 +1272,9 @@ namespace Phyzzle
 		const float timeStep = PurahEngine::TimeController::GetInstance().GetDeltaTime();
 
 		Eigen::Vector3f newTargetPosition = targetPosition;
-		newTargetPosition.y() += (player->GetStateMachine()->targetPositionYSpeed * _factor * timeStep);
+		newTargetPosition.y() += (player->abilData.targetPositionYSpeed * _factor * timeStep);
 
-		// ÇÃ·¹ÀÌ¾îÀÇ ¿ùµå À§Ä¡¿Í È¸Àü
+		// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ È¸ï¿½ï¿½
 		const Eigen::Vector3f playerPosition = player->data.modelCore->GetWorldPosition();
 		const Eigen::Quaternionf playerRotation = player->data.modelCore->GetWorldRotation();
 		Eigen::Vector3f worldTargetPosition = playerPosition + playerRotation * newTargetPosition;
@@ -1293,9 +1285,9 @@ namespace Phyzzle
 		float distance = direction.norm();
 		direction.normalize();
 
-		if (distance > player->GetStateMachine()->targetPositionOffset)
+		if (distance > player->abilData.targetPositionOffset)
 		{
-			worldTargetPosition = objectPosition + direction * player->GetStateMachine()->targetPositionOffset;
+			worldTargetPosition = objectPosition + direction * player->abilData.targetPositionOffset;
 			Eigen::Vector3f localTargetPosition = playerRotation.inverse() * (worldTargetPosition - playerPosition);
 			localTargetPosition.x() = 0.f;
 			targetPosition = localTargetPosition;
@@ -1317,7 +1309,7 @@ namespace Phyzzle
 	//	TranslateObject(forward, _distance);
 	//}
 
-	// Å¸°Ù ¼Ó·ÂÀ» ¾÷µ¥ÀÌÆ®°¡ ¾Æ´Ñ
+	// Å¸ï¿½ï¿½ ï¿½Ó·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Æ´ï¿½
 	void AttachHoldState::TranslateObject(const Eigen::Vector3f& _direction, float power)
 	{
 		targetVelocity += (_direction * power);
@@ -1358,20 +1350,37 @@ namespace Phyzzle
 		return AttachSystem::Instance()->Dettach(attachble);
 	}
 
+	void AttachHoldState::EnableOutline(bool _value) const
+	{
+		if (!selectBody || !attachble)
+			return;
+
+		if (_value)
+		{
+			AttachSystem::Instance()->EnableOutline(attachble, &player->color0, &player->color1);
+			AttachSystem::Instance()->EnableDShadow(attachble);
+		}
+		else
+		{
+			AttachSystem::Instance()->DisableOutline(attachble);
+			AttachSystem::Instance()->DisableDShadow(attachble);
+		}
+	}
+
 	bool AttachHoldState::SearchAround()
 	{
 		using namespace Eigen;
 
-		float radius = player->GetStateMachine()->searchAroundDistance;
-		Eigen::Affine3f parentMatrix(player->GetCameraArmTrnasform()->GetWorldMatrix());
-		Eigen::Vector3f corePosition = player->GetCameraCoreTrnasform()->GetLocalPosition();
+		float radius = player->abilData.searchAroundDistance;
+		Eigen::Affine3f parentMatrix(player->data.cameraArm->GetWorldMatrix());
+		Eigen::Vector3f corePosition = player->data.cameraCore->GetLocalPosition();
 		corePosition.z() = 0.f;
 		Eigen::Vector3f position = parentMatrix * corePosition;
 		Quaternionf rotation = Quaternionf::Identity();
-		int layer = player->GetStateMachine()->attachRaycastLayers;
+		int layer = player->abilData.attachRaycastLayers;
 		ZonaiPhysics::ZnQueryInfo info;
-		info.actors.resize(player->GetStateMachine()->searchAroundbufferSize);
-		info.shapes.resize(player->GetStateMachine()->searchAroundbufferSize);
+		info.actors.resize(player->abilData.searchAroundbufferSize);
+		info.shapes.resize(player->abilData.searchAroundbufferSize);
 
 		bool hit = PurahEngine::Physics::SphereOverlap(radius, position, rotation, layer, info);
 
@@ -1434,7 +1443,7 @@ namespace Phyzzle
 		playerToObject.y() = 0.f;
 		playerToObject.normalize();
 
-		// ¿ÀºêÁ§Æ®-ÇÃ·¹ÀÌ¾î ¹æÇâ°ú À¯»çÇÑ ÃàÀ» Ã£À½
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®-ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½
 		Quaternionf test = playerRotation.inverse() * objectRotation;
 		Quaternionf front = FindAxis(test);
 		targetRotation = front;
@@ -1465,10 +1474,10 @@ namespace Phyzzle
 			Quaternionf dir = axis.normalized();
 			Quaternionf minus = Quaternionf(-dir.w(), -dir.x(), -dir.y(), -dir.z());
 
-			cosTheta = _direction.dot(dir);									// Ãà¸¶´Ù °¢µµ¸¦ °è»êÇÔ
+			cosTheta = _direction.dot(dir);						// ï¿½à¸¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
 			cosTheta = std::clamp(cosTheta, -1.f, 1.f);
 
-			if (max <= cosTheta)								// °¡Àå °¡±î¿î ÃàÀ» Ã£À½
+			if (max <= cosTheta)								// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½
 			{
 				if (result != dir)
 				{
@@ -1478,10 +1487,10 @@ namespace Phyzzle
 				}
 			}
 
-			cosTheta = _direction.dot(minus);									// Ãà¸¶´Ù °¢µµ¸¦ °è»êÇÔ
+			cosTheta = _direction.dot(minus);					// ï¿½à¸¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
 			cosTheta = std::clamp(cosTheta, -1.f, 1.f);
 
-			if (max <= cosTheta)								// °¡Àå °¡±î¿î ÃàÀ» Ã£À½
+			if (max <= cosTheta)								// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½
 			{
 				if (result != dir)
 				{
@@ -1500,28 +1509,10 @@ namespace Phyzzle
 
 		return true;
 	}
-#pragma endregion Content
-
-	void AttachHoldState::EnableOutline(bool _value) const
-	{
-		if (!selectBody || !attachble)
-			return;
-
-		if (_value)
-		{
-			// AttachSystem::Instance()->EnableOutline(attachble, /*&player->color0, &player->color1*/);
-			AttachSystem::Instance()->EnableDShadow(attachble);
-		}
-		else
-		{
-			AttachSystem::Instance()->DisableOutline(attachble);
-			AttachSystem::Instance()->DisableDShadow(attachble);
-		}
-	}
 
 	void AttachHoldState::AttachTouchUIRender(bool _value)
 	{
-		player->GetUIManager()->Stick_B->SetEnable(_value);
+		player->uiData.Stick_B->SetEnable(_value);
 	}
 
 	void AttachHoldState::AttachRotateUIRender(bool _value)
@@ -1530,11 +1521,11 @@ namespace Phyzzle
 
 		if (count == 1)
 		{
-			// player->uiData.Rotation_NoneStick->SetEnable(_value);
+			player->uiData.Rotation_NoneStick->SetEnable(_value);
 		}
 		else
 		{
-			 // player->uiData.Rotation_Stick->SetEnable(_value);
+			player->uiData.Rotation_Stick->SetEnable(_value);
 		}
 	}
 
@@ -1544,28 +1535,30 @@ namespace Phyzzle
 
 		if (count == 1)
 		{
-			 // player->uiData.Attach_Hold_NoneStick->SetEnable(_value);
+			player->uiData.Attach_Hold_NoneStick->SetEnable(_value);
 		}
 		else
 		{
-			// player->uiData.Attach_Hold_Stick->SetEnable(_value);
+			player->uiData.Attach_Hold_Stick->SetEnable(_value);
 		}
 
 	}
 
 	void AttachHoldState::RotationArowRender(bool _value)
 	{
-		// player->data.rotationArow->SetEnable(_value);
+		player->data.rotationArow->SetEnable(_value);
 	}
 
 	void AttachHoldState::UIDisable()
 	{
-		// player->uiData.Attach_Hold_NoneStick->SetEnable(false);
-		// player->uiData.Attach_Hold_Stick->SetEnable(false);
-		// player->uiData.Rotation_NoneStick->SetEnable(false);
-		// player->uiData.Rotation_Stick->SetEnable(false);
-		// player->uiData.Stick_B->SetEnable(false);
+		player->uiData.Attach_Hold_NoneStick->SetEnable(false);
+		player->uiData.Attach_Hold_Stick->SetEnable(false);
+		player->uiData.Rotation_NoneStick->SetEnable(false);
+		player->uiData.Rotation_Stick->SetEnable(false);
+		player->uiData.Stick_B->SetEnable(false);
 	}
+
+#pragma endregion Content
 
 #pragma region Debug
 	void AttachHoldState::SearchDebugDraw()
@@ -1609,7 +1602,7 @@ namespace Phyzzle
 		degree.y() = std::floor(degree.y() * 10.f) / 10.f;
 		degree.z() = std::floor(degree.z() * 10.f) / 10.f;
 		PurahEngine::GraphicsManager::GetInstance().DrawString(
-			L"¿ÀºêÁ§Æ® °¢µµ : \n" +
+			L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ : \n" +
 			std::to_wstring(degree.x()) + L" \n" +
 			std::to_wstring(degree.y()) + L" \n" +
 			std::to_wstring(degree.z()) + L" \n",

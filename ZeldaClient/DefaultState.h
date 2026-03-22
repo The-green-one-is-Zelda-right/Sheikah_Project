@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "IState.h"
 #include "Coroutine.h"
 
@@ -16,7 +16,7 @@ namespace Phyzzle
 		~DefaultState() override;
 
 	private:
-		// IStateÀ»(¸¦) ÅëÇØ »ó¼ÓµÊ
+		// IStateì„(ë¥¼) í†µí•´ ìƒì†ë¨
 		void StateEnter() override;
 		void StateExit() override;
 		void StateStay() override;

@@ -1,10 +1,10 @@
-#pragma once
+﻿#pragma once
 #include "ZnSimulationCallback.h"
 
 namespace ZonaiPhysics
 {
 	class ZnCollider;
-	class ZnCollision;
+	struct ZnCollision;
 }
 
 namespace PurahEngine
